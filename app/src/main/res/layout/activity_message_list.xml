@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_margin="4dp"
+    android:layout_height="65dp" >
+
+    <RelativeLayout
+        android:id="@+id/message_linear_list"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:background="@drawable/listview_selected_item" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="30dp"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true" >
+
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/message_textview_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:text="2015-01-01"
+                android:textColor="#cc4125"
+                android:textSize="14sp"/>
+
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/message_textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="0dp"
+                android:ellipsize="end"
+                android:inputType="none"
+                android:lines="1"
+                android:maxLines="1"
+                android:minLines="1"
+                android:text="大电影要开播了..."
+                android:textColor="#000000"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp" 
+            android:layout_alignParentRight="true"
+            android:gravity="center" >
+            <com.bjxapp.worker.controls.XImageView
+	            android:id="@+id/ivGiftImage"
+	            android:layout_width="16dp"
+	            android:layout_height="16dp"
+	            android:layout_marginLeft="5dp"
+	            android:src="@drawable/right" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip"
+        android:layout_alignParentBottom="true"
+        android:background="@color/separator_color" />
+
+</RelativeLayout>

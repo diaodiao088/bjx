@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="74dp"
+    android:orientation="horizontal">
+
+    <!-- total -->
+    <RelativeLayout
+        android:id="@+id/total_ly"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/total_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#00A551" />
+
+        <ImageView
+            android:id="@+id/img_total"
+            android:layout_width="18dp"
+            android:layout_height="22dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/total" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_total"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:text="全部"
+            android:textColor="#545454" />
+
+
+        <TextView
+            android:id="@+id/total_reddot_tv"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignTop="@id/img_total"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="-8dp"
+            android:layout_toRightOf="@id/img_total"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp" />
+
+    </RelativeLayout>
+
+    <!-- total -->
+    <RelativeLayout
+        android:id="@+id/new_bill_ly"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/new_bill_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#00A551"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_new_bill"
+            android:layout_width="18dp"
+            android:layout_height="22dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/new_bill" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_new_bill"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:text="新订单"
+            android:textColor="#545454" />
+
+
+        <TextView
+            android:id="@+id/new_bill_reddot_tv"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignTop="@id/img_new_bill"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="-8dp"
+            android:layout_toRightOf="@id/img_new_bill"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <!-- total -->
+    <RelativeLayout
+        android:id="@+id/waiting_contact_ly"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/waiting_contact_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#00A551"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_waiting_contact"
+            android:layout_width="18dp"
+            android:layout_height="22dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/dailianxi" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_waiting_contact"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:text="待联系"
+            android:textColor="#545454" />
+
+
+        <TextView
+            android:id="@+id/waiting_contact_redot_tv"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignTop="@id/img_waiting_contact"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="-8dp"
+            android:layout_toRightOf="@id/img_waiting_contact"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <!-- total -->
+    <RelativeLayout
+        android:id="@+id/waiting_room_ly"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/waiting_room_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#00A551"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_waiting_room"
+            android:layout_width="18dp"
+            android:layout_height="22dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/waiting_room" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_waiting_room"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:text="待上门"
+            android:textColor="#545454" />
+
+
+        <TextView
+            android:id="@+id/waiting_room_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignTop="@id/img_waiting_room"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="-8dp"
+            android:layout_toRightOf="@id/img_waiting_room"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <!-- total -->
+    <RelativeLayout
+        android:id="@+id/already_enter_ly"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/already_enter_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#00A551"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_already_enter"
+            android:layout_width="18dp"
+            android:layout_height="22dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/yishangmen" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_already_enter"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:text="已上门"
+            android:textColor="#545454" />
+
+
+        <TextView
+            android:id="@+id/already_enter_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignTop="@id/img_already_enter"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="-8dp"
+            android:layout_toRightOf="@id/img_already_enter"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <!-- total -->
+    <RelativeLayout
+        android:id="@+id/waiting_pay_ly"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/waiting_pay_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#00A551"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_waiting_pay"
+            android:layout_width="18dp"
+            android:layout_height="22dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/total" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_waiting_pay"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:text="待支付"
+            android:textColor="#545454" />
+
+
+        <TextView
+            android:id="@+id/waiting_pay_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignTop="@id/img_waiting_pay"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="-8dp"
+            android:layout_toRightOf="@id/img_waiting_pay"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</LinearLayout>

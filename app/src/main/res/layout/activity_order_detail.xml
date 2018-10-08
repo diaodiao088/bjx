@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_title" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/order_receive_detail_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F5F5F5"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/order_receive_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true">
+
+                        <com.bjxapp.worker.controls.XTextView
+                            android:id="@+id/order_receive_textview_service"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="0dp"
+                            android:text="BJX201607120001"
+                            android:textColor="#545454"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_textview_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/layout_textview_radius"
+                        android:paddingLeft="2dp"
+                        android:paddingRight="2dp"
+                        android:text="新订单"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_textview_orderdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:drawableLeft="@drawable/order_time"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="2015-10-01 上午"
+                        android:textColor="#545454"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_textview_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:drawableLeft="@drawable/order_address"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="北京市海淀区知本时代22-2-222"
+                        android:textColor="#2e8b57"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_textview_money"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:drawableLeft="@drawable/order_money"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="费用：300元"
+                        android:textColor="#545454"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_textview_remark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:drawableLeft="@drawable/order_remark"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="无特殊说明"
+                        android:textColor="#545454"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tele_contacts_ly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_textview_contact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:drawableLeft="@drawable/order_contacts"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="上官云清 / 13901099999"
+                        android:textColor="#2e8b57"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/order_receive_detail_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/layout_radius"
+                android:orientation="vertical">
+
+                <com.bjxapp.worker.controls.XTextView
+                    android:id="@+id/order_receive_detail_images_text"
+                    style="@style/SettingTextTitle"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+
+                    android:drawablePadding="10dp"
+                    android:drawableRight="@drawable/right"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="查看客户拍摄的故障图片"
+                    android:textColor="#545454"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/order_receive_detail_addition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/layout_radius"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true">
+
+                        <com.bjxapp.worker.controls.XTextView
+                            android:id="@+id/order_receive_detail_addition_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="0dp"
+                            android:text="增项单"
+                            android:textColor="#545454"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+
+                    <com.bjxapp.worker.controls.XButton
+                        android:id="@+id/order_receive_detail_addition_edit"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/layout_textview_radius"
+                        android:paddingLeft="2dp"
+                        android:paddingRight="2dp"
+                        android:text="编辑"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0dip"
+                    android:background="@color/separator_color" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_addition_content_text"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="增项内容："
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_addition_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/order_receive_detail_addition_content_text"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="马桶维修、冰箱维修、换灯泡"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_addition_money_text"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="增项金额："
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_addition_money"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/order_receive_detail_addition_money_text"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical|right"
+                        android:text="500.00"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/order_receive_detail_income"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/layout_radius"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true">
+
+                        <com.bjxapp.worker.controls.XTextView
+                            android:id="@+id/order_receive_detail_income_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="0dp"
+                            android:text="本单收入计算"
+                            android:textColor="#000000"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/layout_textview_radius"
+                        android:paddingLeft="2dp"
+                        android:paddingRight="2dp"
+                        android:text=""
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0dip"
+                    android:background="@color/separator_color" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_base_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="基础费用"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_base_fee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical"
+                        android:text="100"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/order_receive_detail_income_fast_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_fast_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="快速费用"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_fast_fee_sign"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/order_receive_detail_income_fast_fee"
+                        android:gravity="center_vertical"
+                        android:text="+"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_fast_fee"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical|right"
+                        android:text="1000.00"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_addition_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="增项费用"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_addition_fee_sign"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/order_receive_detail_income_addition_fee"
+                        android:gravity="center_vertical"
+                        android:text="+"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_addition_fee"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical|right"
+                        android:text="1450.00"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_discount_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="折扣费用"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_discount_fee_sign"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/order_receive_detail_income_discount_fee"
+                        android:gravity="center_vertical"
+                        android:text="−"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_discount_fee"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical|right"
+                        android:text="20.00"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0dip"
+                    android:background="@color/separator_color" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_total_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="总计"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_receive_detail_income_total_fee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical"
+                        android:text="1080"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="5dp">
+
+                <com.bjxapp.worker.controls.XButton
+                    android:id="@+id/order_receive_detail_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/button_background_green"
+                    android:text="保存"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:id="@+id/order_receiver_ly"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+
+
+
+
+
+                </LinearLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

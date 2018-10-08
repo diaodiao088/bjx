@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <include layout="@layout/layout_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <com.bjxapp.worker.controls.XTextView
+            android:id="@+id/message_detail_date"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:drawableLeft="@drawable/order_time"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="" />
+
+    </LinearLayout>
+    
+	<View
+		android:background="@color/separator_color"
+		android:layout_width="fill_parent"
+		android:layout_height="1.0dip" />
+            
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <com.bjxapp.worker.controls.XTextView
+            android:id="@+id/message_detail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:drawableLeft="@drawable/order_title"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="" />
+
+    </LinearLayout>
+
+    <View
+		android:background="@color/separator_color"
+		android:layout_width="fill_parent"
+		android:layout_height="1.0dip" />
+
+    <com.bjxapp.worker.controls.XTextView
+        android:id="@+id/message_detail_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ellipsize="end"
+        android:lines="100"
+        android:lineSpacingMultiplier="1.5"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:singleLine="false"
+        android:text="" />
+	   	
+</LinearLayout>

@@ -1,0 +1,89 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical" >
+	    <include layout="@layout/layout_title" />
+	    <com.baidu.mapapi.map.MapView
+	        android:id="@+id/mapView"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:clickable="true" />  
+	</LinearLayout>
+	
+	<RelativeLayout
+        android:id="@+id/map_popup_marker_info"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="160dp"
+        android:layout_alignParentBottom="true"
+        android:background="#CC4e5a6b"
+        android:clickable="true" >
+	    
+	    <LinearLayout
+	        android:id="@+id/map_popup_footer"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        android:paddingLeft="10dp"
+	        android:paddingTop="10dp" >
+
+		 	<com.bjxapp.worker.controls.XTextView
+		 	    android:id="@+id/map_popup_user_name"
+		 	    android:layout_width="wrap_content"
+		 	    android:layout_height="30dp"
+		 	    android:drawableLeft="@drawable/right"
+		 	    android:drawablePadding="10dp"
+		 	    android:gravity="center_vertical"
+		 	    android:text="朱茵"
+		 	    android:textColor="@color/white"
+		 	    android:textSize="15sp" />
+		
+			<com.bjxapp.worker.controls.XTextView
+			    android:id="@+id/map_popup_address"
+			    android:layout_width="wrap_content"
+			    android:layout_height="30dp"
+			    android:drawableLeft="@drawable/right"
+			    android:drawablePadding="10dp"
+			    android:gravity="center_vertical"
+			    android:text="海淀区知本时代23号楼1单元"
+			    android:textColor="@color/white"
+			    android:textSize="15sp" />
+		
+			<com.bjxapp.worker.controls.XTextView
+			    android:id="@+id/map_popup_mobile"
+			    android:layout_width="wrap_content"
+			    android:layout_height="30dp"
+			    android:drawableLeft="@drawable/right"
+			    android:drawablePadding="10dp"
+			    android:gravity="center_vertical"
+			    android:text="15901066870"
+			    android:textColor="@color/white"
+			    android:textSize="15sp"
+			    android:textStyle="bold" />
+
+    	</LinearLayout>
+	    
+	    <RelativeLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="50dp"
+	        android:layout_alignParentBottom="true"
+	        android:background="@drawable/map_bottom_background"
+	        android:gravity="center_vertical|center_horizontal" >
+
+			<com.bjxapp.worker.controls.XTextView
+			    android:id="@+id/map_popup_guide"
+			    android:layout_width="150dp"
+			    android:layout_height="40dp"
+			    android:background="@drawable/button_background_map"
+			    android:gravity="center_vertical|center_horizontal"
+			    android:text="路线规划"
+			    android:textColor="@color/white"
+			    android:textSize="16sp" />
+
+        </RelativeLayout>
+	</RelativeLayout>
+</RelativeLayout>

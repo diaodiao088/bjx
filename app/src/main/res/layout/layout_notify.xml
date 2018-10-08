@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <include
+        android:id="@+id/icon_layout"
+        layout="@layout/layout_notify_icon" />
+    <ImageView android:id="@+id/add_icon"
+        android:layout_width="48dp"
+        android:layout_height="64dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/notify_add_icon"
+        android:scaleType="center"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@id/icon_layout"
+        android:layout_toLeftOf="@id/add_icon">
+
+        <TextView
+            android:id="@+id/notify_title"
+            style="@style/Notify.ContentText"
+            />
+
+        <TextView
+            android:id="@+id/notify_time"
+            style="@style/Notify.SecondlyLine"
+            android:layout_below="@id/notify_title"
+            android:paddingRight="4dp"/>
+
+        <TextView
+            android:id="@+id/notify_content"
+            style="@style/Notify.SecondlyLine"
+            android:layout_below="@id/notify_title"
+            android:layout_toRightOf="@id/notify_time"/>
+    </RelativeLayout>
+
+</RelativeLayout>

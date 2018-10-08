@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ 	<!-- 通用颜色 -->
+	<color name="white">#ffffff</color> 
+	<color name="red">#FC2828</color>
+    <color name="greeny">#00CB0D</color>
+    <color name="gray">#ff808080</color>
+    <color name="black">#ff000000</color>
+    
+    <!-- 透明 -->
+	<color name="transparent">#00000000</color>
+	
+    <!--窗体颜色 -->
+	<color name="windows_color">#F5F5F5</color>
+    <color name="bar_color">#232325</color>
+    <color name="separator_color">#ffeeeeee</color>
+    
+    <!--baidu蓝 -->
+	<color name="title_background_color">#3385ff</color>
+	<color name="button_normal_color">#3385ff</color>
+    <color name="button_press_color">#317ef3</color>
+    <color name="button_logout_color">#B80F00</color>
+    
+    <!--listview -->
+    <color name="listview_selected_item_normal">#ffffff</color>
+    <color name="listview_selected_item_pressed">#ffeeeeee</color>
+    
+    <!--map button -->
+    <color name="map_button_normal">#CC4e5a6b</color>
+    <color name="map_button_pressed">#993333</color>
+    
+    <color name="receive_button_can">#288d54</color>
+    <color name="receive_button_not">#aaaaaa</color>
+    
+</resources>

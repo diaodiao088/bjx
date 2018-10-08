@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="64dp"
+	android:layout_height="match_parent"
+	android:minWidth="64dp" >
+	<ImageView
+		android:id="@+id/empty_icon"
+		style="@style/Notify.Icon"
+		android:src="@drawable/icon"
+		android:visibility="gone" />
+	<ImageView
+		android:id="@+id/notify_icon"
+		style="@style/Notify.Icon"
+		android:src="@drawable/icon" />
+</FrameLayout>

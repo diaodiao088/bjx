@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_margin="4dp"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/message_linear_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/listview_selected_item" >
+
+		<com.bjxapp.worker.controls.XTextView
+		    android:id="@+id/common_checkbox_detail_text"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:drawableLeft="@drawable/right"
+		    android:drawablePadding="8dp"
+		    android:layout_alignParentLeft="true"
+		    android:layout_centerVertical="true"
+		    android:layout_margin="20dp"
+		    android:text="油漆工"
+		    android:textColor="#000000"
+		    android:textSize="16sp" />
+
+		<com.bjxapp.worker.controls.XCheckBox
+		    android:id="@+id/common_checkbox_detail_check"
+		    style="@style/custom_checkbox"
+		    android:layout_width="32dp"
+		    android:layout_height="32dp"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:layout_marginRight="20dp"
+		    android:clickable="false" 
+		    android:focusable="false"/>
+            
+    </RelativeLayout>
+</RelativeLayout>

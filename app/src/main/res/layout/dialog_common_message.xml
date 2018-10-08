@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+    <LinearLayout
+        style="@style/XDialogStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.bjxapp.worker.controls.XTextView
+            android:id="@+id/dialog_common_message_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="提醒"
+            android:textColor="#353535"
+            android:textSize="20dp" />
+         <View
+			android:background="@color/greeny"
+			android:layout_width="fill_parent"
+			android:layout_height="2.0dip" />
+
+        <com.bjxapp.worker.controls.XTextView
+            android:id="@+id/dialog_common_message_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="15dp"
+            android:lineSpacingExtra="5dp"
+            android:text="        每月1至5日提现，将在5日后的第一个工作日汇钱！"
+            android:textColor="#353535"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+    		<com.bjxapp.worker.controls.XButton
+    		    android:id="@+id/dialog_common_message_button_cancel"
+    		    android:layout_width="wrap_content"
+    		    android:layout_height="30dp"
+    		    android:layout_marginRight="10dp"
+    		    android:paddingLeft="5dp"
+    		    android:paddingRight="5dp"
+    		    android:background="@drawable/button_background_gray"
+    		    android:minWidth="70dp"
+    		    android:text="取消"
+    		    android:textColor="@android:color/black"
+    		    android:textSize="16dp" />
+
+    		<com.bjxapp.worker.controls.XButton
+    		    android:id="@+id/dialog_common_message_button_ok"
+    		    android:layout_width="wrap_content"
+    		    android:layout_height="30dp"
+    		    android:paddingLeft="5dp"
+    		    android:paddingRight="5dp"
+    		    android:background="@drawable/button_background_green"
+    		    android:minWidth="70dp"
+    		    android:text="确定"
+    		    android:textColor="@android:color/white"
+    		    android:textSize="16dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

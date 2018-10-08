@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/login_main_bg"
+        android:orientation="vertical">
+
+        <com.bjxapp.worker.controls.XEditText
+            android:id="@+id/login_edit_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:hint="@string/login_mobile_hint"
+            android:inputType="phone"
+            android:maxLength="11"
+            android:paddingBottom="15dp"
+            android:paddingLeft="17dp"
+            android:paddingTop="15dp"
+            android:singleLine="true"
+            android:textColorHint="#DDDDDD"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.0dip"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@color/separator_color" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <com.bjxapp.worker.controls.XEditText
+                android:id="@+id/login_edit_verify_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:hint="图形中的文字"
+                android:inputType="text"
+                android:paddingLeft="17dp"
+                android:singleLine="true"
+                android:textColorHint="#DDDDDD"
+                android:textSize="16sp" />
+
+            <com.bjxapp.worker.controls.XImageView
+                android:id="@+id/login_image_verify_code"
+                android:layout_width="96dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@color/gray"
+                android:layout_marginRight="10dp"
+                android:gravity="center" />
+        </RelativeLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.0dip"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@color/separator_color" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="0dp">
+
+            <com.bjxapp.worker.controls.XEditText
+                android:id="@+id/login_edit_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:hint="@string/login_password_hint"
+                android:inputType="number"
+                android:paddingLeft="17dp"
+                android:singleLine="true"
+                android:textColorHint="#DDDDDD"
+                android:textSize="16sp" />
+
+            <com.bjxapp.worker.controls.XButton
+                android:id="@+id/login_button_sendauthcode"
+                android:layout_width="96dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/button_background_gray"
+                android:gravity="center"
+                android:text="获取验证码"
+                android:textColor="@color/black"
+                android:layout_marginRight="10dp"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <com.bjxapp.worker.controls.XButton
+        android:id="@+id/login_button_login"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/button_background_green"
+        android:paddingBottom="7dp"
+        android:paddingTop="7dp"
+        android:text="下一步"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+</LinearLayout>

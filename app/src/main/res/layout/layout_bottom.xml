@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical" >
+ 	<View
+		android:background="@color/separator_color"
+		android:layout_width="fill_parent"
+		android:layout_height="1.0dip" />
+    <LinearLayout
+        android:id="@+id/main_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="#ffffff"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/main_tab_first"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="onTabClicked"
+            android:padding="3dp" >
+ 			<RelativeLayout
+     			android:layout_width="60dp"
+     			android:gravity="center"
+                android:layout_centerHorizontal="true"
+     			android:layout_height="match_parent">
+            	<com.bjxapp.worker.controls.XImageView
+                	android:id="@+id/main_tab_first_image"
+                	android:layout_width="wrap_content"
+                	android:layout_height="28dp"
+                	android:layout_centerHorizontal="true"
+                	android:background="#ffffff"
+                	android:focusable="false"
+                	android:scaleType="centerInside"
+                	android:src="@drawable/main_tab_first" />
+            	<com.bjxapp.worker.controls.XTextView
+                	android:id="@+id/main_tab_first_text"
+                	android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	android:layout_below="@id/main_tab_first_image"
+                	android:layout_centerHorizontal="true"
+                	android:layout_marginTop="3dp"
+                	android:text="@string/main_tab_first_text"
+                	android:textColor="#9A9A9A"
+                	android:textSize="12sp" />
+            	<com.bjxapp.worker.controls.XTextView
+                	android:id="@+id/main_tab_first_reminder"
+                	android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	android:layout_alignParentRight="true"
+                	android:background="@drawable/reminder"
+                	android:gravity="center"
+                	android:text=""
+                	android:visibility="gone"
+                	android:layout_marginRight="8dp"
+                	android:textColor="@android:color/white"
+                	android:textSize="12sp" />
+            	</RelativeLayout>
+        	</RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/main_tab_second"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="onTabClicked"
+            android:padding="3dp" >
+			<RelativeLayout
+     			android:layout_width="60dp"
+     			android:gravity="center"
+                android:layout_centerHorizontal="true"
+     			android:layout_height="match_parent">
+            	<com.bjxapp.worker.controls.XImageView
+                	android:id="@+id/main_tab_second_image"
+                	android:layout_width="wrap_content"
+                	android:layout_height="28dp"
+                	android:layout_centerHorizontal="true"
+                	android:background="#ffffff"
+                	android:focusable="false"
+                	android:scaleType="centerInside"
+                	android:src="@drawable/main_tab_second" />
+
+            	<com.bjxapp.worker.controls.XTextView
+                	android:id="@+id/main_tab_second_text"
+               		android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	android:layout_below="@id/main_tab_second_image"
+                	android:layout_centerHorizontal="true"
+                	android:layout_marginTop="3dp"
+                	android:text="@string/main_tab_second_text"
+                	android:textColor="#9A9A9A"
+                	android:textSize="12sp" />
+
+            	<com.bjxapp.worker.controls.XTextView
+                	android:id="@+id/main_tab_second_reminder"
+                	android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	android:layout_alignParentRight="true"
+                	android:background="@drawable/reminder"
+                	android:gravity="center"
+                	android:layout_marginRight="8dp"
+                	android:text=""
+                	android:visibility="gone"
+                	android:textColor="@android:color/white"
+                	android:textSize="12sp" />
+        	</RelativeLayout>
+      	</RelativeLayout>
+      
+        <RelativeLayout
+            android:id="@+id/main_tab_third"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="onTabClicked"
+            android:padding="3dp" >
+			<RelativeLayout
+		     	android:layout_width="60dp"
+		     	android:gravity="center"
+		        android:layout_centerHorizontal="true"
+     			android:layout_height="match_parent">
+            	<com.bjxapp.worker.controls.XImageView
+	                android:id="@+id/main_tab_third_image"
+	                android:layout_width="wrap_content"
+	                android:layout_height="28dp"
+	                android:layout_centerHorizontal="true"
+	                android:background="#ffffff"
+	                android:focusable="false"
+	                android:scaleType="centerInside"
+	                android:src="@drawable/main_tab_third" />
+	            <com.bjxapp.worker.controls.XTextView
+	                android:id="@+id/main_tab_third_text"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_below="@id/main_tab_third_image"
+	                android:layout_centerHorizontal="true"
+	                android:layout_marginTop="3dp"
+	                android:text="@string/main_tab_third_text"
+	                android:textColor="#9A9A9A"
+	                android:textSize="12sp" />
+              	<com.bjxapp.worker.controls.XTextView
+	                android:id="@+id/main_tab_third_reminder"
+	                android:layout_width="10dp"
+	                android:layout_height="10dp"
+	                android:layout_alignParentRight="true"
+	                android:background="@drawable/reminder"
+	                android:gravity="center"
+	                android:text=""
+	                android:visibility="gone"
+	                android:layout_marginRight="8dp"
+	                android:textColor="@android:color/white"
+	                android:textSize="12sp" />
+        	</RelativeLayout>
+ 		</RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/main_tab_fourth"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="onTabClicked"
+            android:padding="3dp" >
+			<RelativeLayout
+     			android:layout_width="60dp"
+     			android:gravity="center"
+                android:layout_centerHorizontal="true"
+     			android:layout_height="match_parent">
+	            <com.bjxapp.worker.controls.XImageView
+	                android:id="@+id/main_tab_fourth_image"
+	                android:layout_width="wrap_content"
+	                android:layout_height="28dp"
+	                android:layout_centerHorizontal="true"
+	                android:background="#ffffff"
+	                android:focusable="false"
+	                android:scaleType="centerInside"
+	                android:src="@drawable/main_tab_fourth" />
+	
+	            <com.bjxapp.worker.controls.XTextView
+	                android:id="@+id/main_tab_fourth_text"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_below="@id/main_tab_fourth_image"
+	                android:layout_centerHorizontal="true"
+	                android:layout_marginTop="3dp"
+	                android:text="@string/main_tab_fourth_text"
+	                android:textColor="#9A9A9A"
+	                android:textSize="12sp" />
+	            <com.bjxapp.worker.controls.XTextView
+	                android:id="@+id/main_tab_fourth_reminder"
+	                android:layout_width="10dp"
+	                android:layout_height="10dp"
+	                android:layout_alignParentRight="true"
+	                android:background="@drawable/reminder"
+	                android:gravity="center"
+	                android:text=""
+	                android:visibility="gone"
+	                android:layout_marginRight="10dp"
+	                android:textColor="@android:color/white"
+	                android:textSize="12sp" />    
+	        </RelativeLayout>        
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

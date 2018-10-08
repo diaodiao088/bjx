@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="app_name">百家修师傅</string>
+    <string name="service_telephone">01056109590</string>
+    <string name="service_telephone_display">010-56109590</string>
+    <string name="service_about_url">http://u.100jiaxiu.com/personalcenter/aboutour.html</string>
+    <string name="service_protocol_url">http://u.100jiaxiu.com/receive_order.html</string>
+    <string name="notify_push_title">推送显示的标题</string>
+    <string name="notify_push_content">推送显示的内容</string>
+    <string name="common_time_hour">时</string>
+    <string name="common_time_minute">分</string>
+    <string name="common_time_second">秒</string>
+    <string name="common_exit_message">再次按返回键退出</string>
+    <string name="common_no_data_message">没有数据哦</string>
+    <string name="common_no_more_data_message">没有更多数据啦</string>
+    <string name="common_no_network_message">网络状态异常，请在登陆网络后重新打开【百家修】，咨询电话：010-56109590</string>
+    <string name="login_mobile_label">手机</string>
+    <string name="login_mobile_hint">请输入手机号</string>
+    <string name="login_authcode_send">获取验证码</string>
+    <string name="login_password_label">验证码</string>
+    <string name="login_password_hint">短信验证码</string>
+    <string name="login_button_login">登录</string>
+    <string name="login_account_warning">请填写手机号或验证码！</string>
+    <string name="login_fail_warning">登录失败，请检查验证码是否正确！</string>
+    <string name="login_waiting_message">正在登录，请稍候...</string>
+    <string name="images_button_register">保存并返回</string>
+    <string name="images_upload_waiting_message">正在上传图片，请稍候...</string>
+    <string name="main_tab_first_text">首页</string>
+    <string name="main_tab_second_text">历史订单</string>
+    <string name="main_tab_third_text">通知</string>
+    <string name="main_tab_fourth_text">我的</string>
+    <string name="xlistview_header_hint_normal">下拉刷新</string>
+    <string name="xlistview_header_hint_ready">松开刷新数据</string>
+    <string name="xlistview_header_hint_loading">正在加载...</string>
+    <string name="xlistview_header_last_time">上次更新时间：</string>
+    <string name="xlistview_footer_hint_normal">查看更多</string>
+    <string name="xlistview_footer_hint_ready">松开载入更多</string>
+    <string name="xlistview_footer_hint_load_more">正在加载数据，请稍候...</string>
+</resources>

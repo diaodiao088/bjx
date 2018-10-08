@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@color/separator_color"
+	android:orientation="vertical">
+
+    <com.bjxapp.worker.controls.listview.XListView
+        android:id="@+id/order_history_list_listview"
+        android:listSelector="@android:color/transparent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:choiceMode="singleChoice"
+        android:divider="@color/transparent"
+        android:dividerHeight="0dp"
+        android:visibility="gone" >
+    </com.bjxapp.worker.controls.listview.XListView>
+
+    <RelativeLayout
+        android:id="@+id/order_history_list_load_again"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/white"
+        android:padding="10dp" >
+
+        <com.bjxapp.worker.controls.XImageView
+            android:id="@+id/order_history_list_load_again_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:src="@drawable/load_again" />
+    </RelativeLayout>    
+</RelativeLayout>

@@ -1,0 +1,247 @@
+package com.bjxapp.worker.ui.view.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+
+import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMarkerDragListener;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapPoi;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
+import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.bjxapp.worker.controls.XButton;
+import com.bjxapp.worker.controls.XImageView;
+import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.ui.view.base.BaseActivity;
+import com.bjxapp.worker.utils.Utils;
+import com.bjxapp.worker.R;
+
+public class MapSelectActivity extends BaseActivity implements OnClickListener {
+	protected static final String TAG = "选择地图";
+	private XTextView mTitleTextView;
+	private XImageView mBackImageView;
+	
+	private MapView mMapView;
+	private BaiduMap mBaiduMap;
+    private Marker mMyLocationMarker;
+	private BitmapDescriptor mMyLocationBD;
+	private XButton mSaveButton;
+	
+	private double mUserLatitude;
+	private double mUserLongitude;
+	private String mAddress = "";
+	private String mCity = "";
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		//初始化定位及地图sdk，已在App.java中添加，此处可以去掉
+		SDKInitializer.initialize(getApplicationContext());
+		
+		setContentView(R.layout.activity_map_select);
+		super.onCreate(savedInstanceState);
+		
+		Bundle bundle = getIntent().getExtras();
+		if (bundle != null) {
+			mUserLatitude = bundle.getDouble("latitude",0.0);
+			mUserLongitude = bundle.getDouble("longitude",0.0);
+			mAddress = bundle.getString("address","");
+			mCity = bundle.getString("city","");
+		}
+		else {
+			//如果不显示地图，一般是经纬度数据搞错了...
+			mUserLatitude = 0.0;
+			mUserLongitude = 0.0;
+			mAddress = "";
+			mCity = "";
+		}
+		
+        if(mUserLatitude > 0.0){
+        	initMyLocationMaker(mUserLatitude, mUserLongitude);
+        }
+	}
+
+	@Override
+	protected void initControl() {
+		mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+		mTitleTextView.setText("选择服务范围");
+		mBackImageView = (XImageView) findViewById(R.id.title_image_back);
+		mBackImageView.setVisibility(View.VISIBLE);
+		
+		mSaveButton = (XButton) findViewById(R.id.layout_map_select_save_button);
+		
+        mMapView = (MapView) findViewById(R.id.mapView);
+        mBaiduMap = mMapView.getMap();
+        
+		mBaiduMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+			public boolean onMarkerClick(final Marker marker) {
+				if (marker == mMyLocationMarker) {
+					Utils.showShortToast(MapSelectActivity.this, "这是您现在的位置\n["+mMyLocationMarker.getPosition().latitude+","+mMyLocationMarker.getPosition().longitude+"]");
+				}
+				
+				return true;
+			}
+		});
+		
+		mBaiduMap.setOnMapClickListener(new OnMapClickListener()
+		{
+			@Override
+			public boolean onMapPoiClick(MapPoi arg0)
+			{
+				return false;
+			}
+
+			@Override
+			public void onMapClick(LatLng arg0)
+			{
+				if(mMyLocationMarker == null){
+				 	mMyLocationBD = BitmapDescriptorFactory.fromResource(R.drawable.icon_location_a);
+					OverlayOptions myLocationOO = new MarkerOptions().position(arg0).icon(mMyLocationBD).zIndex(8).draggable(true);
+					mMyLocationMarker = (Marker) (mBaiduMap.addOverlay(myLocationOO));
+				}
+				
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(arg0);
+				mMyLocationMarker.setPosition(arg0);
+				mBaiduMap.animateMapStatus(u);
+				
+				getAddress();
+			}
+		});
+		
+		mBaiduMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+		    public void onMarkerDrag(Marker marker) {
+		    	
+		    }
+		    public void onMarkerDragEnd(Marker marker) {
+		    	getAddress();
+		    }
+		    public void onMarkerDragStart(Marker marker) {
+
+		    }
+		});
+	}
+
+	@Override
+	protected void initView() {
+
+	}
+
+	@Override
+	protected void initData() {
+		
+	}
+
+	@Override
+	protected void setListener() {
+		mBackImageView.setOnClickListener(this);
+		mSaveButton.setOnClickListener(this);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.title_image_back:
+			Utils.finishActivity(MapSelectActivity.this);
+			break;
+		case R.id.layout_map_select_save_button:
+			saveLocation();
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override  
+    protected void onDestroy() {  
+        super.onDestroy();  
+        mBaiduMap.setMyLocationEnabled(false);
+        mMapView.onDestroy(); 
+        mMapView = null;
+        
+        if(mMyLocationBD != null ) mMyLocationBD.recycle();
+    } 
+	
+    @Override  
+    protected void onResume() {  
+        super.onResume();   
+        mMapView.onResume(); 
+    }
+    
+    @Override  
+    public void onPause() {  
+        super.onPause();   
+        mMapView.onPause();  
+    }  
+
+	@Override
+	protected String getPageName() {
+		return TAG;
+	}
+   
+    private void initMyLocationMaker(double latitude,double longitude){
+    	
+    	LatLng myLocationLL = new LatLng(latitude, longitude);
+
+    	mMyLocationBD = BitmapDescriptorFactory.fromResource(R.drawable.icon_location_a);
+		OverlayOptions myLocationOO = new MarkerOptions().position(myLocationLL).icon(mMyLocationBD).zIndex(8).draggable(true);
+		mMyLocationMarker = (Marker) (mBaiduMap.addOverlay(myLocationOO));
+
+		MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(myLocationLL);
+		mBaiduMap.animateMapStatus(u);
+		float zoomScale = 16.00f;
+		u = MapStatusUpdateFactory.zoomTo(zoomScale);
+		mBaiduMap.animateMapStatus(u);
+    }
+    
+    private void saveLocation(){
+    	if(mMyLocationMarker == null || !Utils.isNotEmpty(mAddress)){
+    		Utils.showShortToast(context, "请选择您能服务的位置！");
+    		return;
+    	}
+        
+		Intent intent = new Intent();  
+		intent.putExtra("latitude", mMyLocationMarker.getPosition().latitude);
+		intent.putExtra("longitude", mMyLocationMarker.getPosition().longitude);
+		intent.putExtra("address", mAddress);
+		intent.putExtra("city", mCity);
+		
+		setResult(RESULT_OK, intent);
+		
+    	Utils.finishActivity(MapSelectActivity.this);
+    }
+    
+    private void getAddress(){
+        GeoCoder geoCoder = GeoCoder.newInstance();
+        ReverseGeoCodeOption op = new ReverseGeoCodeOption();
+        op.location(mMyLocationMarker.getPosition());
+        geoCoder.reverseGeoCode(op);
+        geoCoder.setOnGetGeoCodeResultListener(new OnGetGeoCoderResultListener() {
+			@Override
+			public void onGetGeoCodeResult(GeoCodeResult arg0) {
+
+			}
+
+			@Override
+			public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
+				mAddress = arg0.getAddress();
+				mCity = arg0.getAddressDetail().city;
+				Utils.showLongToast(context, mAddress + "\n" + mCity);
+			}
+        });
+    }
+}

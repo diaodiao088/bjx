@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    
+    <LinearLayout
+        android:id="@+id/order_receive_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/layout_radius">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+			<RelativeLayout
+			    android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:layout_alignParentLeft="true" >
+	            <com.bjxapp.worker.controls.XTextView
+	                android:id="@+id/order_receive_textview_service"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:paddingLeft="0dp"
+	                android:text="下水管道维修"
+	                android:textColor="#000000"
+	                android:textSize="15sp" />           
+			</RelativeLayout>
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/order_receive_textview_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_textview_radius"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:layout_alignParentRight="true"
+                android:text="新订单"
+                android:textColor="#ffffff"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+        <View
+			android:background="@color/separator_color"
+			android:layout_width="match_parent"
+			android:layout_height="1.0dip" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp">
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/order_receive_textview_orderdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:drawableLeft="@drawable/order_time"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"                
+                android:text="2015-10-01 上午"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+        </RelativeLayout> 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/order_receive_textview_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:drawableLeft="@drawable/order_address"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:text="北京市海淀区知本时代22-2-222"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/order_receive_textview_contact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:drawableLeft="@drawable/order_contacts"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:text="上官云清 / 13901099999"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp">
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/order_receive_textview_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:drawableLeft="@drawable/order_money"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"                
+                android:text="费用预估：300元"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+        </RelativeLayout>                  
+    </LinearLayout>
+</RelativeLayout>

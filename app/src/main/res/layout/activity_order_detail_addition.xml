@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	android:gravity="center_horizontal"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	
+    <include layout="@layout/layout_title"/>
+    
+	<ScrollView
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:scrollbars="none">
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+
+			<RelativeLayout
+            	android:layout_width="match_parent"
+            	android:background="@drawable/setting_item_selector"
+            	android:layout_marginTop="10dp"
+            	android:layout_height="100dp" >
+
+	            <com.bjxapp.worker.controls.XEditText
+	                android:id="@+id/order_detail_addition_content_edit"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_centerVertical="true"
+	                android:background="@drawable/setting_item_selector"
+	                android:hint="输入增项的内容"
+	                android:inputType="textMultiLine"
+	                android:maxLength="100"
+	                android:paddingLeft="60dp"
+	                android:text=""
+	                android:textColorHint="#DDDDDD"
+	                android:textSize="14sp" />
+	
+	            <com.bjxapp.worker.controls.XTextView
+	                android:background="@drawable/setting_item_selector"
+	                android:layout_width="50dp"
+	                android:layout_height="wrap_content"
+	                android:layout_centerVertical="true"
+	                android:layout_marginLeft="10dp"
+	                android:text="增项："
+	                android:textColor="#353535"
+	                android:textSize="14sp" />
+        	</RelativeLayout>
+
+			<RelativeLayout
+            	android:layout_width="match_parent"
+            	android:background="@drawable/setting_item_selector"
+            	android:layout_marginTop="10dp"
+            	android:layout_height="50dp" >
+
+	            <com.bjxapp.worker.controls.XEditText
+	                android:id="@+id/order_detail_addition_fee_edit"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_centerVertical="true"
+	                android:background="@drawable/setting_item_selector"
+	                android:hint="输入费用"
+	                android:inputType="phone"
+	                android:paddingLeft="60dp"
+	                android:singleLine="true"
+	                android:maxLength="11"
+	                android:textColorHint="#DDDDDD"
+	                android:textSize="14sp" />
+	
+	            <com.bjxapp.worker.controls.XTextView
+	                android:background="@drawable/setting_item_selector"
+	                android:layout_width="50dp"
+	                android:layout_height="wrap_content"
+	                android:layout_centerVertical="true"
+	                android:layout_marginLeft="10dp"
+	                android:text="费用："
+	                android:textColor="#353535"
+	                android:textSize="14sp" />
+        	</RelativeLayout>	
+			
+			<com.bjxapp.worker.controls.XButton
+			    android:id="@+id/order_detail_addition_save"
+			    android:layout_width="fill_parent"
+			    android:layout_height="40dp"
+			    android:layout_marginLeft="50dp"
+			    android:layout_marginRight="50dp"
+			    android:layout_marginTop="20dp"
+			    android:background="@drawable/button_background_green"
+			    android:text="保存"
+			    android:textColor="@color/white"
+			    android:textSize="14sp" />
+
+		</LinearLayout>
+	</ScrollView>
+</LinearLayout>

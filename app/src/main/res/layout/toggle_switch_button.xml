@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/switch_check_toggle_layout"
+    android:layout_width="70dp"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true">
+
+    <View
+        android:id="@+id/switch_check_slot"
+        android:layout_width="70dp"
+        android:layout_height="22dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/toggle_switch_slot_off" />
+
+    <View
+        android:id="@+id/switch_check_button"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
+        android:background="@drawable/toggle_switch_btn_off" />
+
+    <TextView
+        android:id="@+id/switch_status_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:text="不接单"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

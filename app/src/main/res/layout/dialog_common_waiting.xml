@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+    <LinearLayout
+        style="@style/XDialogStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <ProgressBar
+        	android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
+        	android:indeterminateDrawable="@drawable/loading_rotate_image" />
+        <com.bjxapp.worker.controls.XTextView
+            android:id="@+id/dialog_common_waiting_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:lineSpacingExtra="5dp"
+            android:text="正在处理中,请稍候..."
+            android:textColor="#353535"
+            android:textSize="16dp" />
+    </LinearLayout>
+</LinearLayout>
