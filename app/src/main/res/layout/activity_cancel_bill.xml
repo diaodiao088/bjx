@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/layout_title"/>
+
+    <EditText
+        android:id="@+id/cancel_content"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:hint="请输入退单理由..."
+        android:textSize="14sp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="15dp"
+        android:layout_gravity="left"
+        android:layout_width="match_parent"
+        android:gravity="left"
+        android:background="@drawable/cancel_bill_bg"
+        android:lineSpacingExtra="3dp"
+        android:maxLength="200"
+        android:layout_height="200dp" />
+
+    <TextView
+        android:id="@+id/content_limit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cancel_content"
+        android:layout_alignRight="@+id/cancel_content"
+        android:text="0/200"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="#B5B5B5"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <com.bjxapp.worker.controls.XButton
+        android:id="@+id/confirm"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_background_green"
+        android:text="保存"
+        android:textColor="@android:color/white"
+        android:visibility="visible"
+        android:layout_below="@+id/cancel_content"
+        android:textSize="18sp" />
+
+
+</RelativeLayout>

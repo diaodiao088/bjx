@@ -217,6 +217,7 @@
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity"  android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".ui.view.activity.order.CancelBillActivity" android:screenOrientation="portrait"/>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.OrderDetailAdditionActivity"  android:screenOrientation="portrait">
         </activity>
