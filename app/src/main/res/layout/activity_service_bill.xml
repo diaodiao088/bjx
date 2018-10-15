@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <include layout="@layout/layout_title" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="故障原因"
+        android:textColor="#545454"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/mistake_reason_tv"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/cancel_bill_bg"
+        android:gravity="left"
+        android:hint="输入维修故障原因"
+        android:maxLength="200"
+        android:paddingTop="6dp"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="维修方案"
+        android:textColor="#545454"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/mistake_do_tv"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/cancel_bill_bg"
+        android:gravity="left"
+        android:hint="输入维修方案"
+        android:maxLength="200"
+        android:paddingTop="6dp"
+        android:textSize="14sp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="报价明细"
+        android:textColor="#545454"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/mistake_bill_tv"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/cancel_bill_bg"
+        android:gravity="left"
+        android:hint="输入报价明细"
+        android:maxLength="200"
+        android:paddingTop="6dp"
+        android:textSize="14sp" />
+
+    <com.bjxapp.worker.controls.XButton
+        android:id="@+id/confirm"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/cancel_content"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_background_green"
+        android:text="保存"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:visibility="visible" />
+
+</LinearLayout>

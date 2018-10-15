@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="80dp"
+    android:layout_height="80dp">
+
+    <com.bjxapp.worker.ui.widget.RoundImageView
+        android:id="@+id/screenShotImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#564"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/deleteImageView"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_alignRight="@id/screenShotImageView"
+        android:layout_alignTop="@id/screenShotImageView"
+        android:background="@drawable/ic_icfun_icon_delete_black"
+        android:clickable="true"
+        android:gravity="center" />
+
+</RelativeLayout>
