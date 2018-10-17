@@ -29,23 +29,40 @@ import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.R;
 
+import butterknife.ButterKnife;
 import cn.qqtheme.framework.picker.DoublePicker;
 
 public class OrderDetailActivity extends BaseActivity implements OnClickListener {
-    protected static final String TAG = "订单详情界面";
-    private XTextView mTitleTextView;
+
+    protected static final String TAG = OrderDetailActivity.class.getSimpleName();
+
+    private int mOrderCode;
+
     private XImageView mBackImageView;
+
+    /* 通用状态 btn */
+    private XTextView mStatusTv;
+
+    /* 新订单 */
+    private XTextView mBillNumTv;  // 订单号
+    private XTextView mServiceNameTv; // 维修项目
+    private XTextView mDateTv;
+    private XTextView mAdressTv;
+    private XTextView mPriceTv;
+    private XTextView mRemarkTv;
+    private XTextView mPhoneTv;
+
+    /* 待预约 */
+
+
 
     private XTextView mOrderStatus, mOrderDate, mAddress, mContacts, mServiceName, mTotalMoney, mRemark;
     private XButton mAdditionEditButton;
     private XButton mWaitOkBtn, mWaitCancelBtn;
     ArrayList<String> mIDImageUrls;
-    private XTextView mAdditionContent, mAdditionMoney;
-    private XTextView mIncomeBaseFee, mIncomeFastFee, mIncomeAdditionFee, mIncomeDiscountFee, mIncomeTotalFee;
+    private XTextView mAdditionContent;
     private XButton mSaveButton;
     private XTextView mHourLastTv;
-
-    private int mOrderCode;
 
     LinearLayout mAdditionLinear, mIncomeLinear, mOrderImagesLinear;
     RelativeLayout mOrderFastLayout;
@@ -60,15 +77,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_order_detail);
+        ButterKnife.bind(this);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void initControl() {
-        mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
-        mTitleTextView.setText("订单详情");
-        mBackImageView = (XImageView) findViewById(R.id.title_image_back);
-        mBackImageView.setVisibility(View.VISIBLE);
+
+        initTitle();
 
         mOrderStatus = (XTextView) findViewById(R.id.order_receive_textview_status);
         mOrderDate = (XTextView) findViewById(R.id.order_receive_textview_orderdate);
@@ -84,18 +100,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mAdditionEditButton = (XButton) findViewById(R.id.order_receive_detail_addition_edit);
 
         mAdditionContent = (XTextView) findViewById(R.id.order_receive_detail_addition_content);
-        mAdditionMoney = (XTextView) findViewById(R.id.order_receive_detail_addition_money);
-
-        mIncomeBaseFee = (XTextView) findViewById(R.id.order_receive_detail_income_base_fee);
-        mIncomeFastFee = (XTextView) findViewById(R.id.order_receive_detail_income_fast_fee);
-        mIncomeAdditionFee = (XTextView) findViewById(R.id.order_receive_detail_income_addition_fee);
-        mIncomeDiscountFee = (XTextView) findViewById(R.id.order_receive_detail_income_discount_fee);
-        mIncomeTotalFee = (XTextView) findViewById(R.id.order_receive_detail_income_total_fee);
-
         mAdditionLinear = (LinearLayout) findViewById(R.id.order_receive_detail_addition);
-        mIncomeLinear = (LinearLayout) findViewById(R.id.order_receive_detail_income);
         mOrderImagesLinear = (LinearLayout) findViewById(R.id.order_receive_detail_images);
-        mOrderFastLayout = (RelativeLayout) findViewById(R.id.order_receive_detail_income_fast_layout);
         mOrderWaitLy = findViewById(R.id.order_receiver_ly);
         mHourLastTv = findViewById(R.id.last_hour);
         mCancelBillTv = findViewById(R.id.cancel_bill);
@@ -120,6 +126,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         mWaitingDialog = new XWaitingDialog(context);
     }
+
+    private void initTitle(){
+        XTextView mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+        mTitleTextView.setText("订单详情");
+        mBackImageView = (XImageView) findViewById(R.id.title_image_back);
+        mBackImageView.setVisibility(View.VISIBLE);
+    }
+
 
     @Override
     protected void initView() {
@@ -225,6 +239,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 changeStatus(result);
             }
         };
+
         mLoadDataTask.execute(orderID);
     }
 
@@ -255,13 +270,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         } else {
             mAdditionContent.setText("无");
         }
-        mAdditionMoney.setText(result.getAddMoney());
-
-        mIncomeBaseFee.setText(result.getHomeMoney());
-        mIncomeFastFee.setText(result.getFastMoney());
-        mIncomeAdditionFee.setText(result.getAddMoney());
-        mIncomeDiscountFee.setText(result.getDiscountMoney());
-        mIncomeTotalFee.setText(result.getTotalMoney());
 
         String statusString = "";
         String feeInfo = "";
@@ -509,7 +517,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         Intent intent = new Intent();
         intent.setClass(context, OrderPaySuccessActivity.class);
         intent.putExtra("order_id", String.valueOf(mOrderCode));
-        intent.putExtra("money", mIncomeTotalFee.getText());
         context.startActivity(intent);
         context.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
@@ -519,7 +526,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         intent.setClass(context, OrderDetailAdditionActivity.class);
         intent.putExtra("order_id", String.valueOf(mOrderCode));
         intent.putExtra("add_item", mAdditionContent.getText());
-        intent.putExtra("add_money", mAdditionMoney.getText());
         context.startActivityForResult(intent, Constant.ACTIVITY_ORDER_ADDITION_RESULT_CODE);
         context.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }

@@ -52,7 +52,7 @@
                     </RelativeLayout>
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_textview_status"
+                        android:id="@+id/order_status_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
