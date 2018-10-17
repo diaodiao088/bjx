@@ -150,7 +150,13 @@
             android:launchMode="singleTask">
         </activity>
 
-        <activity android:name=".ui.view.activity.order.AddImageActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".ui.view.activity.order.AddImageActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.view.activity.order.OrderPriceActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

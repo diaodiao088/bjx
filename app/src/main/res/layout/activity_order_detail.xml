@@ -48,7 +48,7 @@
                             android:paddingLeft="0dp"
                             android:text="BJX201607120001"
                             android:textColor="#545454"
-                            android:textSize="15sp" />
+                            android:textSize="14sp" />
                     </RelativeLayout>
 
                     <com.bjxapp.worker.controls.XTextView
@@ -57,11 +57,13 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@drawable/layout_textview_radius"
-                        android:paddingLeft="2dp"
-                        android:paddingRight="2dp"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:paddingTop="2dp"
                         android:text="新订单"
                         android:textColor="#ffffff"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/last_hour"
@@ -93,7 +95,7 @@
                         android:gravity="center_vertical"
                         android:text="2015-10-01 上午"
                         android:textColor="#545454"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -114,7 +116,7 @@
                         android:gravity="center_vertical"
                         android:text="北京市海淀区知本时代22-2-222"
                         android:textColor="#2e8b57"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -135,7 +137,7 @@
                         android:gravity="center_vertical"
                         android:text="费用：300元"
                         android:textColor="#545454"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -156,7 +158,7 @@
                         android:gravity="center_vertical"
                         android:text="无特殊说明"
                         android:textColor="#545454"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -178,7 +180,7 @@
                         android:gravity="center_vertical"
                         android:text="上官云清 / 13901099999"
                         android:textColor="#2e8b57"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -190,7 +192,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="vertical">
 
@@ -198,9 +200,8 @@
                     android:id="@+id/order_receive_detail_images_text"
                     style="@style/SettingTextTitle"
                     android:layout_width="fill_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-
                     android:drawablePadding="10dp"
                     android:drawableRight="@drawable/right"
                     android:gravity="center_vertical"
@@ -208,7 +209,7 @@
                     android:paddingRight="5dp"
                     android:text="查看客户拍摄的故障图片"
                     android:textColor="#545454"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -226,43 +227,56 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true">
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true">
+
+                        <com.bjxapp.worker.controls.XTextView
+                            android:id="@+id/modify_divider"
+                            android:layout_width="1dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:background="@drawable/layout_textview_radius"
+                            android:paddingLeft="2dp"
+                            android:paddingRight="2dp"
+                            android:text=""
+                            android:textColor="#ffffff"
+                            android:textSize="14sp" />
 
                         <com.bjxapp.worker.controls.XTextView
                             android:id="@+id/order_receive_detail_addition_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="0dp"
-                            android:text="增项单"
+                            android:layout_toRightOf="@+id/modify_divider"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="3dp"
+                            android:text="维修项"
                             android:textColor="#545454"
-                            android:textSize="15sp" />
+                            android:textSize="14sp" />
+
                     </RelativeLayout>
 
                     <com.bjxapp.worker.controls.XButton
                         android:id="@+id/order_receive_detail_addition_edit"
-                        android:layout_width="50dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@drawable/layout_textview_radius"
-                        android:paddingLeft="2dp"
-                        android:paddingRight="2dp"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="2dp"
                         android:text="编辑"
                         android:textColor="#ffffff"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
                 </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1.0dip"
-                    android:background="@color/separator_color" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -270,7 +284,7 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="20dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_receive_detail_addition_content_text"
@@ -278,9 +292,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:gravity="center_vertical"
-                        android:text="增项内容："
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
+                        android:text="故障原因："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_receive_detail_addition_content"
@@ -290,8 +304,8 @@
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
                         android:text="马桶维修、冰箱维修、换灯泡"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -300,34 +314,96 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="10dp">
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_addition_money_text"
+                        android:id="@+id/strategy_tv"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:gravity="center_vertical"
-                        android:text="增项金额："
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
+                        android:text="维修方案："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_addition_money"
+                        android:id="@+id/strategy_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_toRightOf="@+id/order_receive_detail_addition_money_text"
+                        android:layout_toRightOf="@+id/strategy_tv"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="电灯泡维修"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/price_tv"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="总报价："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/price_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/price_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="500.00"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
+                        android:text="100.00"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
                 </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/add_image"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="添加照片："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/add_image_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/add_image"
+                        android:drawablePadding="8dp"
+                        android:drawableRight="@drawable/right"
+                        android:gravity="center_vertical"
+                        android:text="请添加维修前，维修中，维修后的照片"
+                        android:textColor="#999999"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/order_receive_detail_income"
+                android:id="@+id/order_bill_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -340,43 +416,86 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true">
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true">
 
                         <com.bjxapp.worker.controls.XTextView
-                            android:id="@+id/order_receive_detail_income_text"
+                            android:id="@+id/order_divider"
+                            android:layout_width="1dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:background="@drawable/layout_textview_radius"
+                            android:paddingLeft="2dp"
+                            android:paddingRight="2dp"
+                            android:text=""
+                            android:textColor="#ffffff"
+                            android:textSize="14sp" />
+
+                        <com.bjxapp.worker.controls.XTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="0dp"
-                            android:text="本单收入计算"
-                            android:textColor="#000000"
-                            android:textSize="15sp" />
+                            android:layout_toRightOf="@+id/order_divider"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="3dp"
+                            android:text="预付项"
+                            android:textColor="#545454"
+                            android:textSize="14sp" />
+
                     </RelativeLayout>
 
-                    <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_edit"
+                    <com.bjxapp.worker.controls.XButton
+                        android:id="@+id/order_bill_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@drawable/layout_textview_radius"
-                        android:paddingLeft="2dp"
-                        android:paddingRight="2dp"
-                        android:text=""
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="2dp"
+                        android:text="编辑"
                         android:textColor="#ffffff"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
-                <View
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1.0dip"
-                    android:background="@color/separator_color" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_bill_tv"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="预付内容："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/order_bill_content_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/order_bill_tv"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="马桶维修、冰箱维修、换灯泡"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -387,64 +506,78 @@
                     android:layout_marginTop="10dp">
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_base_text"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/order_bill_cash_tv"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:gravity="center_vertical"
-                        android:text="基础费用"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
+                        android:text="预付金额："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_base_fee"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/order_bill_cash_content_tv"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:gravity="center_vertical"
-                        android:text="100"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/order_receive_detail_income_fast_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
-
-                    <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_fast_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:gravity="center_vertical"
-                        android:text="快速费用"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
-
-                    <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_fast_fee_sign"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/order_receive_detail_income_fast_fee"
-                        android:gravity="center_vertical"
-                        android:text="+"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
-
-                    <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_fast_fee"
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/order_bill_cash_tv"
+                        android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="1000.00"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
+                        android:text="100.00"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/final_money_ly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/layout_radius"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true">
+
+                        <com.bjxapp.worker.controls.XTextView
+                            android:id="@+id/money_divider"
+                            android:layout_width="1dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:background="@drawable/layout_textview_radius"
+                            android:paddingLeft="2dp"
+                            android:paddingRight="2dp"
+                            android:text=""
+                            android:textColor="#ffffff"
+                            android:textSize="14sp" />
+
+                        <com.bjxapp.worker.controls.XTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/money_divider"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="3dp"
+                            android:text="本单收入总计"
+                            android:textColor="#545454"
+                            android:textSize="14sp" />
+
+                    </RelativeLayout>
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -453,37 +586,28 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="10dp">
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_addition_text"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/enter_room_tv"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:gravity="center_vertical"
-                        android:text="增项费用"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
+                        android:text="上门费用："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_addition_fee_sign"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/enter_room_content_tv"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/order_receive_detail_income_addition_fee"
-                        android:gravity="center_vertical"
-                        android:text="+"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
-
-                    <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_addition_fee"
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/enter_room_tv"
+                        android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="1450.00"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
+                        android:text="100.00"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -492,44 +616,29 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="10dp">
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_discount_text"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/entire_price_tv"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:gravity="center_vertical"
-                        android:text="折扣费用"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
+                        android:text="总报价："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_discount_fee_sign"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/entire_price_content_tv"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/order_receive_detail_income_discount_fee"
-                        android:gravity="center_vertical"
-                        android:text="−"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
-
-                    <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_discount_fee"
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/entire_price_tv"
+                        android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="20.00"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
-
+                        android:text="100.00"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
                 </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1.0dip"
-                    android:background="@color/separator_color" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -540,25 +649,87 @@
                     android:layout_marginTop="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_total_text"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/total_tv"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:gravity="center_vertical"
-                        android:text="总计"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
+                        android:text="总计："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_income_total_fee"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/total_content_tv"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:gravity="center_vertical"
-                        android:text="1080"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
+                        android:layout_toRightOf="@+id/total_tv"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical|right"
+                        android:text="100.00"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
                 </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/price_ready_tv"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="预付金额："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/price_ready_content_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/price_ready_tv"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical|right"
+                        android:text="100.00"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/fukuan_tv"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical"
+                        android:text="付款金额："
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/fukuan_content_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/fukuan_tv"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical|right"
+                        android:text="100.00"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
             </LinearLayout>
 
             <RelativeLayout
@@ -576,46 +747,45 @@
                     android:background="@drawable/button_background_green"
                     android:text="保存"
                     android:textColor="@android:color/white"
-                    android:visibility="visible"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="visible" />
 
                 <TextView
                     android:id="@+id/cancel_bill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/order_receive_detail_save"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="20dp"
                     android:text="退单"
                     android:textColor="#A9A9A9"
-                    android:textSize="16sp"
-                    android:layout_centerHorizontal="true"
-                    />
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:id="@+id/order_receiver_ly"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:visibility="gone"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <com.bjxapp.worker.controls.XButton
                         android:id="@+id/wait_contact_ok_btn"
                         android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/button_background_green"
                         android:text="确定"
-                        android:textColor="@android:color/white"
-                        android:layout_height="match_parent" />
+                        android:textColor="@android:color/white" />
 
                     <com.bjxapp.worker.controls.XButton
                         android:id="@+id/wait_contact_change_btn"
                         android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
                         android:layout_weight="1"
                         android:background="@drawable/button_background_green"
                         android:text="改约"
-                        android:layout_marginLeft="30dp"
-                        android:textColor="@android:color/white"
-                        android:layout_height="match_parent" />
+                        android:textColor="@android:color/white" />
 
                 </LinearLayout>
             </RelativeLayout>

@@ -38,7 +38,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private XTextView mOrderStatus, mOrderDate, mAddress, mContacts, mServiceName, mTotalMoney, mRemark;
     private XButton mAdditionEditButton;
-    private XButton mWaitOkBtn , mWaitCancelBtn;
+    private XButton mWaitOkBtn, mWaitCancelBtn;
     ArrayList<String> mIDImageUrls;
     private XTextView mAdditionContent, mAdditionMoney;
     private XTextView mIncomeBaseFee, mIncomeFastFee, mIncomeAdditionFee, mIncomeDiscountFee, mIncomeTotalFee;
@@ -181,11 +181,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
     }
 
-    private void cancelBill(){
+    private void cancelBill() {
         CancelBillActivity.goToActivity(this);
     }
 
-    private void toDetailStatus(){
+    private void toDetailStatus() {
         mOrderStatus.setText("已联系");
         mSaveButton.setText("完成");
         mSaveButton.setEnabled(true);
@@ -198,38 +198,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     }
 
     private AsyncTask<String, Void, OrderDetail> mLoadDataTask;
-
-    private void changeDate() {
-        final ArrayList<String> firstData = new ArrayList<>();
-        firstData.add(DateUtils.addDay(0));
-        firstData.add(DateUtils.addDay(1));
-        firstData.add(DateUtils.addDay(2));
-        firstData.add(DateUtils.addDay(3));
-        firstData.add(DateUtils.addDay(4));
-        firstData.add(DateUtils.addDay(5));
-        firstData.add(DateUtils.addDay(6));
-        firstData.add(DateUtils.addDay(7));
-        firstData.add(DateUtils.addDay(8));
-        firstData.add(DateUtils.addDay(9));
-
-        final ArrayList<String> secondData = new ArrayList<>();
-        secondData.add("8:00--11:00");
-        secondData.add("11:00--14:00");
-        secondData.add("14:00--17:00");
-        secondData.add("17:00--20:00");
-        final DoublePicker picker = new DoublePicker(this, firstData, secondData);
-        picker.setDividerVisible(true);
-        picker.setSelectedIndex(0, 0);
-        picker.setTextSize(12);
-        picker.setContentPadding(15, 10);
-        picker.setOnPickListener(new DoublePicker.OnPickListener() {
-            @Override
-            public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
-                // showToast(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
-            }
-        });
-        picker.show();
-    }
 
     private void loadData(final Boolean loading) {
         String orderID = getIntent().getStringExtra("order_id");
@@ -432,7 +400,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                    /* Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
                     Utils.finishWithoutAnim(OrderDetailActivity.this);*/
-                   changeStatusToWaitTime();
+                    changeStatusToWaitTime();
                 } else {
                     Utils.showShortToast(context, "接单失败，请重试！");
                 }
@@ -442,16 +410,16 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     }
 
 
-    private void changeStatusToWaitTime(){
+    private void changeStatusToWaitTime() {
         mHourLastTv.setVisibility(View.VISIBLE);
 
-        if (mSaveButton != null){
+        if (mSaveButton != null) {
             mSaveButton.setVisibility(View.GONE);
         }
 
         mOrderWaitLy.setVisibility(View.VISIBLE);
 
-        mCountDownTimer = new CountDownTimer(5000 , 1) {
+        mCountDownTimer = new CountDownTimer(5000, 1) {
             @Override
             public void onTick(long millisUntilFinished) {
                 mHourLastTv.setText(String.valueOf(millisUntilFinished));
@@ -593,6 +561,39 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         startActivity(intent);
     }
 
+    private void changeDate() {
+        final ArrayList<String> firstData = new ArrayList<>();
+        firstData.add(DateUtils.addDay(0));
+        firstData.add(DateUtils.addDay(1));
+        firstData.add(DateUtils.addDay(2));
+        firstData.add(DateUtils.addDay(3));
+        firstData.add(DateUtils.addDay(4));
+        firstData.add(DateUtils.addDay(5));
+        firstData.add(DateUtils.addDay(6));
+        firstData.add(DateUtils.addDay(7));
+        firstData.add(DateUtils.addDay(8));
+        firstData.add(DateUtils.addDay(9));
+
+        final ArrayList<String> secondData = new ArrayList<>();
+        secondData.add("8:00--11:00");
+        secondData.add("11:00--14:00");
+        secondData.add("14:00--17:00");
+        secondData.add("17:00--20:00");
+        final DoublePicker picker = new DoublePicker(this, firstData, secondData);
+        picker.setDividerVisible(true);
+        picker.setSelectedIndex(0, 0);
+        picker.setTextSize(12);
+        picker.setContentPadding(15, 10);
+        picker.setOnPickListener(new DoublePicker.OnPickListener() {
+            @Override
+            public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
+                // showToast(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
+            }
+        });
+        picker.show();
+    }
+
+
     @Override
     protected String getPageName() {
         return TAG;
@@ -607,7 +608,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         } catch (Exception e) {
         }
 
-        if (mCountDownTimer != null){
+        if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
 
