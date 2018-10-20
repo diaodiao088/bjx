@@ -2,6 +2,7 @@ package com.bjxapp.worker.ui.view.activity.order;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -293,6 +295,19 @@ public class AddImageActivity extends Activity {
         void deleteImage(int position);
 
     }
+
+
+    public static void goToActivity(Context ctx){
+
+        if (ctx == null){
+            ctx = App.getInstance();
+        }
+
+        Intent intent = new Intent();
+        intent.setClass(ctx , AddImageActivity.class);
+        ctx.startActivity(intent);
+    }
+
 
 
 }

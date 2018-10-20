@@ -1,9 +1,6 @@
 package com.bjxapp.worker.ui.view.activity.order;
 
-import java.util.ArrayList;
-
 import android.content.Intent;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,8 +9,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
+import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XImageView;
@@ -27,9 +24,12 @@ import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
 
+import java.util.ArrayList;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.qqtheme.framework.picker.DoublePicker;
 
 public class OrderDetailActivity extends BaseActivity implements OnClickListener {
@@ -38,25 +38,83 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private int mOrderCode;
 
+    private int mCurrentStatus;
+
+    @BindView(R.id.title_image_back)
     private XImageView mBackImageView;
 
     /* 通用状态 btn */
+    @BindView(R.id.order_status_tv)
     private XTextView mStatusTv;
 
     /* 新订单 */
+    @BindView(R.id.order_receive_textview_service)
     private XTextView mBillNumTv;  // 订单号
+    @BindView(R.id.bill_name)
     private XTextView mServiceNameTv; // 维修项目
-    private XTextView mDateTv;
+    @BindView(R.id.order_receive_textview_orderdate)
+    private XTextView mDateTv; // 日期
+    @BindView(R.id.order_receive_textview_address)
     private XTextView mAdressTv;
+    @BindView(R.id.order_receive_textview_money)
     private XTextView mPriceTv;
+    @BindView(R.id.order_receive_textview_remark)
     private XTextView mRemarkTv;
+    @BindView(R.id.order_receive_textview_contact)
     private XTextView mPhoneTv;
+    @BindView(R.id.cancel_bill)
+    private XTextView mCancelBillTv;
 
     /* 待预约 */
+    @BindView(R.id.last_hour)
+    private XTextView mLastHourTv;
+    @BindView(R.id.wait_contact_change_btn)
+    private XButton mChangeDateBtn;
+    @BindView(R.id.wait_contact_ok_btn)
+    private XButton mChangeDateOk;
 
+    /* 订单详情 */
+    @BindView(R.id.modify_strategy_ly)
+    private LinearLayout modifyLy;
+    @BindView(R.id.issue_reason_tv)
+    private XTextView mIssueReasonTv;
+    @BindView(R.id.strategy_content_tv)
+    private XTextView mStrategyContentTv; // 维修措施
+    @BindView(R.id.price_content)
+    private XTextView mIssuePriceTv; // 维修报价
+    @BindView(R.id.issue_edit_btn)
+    private XButton mIssueEditBtn;  // 维修编辑
+    @BindView(R.id.add_image_content)
+    private XTextView mIssueImgTv;  // 添加维修照片
 
+    /* 预付项 */
+    @BindView(R.id.order_bill_btn)
+    private XButton preBillBtn;
+    @BindView(R.id.pre_bill_tv)
+    private XTextView preBillContentTv;
+    @BindView(R.id.order_bill_cash_content_tv)
+    private XTextView preBillCashTv;
+    @BindView(R.id.order_bill_ly)
+    private LinearLayout mPreBillLy;
 
-    private XTextView mOrderStatus, mOrderDate, mAddress, mContacts, mServiceName, mTotalMoney, mRemark;
+    /* 订单总和 */
+    @BindView(R.id.enter_room_content_tv)
+    private XTextView mEnterRoomPrice;
+    @BindView(R.id.entire_price_content_tv)
+    private XTextView mTotalPriceTv;
+    @BindView(R.id.total_content_tv)
+    private XTextView mTotalTv;
+    @BindView(R.id.price_ready_content_tv)
+    private XTextView mPrePayPriceTv;
+    @BindView(R.id.fukuan_content_tv)
+    private XTextView mFuKuanContentTv;
+
+    /* 查看故障照片 */
+    @BindView(R.id.order_receive_detail_images_text)
+    private XTextView mLookImageTv;
+    @BindView(R.id.order_receive_detail_images)
+    private LinearLayout mLookImageLy;
+
     private XButton mAdditionEditButton;
     private XButton mWaitOkBtn, mWaitCancelBtn;
     ArrayList<String> mIDImageUrls;
@@ -64,7 +122,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     private XButton mSaveButton;
     private XTextView mHourLastTv;
 
-    LinearLayout mAdditionLinear, mIncomeLinear, mOrderImagesLinear;
+    LinearLayout mIncomeLinear, mOrderImagesLinear;
     RelativeLayout mOrderFastLayout;
 
     LinearLayout mOrderWaitLy;
@@ -72,7 +130,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     private CountDownTimer mCountDownTimer;
 
     private XWaitingDialog mWaitingDialog;
-    private TextView mCancelBillTv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,35 +138,104 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         super.onCreate(savedInstanceState);
     }
 
+    @OnClick(R.id.order_receive_detail_images_text)
+    void clickLookImage() {
+        showUserImages();
+    }
+
+    @OnClick(R.id.order_receive_textview_address)
+    void clickAddress() {
+
+    }
+
+    @OnClick(R.id.order_receive_textview_contact)
+    void clickPhone() {
+        callService();
+    }
+
+    /**
+     * 取消订单
+     */
+    @OnClick(R.id.cancel_bill)
+    void cancelBill() {
+        CancelBillActivity.goToActivity(this);
+    }
+
+    /**
+     * 预约点击确定
+     */
+    @OnClick(R.id.wait_contact_ok_btn)
+    void changeContactOk() {
+
+    }
+
+    /**
+     * 点击维修编辑
+     */
+    @OnClick(R.id.issue_edit_btn)
+    void editIssueDetail() {
+        ServiceBillActivity.goToActivity(this);
+    }
+
+    @OnClick(R.id.add_image_content)
+    void addIssueImage() {
+        AddImageActivity.goToActivity(this);
+    }
+
+    @OnClick(R.id.order_bill_btn)
+    void editPreBill() {
+        OrderPriceActivity.goToActivity(this);
+    }
+
+
+    @OnClick(R.id.wait_contact_change_btn)
+    void changeDate() {
+        final ArrayList<String> firstData = new ArrayList<>();
+        firstData.add(DateUtils.addDay(0));
+        firstData.add(DateUtils.addDay(1));
+        firstData.add(DateUtils.addDay(2));
+        firstData.add(DateUtils.addDay(3));
+        firstData.add(DateUtils.addDay(4));
+        firstData.add(DateUtils.addDay(5));
+        firstData.add(DateUtils.addDay(6));
+        firstData.add(DateUtils.addDay(7));
+        firstData.add(DateUtils.addDay(8));
+        firstData.add(DateUtils.addDay(9));
+
+        final ArrayList<String> secondData = new ArrayList<>();
+        secondData.add("8:00--11:00");
+        secondData.add("11:00--14:00");
+        secondData.add("14:00--17:00");
+        secondData.add("17:00--20:00");
+        final DoublePicker picker = new DoublePicker(this, firstData, secondData);
+        picker.setDividerVisible(true);
+        picker.setSelectedIndex(0, 0);
+        picker.setTextSize(12);
+        picker.setContentPadding(15, 10);
+        picker.setOnPickListener(new DoublePicker.OnPickListener() {
+            @Override
+            public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
+                // showToast(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
+            }
+        });
+        picker.show();
+    }
+
+
     @Override
     protected void initControl() {
 
         initTitle();
 
-        mOrderStatus = (XTextView) findViewById(R.id.order_receive_textview_status);
-        mOrderDate = (XTextView) findViewById(R.id.order_receive_textview_orderdate);
-        mAddress = (XTextView) findViewById(R.id.order_receive_textview_address);
-        mContacts = (XTextView) findViewById(R.id.order_receive_textview_contact);
-        mContacts.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        mContacts.getPaint().setAntiAlias(true);
-        // 代表服务名称
-        mServiceName = (XTextView) findViewById(R.id.order_receive_textview_service);
-        mTotalMoney = (XTextView) findViewById(R.id.order_receive_textview_money);
-        mRemark = (XTextView) findViewById(R.id.order_receive_textview_remark);
+        mAdditionEditButton = (XButton) findViewById(R.id.issue_edit_btn);
 
-        mAdditionEditButton = (XButton) findViewById(R.id.order_receive_detail_addition_edit);
-
-        mAdditionContent = (XTextView) findViewById(R.id.order_receive_detail_addition_content);
-        mAdditionLinear = (LinearLayout) findViewById(R.id.order_receive_detail_addition);
+        mAdditionContent = (XTextView) findViewById(R.id.issue_reason_tv);
         mOrderImagesLinear = (LinearLayout) findViewById(R.id.order_receive_detail_images);
         mOrderWaitLy = findViewById(R.id.order_receiver_ly);
         mHourLastTv = findViewById(R.id.last_hour);
-        mCancelBillTv = findViewById(R.id.cancel_bill);
-        mCancelBillTv.setOnClickListener(this);
 
-        mAdditionLinear.setVisibility(View.GONE);
         mIncomeLinear.setVisibility(View.GONE);
-        mOrderImagesLinear.setVisibility(View.GONE);
+        mLookImageLy.setVisibility(View.GONE);
         mOrderFastLayout.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.GONE);
         mHourLastTv.setVisibility(View.GONE);
@@ -118,19 +244,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mSaveButton.setEnabled(false);
         mAdditionEditButton.setEnabled(false);
 
-        mWaitOkBtn = findViewById(R.id.wait_contact_ok_btn);
-        mWaitCancelBtn = findViewById(R.id.wait_contact_change_btn);
-
-        mWaitCancelBtn.setOnClickListener(this);
-        mWaitOkBtn.setOnClickListener(this);
-
         mWaitingDialog = new XWaitingDialog(context);
     }
 
-    private void initTitle(){
+    private void initTitle() {
         XTextView mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
         mTitleTextView.setText("订单详情");
-        mBackImageView = (XImageView) findViewById(R.id.title_image_back);
         mBackImageView.setVisibility(View.VISIBLE);
     }
 
@@ -148,7 +267,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @Override
     protected void setListener() {
         mBackImageView.setOnClickListener(this);
-        mContacts.setOnClickListener(this);
         mAdditionEditButton.setOnClickListener(this);
         mSaveButton.setOnClickListener(this);
         findViewById(R.id.order_receive_detail_images).setOnClickListener(this);
@@ -172,11 +290,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case R.id.order_receive_textview_contact:
                 callService();
                 break;
-            case R.id.order_receive_detail_addition_edit:
+            case R.id.issue_edit_btn:
                 startAdditionActivity();
-                break;
-            case R.id.order_receive_detail_images:
-                showUserImages();
                 break;
             case R.id.order_receive_detail_save:
                 SaveOperation();
@@ -184,26 +299,16 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case R.id.wait_contact_ok_btn:
                 toDetailStatus();
                 break;
-            case R.id.wait_contact_change_btn:
-                changeDate();
-                break;
-            case R.id.cancel_bill:
-                cancelBill();
-                break;
             default:
                 break;
         }
     }
 
-    private void cancelBill() {
-        CancelBillActivity.goToActivity(this);
-    }
 
     private void toDetailStatus() {
         mOrderStatus.setText("已联系");
         mSaveButton.setText("完成");
         mSaveButton.setEnabled(true);
-        mAdditionLinear.setVisibility(View.VISIBLE);
         mIncomeLinear.setVisibility(View.VISIBLE);
         mAdditionEditButton.setEnabled(true);
         mHourLastTv.setVisibility(View.GONE);
@@ -566,39 +671,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         intent.setClass(context, PublicImagesActivity.class);
         startActivity(intent);
     }
-
-    private void changeDate() {
-        final ArrayList<String> firstData = new ArrayList<>();
-        firstData.add(DateUtils.addDay(0));
-        firstData.add(DateUtils.addDay(1));
-        firstData.add(DateUtils.addDay(2));
-        firstData.add(DateUtils.addDay(3));
-        firstData.add(DateUtils.addDay(4));
-        firstData.add(DateUtils.addDay(5));
-        firstData.add(DateUtils.addDay(6));
-        firstData.add(DateUtils.addDay(7));
-        firstData.add(DateUtils.addDay(8));
-        firstData.add(DateUtils.addDay(9));
-
-        final ArrayList<String> secondData = new ArrayList<>();
-        secondData.add("8:00--11:00");
-        secondData.add("11:00--14:00");
-        secondData.add("14:00--17:00");
-        secondData.add("17:00--20:00");
-        final DoublePicker picker = new DoublePicker(this, firstData, secondData);
-        picker.setDividerVisible(true);
-        picker.setSelectedIndex(0, 0);
-        picker.setTextSize(12);
-        picker.setContentPadding(15, 10);
-        picker.setOnPickListener(new DoublePicker.OnPickListener() {
-            @Override
-            public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
-                // showToast(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
-            }
-        });
-        picker.show();
-    }
-
 
     @Override
     protected String getPageName() {

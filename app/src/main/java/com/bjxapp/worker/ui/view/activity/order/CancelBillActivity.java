@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
@@ -70,14 +71,10 @@ public class CancelBillActivity extends Activity implements View.OnClickListener
     }
 
     public static void goToActivity(Context context) {
-
         Intent intent = new Intent();
-
         intent.setClass(context, CancelBillActivity.class);
-
         context.startActivity(intent);
     }
-
 
     @Override
     public void onClick(View v) {
@@ -101,4 +98,6 @@ public class CancelBillActivity extends Activity implements View.OnClickListener
                 break;
         }
     }
+
+
 }

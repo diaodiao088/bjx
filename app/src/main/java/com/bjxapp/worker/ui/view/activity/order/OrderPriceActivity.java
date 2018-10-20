@@ -2,6 +2,7 @@ package com.bjxapp.worker.ui.view.activity.order;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -169,5 +171,17 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
     private void getQrCode(){
 
     }
+
+    public static void goToActivity(Context ctx){
+
+        if (ctx == null){
+            ctx = App.getInstance();
+        }
+
+        Intent intent = new Intent();
+        intent.setClass(ctx , OrderPriceActivity.class);
+        ctx.startActivity(intent);
+    }
+
 
 }

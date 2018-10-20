@@ -70,12 +70,34 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="20dp"
-                        android:layout_toLeftOf="@+id/order_receive_textview_status"
+                        android:layout_toLeftOf="@+id/order_status_tv"
                         android:text="30:00"
                         android:textColor="#FD3838"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <com.bjxapp.worker.controls.XTextView
+                        android:id="@+id/bill_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:drawableLeft="@drawable/order_time"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="冰箱维修"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -214,7 +236,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/order_receive_detail_addition"
+                android:id="@+id/modify_strategy_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -264,7 +286,7 @@
                     </RelativeLayout>
 
                     <com.bjxapp.worker.controls.XButton
-                        android:id="@+id/order_receive_detail_addition_edit"
+                        android:id="@+id/issue_edit_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -297,7 +319,7 @@
                         android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_receive_detail_addition_content"
+                        android:id="@+id/issue_reason_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/order_receive_detail_addition_content_text"
@@ -327,7 +349,7 @@
                         android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/strategy_content"
+                        android:id="@+id/strategy_content_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/strategy_tv"
@@ -485,7 +507,7 @@
                         android:textSize="14sp" />
 
                     <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/order_bill_content_tv"
+                        android:id="@+id/pre_bill_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/order_bill_tv"
@@ -769,22 +791,22 @@
                     android:visibility="gone">
 
                     <com.bjxapp.worker.controls.XButton
+                        android:id="@+id/wait_contact_change_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF"
+                        android:text="改约"
+                        android:textColor="#999999" />
+
+                    <com.bjxapp.worker.controls.XButton
                         android:id="@+id/wait_contact_ok_btn"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/button_background_green"
                         android:text="确定"
-                        android:textColor="@android:color/white" />
-
-                    <com.bjxapp.worker.controls.XButton
-                        android:id="@+id/wait_contact_change_btn"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="30dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/button_background_green"
-                        android:text="改约"
                         android:textColor="@android:color/white" />
 
                 </LinearLayout>

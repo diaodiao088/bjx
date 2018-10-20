@@ -1,15 +1,20 @@
 package com.bjxapp.worker.ui.view.activity.order;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.EditText;
 
+import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
+
+import java.net.ContentHandler;
 
 /**
  * Created by zhangdan on 2018/10/14.
@@ -73,6 +78,17 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
 
     private void commitReal(){
 
+    }
+
+    public static void goToActivity(Context context){
+
+        if (context == null){
+            context = App.getInstance();
+        }
+
+        Intent intent = new Intent();
+        intent.setClass(context , ServiceBillActivity.class);
+        context.startActivity(intent);
     }
 
 }
