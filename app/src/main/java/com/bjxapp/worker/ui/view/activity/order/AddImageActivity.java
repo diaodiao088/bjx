@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -84,6 +83,11 @@ public class AddImageActivity extends Activity {
             mAdapter.setList(mList);
             mAdapter.notifyDataSetChanged();
         }
+
+        @Override
+        public void goToImageDetail(ImageBean bean) {
+            ImageOrderActivity.goToActivity(AddImageActivity.this , bean.getUrl());
+        }
     };
 
     private class MyAdapter extends RecyclerView.Adapter {
@@ -117,7 +121,7 @@ public class AddImageActivity extends Activity {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
-            ImageBean bean = mList.get(position);
+            final ImageBean bean = mList.get(position);
 
             if (holder instanceof VH_IMAGE_ITEM) {
 
@@ -128,6 +132,15 @@ public class AddImageActivity extends Activity {
                     public void onClick(View v) {
                         if (mListener != null) {
                             mListener.deleteImage(position);
+                        }
+                    }
+                });
+
+                ((VH_IMAGE_ITEM) holder).mIv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mListener != null){
+                            mListener.goToImageDetail(bean);
                         }
                     }
                 });
@@ -293,6 +306,9 @@ public class AddImageActivity extends Activity {
 
 
         void deleteImage(int position);
+
+
+        void goToImageDetail(ImageBean bean);
 
     }
 

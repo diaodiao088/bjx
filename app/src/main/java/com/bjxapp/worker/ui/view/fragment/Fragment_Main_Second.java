@@ -62,9 +62,6 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 	
     @Override
     public void refresh(int enterType) {
-        if(enterType != 0){
-        	
-		}
     }
     
     private void initViews(){    	

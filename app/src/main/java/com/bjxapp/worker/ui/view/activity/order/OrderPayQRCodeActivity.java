@@ -12,6 +12,8 @@ import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.zxing.encoding.EncodeManager;
 
+import butterknife.ButterKnife;
+
 public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListener {
 	protected static final String TAG = "支付界面";
 	private XTextView mTitleTextView;
@@ -21,6 +23,7 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_order_pay_qrcode);
+		ButterKnife.bind(this);
 		super.onCreate(savedInstanceState);
 	}
 

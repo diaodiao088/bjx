@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/separator_color"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <include layout="@layout/layout_title"/>
+    <include layout="@layout/layout_title" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,37 +17,58 @@
         android:background="@drawable/layout_radius"
         android:gravity="center_vertical"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="支付0.01元"
+            android:textColor="#00A551"
+            android:textSize="43dp" />
+
+        <com.bjxapp.worker.controls.XTextView
+            style="@style/SettingTextTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:text="扫描下面的二维码进行快速支付"
+            android:textColor="#545454"
+            android:textSize="16sp" />
+
         <com.bjxapp.worker.controls.XImageView
-		    android:id="@+id/order_pay_qrcode_logo"
-		    android:layout_width="80dp"
-		    android:layout_height="80dp"
-		    android:layout_gravity="center_horizontal|center_vertical"
-		    android:layout_marginTop="10dp"
-		    android:layout_marginBottom="20dp"
-		    android:scaleType="centerInside"
-		    android:src="@drawable/icon" />
-		<com.bjxapp.worker.controls.XTextView
-		    style="@style/SettingTextTitle"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_gravity="center_horizontal"
-		    android:text="扫描下面的二维码进行快速支付"
-		    android:textSize="16sp" />
-		<com.bjxapp.worker.controls.XImageView
-		    android:id="@+id/order_pay_qrcode_image"
-		    android:layout_width="260dp"
-		    android:layout_height="260dp"
-		    android:layout_gravity="center_horizontal|center_vertical"
-		    android:layout_marginTop="20dp"
-		    android:scaleType="centerInside"
-		    android:src="@drawable/head" />
-		<com.bjxapp.worker.controls.XTextView
-		    style="@style/SettingTextTitle"
-		    android:layout_marginTop="20dp"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_gravity="center_horizontal"
-		    android:text="支付完成后，请对师傅的工作给予评价！"
-		    android:textSize="16sp" />       
-    </LinearLayout>  
+            android:id="@+id/order_pay_qrcode_image"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginTop="20dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/head" />
+
+        <com.bjxapp.worker.controls.XTextView
+            style="@style/SettingTextTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="支付完成后，请对师傅的工作给予评价！"
+            android:textColor="#545454"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="自付"
+            android:textSize="16sp"
+            android:paddingLeft="22dp"
+            android:paddingRight="22dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:layout_marginTop="30dp"
+            android:textColor="#918F8F"
+            android:background="@drawable/pay_qrcode_bg"
+            />
+
+    </LinearLayout>
 </LinearLayout>

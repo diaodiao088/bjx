@@ -2,32 +2,32 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bjxapp.worker"
     android:versionCode="4"
-    android:versionName="3.1" >
+    android:versionName="3.1">
 
     <uses-sdk
         android:minSdkVersion="18"
         android:targetSdkVersion="21" />
-    
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="false"
         android:resizeable="true"
         android:smallScreens="true" />
-    
-	<uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-	<uses-permission android:name="android.permission.CALL_PHONE" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RESTART_PACKAGES" />   
-    
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+
     <!-- baidu location -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -54,42 +54,42 @@
     <!-- SD卡读取权限，用户写入离线定位数据-->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
 
-    
+
     <!-- baidu push service -->
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
-    
+
     <!-- baidu stat report -->
     <uses-permission android:name="android.permission.GET_TASKS" />
-    
-     <!-- baidu map -->
+
+    <!-- baidu map -->
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-	
+
     <application
-        android:allowBackup="true"
         android:name="com.bjxapp.worker.App"
+        android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        
+        android:theme="@style/AppTheme">
+
         <!-- baidu location begin -->
         <service
-            android:name="com.baidu.location.f" android:enabled="true" android:process=":remote" >
-        </service>
-        
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote"></service>
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="gRf9cSBNKO9QikILWySDrFADlKm0hd2d">
-        </meta-data>>
-                
+            android:value="gRf9cSBNKO9QikILWySDrFADlKm0hd2d"></meta-data>>
+
         <!-- baidu location end -->
 
-		<!-- baidu stat report begin -->
+        <!-- baidu stat report begin -->
         <meta-data
             android:name="BaiduMobAd_STAT_ID"
             android:value="d27b68b101" />
-        
+
         <!-- 渠道商编号 -->
         <meta-data
             android:name="BaiduMobAd_CHANNEL"
@@ -99,14 +99,14 @@
         <meta-data
             android:name="BaiduMobAd_EXCEPTION_LOG"
             android:value="true" />
-        
+
         <!-- 日志发送策略，可选值：APP_START、ONCE_A_DAY、SET_TIME_INTERVAL，默认为APP_START -->
         <meta-data
             android:name="BaiduMobAd_SEND_STRATEGY"
             android:value="APP_START" />
         <!-- 日志发送策略 为SET_TIME_INTERVAL时，需设定时间间隔(取消下行注释)。取值为1-24的整数，默认为1 -->
         <!-- <meta-data android:name="BaiduMobAd_TIME_INTERVAL" android:value="2" /> -->
-        
+
         <!-- 日志仅在wifi网络下发送，默认为false -->
         <meta-data
             android:name="BaiduMobAd_ONLY_WIFI"
@@ -123,39 +123,34 @@
         <meta-data
             android:name="BaiduMobAd_WIFI_LOCATION"
             android:value="true" />
-        
-		<!-- baidu stat report end -->
-   
+
+        <!-- baidu stat report end -->
+
         <activity
             android:name="com.bjxapp.worker.SplashActivity"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppStartLoad"
-            android:label="@string/app_name" >
-
+            android:theme="@style/Theme.AppStartLoad">
 
 
             <intent-filter>
-				<data 
-				    android:scheme="baijiaxiu"
-				    android:host="bjxapp.com">			
-				</data>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT"/>
-				<category android:name="android.intent.category.BROWSABLE"/>
-			</intent-filter>
+                <data
+                    android:host="bjxapp.com"
+                    android:scheme="baijiaxiu"></data>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
         </activity>
         <activity
-            android:name="com.bjxapp.worker.MainActivity"  android:screenOrientation="portrait" 
-            android:theme="@style/XAppTheme"
-            android:launchMode="singleTask">
-        </activity>
+            android:name="com.bjxapp.worker.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme"></activity>
 
         <activity
             android:name=".ui.view.activity.order.AddImageActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.view.activity.order.OrderPriceActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -163,103 +158,125 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.view.activity.ImageDetailActivity" android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme"/>
+        <activity
+            android:name=".ui.view.activity.order.ImageOrderActivity"
+            android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.user.LoginActivity"  android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme">
+            android:name=".ui.view.activity.order.OrderPriceActivity"
+            android:screenOrientation="portrait">
+
         </activity>
-        <activity android:name=".ui.view.activity.ChangeCityActivity" android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme"/>
-        <activity android:name=".ui.view.activity.user.LoginPwdActivity" android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme"/>
-        <activity android:name=".ui.view.activity.user.ForgetPwdActivity" android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme"/>
-        <activity android:name=".ui.view.activity.user.ChangePwdActivity" android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme"/>
+
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.user.ApplyActivity"  android:screenOrientation="portrait">
-        </activity>                       
+            android:name=".ui.view.activity.ImageDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme" />
+
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.PublicActivity"  android:screenOrientation="portrait">
-        </activity>
+            android:name="com.bjxapp.worker.ui.view.activity.user.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.MessageDetailActivity"  android:screenOrientation="portrait" android:launchMode="singleTask">
-        </activity>
+            android:name=".ui.view.activity.ChangeCityActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme" />
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.PublicImagesActivity"  android:screenOrientation="portrait">
-        </activity>       
+            android:name=".ui.view.activity.user.LoginPwdActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme" />
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.MapActivity"  android:screenOrientation="portrait">
-        </activity> 
+            android:name=".ui.view.activity.user.ForgetPwdActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme" />
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.MapSelectActivity"  android:screenOrientation="portrait">
-        </activity>        
+            android:name=".ui.view.activity.user.ChangePwdActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme" />
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.SettingActivity"  android:screenOrientation="portrait">
-        </activity>
+            android:name="com.bjxapp.worker.ui.view.activity.user.ApplyActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.WebViewActivity" 
+            android:name="com.bjxapp.worker.ui.view.activity.PublicActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.MessageDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.PublicImagesActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.MapActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.MapSelectActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.SettingActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.WebViewActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
             android:screenOrientation="sensor"
-			android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-			android:windowSoftInputMode="stateHidden|adjustUnspecified"
-			android:launchMode="singleTask" >
-        </activity>
+            android:windowSoftInputMode="stateHidden|adjustUnspecified"></activity>
         <activity
-            android:name="com.bjxapp.worker.utils.zxing.CaptureActivity"  android:screenOrientation="portrait">
-        </activity>
+            android:name="com.bjxapp.worker.utils.zxing.CaptureActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.user.UserClipPictureActivity"  android:screenOrientation="portrait">
-        </activity>
+            android:name="com.bjxapp.worker.ui.view.activity.user.UserClipPictureActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.search.SearchActivity"  android:screenOrientation="portrait" 
-            android:windowSoftInputMode="stateHidden|adjustResize" >
-        </activity>
+            android:name="com.bjxapp.worker.ui.view.activity.search.SearchActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.search.SearchActivityNew"  android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" >
-        </activity>
+            android:name="com.bjxapp.worker.ui.view.activity.search.SearchActivityNew"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.search.SearchSingleActivity"  android:screenOrientation="portrait" 
-            android:windowSoftInputMode="stateHidden|adjustResize" >
-        </activity>       
+            android:name="com.bjxapp.worker.ui.view.activity.search.SearchSingleActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity"  android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".ui.view.activity.order.CancelBillActivity" android:screenOrientation="portrait"/>
-
-        <activity android:name=".ui.view.activity.order.ServiceBillActivity" android:screenOrientation="portrait"/>
+            android:name="com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.view.activity.order.CancelBillActivity"
+            android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.order.OrderDetailAdditionActivity"  android:screenOrientation="portrait">
-        </activity>
+            android:name=".ui.view.activity.order.ServiceBillActivity"
+            android:screenOrientation="portrait" />
+
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.order.OrderPayQRCodeActivity"  android:screenOrientation="portrait">
-        </activity>
+            android:name="com.bjxapp.worker.ui.view.activity.order.OrderDetailAdditionActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity"  android:screenOrientation="portrait">
-        </activity>
+            android:name="com.bjxapp.worker.ui.view.activity.order.OrderPayQRCodeActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.user.BalanceBankWithdrawActivity"  android:screenOrientation="portrait">
-        </activity>
+            android:name="com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.user.BalanceBankActivity"  android:screenOrientation="portrait">
-        </activity>
+            android:name="com.bjxapp.worker.ui.view.activity.user.BalanceBankWithdrawActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.bjxapp.worker.ui.view.activity.user.BalanceWithdrawHistoryActivity"  android:screenOrientation="portrait">
-        </activity>
-        
+            android:name="com.bjxapp.worker.ui.view.activity.user.BalanceBankActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.bjxapp.worker.SafeWebViewBridgeExample.WebActivity"  android:screenOrientation="portrait">
-        </activity>
-        
-        <service 
-            android:name="com.bjxapp.worker.service.XAppService">
-        </service>
-       
+            android:name="com.bjxapp.worker.ui.view.activity.user.BalanceWithdrawHistoryActivity"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name="com.bjxapp.worker.SafeWebViewBridgeExample.WebActivity"
+            android:screenOrientation="portrait"></activity>
+
+        <service android:name="com.bjxapp.worker.service.XAppService"></service>
+
         <!-- push应用定义消息receiver声明 -->
-        <receiver android:name="com.bjxapp.worker.receiver.XPushMessageReceiver" >
+        <receiver android:name="com.bjxapp.worker.receiver.XPushMessageReceiver">
             <intent-filter>
                 <!-- 接收push消息 -->
                 <action android:name="com.baidu.android.pushservice.action.MESSAGE" />
@@ -272,7 +289,7 @@
         <!-- push必须的receviver和service声明 -->
         <receiver
             android:name="com.baidu.android.pushservice.PushServiceReceiver"
-            android:process=":bdservice_v1" >
+            android:process=":bdservice_v1">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -287,7 +304,7 @@
         </receiver>
         <receiver
             android:name="com.baidu.android.pushservice.RegistrationReceiver"
-            android:process=":bdservice_v1" >
+            android:process=":bdservice_v1">
             <intent-filter>
                 <action android:name="com.baidu.android.pushservice.action.METHOD" />
                 <action android:name="com.baidu.android.pushservice.action.BIND_SYNC" />
@@ -302,7 +319,7 @@
         <service
             android:name="com.baidu.android.pushservice.PushService"
             android:exported="true"
-            android:process=":bdservice_v1" >
+            android:process=":bdservice_v1">
             <intent-filter>
                 <action android:name="com.baidu.android.pushservice.action.PUSH_SERVICE" />
             </intent-filter>
@@ -310,34 +327,34 @@
         <service
             android:name="com.baidu.android.pushservice.CommandService"
             android:exported="true" />
-        
+
         <!-- push结束 -->
-        
+
         <receiver
             android:name="com.bjxapp.worker.receiver.NetworkStateChangedReceiver"
-            android:process=":remote" >
+            android:process=":remote">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        
+
         <receiver
             android:name="com.bjxapp.worker.receiver.BootstartupReceiver"
-            android:process=":remote" >
-            <intent-filter android:priority="0x7fffffff" >
+            android:process=":remote">
+            <intent-filter android:priority="0x7fffffff">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
-        
-        <receiver 
+
+        <receiver
             android:name="com.bjxapp.worker.receiver.PackageReplacedReceiver"
-            android:process=":remote" >
-            <intent-filter> 
+            android:process=":remote">
+            <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-                
+
     </application>
 </manifest>
