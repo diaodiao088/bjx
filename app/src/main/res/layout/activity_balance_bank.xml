@@ -1,194 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	android:gravity="center_horizontal"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
-	
-    <include layout="@layout/layout_title"/>
-    
-	<ScrollView
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:scrollbars="none">
-		<LinearLayout
-			android:orientation="vertical"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
- 			<View
-				android:background="@color/separator_color"
-				android:layout_width="fill_parent"
-				android:layout_height="1.0dip" />
-			<RelativeLayout
-            	android:layout_width="match_parent"
-            	android:background="@drawable/setting_item_selector"
-            	android:layout_marginTop="10dp"
-            	android:layout_height="50dp" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
-	            <com.bjxapp.worker.controls.XEditText
-	                android:id="@+id/balance_bank_card_edit"
-	                android:layout_width="match_parent"
-	                android:layout_height="wrap_content"
-	                android:layout_centerVertical="true"
-	                android:background="@drawable/setting_item_selector"
-	                android:hint="输入您的银行卡号"
-	                android:inputType="phone"
-	                android:maxLength="21"
-	                android:paddingLeft="100dp"
-	                android:singleLine="true"
-	                android:textColorHint="#DDDDDD"
-	                android:textSize="14sp" />
+    <include layout="@layout/layout_title" />
 
-	            <com.bjxapp.worker.controls.XTextView
-	                android:layout_width="90dp"
-	                android:layout_height="wrap_content"
-	                android:layout_alignLeft="@id/balance_bank_card_edit"
-	                android:layout_centerVertical="true"
-	                android:layout_marginLeft="10dp"
-	                android:background="@drawable/setting_item_selector"
-	                android:text="银行卡号："
-	                android:textColor="#353535"
-	                android:textSize="14sp" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
 
-        	</RelativeLayout>			
-			<View
-				android:background="@color/separator_color"
-				android:layout_width="fill_parent"
-				android:layout_height="1.0dip" />
-			<RelativeLayout
-            	android:layout_width="match_parent"
-            	android:background="@drawable/setting_item_selector"
-            	android:layout_marginTop="0dp"
-            	android:layout_height="50dp" >
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-	            <com.bjxapp.worker.controls.XEditText
-	                android:id="@+id/balance_bank_name_edit"
-	                android:layout_width="match_parent"
-	                android:layout_height="wrap_content"
-	                android:layout_centerVertical="true"
-	                android:background="@drawable/setting_item_selector"
-	                android:hint="输入您的开户银行名称"
-	                android:inputType="text"
-	                android:maxLength="20"
-	                android:paddingLeft="100dp"
-	                android:singleLine="true"
-	                android:textColorHint="#DDDDDD"
-	                android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center">
 
-	            <com.bjxapp.worker.controls.XTextView
-	                android:layout_width="90dp"
-	                android:layout_height="wrap_content"
-	                android:layout_alignLeft="@id/balance_bank_name_edit"
-	                android:layout_centerVertical="true"
-	                android:layout_marginLeft="10dp"
-	                android:background="@drawable/setting_item_selector"
-	                android:text="开户银行："
-	                android:textColor="#353535"
-	                android:textSize="14sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="银行卡号"
+                    android:textColor="#545454"
+                    android:textSize="14sp"/>
 
-        	</RelativeLayout>	
-        	<View
-				android:background="@color/separator_color"
-				android:layout_width="fill_parent"
-				android:layout_height="1.0dip" />
-			<RelativeLayout
-            	android:layout_width="match_parent"
-            	android:background="@drawable/setting_item_selector"
-            	android:layout_marginTop="0dp"
-            	android:layout_height="50dp" >
+                <EditText
+                    android:id="@+id/balance_bank_card_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="4dp"
+                    android:hint="输入您的银行卡号"
+                    android:paddingLeft="4dp"
+                    android:textSize="14sp"
+                    android:textColor="#545454"
+                    android:background="@drawable/chang_pwd_bg"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textColorHint="#DDDDDD"
+                    />
 
-	            <com.bjxapp.worker.controls.XEditText
-	                android:id="@+id/balance_bank_person_edit"
-	                android:layout_width="match_parent"
-	                android:layout_height="wrap_content"
-	                android:layout_centerVertical="true"
-	                android:background="@drawable/setting_item_selector"
-	                android:hint="输入您的开户人姓名"
-	                android:inputType="text"
-	                android:maxLength="15"
-	                android:paddingLeft="100dp"
-	                android:singleLine="true"
-	                android:textColorHint="#DDDDDD"
-	                android:textSize="14sp" />
+            </LinearLayout>
 
-	            <com.bjxapp.worker.controls.XTextView
-	                android:layout_width="90dp"
-	                android:layout_height="wrap_content"
-	                android:layout_alignLeft="@id/balance_bank_person_edit"
-	                android:layout_centerVertical="true"
-	                android:layout_marginLeft="10dp"
-	                android:background="@drawable/setting_item_selector"
-	                android:text="开户人："
-	                android:textColor="#353535"
-	                android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center">
 
-        	</RelativeLayout>	
-        	<View
-				android:background="@color/separator_color"
-				android:layout_width="fill_parent"
-				android:layout_height="1.0dip" />
-			<RelativeLayout
-            	android:layout_width="match_parent"
-            	android:background="@drawable/setting_item_selector"
-            	android:layout_marginTop="0dp"
-            	android:layout_height="50dp" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="开户银行"
+                    android:textColor="#545454"
+                    android:textSize="14sp"/>
 
-	            <com.bjxapp.worker.controls.XEditText
-	                android:id="@+id/balance_bank_mobile_edit"
-	                android:layout_width="match_parent"
-	                android:layout_height="wrap_content"
-	                android:layout_centerVertical="true"
-	                android:background="@drawable/setting_item_selector"
-	                android:hint="输入您的开户预留手机号"
-	                android:inputType="phone"
-	                android:maxLength="11"
-	                android:paddingLeft="100dp"
-	                android:singleLine="true"
-	                android:textColorHint="#DDDDDD"
-	                android:textSize="14sp" />
+                <EditText
+                    android:id="@+id/balance_bank_name_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="4dp"
+                    android:hint="输入您的开户银行名称"
+                    android:paddingLeft="4dp"
+                    android:textSize="14sp"
+                    android:textColor="#545454"
+                    android:background="@drawable/chang_pwd_bg"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textColorHint="#DDDDDD"
+                    />
 
-	            <com.bjxapp.worker.controls.XTextView
-	                android:layout_width="90dp"
-	                android:layout_height="wrap_content"
-	                android:layout_alignLeft="@id/balance_bank_mobile_edit"
-	                android:layout_centerVertical="true"
-	                android:layout_marginLeft="10dp"
-	                android:background="@drawable/setting_item_selector"
-	                android:text="开户手机号："
-	                android:textColor="#353535"
-	                android:textSize="14sp" />
+            </LinearLayout>
 
-        	</RelativeLayout>			
-			<View
-				android:background="@color/separator_color"
-				android:layout_width="fill_parent"
-				android:layout_height="1.0dip" />					
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center">
 
-			<com.bjxapp.worker.controls.XTextView
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_marginBottom="20dp"
-			    android:layout_marginLeft="20dp"
-			    android:layout_marginRight="20dp"
-			    android:layout_marginTop="20dp"
-			    android:text="提示：\n请确保您输入的银行卡信息准确无误，否则您的收入将无法汇入您的账户。"
-			    android:textColor="@color/red"
-			    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="开 户 人  "
+                    android:textColor="#545454"
+                    android:textSize="14sp"/>
 
-			<com.bjxapp.worker.controls.XButton
-			    android:id="@+id/balance_bank_button_save"
-			    android:layout_width="fill_parent"
-			    android:layout_height="40.0dip"
-			    android:layout_marginBottom="20dp"
-			    android:layout_marginLeft="20dp"
-			    android:layout_marginRight="20dp"
-			    android:layout_marginTop="20dp"
-			    android:background="@drawable/button_background_green"
-			    android:text="提交银行卡信息"
-			    android:textColor="@color/white"
-			    android:textSize="14sp" />
-		</LinearLayout>
-	</ScrollView>
+                <EditText
+                    android:id="@+id/balance_bank_person_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="4dp"
+                    android:hint="输入您的开户人姓名"
+                    android:paddingLeft="4dp"
+                    android:textSize="14sp"
+                    android:textColor="#545454"
+                    android:background="@drawable/chang_pwd_bg"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textColorHint="#DDDDDD"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="手 机 号  "
+                    android:textColor="#545454"
+                    android:textSize="14sp"/>
+
+                <EditText
+                    android:id="@+id/balance_bank_mobile_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="4dp"
+                    android:hint="输入您的开户预留手机号"
+                    android:paddingLeft="4dp"
+                    android:textSize="14sp"
+                    android:textColor="#545454"
+                    android:background="@drawable/chang_pwd_bg"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textColorHint="#DDDDDD"
+                    />
+
+            </LinearLayout>
+
+            <com.bjxapp.worker.controls.XButton
+                android:id="@+id/balance_bank_button_save"
+                android:layout_width="fill_parent"
+                android:layout_height="40.0dip"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_background_green"
+                android:text="提交银行卡信息"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="提示："
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="#ABABAB"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请确保你输入的银行卡信息准确无误，否则你的收入将无法汇入你的账户"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="8dp"
+                android:textColor="#ABABAB"/>
+
+
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
