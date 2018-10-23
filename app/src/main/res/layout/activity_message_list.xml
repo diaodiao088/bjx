@@ -46,7 +46,7 @@
                 android:maxLines="1"
                 android:minLines="1"
                 android:text="大电影要开播了..."
-                android:textColor="#000000"
+                android:textColor="#545454"
                 android:textSize="14sp" />
 
         </RelativeLayout>

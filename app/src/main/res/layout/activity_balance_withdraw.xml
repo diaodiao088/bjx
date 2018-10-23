@@ -214,33 +214,6 @@
 
             </LinearLayout>
 
-
-            <com.bjxapp.worker.controls.XTextView
-                android:id="@+id/balance_withdraw_service_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="30dp"
-                android:layout_marginBottom="0dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
-                android:gravity="center_vertical"
-                android:text="客服电话：010-56109590"
-                android:textColor="#353535"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <com.bjxapp.worker.controls.XTextView
-                android:id="@+id/balance_withdraw_information_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                android:text="提示：\n每个月1至5日、15日至18日为提现日，每个提现日只能提现一次。"
-                android:textColor="#353535"
-                android:textSize="12sp" />
-
             <com.bjxapp.worker.controls.XButton
                 android:id="@+id/balance_withdraw_button_save"
                 android:layout_width="fill_parent"
@@ -253,6 +226,29 @@
                 android:text="提现"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="提示："
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="10dp"
+                android:textColor="#ABABAB"/>
+
+
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/balance_withdraw_information_edit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:text="提示：\n每个月1至5日、15日至18日为提现日，每个提现日只能提现一次。客服电话： 010-65511127"
+                android:textColor="#ABABAB"
+                android:textSize="12sp" />
+
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

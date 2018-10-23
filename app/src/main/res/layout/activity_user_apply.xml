@@ -381,8 +381,8 @@
 
                 <CheckBox
                     android:id="@+id/user_apply_protocol_check"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_centerVertical="true"
                     android:background="@drawable/check_box_protocol"
                     android:layout_marginRight="5dp"
@@ -406,7 +406,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/user_apply_protocol_caption"
                     android:text="《接单须知》"
-                    android:textColor="@color/red"
+                    android:textColor="@color/black"
                     android:textSize="12sp" />
 
             </RelativeLayout>
