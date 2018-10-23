@@ -1,36 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:background="@color/separator_color"
-	android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/separator_color"
+    android:orientation="vertical">
 
-    <com.bjxapp.worker.controls.listview.XListView
-        android:id="@+id/order_history_list_listview"
-        android:listSelector="@android:color/transparent"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:paddingTop="10dp"
-        android:layout_alignParentLeft="true"
-        android:choiceMode="singleChoice"
-        android:divider="@color/transparent"
-        android:dividerHeight="0dp"
-        android:visibility="gone" >
-    </com.bjxapp.worker.controls.listview.XListView>
+    <LinearLayout
+        android:id="@+id/history_header_ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/history_total_ly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/history_total_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="累计接单：10单"
+                android:textColor="#545454"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="17dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/history_total" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="全部"
+                android:textSize="14sp" />
+
+            <View
+                android:id="@+id/history_total_divider"
+                android:layout_width="20dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="#564978" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/history_safe_ly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/history_safe_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="累计接单：10单"
+                android:textColor="#545454"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="17dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/history_safe" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="质保期内"
+                android:textSize="14sp" />
+
+            <View
+                android:id="@+id/history_safe_divider"
+                android:layout_width="20dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="#564978"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/history_unsafe_ly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/history_unsafe_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="累计接单：10单"
+                android:textColor="#545454"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="17dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/history_unsafe" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="已过质保期"
+                android:textSize="14sp" />
+
+            <View
+                android:id="@+id/history_unsafe_divider"
+                android:layout_width="20dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="#564978"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/order_history_list_load_again"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/white"
-        android:padding="10dp" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <com.bjxapp.worker.controls.XImageView
-            android:id="@+id/order_history_list_load_again_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="center"
-            android:src="@drawable/load_again" />
-    </RelativeLayout>    
-</RelativeLayout>
+        <com.bjxapp.worker.controls.listview.XListView
+            android:id="@+id/order_history_list_listview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:choiceMode="singleChoice"
+            android:divider="@color/transparent"
+            android:dividerHeight="0dp"
+            android:listSelector="@android:color/transparent"
+            android:paddingTop="10dp"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/order_history_list_load_again"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/white"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <com.bjxapp.worker.controls.XImageView
+                android:id="@+id/order_history_list_load_again_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:src="@drawable/load_again" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>
