@@ -146,7 +146,7 @@ public class MapSelectActivity extends BaseActivity implements OnClickListener {
 
     private PoiSearch poiSearch;
 
-    private void initMapNew(){
+    private void initMapNew() {
 
         poiSearch = PoiSearch.newInstance();
 
@@ -194,12 +194,12 @@ public class MapSelectActivity extends BaseActivity implements OnClickListener {
                 // stub
                 if (arg0 != null && arg0.getPoiList() != null) {
 
-                    Log.d("slog_zd","poiList : " + arg0.getPoiList());
-                   // adapter.setData(arg0.getPoiList());
-                   // mSearchResultList.setAdapter(adapter);
-                   // adapter.notifyDataSetChanged();
+                    Log.d("slog_zd", "poiList : " + arg0.getPoiList());
+                    // adapter.setData(arg0.getPoiList());
+                    // mSearchResultList.setAdapter(adapter);
+                    // adapter.notifyDataSetChanged();
                 } else {
-                    Log.d("slog_zd","没有更多了.");
+                    Log.d("slog_zd", "没有更多了.");
                 }
             }
 
@@ -234,7 +234,6 @@ public class MapSelectActivity extends BaseActivity implements OnClickListener {
 
         }
     };
-
 
 
     @Override

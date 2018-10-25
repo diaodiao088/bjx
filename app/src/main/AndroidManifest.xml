@@ -213,16 +213,19 @@
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.MapSelectActivity"
             android:screenOrientation="portrait">
+        </activity>
 
+        <activity android:name=".ui.view.activity.map.MapActivityNew">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
+
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.SettingActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.WebViewActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"

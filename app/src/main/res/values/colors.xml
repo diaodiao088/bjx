@@ -31,5 +31,13 @@
     
     <color name="receive_button_can">#288d54</color>
     <color name="receive_button_not">#aaaaaa</color>
+
+    <color name="app_sub_color">#ee6432</color>
+
+    <!--文字标准浅灰色-->
+    <color name="app_txt_gray_light">#999999</color>
+
+    <!--文字标准黑色-->
+    <color name="app_txt_black">#333333</color>
     
 </resources>
