@@ -3,32 +3,32 @@
     android:id="@+id/title_bar_root"
     android:layout_width="match_parent"
     android:layout_height="48.0dip"
-    android:background="#FFFFFF" >
-    
+    android:background="#FFFFFF">
+
     <com.bjxapp.worker.controls.XTextView
         android:id="@+id/title_text_left"
         style="@style/title_textStyle"
-        android:textSize="15sp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:text="@string/app_name"
-        android:visibility="gone"/>
+        android:textSize="15sp"
+        android:visibility="gone" />
 
     <com.bjxapp.worker.controls.XImageView
         android:id="@+id/title_image_back"
         android:layout_width="40dp"
         android:layout_height="22dp"
         android:layout_centerVertical="true"
-        android:visibility="visible"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/icon_back" />
+        android:src="@drawable/icon_back"
+        android:visibility="visible" />
 
     <com.bjxapp.worker.controls.XTextView
         android:id="@+id/title_text_title"
         style="@style/title_textStyle"
-        android:text="@string/app_name"
-        android:layout_centerInParent="true"  />
+        android:layout_centerInParent="true"
+        android:text="@string/app_name" />
 
     <com.bjxapp.worker.controls.XImageView
         android:id="@+id/title_image_right"
@@ -37,30 +37,29 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
-        android:visibility="gone"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/icon_menu_add" />
-    
-     <com.bjxapp.worker.controls.XTextView
+        android:src="@drawable/icon_menu_add"
+        android:visibility="gone" />
+
+    <com.bjxapp.worker.controls.XTextView
         android:id="@+id/title_text_right"
         style="@style/title_textStyle"
-        android:textSize="16sp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"  />
+        android:layout_marginRight="10dp"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/title_right_small_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:text="添加照片"
         android:layout_marginRight="10dp"
+        android:text="添加照片"
         android:textColor="#FFFFFF"
-        android:visibility="gone"
-        />
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <View
         android:layout_width="fill_parent"

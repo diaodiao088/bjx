@@ -13,7 +13,7 @@
     <!--窗体颜色 -->
 	<color name="windows_color">#F5F5F5</color>
     <color name="bar_color">#232325</color>
-    <color name="separator_color">#ffeeeeee</color>
+    <color name="separator_color">#DFDFDF</color>
     
     <!--baidu蓝 -->
 	<color name="title_background_color">#3385ff</color>

@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.controls.XButton;
@@ -28,8 +29,8 @@ public class BalanceBankWithdrawActivity extends BaseActivity implements OnClick
 	private XTextView mTitleTextView;
 	private XImageView mBackImageView;
 	
-	private XTextView mBankCardEdit,mBankNameEdit,mBankPersonEdit,mBankMobileEdit;
-	private XTextView mBalanceEdit,mAllowCashEdit,mServiceEdit,mInformationEdit;
+	private TextView mBankCardEdit,mBankNameEdit,mBankPersonEdit,mBankMobileEdit;
+	private TextView mBalanceEdit,mAllowCashEdit,mServiceEdit,mInformationEdit;
 	private XButton mSaveButton;
 	
 	private XWaitingDialog mWaitingDialog;
@@ -52,15 +53,14 @@ public class BalanceBankWithdrawActivity extends BaseActivity implements OnClick
 		mBackImageView = (XImageView) findViewById(R.id.title_image_back);
 		mBackImageView.setVisibility(View.VISIBLE);
 		
-		mBankCardEdit = (XTextView) findViewById(R.id.balance_withdraw_card_edit);
-		mBankNameEdit = (XTextView) findViewById(R.id.balance_withdraw_name_edit);
-		mBankPersonEdit = (XTextView) findViewById(R.id.balance_withdraw_person_edit);
-		mBankMobileEdit = (XTextView) findViewById(R.id.balance_withdraw_mobile_edit);
+		mBankCardEdit = (TextView) findViewById(R.id.balance_withdraw_card_edit);
+		mBankNameEdit = (TextView) findViewById(R.id.balance_withdraw_name_edit);
+		mBankPersonEdit = (TextView) findViewById(R.id.balance_withdraw_person_edit);
+		mBankMobileEdit = (TextView) findViewById(R.id.balance_withdraw_mobile_edit);
 		
-		mBalanceEdit = (XTextView) findViewById(R.id.balance_withdraw_balance_edit);
-		mAllowCashEdit = (XTextView) findViewById(R.id.balance_withdraw_balance_allow_edit);
-		mServiceEdit = (XTextView) findViewById(R.id.balance_withdraw_service_edit);
-		mInformationEdit = (XTextView) findViewById(R.id.balance_withdraw_information_edit);
+		mBalanceEdit = (TextView) findViewById(R.id.balance_withdraw_balance_edit);
+		mAllowCashEdit = (TextView) findViewById(R.id.balance_withdraw_balance_allow_edit);
+		mInformationEdit = (TextView) findViewById(R.id.balance_withdraw_information_edit);
 		
 		
 		mSaveButton = (XButton) findViewById(R.id.balance_withdraw_button_save);
@@ -96,9 +96,9 @@ public class BalanceBankWithdrawActivity extends BaseActivity implements OnClick
 		case R.id.title_text_right:
 			showWithdrawHistory();
 			break;
-		case R.id.balance_withdraw_service_edit:
+		/*case R.id.balance_withdraw_service_edit:
 			callService();
-			break;
+			break;*/
 		case R.id.balance_withdraw_balance_info_image:
 			showBalanceInfo();
 			break;	
