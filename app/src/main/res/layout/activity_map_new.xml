@@ -8,9 +8,44 @@
 
     <include layout="@layout/layout_title" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF">
+
+        <LinearLayout
+            android:id="@+id/search_ly"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/search"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="查找大区/小区等"
+                android:textColor="#999999"
+                android:textSize="14sp"
+                android:layout_marginLeft="5dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1">
 
         <com.baidu.mapapi.map.MapView
@@ -57,8 +92,8 @@
     <LinearLayout
         android:id="@+id/am_srl"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
-
+        android:layout_height="0dp"
+        android:layout_weight="1">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/am_rv"
             android:layout_width="match_parent"

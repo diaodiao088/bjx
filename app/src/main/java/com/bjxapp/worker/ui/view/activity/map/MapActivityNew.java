@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+
 import com.baidu.mapapi.map.MapView;
 import com.bjxapp.worker.R;
+import com.bjxapp.worker.controls.XImageView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by xz on 2017/8/8 0008.
@@ -20,10 +23,17 @@ import butterknife.ButterKnife;
  */
 public class MapActivityNew extends Activity implements View.OnClickListener {
 
+    @BindView(R.id.am_map)
     public MapView mMapView;
 
     @BindView(R.id.am_rv)
     public RecyclerView mRecyclerView;
+
+    @BindView(R.id.title_image_back)
+    public XImageView mBackImg;
+
+    @BindView(R.id.title_divider)
+    public View mDivider;
 
     private MapService mSer;
 
@@ -31,10 +41,20 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_new);
-        mMapView = findViewById(R.id.am_map);
         ButterKnife.bind(this);
+        mDivider.setVisibility(View.GONE);
         mSer = new MapService();
         mSer.init(this);
+    }
+
+    @OnClick(R.id.title_image_back)
+    void clickBack(){
+        finish();
+    }
+
+    @OnClick(R.id.search_ly)
+    void startSearch(){
+
     }
 
     public void onClick(View view) {
