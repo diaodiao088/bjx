@@ -18,7 +18,7 @@ import com.bjxapp.worker.utils.Utils;
  * comments:
  */
 
-public class LoginPwdActivity extends BaseActivity implements View.OnClickListener{
+public class LoginPwdActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = LoginPwdActivity.class.getSimpleName();
 
@@ -71,15 +71,15 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    public static void goToActivity(Context ctx){
+    public static void goToActivity(Context ctx) {
         Intent intent = new Intent();
-        intent.setClass(ctx , LoginPwdActivity.class);
+        intent.setClass(ctx, LoginPwdActivity.class);
         ctx.startActivity(intent);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.login_button_confirm:
                 tryLogin();
                 break;
@@ -97,17 +97,14 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void tryLogin(){
+    private void tryLogin() {
 
         String phoneNumber = mPhoneTv.getText().toString().trim();
         String pwd = mPwdTv.getText().toString().trim();
 
-        if (!TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(pwd)){
+        if (!TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(pwd)) {
 
-
-
-
-        }else{
+        } else {
             Utils.showLongToast(LoginPwdActivity.this, getString(R.string.login_account_warning));
         }
     }

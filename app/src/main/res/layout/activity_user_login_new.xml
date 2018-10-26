@@ -43,14 +43,12 @@
             android:layout_height="1.0dip"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            android:background="@color/separator_color" />
+            android:background="#c8c7c8" />
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:paddingTop="15dp">
+            android:layout_height="wrap_content">
 
             <com.bjxapp.worker.controls.XEditText
                 android:id="@+id/login_edit_verify_code"
@@ -62,6 +60,8 @@
                 android:inputType="text"
                 android:paddingLeft="17dp"
                 android:singleLine="true"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
                 android:textColorHint="#DDDDDD"
                 android:textSize="16sp" />
 
@@ -82,7 +82,7 @@
             android:layout_height="1.0dip"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            android:background="@color/separator_color" />
+            android:background="#c8c7c8" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -112,12 +112,11 @@
                 android:background="@drawable/button_background_gray"
                 android:gravity="center"
                 android:text="获取验证码"
-                android:textColor="@color/black"
+                android:textColor="#00a551"
                 android:textSize="12sp" />
         </RelativeLayout>
 
     </LinearLayout>
-
 
     <com.bjxapp.worker.controls.XButton
         android:id="@+id/login_button_login"
@@ -138,7 +137,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
+        android:padding="5dp"
         android:text="账号密码登录"
         android:textColor="#8D8D8D"
         android:textSize="14sp" />

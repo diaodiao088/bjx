@@ -18,7 +18,6 @@ import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XEditText;
 import com.bjxapp.worker.controls.XImageView;
-import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.dataupload.ReportEvent;
 import com.bjxapp.worker.dataupload.Uploader;
@@ -43,23 +42,26 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     XImageView mVerifyCodeImageView;
 
     @BindView(R.id.login_button_login)
-    private XButton mLoginButton;
+    XButton mLoginButton;
 
     @BindView(R.id.login_button_sendauthcode)
-    private XButton mSendAuthButton;
+    XButton mSendAuthButton;
 
     @BindView(R.id.login_edit_mobile)
-    private XEditText mMobileEditText;
+    XEditText mMobileEditText;
 
+    @BindView(R.id.login_edit_password)
+    XEditText mPasswordEditText;
 
-    private XEditText mPasswordEditText, mVerifyCodeEditText;
+    @BindView(R.id.login_edit_verify_code)
+    XEditText mVerifyCodeEditText;
 
-
+    @BindView(R.id.pwd_login_tv)
+    TextView mLoginPwdTv;
 
     private int mKeyBackClickCount = 0;
     private XWaitingDialog mWaitingDialog;
     private String mLoginKey = "";
-    private TextView mLoginPwdTv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,12 +72,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
     @Override
     protected void initControl() {
-        mMobileEditText = (XEditText) findViewById(R.id.login_edit_mobile);
-        mPasswordEditText = (XEditText) findViewById(R.id.login_edit_password);
-
-        mVerifyCodeEditText = (XEditText) findViewById(R.id.login_edit_verify_code);
-
-        mLoginPwdTv = findViewById(R.id.pwd_login_tv);
         mWaitingDialog = new XWaitingDialog(context);
     }
 

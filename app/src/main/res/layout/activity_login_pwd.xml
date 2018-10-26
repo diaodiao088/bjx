@@ -35,15 +35,15 @@
             android:paddingLeft="17dp"
             android:paddingTop="15dp"
             android:singleLine="true"
-            android:textColorHint="#DDDDDD"
-            android:textSize="16sp" />
+            android:textColorHint="#a6a6a6"
+            android:textSize="14sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1.0dip"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            android:background="@color/separator_color" />
+            android:background="#C8C7C8" />
 
         <com.bjxapp.worker.controls.XEditText
             android:id="@+id/login_pwd"
@@ -58,8 +58,8 @@
             android:paddingLeft="17dp"
             android:paddingTop="15dp"
             android:singleLine="true"
-            android:textColorHint="#DDDDDD"
-            android:textSize="16sp" />
+            android:textColorHint="#A6A6A6"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -67,15 +67,15 @@
         android:id="@+id/login_button_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:background="@drawable/login_pwd_btn_bg"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_background_green"
         android:paddingBottom="15dp"
         android:paddingTop="15dp"
         android:text="登录"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -90,47 +90,42 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="忘记密码"
-            android:textSize="14sp"
-            android:textColor="#8D8D8D"/>
+            android:textColor="#8D8D8D"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/login_phone_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:text="手机号登录"
                 android:textColor="#8D8D8D"
-                android:text="手机号登录"/>
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#8d8d8d"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"/>
+                android:layout_marginRight="10dp"
+                android:background="#8d8d8d" />
 
             <TextView
                 android:id="@+id/free_register_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:text="免费注册"
                 android:textColor="#8D8D8D"
-                android:text="免费注册"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
 
 
-
-
-
     </RelativeLayout>
-
-
 
 
 </LinearLayout>
