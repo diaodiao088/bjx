@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="center_horizontal"
     android:background="#FFFFFF"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <include layout="@layout/layout_title" />
@@ -17,36 +17,36 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
             android:paddingLeft="18dp"
-            android:paddingRight="18dp"
-            android:orientation="vertical">
+            android:paddingRight="18dp">
 
-            <com.bjxapp.worker.controls.XRelativeLayout
+            <RelativeLayout
                 android:id="@+id/user_apply_head_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/setting_item_selector"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp">
+                android:paddingBottom="15dp"
+                android:paddingTop="15dp">
 
                 <com.bjxapp.worker.controls.XCircleImageView
                     android:id="@+id/user_apply_head_image"
-                    android:layout_width="80.0dip"
-                    android:layout_height="80.0dip"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/head"
-                    app:border_color="@color/separator_color"
-                    app:border_width="2dp" />
+                    android:src="@drawable/head" />
 
                 <com.bjxapp.worker.controls.XImageView
                     android:id="@+id/user_apply_head_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="8dp"
+                    android:layout_height="14dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
+                    android:scaleType="fitXY"
                     android:src="@drawable/right" />
 
                 <com.bjxapp.worker.controls.XTextView
@@ -56,19 +56,19 @@
                     android:layout_marginRight="16dp"
                     android:layout_toLeftOf="@+id/user_apply_head_right"
                     android:text="上传头像"
-                    android:textColor="#545454"
+                    android:textColor="@color/main_text_color"
                     android:textSize="14sp" />
 
-            </com.bjxapp.worker.controls.XRelativeLayout>
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/setting_item_selector">
 
                 <com.bjxapp.worker.controls.XEditText
-                    android:id="@+id/user_apply_name_edit"
+                    android:id="@+id/user_name_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -78,13 +78,13 @@
                     android:maxLength="11"
                     android:paddingLeft="100dp"
                     android:singleLine="true"
-                    android:textColorHint="#DDDDDD"
+                    android:textColorHint="@color/main_text_hint_color"
                     android:textSize="14sp" />
 
                 <com.bjxapp.worker.controls.XTextView
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/user_apply_name_edit"
+                    android:layout_alignLeft="@id/user_name_edit"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/setting_item_selector"
@@ -95,12 +95,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="0dp"
+                android:layout_height="45dp"
                 android:background="@drawable/setting_item_selector">
 
                 <com.bjxapp.worker.controls.XEditText
-                    android:id="@+id/user_apply_id_edit"
+                    android:id="@+id/user_id_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -110,30 +109,26 @@
                     android:maxLength="18"
                     android:paddingLeft="100dp"
                     android:singleLine="true"
-                    android:textColorHint="#DDDDDD"
+                    android:textColorHint="@color/main_text_hint_color"
                     android:textSize="14sp" />
 
                 <com.bjxapp.worker.controls.XTextView
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/user_apply_id_edit"
+                    android:layout_alignLeft="@id/user_id_edit"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/setting_item_selector"
                     android:text="身份证号"
-                    android:textColor="#545454"
+                    android:textColor="@color/main_text_color"
                     android:textSize="14sp" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/user_apply_city_ly"
                 android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/setting_item_selector">
 
                 <com.bjxapp.worker.controls.XTextView
@@ -144,8 +139,8 @@
                     android:layout_marginRight="16dp"
                     android:layout_toLeftOf="@+id/user_apply_city_right"
                     android:hint="请选择接单城市"
-                    android:textColor="#ABABAB"
                     android:paddingLeft="100dp"
+                    android:textColor="@color/main_text_hint_color"
                     android:textSize="14sp" />
 
                 <com.bjxapp.worker.controls.XTextView
@@ -156,16 +151,17 @@
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/setting_item_selector"
                     android:text="接单城市"
-                    android:textColor="#545454"
+                    android:textColor="@color/main_text_color"
                     android:textSize="14sp" />
 
                 <com.bjxapp.worker.controls.XImageView
                     android:id="@+id/user_apply_city_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="8dp"
+                    android:layout_height="14dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
+                    android:scaleType="fitXY"
                     android:src="@drawable/right" />
 
             </RelativeLayout>
@@ -173,7 +169,7 @@
             <RelativeLayout
                 android:id="@+id/user_apply_location_layout"
                 android:layout_width="fill_parent"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:background="@drawable/setting_item_selector">
 
                 <com.bjxapp.worker.controls.XTextView
@@ -185,7 +181,7 @@
                     android:layout_toLeftOf="@+id/user_apply_location_right"
                     android:hint="请选择接单范围"
                     android:paddingLeft="100dp"
-                    android:textColor="#ABABAB"
+                    android:textColor="@color/main_text_hint_color"
                     android:textSize="14sp" />
 
                 <com.bjxapp.worker.controls.XTextView
@@ -196,16 +192,17 @@
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/setting_item_selector"
                     android:text="接单范围"
-                    android:textColor="#545454"
+                    android:textColor="@color/main_text_color"
                     android:textSize="14sp" />
 
                 <com.bjxapp.worker.controls.XImageView
                     android:id="@+id/user_apply_location_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="8dp"
+                    android:layout_height="14dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
+                    android:scaleType="fitXY"
                     android:src="@drawable/right" />
 
             </RelativeLayout>
@@ -213,13 +210,12 @@
             <RelativeLayout
                 android:id="@+id/user_apply_indetity_ly"
                 android:layout_width="fill_parent"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/setting_item_selector">
-
 
                 <com.bjxapp.worker.controls.XTextView
                     android:layout_width="wrap_content"
@@ -228,13 +224,14 @@
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/setting_item_selector"
                     android:text="上传证件照片"
-                    android:textColor="#545454"
+                    android:textColor="@color/main_text_color"
                     android:textSize="14sp" />
 
                 <com.bjxapp.worker.controls.XImageView
                     android:id="@+id/user_apply_upload_pic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="8dp"
+                    android:layout_height="14dp"
+                    android:scaleType="fitXY"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
@@ -245,7 +242,7 @@
             <RelativeLayout
                 android:id="@+id/user_apply_work_years_layout"
                 android:layout_width="fill_parent"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/setting_item_selector">
 
@@ -263,36 +260,35 @@
                 <EditText
                     android:id="@+id/user_apply_work_years_edit"
                     android:layout_width="wrap_content"
-                    android:layout_toRightOf="@+id/age_tv"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="16dp"
+                    android:layout_toRightOf="@+id/age_tv"
+                    android:background="@null"
+                    android:paddingBottom="5dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:background="@null"
-                    android:textColor="#545454"
                     android:text="10"
+                    android:textColor="#545454"
                     android:textSize="14sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="年"
-                    android:textColor="#545454"
+                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/user_apply_work_years_edit"
-                    android:layout_centerVertical="true"/>
+                    android:text="年"
+                    android:textColor="#545454" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/user_apply_work_sort_layout"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/setting_item_selector"
-                android:minHeight="50dp">
+                android:background="@drawable/setting_item_selector">
 
                 <com.bjxapp.worker.controls.XTextView
                     android:id="@+id/user_apply_work_sort_edit"
@@ -302,10 +298,10 @@
                     android:layout_marginRight="16dp"
                     android:layout_toLeftOf="@+id/user_apply_work_sort_right"
                     android:hint="选择您擅长的维修领域"
-                    android:textColor="#ABABAB"
                     android:paddingBottom="5dp"
                     android:paddingLeft="100dp"
                     android:paddingTop="5dp"
+                    android:textColor="#ABABAB"
                     android:textSize="14sp" />
 
                 <com.bjxapp.worker.controls.XTextView
@@ -321,8 +317,8 @@
 
                 <com.bjxapp.worker.controls.XImageView
                     android:id="@+id/user_apply_work_sort_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="8dp"
+                    android:layout_height="14dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
@@ -336,7 +332,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/setting_item_selector"
-                android:minHeight="50dp">
+                android:minHeight="45dp">
 
                 <com.bjxapp.worker.controls.XTextView
                     android:layout_width="90dp"
@@ -350,8 +346,9 @@
 
                 <com.bjxapp.worker.controls.XImageView
                     android:id="@+id/user_apply_set_pwd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="8dp"
+                    android:layout_height="14dp"
+                    android:scaleType="fitXY"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
@@ -381,11 +378,11 @@
 
                 <CheckBox
                     android:id="@+id/user_apply_protocol_check"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/check_box_protocol"
                     android:layout_marginRight="5dp"
+                    android:background="@drawable/check_box_protocol"
                     android:button="@null"
                     android:checked="true" />
 

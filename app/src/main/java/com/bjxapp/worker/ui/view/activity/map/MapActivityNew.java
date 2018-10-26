@@ -1,6 +1,7 @@
 package com.bjxapp.worker.ui.view.activity.map;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +24,10 @@ import butterknife.OnClick;
  */
 public class MapActivityNew extends Activity implements View.OnClickListener {
 
+    public static final String USER_LATITUDE = "latitude";
+    public static final String USER_LONGTITUDE = "longtitude";
+    public static final String USER_ADDRESS = "address";
+
     @BindView(R.id.am_map)
     public MapView mMapView;
 
@@ -37,23 +42,44 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
 
     private MapService mSer;
 
+    private double mUserLatitude = 39.931755;
+    private double mUserLongtitude = 116.535819;
+    private String mAddress = "北京科技大学";
+
+    public static final int MAP_RESULT_CODE = 0x03;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_new);
         ButterKnife.bind(this);
+        handleIntent();
         mDivider.setVisibility(View.GONE);
         mSer = new MapService();
+        mSer.setInitLocation(mUserLatitude , mUserLongtitude ,mAddress);
         mSer.init(this);
     }
 
+    private void handleIntent(){
+
+        Intent intent = getIntent();
+
+        if(intent != null){
+            mAddress = intent.getStringExtra(USER_ADDRESS);
+            mUserLatitude = intent.getDoubleExtra(USER_LATITUDE , 39.931755);
+            mUserLongtitude = intent.getDoubleExtra(USER_LONGTITUDE , 116.535819);
+        }
+
+    }
+
+
     @OnClick(R.id.title_image_back)
-    void clickBack(){
+    void clickBack() {
         finish();
     }
 
     @OnClick(R.id.search_ly)
-    void startSearch(){
+    void startSearch() {
         startMapSearchActivity();
     }
 
@@ -75,7 +101,7 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
     private void startMapSearchActivity() {
         Intent intent = new Intent();
         intent.setClass(this, MapSearchActivity.class);
-        startActivityForResult(intent , AppStaticVariable.MAP_SEARCH_CODE);
+        startActivityForResult(intent, AppStaticVariable.MAP_SEARCH_CODE);
     }
 
     @Override
@@ -111,5 +137,22 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
         mSer.onExit();
         mMapView.onDestroy();
     }
+
+    /**
+     *
+     * @return
+     */
+    public static final void goToActivityForResult(Activity context , double latitude , double longtitude , String address){
+
+        Intent intent = new Intent();
+        intent.setClass(context , MapActivityNew.class);
+
+        intent.putExtra(USER_LATITUDE ,latitude);
+        intent.putExtra(USER_LONGTITUDE , longtitude);
+        intent.putExtra(USER_ADDRESS ,address);
+
+        context.startActivityForResult(intent , MAP_RESULT_CODE);
+    }
+
 
 }

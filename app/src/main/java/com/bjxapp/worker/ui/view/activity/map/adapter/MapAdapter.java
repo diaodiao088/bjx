@@ -83,6 +83,11 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.VH> {
      * @param isRefresh 是否刷新
      */
     public void setDatas(List<PoiInfo> datas, boolean isRefresh) {
+
+        if (datas == null){
+            datas = new ArrayList<>();
+        }
+
         mList.clear();
         if (mUserPoiInfo != null && datas != null) {
             datas.add(0, mUserPoiInfo);

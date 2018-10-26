@@ -4,18 +4,15 @@ import android.app.ProgressDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MyLocationConfiguration;
-import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiInfo;
@@ -31,7 +28,6 @@ import com.baidu.mapapi.search.poi.PoiDetailSearchResult;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
-import com.bjxapp.worker.R;
 import com.bjxapp.worker.ui.view.activity.map.adapter.MapAdapter;
 
 import java.util.List;
@@ -65,6 +61,15 @@ public class MapService {
         initView();
         initSetting();
         initListener();
+    }
+
+    private double lat , lon;
+    private String address;
+
+    public void setInitLocation(double lat , double lon , String address){
+        this.lat = lat;
+        this.lon = lon;
+        this.address = address;
     }
 
     /**
@@ -151,36 +156,34 @@ public class MapService {
             public void locSuccess(BDLocation location) {
 
                 mProgressDialog.dismiss();
-                // 构造定位数据
-                MyLocationData locData = new MyLocationData.Builder()
-                        //设置精确度
-                        .accuracy(0)
-                        // 此处设置开发者获取到的方向信息，顺时针0-360
-                        .direction(0)
-                        .latitude(location.getLatitude())
-                        .longitude(location.getLongitude()).build();
 
-                // 设置定位数据
-                mBaiduMap.setMyLocationData(locData);
-                // 设置定位图层的配置（定位模式，是否允许方向信息，用户自定义定位图标）
-                BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-                        .fromResource(R.drawable.icon_user_mark);
-                //保存配置，定位图层显示方式，是否允许显示方向信息，用户自定义定位图标
-                MyLocationConfiguration config = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.FOLLOWING, true, mCurrentMarker);
-                mBaiduMap.setMyLocationConfiguration(config);
-                //移动到屏幕中心
-                LatLng latLng = setLatLng(location.getLatitude(), location.getLongitude());
-                setNewLatLngZoom(latLng);
+                if (lat != 0 && lon != 0 && !TextUtils.isEmpty(address)){
+                    //移动到屏幕中心
+                    LatLng latLng = setLatLng(lat, lon);
+                    setNewLatLngZoom(latLng);
 
-                //设置用户地址
-                PoiInfo userPoi = new PoiInfo();
-                userPoi.location = latLng;
+                    //设置用户地址
+                    PoiInfo userPoi = new PoiInfo();
+                    userPoi.location = latLng;
+                    userPoi.address = address;
+                    userPoi.name = "[位置]";
+                    mMapAdapter.setmUserPoiInfo(userPoi);
+                    mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+                }else{
+                    //移动到屏幕中心
+                    LatLng latLng = setLatLng(location.getLatitude(), location.getLongitude());
+                    setNewLatLngZoom(latLng);
 
-                userPoi.address = location.getAddrStr() + location.getLocationDescribe();
-                userPoi.name = "[位置]";
-                mMapAdapter.setmUserPoiInfo(userPoi);
+                    //设置用户地址
+                    PoiInfo userPoi = new PoiInfo();
+                    userPoi.location = latLng;
 
-                mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+                    userPoi.address = location.getAddrStr() + location.getLocationDescribe();
+                    userPoi.name = "[位置]";
+                    mMapAdapter.setmUserPoiInfo(userPoi);
+
+                    mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+                }
             }
 
             @Override

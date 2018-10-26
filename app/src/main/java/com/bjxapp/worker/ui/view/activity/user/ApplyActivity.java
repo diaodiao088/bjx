@@ -36,6 +36,7 @@ import com.bjxapp.worker.ui.view.activity.ChangeCityActivity;
 import com.bjxapp.worker.ui.view.activity.MapSelectActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
+import com.bjxapp.worker.ui.view.activity.map.MapActivityNew;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.BitmapUtils;
 import com.bjxapp.worker.utils.IDCardValidate;
@@ -65,9 +66,13 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
     @BindView(R.id.user_apply_head_image)
     XCircleImageView mHeadImage;
 
+    @BindView(R.id.user_name_edit)
+    XEditText mUserNameTv;
 
-    private Uri mPhotoUri;
-    private XEditText mUserNameEdit, mUserIDEdit;
+    @BindView(R.id.user_id_edit)
+    XEditText mUserIDEdit;
+
+
     private XTextView mUserOrderAreaEdit, mUserWorkTypesEdit;
     private XTextView mCityEditTv;
     private EditText mUserWorkYearsEdit;
@@ -89,6 +94,8 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
     private RelativeLayout mUploadImageLy;
     private RelativeLayout mPwdLy;
 
+    private Uri mPhotoUri;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_user_apply);
@@ -101,8 +108,6 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
         mTitleTextView.setText("师傅注册");
 
-        mUserNameEdit = (XEditText) findViewById(R.id.user_apply_name_edit);
-        mUserIDEdit = (XEditText) findViewById(R.id.user_apply_id_edit);
         mUserOrderAreaEdit = (XTextView) findViewById(R.id.user_apply_location_edit);
         mUserWorkYearsEdit = (EditText) findViewById(R.id.user_apply_work_years_edit);
         mUserWorkTypesEdit = (XTextView) findViewById(R.id.user_apply_work_sort_edit);
@@ -133,7 +138,8 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
     protected void initData() {
         //判断审核状态
         int status = ConfigManager.getInstance(context).getUserStatus();
-        if (status == -1) {
+
+        /*if (status == -1) {
             operationFlag = 0;
         } else if (status == 1) {
             operationFlag = 2;
@@ -164,7 +170,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         }
 
         if (operationFlag == 2) {
-            mUserNameEdit.setEnabled(false);
+            mUserNameTv.setEnabled(false);
             mUserIDEdit.setEnabled(false);
         }
 
@@ -174,7 +180,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
         if (operationFlag == 2 || operationFlag == 9) {
             mHeadImageLayout.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     @Override
@@ -270,12 +276,18 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
             return;
         }
 
-        if (mUserOrderAreaEdit.getTag() != null) {
+        Intent intent = new Intent();
+        intent.setClass(this, MapActivityNew.class);
+        startActivity(intent);
+
+
+
+        /*if (mUserOrderAreaEdit.getTag() != null) {
             LocationInfo locationInfo = (LocationInfo) mUserOrderAreaEdit.getTag();
             Utils.startMapSelectActivity(context, MapSelectActivity.class, locationInfo.getLatitude(), locationInfo.getLongitude(), locationInfo.getAddress(), locationInfo.getCity());
         } else {
             Utils.startMapSelectActivity(context, MapSelectActivity.class, Constant.USER_LOCATION_LATITUDE, Constant.USER_LOCATION_LONGITUDE, Constant.USER_LOCATION_ADDRESS, Constant.USER_LOCATION_CITY);
-        }
+        }*/
     }
 
     /*User head image setting begin*/
@@ -509,7 +521,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
             return;
         }
 
-        if (!Utils.isNotEmpty(mUserNameEdit.getText().toString())) {
+        if (!Utils.isNotEmpty(mUserNameTv.getText().toString())) {
             Utils.showShortToast(context, "请输入您的姓名！");
             return;
         }
@@ -547,7 +559,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         //save user infomation
         final UserApplyInfo applyInfo = new UserApplyInfo();
         applyInfo.setHeadImageUrl(mHeadImage.getTag().toString());
-        applyInfo.setPersonName(mUserNameEdit.getText().toString().trim());
+        applyInfo.setPersonName(mUserNameTv.getText().toString().trim());
         applyInfo.setCardNo(mUserIDEdit.getText().toString().trim());
 
         LocationInfo locationInfo = (LocationInfo) mUserOrderAreaEdit.getTag();
@@ -600,7 +612,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
                 mHeadImage.setTag(result.getHeadImageUrl());
                 ConfigManager.getInstance(context).setUserHeadImageUrl(result.getHeadImageUrl());
-                mUserNameEdit.setText(result.getPersonName());
+                mUserNameTv.setText(result.getPersonName());
                 mUserIDEdit.setText(result.getCardNo());
 
                 LocationInfo locationInfo = new LocationInfo();
