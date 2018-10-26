@@ -33,7 +33,7 @@ public class MessageDetailActivity extends BaseActivity implements OnClickListen
 
 	@Override
 	protected void initControl() {
-		mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+		mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
 		mTitleTextView.setText("通知详情");
 		mBackImageView = (XImageView) findViewById(R.id.title_image_back);
 		mBackImageView.setVisibility(View.VISIBLE);

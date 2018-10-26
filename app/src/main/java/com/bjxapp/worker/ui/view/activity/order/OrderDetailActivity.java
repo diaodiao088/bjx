@@ -248,7 +248,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     }
 
     private void initTitle() {
-        XTextView mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+        XTextView mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mTitleTextView.setText("订单详情");
         mBackImageView.setVisibility(View.VISIBLE);
     }

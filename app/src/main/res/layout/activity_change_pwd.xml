@@ -29,12 +29,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="4dp"
-            android:hint="  请输入6-10位数字、字母组合密码"
+            android:hint="请输入6-10位数字、字母组合密码"
+            android:paddingLeft="4dp"
             android:textSize="14sp"
             android:textColor="#545454"
             android:background="@drawable/chang_pwd_bg"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
+            android:textColorHint="@color/main_text_hint_color"
             />
 
     </LinearLayout>
@@ -61,12 +63,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="4dp"
-            android:hint="  请输入6-10位数字、字母组合密码"
+            android:paddingLeft="4dp"
+            android:hint="请输入6-10位数字、字母组合密码"
             android:textSize="14sp"
             android:textColor="#545454"
             android:background="@drawable/chang_pwd_bg"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
+            android:textColorHint="@color/main_text_hint_color"
             />
 
     </LinearLayout>

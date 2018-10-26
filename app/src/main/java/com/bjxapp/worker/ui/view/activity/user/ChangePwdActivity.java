@@ -16,6 +16,8 @@ import com.bjxapp.worker.utils.Utils;
 
 import java.util.regex.Pattern;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by zhangdan on 2018/9/10.
  * <p>
@@ -36,6 +38,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_change_pwd);
+        ButterKnife.bind(this);
         super.onCreate(savedInstanceState);
     }
 
@@ -46,7 +49,6 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void initView() {
-
         mOkBtn = findViewById(R.id.login_button_confirm);
         mBackIv = findViewById(R.id.title_image_back);
         mPwdTv = findViewById(R.id.enter_pwd_tv);
@@ -97,32 +99,29 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    // TODO: 2018/9/18
     private void tryChangePwd() {
 
         String pwd = mPwdTv.getText().toString();
         String pwdSure = mPwdSureTv.getText().toString();
 
-        if (TextUtils.isEmpty(pwd) || TextUtils.isEmpty(pwdSure)){
+        if (TextUtils.isEmpty(pwd) || TextUtils.isEmpty(pwdSure)) {
             Utils.showShortToast(context, "请输入密码！");
             return;
         }
 
-        if (!pwd.equals(pwdSure)){
+        if (!pwd.equals(pwdSure)) {
             Utils.showShortToast(context, "两次密码不一样！");
             return;
         }
 
-        boolean isMatch = Pattern.matches(pattern , pwd);
+        boolean isMatch = Pattern.matches(pattern, pwd);
 
-        if (!isMatch){
+        if (!isMatch) {
             Utils.showShortToast(context, "密码格式错误！");
         }
 
         // TODO: 2018/10/7 网络请求
 
-
     }
-
 
 }

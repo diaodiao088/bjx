@@ -37,7 +37,7 @@ public class OrderDetailAdditionActivity extends BaseActivity implements OnClick
 
 	@Override
 	protected void initControl() {
-		mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+		mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
 		mTitleTextView.setText("增项单");
 		mBackImageView = (XImageView) findViewById(R.id.title_image_back);
 		mBackImageView.setVisibility(View.VISIBLE);

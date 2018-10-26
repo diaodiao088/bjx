@@ -87,7 +87,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
     @Override
     protected void initControl() {
-        mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+        mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mTitleTextView.setText("师傅注册");
         mBackImageView = (XImageView) findViewById(R.id.title_image_back);
         mBackImageView.setVisibility(View.VISIBLE);

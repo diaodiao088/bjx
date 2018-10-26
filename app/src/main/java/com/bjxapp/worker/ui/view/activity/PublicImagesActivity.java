@@ -73,7 +73,7 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
 	protected void initControl() {
 		mWaitingDialog = new XWaitingDialog(context);
 		
-		mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+		mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
 		mTitle = getIntent().getStringExtra("title");
 		if(Utils.isNotEmpty(mTitle)){
 			mTitleTextView.setText(mTitle);

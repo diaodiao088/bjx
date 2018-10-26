@@ -42,7 +42,7 @@ public class SearchSingleActivity extends BaseActivity implements OnClickListene
 		mConsultType = bundle.getInt("type");
 		
 		String title = LogicFactory.getConsultLogic(context).getConsultTitle(mConsultType);
-		mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+		mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
 		mTitleTextView.setText(title);
 		mBackImageView = (XImageView) findViewById(R.id.title_image_back);
 		mBackImageView.setVisibility(View.VISIBLE);

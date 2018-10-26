@@ -316,7 +316,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     }
 
     private void findViewById() {
-        mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+        mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mRightImageView = (XImageView) findViewById(R.id.title_image_right);
     }
 

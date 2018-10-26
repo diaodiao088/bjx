@@ -48,7 +48,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity implements OnClick
 	protected void initControl() {
 		mRightTextView = (XTextView) findViewById(R.id.title_text_right);
 		mRightTextView.setText("提现历史");
-		mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+		mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
 		mTitleTextView.setText("提现");
 		mBackImageView = (XImageView) findViewById(R.id.title_image_back);
 		mBackImageView.setVisibility(View.VISIBLE);

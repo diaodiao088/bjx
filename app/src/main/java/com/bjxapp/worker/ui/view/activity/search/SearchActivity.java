@@ -72,7 +72,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener {
 		}
         
 		String title = LogicFactory.getConsultLogic(context).getConsultTitle(mConsultType);
-		mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+		mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
 		mTitleTextView.setText(title);
 		mSaveButton = (XButton) findViewById(R.id.layout_search_common_ok_button);
 		mBackImageView = (XImageView) findViewById(R.id.title_image_back);

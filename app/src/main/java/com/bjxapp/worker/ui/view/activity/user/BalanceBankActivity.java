@@ -8,7 +8,6 @@ import android.widget.EditText;
 
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.controls.XButton;
-import com.bjxapp.worker.controls.XEditText;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
@@ -38,7 +37,7 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
 
     @Override
     protected void initControl() {
-        mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+        mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mTitleTextView.setText("填写银行卡信息");
         mBackImageView = (XImageView) findViewById(R.id.title_image_back);
         mBackImageView.setVisibility(View.VISIBLE);

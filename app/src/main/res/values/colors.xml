@@ -39,5 +39,10 @@
 
     <!--文字标准黑色-->
     <color name="app_txt_black">#333333</color>
+
+    <color name="main_text_color">#545454</color>
+
+    <color name="main_text_hint_color">#A6A6A6</color>
+
     
 </resources>

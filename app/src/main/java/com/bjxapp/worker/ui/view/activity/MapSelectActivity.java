@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMarkerDragListener;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -84,7 +83,7 @@ public class MapSelectActivity extends BaseActivity implements OnClickListener {
 
     @Override
     protected void initControl() {
-        mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+        mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mTitleTextView.setText("选择服务范围");
         mBackImageView = (XImageView) findViewById(R.id.title_image_back);
         mBackImageView.setVisibility(View.VISIBLE);

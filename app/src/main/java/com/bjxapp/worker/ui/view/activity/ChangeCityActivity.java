@@ -54,7 +54,7 @@ public class ChangeCityActivity extends BaseActivity implements View.OnClickList
         myAdapter = new MyAdapter();
         mRecyclerView.setAdapter(myAdapter);
         mTitleRootView = findViewById(R.id.title_bar_root);
-        mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+        mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mTitleTextView.setText("选择接单城市");
     }
 

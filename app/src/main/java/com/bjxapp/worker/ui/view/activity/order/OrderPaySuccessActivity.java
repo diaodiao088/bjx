@@ -26,7 +26,7 @@ public class OrderPaySuccessActivity extends BaseActivity implements OnClickList
 
 	@Override
 	protected void initControl() {
-		mTitleTextView = (XTextView) findViewById(R.id.title_text_title);
+		mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
 		mTitleTextView.setText("订单支付成功");
 		mBackImageView = (XImageView) findViewById(R.id.title_image_back);
 		mBackImageView.setVisibility(View.VISIBLE);

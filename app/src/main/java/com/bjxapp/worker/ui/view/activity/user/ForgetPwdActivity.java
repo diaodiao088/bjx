@@ -26,21 +26,34 @@ import com.bjxapp.worker.model.XResult;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
     protected static final String TAG = "登陆界面";
-    private XTextView mTitleTextView;
-    private XImageView mBackImageView, mVerifyCodeImageView;
+
+    @BindView(R.id.title_text_tv)
+    XTextView mTitleTextView;
+
+    private XImageView mVerifyCodeImageView;
+
     private XButton mLoginButton;
     private XButton mSendAuthButton;
     private XEditText mMobileEditText;
     private XEditText mPasswordEditText, mVerifyCodeEditText;
-    private int mKeyBackClickCount = 0;
     private XWaitingDialog mWaitingDialog;
     private String mLoginKey = "";
+
+    @OnClick(R.id.title_image_back)
+    void onBack(){
+        finish();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_forget_pwd);
+        ButterKnife.bind(this);
         super.onCreate(savedInstanceState);
     }
 
@@ -55,6 +68,8 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
         mVerifyCodeImageView = (XImageView) findViewById(R.id.login_image_verify_code);
 
         mWaitingDialog = new XWaitingDialog(context);
+
+        mTitleTextView.setText("找回密码");
     }
 
     @Override
