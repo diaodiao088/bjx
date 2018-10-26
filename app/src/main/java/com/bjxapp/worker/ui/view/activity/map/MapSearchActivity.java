@@ -20,10 +20,7 @@ import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.baidu.mapapi.search.sug.SuggestionSearchOption;
 import com.bjxapp.worker.R;
-import com.xcoder.lib.annotation.event.OnClick;
-import com.xcoder.lib.utils.Utils;
-import com.xz.map.function.adapter.MapSearchAdapter;
-import com.xz.xadapter.XRvPureAdapter;
+import com.bjxapp.worker.ui.view.activity.map.adapter.MapSearchAdapter;
 
 import java.util.Iterator;
 import java.util.List;
@@ -40,10 +37,10 @@ import butterknife.OnClick;
 public class MapSearchActivity extends Activity {
 
     @BindView(R.id.ams_rv)
-    private RecyclerView mRecyclerView;
+    public RecyclerView mRecyclerView;
 
     @BindView(R.id.search_edit)
-    private EditText mEditText;
+    public EditText mEditText;
 
     public SuggestionSearch mSuggestionSearch;
 
@@ -54,6 +51,7 @@ public class MapSearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_search);
         ButterKnife.bind(this);
+        init();
     }
 
     @OnClick(R.id.img_back)
@@ -61,9 +59,7 @@ public class MapSearchActivity extends Activity {
         finish();
     }
 
-
-    @Override
-    public void onXCoderCreate(Bundle savedInstanceState) {
+    private void init(){
         initView();
         initSearch();
         InputMethodManager inputManager =
@@ -94,7 +90,7 @@ public class MapSearchActivity extends Activity {
                         itParent.remove();
                     }
                 }
-                mMapSearchAdapter.setDatas(ssList, true);
+                mMapSearchAdapter.setDatas(ssList);
             }
         });
     }
@@ -106,7 +102,7 @@ public class MapSearchActivity extends Activity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         mMapSearchAdapter = new MapSearchAdapter();
-        mMapSearchAdapter.setOnItemClickListener(new XRvPureAdapter.OnItemClickListener() {
+        mMapSearchAdapter.setItemClickListener(new MapSearchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 SuggestionResult.SuggestionInfo ss = mMapSearchAdapter.getItem(position);
@@ -136,23 +132,15 @@ public class MapSearchActivity extends Activity {
             public void afterTextChanged(Editable s) {
                 // 表示最终内容
                 String mapInput = mEditText.getText().toString().trim();
-                if (!Utils.isEmpty(mapInput)) {
+                if (!TextUtils.isEmpty(mapInput)) {
                     //搜索关键词
                     mSuggestionSearch.requestSuggestion((new SuggestionSearchOption())
-                            .keyword(mapInput).city("长沙")
+                            .keyword(mapInput).city("北京")
                     );
                 }
             }
         };
         mEditText.addTextChangedListener(tw);
-
-        findViewById(R.id.ams_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
     }
 
 

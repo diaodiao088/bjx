@@ -54,7 +54,7 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
 
     @OnClick(R.id.search_ly)
     void startSearch(){
-
+        startMapSearchActivity();
     }
 
     public void onClick(View view) {
@@ -74,7 +74,7 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
 
     private void startMapSearchActivity() {
         Intent intent = new Intent();
-      //  intent.setClass(this, MapSearchActivity.class);
+        intent.setClass(this, MapSearchActivity.class);
         startActivityForResult(intent , AppStaticVariable.MAP_SEARCH_CODE);
     }
 

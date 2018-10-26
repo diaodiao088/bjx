@@ -33,14 +33,29 @@ import com.bjxapp.worker.utils.Utils;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LoginActivity extends BaseActivity implements OnClickListener {
     protected static final String TAG = "登陆界面";
-    private XTextView mTitleTextView;
-    private XImageView mBackImageView, mVerifyCodeImageView;
+
+    @BindView(R.id.login_image_verify_code)
+    XImageView mVerifyCodeImageView;
+
+    @BindView(R.id.login_button_login)
     private XButton mLoginButton;
+
+    @BindView(R.id.login_button_sendauthcode)
     private XButton mSendAuthButton;
+
+    @BindView(R.id.login_edit_mobile)
     private XEditText mMobileEditText;
+
+
     private XEditText mPasswordEditText, mVerifyCodeEditText;
+
+
+
     private int mKeyBackClickCount = 0;
     private XWaitingDialog mWaitingDialog;
     private String mLoginKey = "";
@@ -49,21 +64,18 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_user_login_new);
+        ButterKnife.bind(this);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void initControl() {
-        mLoginButton = (XButton) findViewById(R.id.login_button_login);
-        mSendAuthButton = (XButton) findViewById(R.id.login_button_sendauthcode);
         mMobileEditText = (XEditText) findViewById(R.id.login_edit_mobile);
         mPasswordEditText = (XEditText) findViewById(R.id.login_edit_password);
 
         mVerifyCodeEditText = (XEditText) findViewById(R.id.login_edit_verify_code);
-        mVerifyCodeImageView = (XImageView) findViewById(R.id.login_image_verify_code);
 
         mLoginPwdTv = findViewById(R.id.pwd_login_tv);
-
         mWaitingDialog = new XWaitingDialog(context);
     }
 
@@ -321,9 +333,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         super.onDestroy();
     }
 
-    public static void goToActivity(Context ctx){
+    public static void goToActivity(Context ctx) {
         Intent intent = new Intent();
-        intent.setClass(ctx , LoginActivity.class);
+        intent.setClass(ctx, LoginActivity.class);
         ctx.startActivity(intent);
     }
 

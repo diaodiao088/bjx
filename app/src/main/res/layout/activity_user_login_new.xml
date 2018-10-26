@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <ImageView
@@ -71,8 +71,8 @@
                 android:layout_height="32dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:background="@color/gray"
                 android:layout_marginRight="10dp"
+                android:background="@color/gray"
                 android:gravity="center" />
         </RelativeLayout>
 
@@ -108,11 +108,11 @@
                 android:layout_height="32dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/button_background_gray"
                 android:gravity="center"
                 android:text="获取验证码"
                 android:textColor="@color/black"
-                android:layout_marginRight="10dp"
                 android:textSize="12sp" />
         </RelativeLayout>
 
@@ -123,9 +123,9 @@
         android:id="@+id/login_button_login"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_marginTop="15dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/button_background_green"
         android:paddingBottom="7dp"
         android:paddingTop="7dp"
@@ -137,13 +137,11 @@
         android:id="@+id/pwd_login_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="账号密码登录"
-        android:textSize="14sp"
-        android:textColor="#8D8D8D"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
-        />
-
+        android:text="账号密码登录"
+        android:textColor="#8D8D8D"
+        android:textSize="14sp" />
 
 
 </LinearLayout>

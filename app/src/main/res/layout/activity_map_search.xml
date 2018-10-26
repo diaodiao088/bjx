@@ -30,7 +30,9 @@
             android:layout_marginLeft="25dp"
             android:gravity="center_vertical"
             android:hint="请输入大区/小区等进行搜索"
+            android:background="@drawable/search_bg"
             android:textSize="14sp"
+            android:paddingLeft="8dp"
             android:textColorHint="#999999"
             />
 

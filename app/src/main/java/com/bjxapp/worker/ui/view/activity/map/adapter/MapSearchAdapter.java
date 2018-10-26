@@ -1,46 +1,25 @@
 package com.bjxapp.worker.ui.view.activity.map.adapter;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.baidu.mapapi.search.core.PoiInfo;
-import com.bjxapp.worker.App;
+import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.bjxapp.worker.R;
-import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * Created by xz on 2017/8/9 0009.
- * 地图 地址列表 适配器
- *
- * @author xz
+ * Created by zhangdan on 2018/10/26.
+ * comments:
  */
 
-public class MapAdapter extends RecyclerView.Adapter<MapAdapter.VH> {
-    private int mIndexTag = 0;
-    private PoiInfo mUserPoiInfo;
+public class MapSearchAdapter extends RecyclerView.Adapter<MapSearchAdapter.VH> {
 
-    private ArrayList<PoiInfo> mList = new ArrayList<>();
-
-    public int getmIndexTag() {
-        return mIndexTag;
-    }
-
-    public void setmUserPoiInfo(PoiInfo userPoiInfo) {
-        this.mUserPoiInfo = userPoiInfo;
-    }
-
-    public void setmIndexTag(int mIndexTag) {
-        this.mIndexTag = mIndexTag;
-        notifyDataSetChanged();
-    }
+    private ArrayList<SuggestionResult.SuggestionInfo> mList = new ArrayList<>();
 
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,48 +29,32 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.VH> {
         return new VH(view);
     }
 
+    public void setDatas(List<SuggestionResult.SuggestionInfo> list) {
+        mList.clear();
+        mList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+
     @Override
     public void onBindViewHolder(final VH holder, int position) {
-        PoiInfo poiInfo = mList.get(position);
 
-        holder.getmLongName().setText(poiInfo.address);
-        holder.getmShortName().setText(poiInfo.name);
+        SuggestionResult.SuggestionInfo info = mList.get(position);
+
+        holder.getmShortName().setText(info.getAddress());
+
+        holder.getmLongName().setText(info.getCity() + info.district + info.key);
 
         holder.getmRootView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null){
+                if (mListener != null) {
                     int position = holder.getAdapterPosition();
-                    mListener.onItemClick(v , holder , position);
+                    mListener.onItemClick(v, holder, position);
                 }
             }
         });
-
-        if (mIndexTag == position) {
-            holder.getmLongName().setTextColor(ContextCompat.getColor(App.getInstance(), R.color.app_sub_color));
-            holder.getmShortName().setTextColor(ContextCompat.getColor(App.getInstance(), R.color.app_sub_color));
-        } else {
-            holder.getmShortName().setTextColor(ContextCompat.getColor(App.getInstance(), R.color.app_txt_black));
-            holder.getmLongName().setTextColor(ContextCompat.getColor(App.getInstance(), R.color.app_txt_gray_light));
-        }
     }
-
-    /**
-     * 重写此方法，每次更新数据后，item为第一个
-     *
-     * @param datas     数据
-     * @param isRefresh 是否刷新
-     */
-    public void setDatas(List<PoiInfo> datas, boolean isRefresh) {
-        mList.clear();
-        if (mUserPoiInfo != null && datas != null) {
-            datas.add(0, mUserPoiInfo);
-        }
-        mList.addAll(datas);
-        mIndexTag = 0;
-        notifyDataSetChanged();
-    }
-
 
     @Override
     public int getItemCount() {
@@ -137,19 +100,18 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.VH> {
         }
     }
 
-    public PoiInfo getItem(int position){
+    public SuggestionResult.SuggestionInfo getItem(int position) {
 
-        if (mList == null || mList.isEmpty()){
+        if (mList == null || mList.isEmpty()) {
             return null;
         }
 
         return mList.get(position);
     }
 
-
     public OnItemClickListener mListener;
 
-    public void setItemClickListener(OnItemClickListener listener){
+    public void setItemClickListener(OnItemClickListener listener) {
         this.mListener = listener;
     }
 
@@ -158,5 +120,6 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.VH> {
         void onItemClick(View view, RecyclerView.ViewHolder holder, int position);
 
     }
+
 
 }

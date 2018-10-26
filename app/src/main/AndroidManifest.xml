@@ -77,11 +77,11 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"></service>
+            android:process=":remote" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="Tbq7T1k2m361R7aGHUOhoG7HDTSm7X1u"/>
+            android:value="Tbq7T1k2m361R7aGHUOhoG7HDTSm7X1u" />
 
         <!-- baidu location end -->
 
@@ -133,12 +133,12 @@
             android:theme="@style/Theme.AppStartLoad">
 
 
-
             <intent-filter>
                 <data
                     android:host="bjxapp.com"
-                    android:scheme="baijiaxiu"/>
+                    android:scheme="baijiaxiu" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
@@ -147,7 +147,7 @@
             android:name="com.bjxapp.worker.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme"/>
+            android:theme="@style/XAppTheme" />
 
         <activity
             android:name=".ui.view.activity.order.AddImageActivity"
@@ -177,7 +177,7 @@
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.user.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme"/>
+            android:theme="@style/XAppTheme" />
         <activity
             android:name=".ui.view.activity.ChangeCityActivity"
             android:screenOrientation="portrait"
@@ -212,20 +212,17 @@
             android:screenOrientation="portrait"></activity>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.MapSelectActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.view.activity.map.MapActivityNew">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity
+            android:name=".ui.view.activity.map.MapActivityNew"
+            android:screenOrientation="portrait" />
 
+        <activity android:name=".ui.view.activity.map.MapSearchActivity" />
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.SettingActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.WebViewActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
