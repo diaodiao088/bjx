@@ -131,10 +131,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppStartLoad">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
 
             <intent-filter>
                 <data
@@ -196,7 +193,12 @@
         <activity
             android:name=".ui.view.activity.user.ChangePwdActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme" />
+            android:theme="@style/XAppTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.user.ApplyActivity"
             android:screenOrientation="portrait"></activity>

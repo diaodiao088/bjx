@@ -10,79 +10,76 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginLeft="18dp"
         android:layout_marginRight="18dp"
         android:layout_marginTop="15dp"
-        android:gravity="center">
-        
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="输入密码"
             android:textColor="#545454"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/enter_pwd_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="4dp"
-            android:hint="请输入6-10位数字、字母组合密码"
-            android:paddingLeft="4dp"
-            android:textSize="14sp"
-            android:textColor="#545454"
+            android:layout_weight="1"
             android:background="@drawable/chang_pwd_bg"
-            android:paddingTop="10dp"
+            android:hint="请输入6-10位数字、字母组合密码"
             android:paddingBottom="10dp"
+            android:paddingLeft="4dp"
+            android:paddingTop="10dp"
+            android:textColor="#545454"
             android:textColorHint="@color/main_text_hint_color"
-            />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginLeft="18dp"
         android:layout_marginRight="18dp"
         android:layout_marginTop="6dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="确认密码"
             android:textColor="#545454"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/enter_pwd_tv_sure"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="4dp"
-            android:paddingLeft="4dp"
-            android:hint="请输入6-10位数字、字母组合密码"
-            android:textSize="14sp"
-            android:textColor="#545454"
+            android:layout_weight="1"
             android:background="@drawable/chang_pwd_bg"
-            android:paddingTop="10dp"
+            android:hint="请输入6-10位数字、字母组合密码"
             android:paddingBottom="10dp"
+            android:paddingLeft="4dp"
+            android:paddingTop="10dp"
+            android:textColor="#545454"
             android:textColorHint="@color/main_text_hint_color"
-            />
+            android:textSize="14sp" />
 
     </LinearLayout>
-
 
     <com.bjxapp.worker.controls.XButton
         android:id="@+id/login_button_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/button_background_green"
         android:paddingBottom="11dp"
         android:paddingTop="11dp"

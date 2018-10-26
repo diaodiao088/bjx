@@ -1,10 +1,5 @@
 package com.bjxapp.worker.ui.view.activity.user;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.apache.http.message.BasicNameValuePair;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -24,6 +19,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XCircleImageView;
@@ -48,14 +44,28 @@ import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.image.BitmapManager;
 import com.bjxapp.worker.utils.image.PictureUploadUtils;
-import com.bjxapp.worker.R;
+
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ApplyActivity extends BaseActivity implements OnClickListener {
     protected static final String TAG = "注册界面";
-    private XTextView mTitleTextView;
-    private XImageView mBackImageView;
 
-    private XCircleImageView mHeadImage;
+    /* title bar */
+    @BindView(R.id.title_text_tv)
+    XTextView mTitleTextView;
+    @BindView(R.id.title_image_back)
+    XImageView mBackImageView;
+
+    @BindView(R.id.user_apply_head_image)
+    XCircleImageView mHeadImage;
+
+
     private Uri mPhotoUri;
     private XEditText mUserNameEdit, mUserIDEdit;
     private XTextView mUserOrderAreaEdit, mUserWorkTypesEdit;
@@ -82,17 +92,15 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_user_apply);
+        ButterKnife.bind(this);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void initControl() {
-        mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
-        mTitleTextView.setText("师傅注册");
-        mBackImageView = (XImageView) findViewById(R.id.title_image_back);
-        mBackImageView.setVisibility(View.VISIBLE);
 
-        mHeadImage = (XCircleImageView) findViewById(R.id.user_apply_head_image);
+        mTitleTextView.setText("师傅注册");
+
         mUserNameEdit = (XEditText) findViewById(R.id.user_apply_name_edit);
         mUserIDEdit = (XEditText) findViewById(R.id.user_apply_id_edit);
         mUserOrderAreaEdit = (XTextView) findViewById(R.id.user_apply_location_edit);

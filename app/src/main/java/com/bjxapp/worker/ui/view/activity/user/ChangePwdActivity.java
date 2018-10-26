@@ -10,12 +10,14 @@ import android.widget.EditText;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XImageView;
+import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
 
 import java.util.regex.Pattern;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -33,12 +35,18 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
     private EditText mPwdTv;
     private EditText mPwdSureTv;
 
+    @BindView(R.id.title_text_tv)
+    XTextView mTitleTv;
+
     String pattern = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_change_pwd);
         ButterKnife.bind(this);
+
+        mTitleTv.setText("设置密码");
+
         super.onCreate(savedInstanceState);
     }
 
@@ -70,7 +78,6 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
     protected String getPageName() {
         return TAG;
     }
-
 
     public static void goToActivityForResult(Activity ctx) {
         Intent intent = new Intent();
