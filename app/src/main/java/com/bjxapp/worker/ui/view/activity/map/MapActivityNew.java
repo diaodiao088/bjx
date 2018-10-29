@@ -1,7 +1,6 @@
 package com.bjxapp.worker.ui.view.activity.map;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -139,7 +138,7 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-     //   mSer.onExit();
+        mSer.onExit();
         mMapView.onDestroy();
     }
 

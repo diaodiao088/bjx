@@ -24,6 +24,7 @@ import com.bjxapp.worker.model.FirstPageResult;
 import com.bjxapp.worker.model.ReceiveOrder;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
+import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.Utils;
 
 import java.text.SimpleDateFormat;
@@ -89,6 +90,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
     public void initView() {
         mListView = mRootView.findViewById(R.id.main_first_order_listview);
+        mListView.setDividerHeight(DimenUtils.dp2px(5 , getContext()));
         mOrderAdapter = new OrderAdapter(mRootView.getContext(), mOrdersArray);
         mListView.setAdapter(mOrderAdapter);
 

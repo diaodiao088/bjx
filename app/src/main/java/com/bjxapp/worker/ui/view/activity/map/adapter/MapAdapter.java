@@ -89,7 +89,7 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.VH> {
         }
 
         mList.clear();
-        if (mUserPoiInfo != null && datas != null) {
+        if (mUserPoiInfo != null) {
             datas.add(0, mUserPoiInfo);
         }
         mList.addAll(datas);

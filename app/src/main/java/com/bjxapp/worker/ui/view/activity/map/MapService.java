@@ -1,6 +1,8 @@
 package com.bjxapp.worker.ui.view.activity.map;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +34,9 @@ import com.bjxapp.worker.ui.view.activity.map.adapter.MapAdapter;
 
 import java.util.List;
 
+import static com.bjxapp.worker.ui.view.activity.map.MapActivityNew.USER_ADDRESS;
+import static com.bjxapp.worker.ui.view.activity.map.MapActivityNew.USER_LONGTITUDE;
+
 /**
  * Created by xz on 2017/8/8 0008.
  *
@@ -49,7 +54,7 @@ public class MapService {
     private MapAdapter mMapAdapter;
     private PoiSearch mPoiSearch;
     private MapPositioning mMapPositioning;
-    private GeoCoder mGeoCoder;
+    private GeoCoder mGeoCoder = GeoCoder.newInstance();
     /**
      * 是否是点击列表导致的移动
      */
@@ -63,10 +68,10 @@ public class MapService {
         initListener();
     }
 
-    private double lat , lon;
+    private double lat, lon;
     private String address;
 
-    public void setInitLocation(double lat , double lon , String address){
+    public void setInitLocation(double lat, double lon, String address) {
         this.lat = lat;
         this.lon = lon;
         this.address = address;
@@ -88,6 +93,13 @@ public class MapService {
                 PoiInfo poiInfo = mMapAdapter.getItem(position);
                 setNewLatLngZoom(poiInfo.location);
                 mMapAdapter.setmIndexTag(position);
+
+                Intent intent = new Intent();
+                intent.putExtra(MapActivityNew.USER_LATITUDE, getSelectLat());
+                intent.putExtra(USER_LONGTITUDE, getSelectLon());
+                intent.putExtra(USER_ADDRESS, getSelectAddress());
+                mActivity.setResult(Activity.RESULT_OK, intent);
+                mActivity.finish();
             }
         });
         mActivity.mRecyclerView.setAdapter(mMapAdapter);
@@ -157,7 +169,7 @@ public class MapService {
 
                 mProgressDialog.dismiss();
 
-                if (lat != 0 && lon != 0 && !TextUtils.isEmpty(address)){
+                if (lat != 0 && lon != 0 && !TextUtils.isEmpty(address)) {
                     //移动到屏幕中心
                     LatLng latLng = setLatLng(lat, lon);
                     setNewLatLngZoom(latLng);
@@ -169,7 +181,7 @@ public class MapService {
                     userPoi.name = "[位置]";
                     mMapAdapter.setmUserPoiInfo(userPoi);
                     mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
-                }else{
+                } else {
                     //移动到屏幕中心
                     LatLng latLng = setLatLng(location.getLatitude(), location.getLongitude());
                     setNewLatLngZoom(latLng);
@@ -245,7 +257,6 @@ public class MapService {
         //mPoiSearch.searchInCity((new PoiCitySearchOption()).city(“北京”).keyword(“美食”).pageNum(10)).pageNum(10));
         mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
         //地里编码
-        mGeoCoder = GeoCoder.newInstance();
         OnGetGeoCoderResultListener getGeoListener = new OnGetGeoCoderResultListener() {
             @Override
             public void onGetGeoCodeResult(GeoCodeResult result) {
@@ -367,17 +378,15 @@ public class MapService {
     public String getSelectAddress() {
         PoiInfo item = mMapAdapter.getItem(mMapAdapter.getmIndexTag());
 
-        if (item != null) {
+        if ("[位置]".equals(item.name)) {
+            if (TextUtils.isEmpty(item.address)) {
+                return item.city;
+            }
+            return item.address;
+        } else {
             return item.name;
         }
-
-        return "";
     }
-
-    /*public void doSubmit(){
-        PoiInfo item = mMapAdapter.getItem(mMapAdapter.getmIndexTag());
-        ToastUtil.showToast("经度:"+item.location.longitude+"-纬度:"+item.location.latitude+"-地址:"+item.address);
-    }*/
 
     public void onExit() {
         if (mMapPositioning != null) {

@@ -24,10 +24,7 @@ public class MapPositioning {
     private BDLocationListener bdLocationListener;
 
     public static MapPositioning getInstance() {
-        if (mMapPositioning == null) {
-            mMapPositioning = new MapPositioning();
-        }
-        return mMapPositioning;
+        return new MapPositioning();
     }
 
     private MapPositioning() {

@@ -132,6 +132,11 @@
             android:theme="@style/Theme.AppStartLoad">
 
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
                 <data
                     android:host="bjxapp.com"
                     android:scheme="baijiaxiu" />
@@ -198,21 +203,20 @@
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.user.ApplyActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
+
+
         </activity>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.PublicActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.MessageDetailActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.PublicImagesActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.MapActivity"
             android:screenOrientation="portrait"></activity>
@@ -221,11 +225,10 @@
             android:name=".ui.view.activity.map.MapActivityNew"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.view.activity.map.MapSearchActivity" />
+        <activity android:name=".ui.view.activity.map.MapSearchActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity
-            android:name="com.bjxapp.worker.ui.view.activity.SettingActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.WebViewActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"

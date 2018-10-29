@@ -70,7 +70,6 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
         return TAG;
     }
 
-
     public static void goToActivity(Context ctx) {
         Intent intent = new Intent();
         intent.setClass(ctx, LoginPwdActivity.class);
@@ -103,9 +102,12 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
         String pwd = mPwdTv.getText().toString().trim();
 
         if (!TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(pwd)) {
+            // TODO: 2018/10/29
 
-        } else {
-            Utils.showLongToast(LoginPwdActivity.this, getString(R.string.login_account_warning));
+        } else if (TextUtils.isEmpty(phoneNumber)){
+            Utils.showLongToast(LoginPwdActivity.this, "请填写手机号");
+        } else if (TextUtils.isEmpty(pwd)){
+            Utils.showLongToast(LoginPwdActivity.this, "请输入密码");
         }
     }
 
