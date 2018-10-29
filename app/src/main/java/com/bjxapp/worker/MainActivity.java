@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -46,6 +47,10 @@ import com.bjxapp.worker.utils.zxing.CaptureActivity;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MainActivity extends BaseFragmentActivity implements OnClickListener {
 
     protected static final String TAG = "主界面";
@@ -69,10 +74,22 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private MyLocationListener listener;
     private XWaitingDialog mWaitingDialog;
 
+    @BindView(R.id.title_right_small_tv)
+    TextView mTitleRightTv;
+
+    @BindView(R.id.title_text_tv)
+    TextView mTitleTv;
+
+    @OnClick
+    void onRightClick(){
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         //初始化推送
         XPushManager.startPush(getApplicationContext());
@@ -266,28 +283,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         }
     };
 
-    public void test() {
-        /*
-        final CustomDialog customDialog = new CustomDialog(MainActivity.this,"","你们这帮鸟人，每月1至5日提现，将在5日后的第一个工作日汇钱！",true);
-        customDialog.show();
-        customDialog.setClicklistener(new CustomDialog.ClickListenerInterface() {
-            @Override
-            public void doConfirm() {
-            	customDialog.dismiss();
-            }
-			@Override
-			public void doCancel() {
-				customDialog.dismiss();	
-			}
-        });
-        */
-		
-		/*
-		LoadingDialog loadingDialog = new LoadingDialog(MainActivity.this);
-		loadingDialog.show();
-		*/
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -318,6 +313,8 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private void findViewById() {
         mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mRightImageView = (XImageView) findViewById(R.id.title_image_right);
+        mTitleTv.setText("首页");
+        mTitleRightTv.setText("加入我们");
     }
 
     private void initViews() {

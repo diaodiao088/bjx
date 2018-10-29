@@ -131,8 +131,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppStartLoad">
 
-
-
             <intent-filter>
                 <data
                     android:host="bjxapp.com"
@@ -151,9 +149,11 @@
 
         <activity
             android:name=".ui.view.activity.order.AddImageActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"/>
 
-        </activity>
+        <activity android:name=".ui.view.activity.JoinUsActivity"
+            android:screenOrientation="portrait"/>
+
 
         <activity
             android:name=".ui.view.activity.order.ImageOrderActivity"

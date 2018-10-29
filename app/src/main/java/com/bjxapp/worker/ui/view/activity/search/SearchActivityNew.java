@@ -9,6 +9,7 @@ import android.view.View;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XImageView;
+import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.ui.view.activity.widget.treeview.Node;
 import com.bjxapp.worker.ui.view.activity.widget.treeview.SimpleTreeRecyclerAdapter;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
@@ -16,6 +17,10 @@ import com.bjxapp.worker.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by zhangdan on 2018/9/13.
@@ -32,6 +37,14 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
     private XButton mOkBtn;
     private XImageView mBackBtn;
 
+    @BindView(R.id.title_text_tv)
+    public XTextView mTitleTv;
+
+    @OnClick(R.id.title_image_back)
+    void onBack(){
+        onBackPressed();
+    }
+
     protected List<Node> mDatas = new ArrayList<Node>();
     private List<Node> mSelectedList = new ArrayList<>();
 
@@ -39,6 +52,8 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.layout_search_new);
         super.onCreate(savedInstanceState);
+        ButterKnife.bind(this);
+        mTitleTv.setText("选择维修领域");
     }
 
     @Override
@@ -110,6 +125,11 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     /**

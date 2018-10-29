@@ -373,7 +373,7 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
             switch (requestCode) {
                 case Constant.ACTIVITY_ORDER_DETAIL_RESULT_CODE:
                     if (resultCode == Activity.RESULT_OK) {
-                       // onFirstLoadData(true);
+                        // onFirstLoadData(true);
                     }
                     break;
             }
