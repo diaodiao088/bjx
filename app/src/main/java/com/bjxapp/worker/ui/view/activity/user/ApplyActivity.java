@@ -33,7 +33,6 @@ import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.LocationInfo;
 import com.bjxapp.worker.model.UserApplyInfo;
 import com.bjxapp.worker.ui.view.activity.ChangeCityActivity;
-import com.bjxapp.worker.ui.view.activity.MapSelectActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
 import com.bjxapp.worker.ui.view.activity.map.MapActivityNew;
@@ -71,7 +70,6 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
     @BindView(R.id.user_id_edit)
     XEditText mUserIDEdit;
-
 
     private XTextView mUserOrderAreaEdit, mUserWorkTypesEdit;
     private XTextView mCityEditTv;
@@ -276,18 +274,12 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
             return;
         }
 
-        Intent intent = new Intent();
-        intent.setClass(this, MapActivityNew.class);
-        startActivity(intent);
-
-
-
-        /*if (mUserOrderAreaEdit.getTag() != null) {
+        if (mUserOrderAreaEdit.getTag() != null) {
             LocationInfo locationInfo = (LocationInfo) mUserOrderAreaEdit.getTag();
-            Utils.startMapSelectActivity(context, MapSelectActivity.class, locationInfo.getLatitude(), locationInfo.getLongitude(), locationInfo.getAddress(), locationInfo.getCity());
+            Utils.startMapSelectActivity(context, MapActivityNew.class, locationInfo.getLatitude(), locationInfo.getLongitude(), locationInfo.getAddress(), locationInfo.getCity());
         } else {
-            Utils.startMapSelectActivity(context, MapSelectActivity.class, Constant.USER_LOCATION_LATITUDE, Constant.USER_LOCATION_LONGITUDE, Constant.USER_LOCATION_ADDRESS, Constant.USER_LOCATION_CITY);
-        }*/
+            Utils.startMapSelectActivity(context, MapActivityNew.class, Constant.USER_LOCATION_LATITUDE, Constant.USER_LOCATION_LONGITUDE, Constant.USER_LOCATION_ADDRESS, Constant.USER_LOCATION_CITY);
+        }
     }
 
     /*User head image setting begin*/
@@ -373,10 +365,9 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                 case Constant.CONSULT_WORK_MAP:
                     if (resultCode == RESULT_OK) {
                         LocationInfo locationInfo = new LocationInfo();
-                        locationInfo.setLatitude(data.getDoubleExtra("latitude", 0.0));
-                        locationInfo.setLongitude(data.getDoubleExtra("longitude", 0.0));
-                        locationInfo.setAddress(data.getStringExtra("address"));
-                        locationInfo.setCity(data.getStringExtra("city"));
+                        locationInfo.setLatitude(data.getDoubleExtra(MapActivityNew.USER_LATITUDE, 0.0));
+                        locationInfo.setLongitude(data.getDoubleExtra(MapActivityNew.USER_LONGTITUDE, 0.0));
+                        locationInfo.setAddress(data.getStringExtra(MapActivityNew.USER_ADDRESS));
                         mUserOrderAreaEdit.setTag(locationInfo);
                         mUserOrderAreaEdit.setText(data.getStringExtra("address"));
                     }

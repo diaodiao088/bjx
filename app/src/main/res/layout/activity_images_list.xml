@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="320dp"
-    android:padding="10dp" >
+    android:padding="10dp">
 
     <RelativeLayout
         android:id="@+id/images_list_layout"
@@ -10,16 +10,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="true"
-        android:background="@drawable/listview_selected_item"
-        android:orientation="horizontal"
-        android:padding="10dp" >
+        android:orientation="horizontal">
 
         <com.bjxapp.worker.controls.XImageView
             android:id="@+id/images_list_image"
             android:layout_width="match_parent"
             android:layout_height="320dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/head" />
+            android:scaleType="centerCrop" />
 
     </RelativeLayout>
 </RelativeLayout>

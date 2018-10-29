@@ -342,7 +342,37 @@ public class MapService {
         });
     }
 
+    public double getSelectLat() {
 
+        PoiInfo item = mMapAdapter.getItem(mMapAdapter.getmIndexTag());
+
+        if (item != null) {
+            return item.location.latitude;
+        }
+
+        return 0;
+    }
+
+    public double getSelectLon() {
+
+        PoiInfo item = mMapAdapter.getItem(mMapAdapter.getmIndexTag());
+
+        if (item != null) {
+            return item.location.longitude;
+        }
+
+        return 0;
+    }
+
+    public String getSelectAddress() {
+        PoiInfo item = mMapAdapter.getItem(mMapAdapter.getmIndexTag());
+
+        if (item != null) {
+            return item.name;
+        }
+
+        return "";
+    }
 
     /*public void doSubmit(){
         PoiInfo item = mMapAdapter.getItem(mMapAdapter.getmIndexTag());

@@ -11,6 +11,7 @@ import android.view.View;
 import com.baidu.mapapi.map.MapView;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XImageView;
+import com.bjxapp.worker.controls.XTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,11 +41,14 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
     @BindView(R.id.title_divider)
     public View mDivider;
 
+    @BindView(R.id.title_text_tv)
+    public XTextView mTitleTv;
+
     private MapService mSer;
 
-    private double mUserLatitude = 39.931755;
-    private double mUserLongtitude = 116.535819;
-    private String mAddress = "北京科技大学";
+    private double mUserLatitude = 0.0;
+    private double mUserLongtitude = 0.0;
+    private String mAddress = "";
 
     public static final int MAP_RESULT_CODE = 0x03;
 
@@ -53,21 +57,22 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_new);
         ButterKnife.bind(this);
+        mTitleTv.setText("服务范围");
         handleIntent();
         mDivider.setVisibility(View.GONE);
         mSer = new MapService();
-        mSer.setInitLocation(mUserLatitude , mUserLongtitude ,mAddress);
+        mSer.setInitLocation(mUserLatitude, mUserLongtitude, mAddress);
         mSer.init(this);
     }
 
-    private void handleIntent(){
+    private void handleIntent() {
 
         Intent intent = getIntent();
 
-        if(intent != null){
+        if (intent != null) {
             mAddress = intent.getStringExtra(USER_ADDRESS);
-            mUserLatitude = intent.getDoubleExtra(USER_LATITUDE , 39.931755);
-            mUserLongtitude = intent.getDoubleExtra(USER_LONGTITUDE , 116.535819);
+            mUserLatitude = intent.getDoubleExtra(USER_LATITUDE, 0);
+            mUserLongtitude = intent.getDoubleExtra(USER_LONGTITUDE, 0);
         }
 
     }
@@ -75,7 +80,7 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
 
     @OnClick(R.id.title_image_back)
     void clickBack() {
-        finish();
+        onBackPressed();
     }
 
     @OnClick(R.id.search_ly)
@@ -134,24 +139,35 @@ public class MapActivityNew extends Activity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSer.onExit();
+     //   mSer.onExit();
         mMapView.onDestroy();
     }
 
-    /**
-     *
-     * @return
-     */
-    public static final void goToActivityForResult(Activity context , double latitude , double longtitude , String address){
+    @Override
+    public void onBackPressed() {
 
         Intent intent = new Intent();
-        intent.setClass(context , MapActivityNew.class);
+        intent.putExtra(USER_LATITUDE, mSer.getSelectLat());
+        intent.putExtra(USER_LONGTITUDE, mSer.getSelectLon());
+        intent.putExtra(USER_ADDRESS, mSer.getSelectAddress());
+        setResult(Activity.RESULT_OK, intent);
 
-        intent.putExtra(USER_LATITUDE ,latitude);
-        intent.putExtra(USER_LONGTITUDE , longtitude);
-        intent.putExtra(USER_ADDRESS ,address);
+        super.onBackPressed();
+    }
 
-        context.startActivityForResult(intent , MAP_RESULT_CODE);
+    /**
+     * @return
+     */
+    public static final void goToActivityForResult(Activity context, double latitude, double longtitude, String address) {
+
+        Intent intent = new Intent();
+        intent.setClass(context, MapActivityNew.class);
+
+        intent.putExtra(USER_LATITUDE, latitude);
+        intent.putExtra(USER_LONGTITUDE, longtitude);
+        intent.putExtra(USER_ADDRESS, address);
+
+        context.startActivityForResult(intent, MAP_RESULT_CODE);
     }
 
 

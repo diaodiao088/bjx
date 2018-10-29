@@ -59,7 +59,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:text="添加照片"
-        android:textColor="#FFFFFF"
+        android:textColor="#545454"
         android:textSize="14sp"
         android:visibility="gone" />
 

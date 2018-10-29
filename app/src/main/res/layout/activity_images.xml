@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#F5F5F5">
 
         <LinearLayout
             android:id="@+id/tips"
@@ -62,9 +63,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/beimianzhao" />
 
-
         </LinearLayout>
-
 
         <com.bjxapp.worker.controls.listview.XListView
             android:id="@+id/images_upload_listview"

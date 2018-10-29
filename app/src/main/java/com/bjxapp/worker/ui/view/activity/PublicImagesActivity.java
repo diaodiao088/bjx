@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
@@ -32,6 +33,7 @@ import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.ImageInfo;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
+import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.FileUtils;
 import com.bjxapp.worker.utils.ImagePathUtils;
 import com.bjxapp.worker.utils.SDCardUtils;
@@ -91,6 +93,7 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
 		mSmallTv = findViewById(R.id.title_right_small_tv);
 		mSmallTv.setVisibility(View.VISIBLE);
 		mTipLy = findViewById(R.id.tip_bg);
+		calTipLy();
 		mAddImageView.setImageResource(R.drawable.icon_menu_add);
 		
 		mOperationFlag = Integer.parseInt(getIntent().getStringExtra("operation_flag"));
@@ -152,6 +155,27 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
                 return true;
             } 
       });
+	}
+
+	private int imageHeight;
+
+	private void calTipLy() {
+		mTipLy.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+			@Override
+			public boolean onPreDraw() {
+
+				int height = mTipLy.getHeight();
+
+				imageHeight = (height - DimenUtils.dp2px(10, PublicImagesActivity.this))/2;
+
+				mTipLy.getViewTreeObserver().removeOnPreDrawListener(this);
+				return true;
+			}
+		});
+	}
+
+	public int getImageHeight(){
+		return imageHeight;
 	}
 
 	@Override

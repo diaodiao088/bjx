@@ -216,9 +216,6 @@
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.MapActivity"
             android:screenOrientation="portrait"></activity>
-        <activity
-            android:name="com.bjxapp.worker.ui.view.activity.MapSelectActivity"
-            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.view.activity.map.MapActivityNew"

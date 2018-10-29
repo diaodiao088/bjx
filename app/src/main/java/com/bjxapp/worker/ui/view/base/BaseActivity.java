@@ -16,7 +16,8 @@ import com.bjxapp.worker.global.ActivitiesManager;
 import com.bjxapp.worker.utils.Utils;
 
 public abstract class BaseActivity extends Activity {
-	protected Activity context;
+	protected Activity
+			context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

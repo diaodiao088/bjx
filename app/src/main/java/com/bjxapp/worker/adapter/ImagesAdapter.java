@@ -9,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.model.ImageInfo;
+import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.utils.BitmapUtils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
@@ -25,6 +27,8 @@ public class ImagesAdapter extends BaseAdapter{
     private ArrayList<ImageInfo> mDataArray;
     private Context mContext;
     private ImageCache mImageCache;
+    private PublicImagesActivity mAct;
+
     private int[] mImageSize = {480,800};
 	
 	public ImagesAdapter(Context context,ArrayList<ImageInfo> dataArray) 
@@ -33,6 +37,7 @@ public class ImagesAdapter extends BaseAdapter{
 		mContext = context;
 		mInflater = LayoutInflater.from(context);
 		mDataArray = dataArray;
+		mAct = (PublicImagesActivity) context;
 	}
 
 	public void addImage(ImageInfo selectedImage) 
@@ -69,6 +74,8 @@ public class ImagesAdapter extends BaseAdapter{
 
             holder = new ViewHolder();
             holder.imageSelected = (XImageView) convertView.findViewById(R.id.images_list_image);
+
+            modifyParams(holder.imageSelected);
                             
             convertView.setTag(holder);
         } 
@@ -100,6 +107,14 @@ public class ImagesAdapter extends BaseAdapter{
 		}
 		
 		return convertView;
+	}
+
+	private void modifyParams(XImageView mView){
+		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
+
+		if (mAct.getImageHeight() != 0){
+			params.height = mAct.getImageHeight();
+		}
 	}
 
 	private String getImagePath(DataType dataType, String url){

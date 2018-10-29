@@ -49,6 +49,7 @@ import java.text.DecimalFormat;
 import com.bjxapp.worker.global.ActivitiesManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.listener.OnEditDialogListener;
+import com.bjxapp.worker.ui.view.activity.map.MapActivityNew;
 import com.bjxapp.worker.ui.view.activity.search.SearchActivity;
 import com.bjxapp.worker.ui.view.activity.search.SearchActivityNew;
 import com.bjxapp.worker.ui.view.activity.search.SearchSingleActivity;
@@ -206,10 +207,9 @@ public class Utils {
 		Activity activity = (Activity)context;
 		Intent intent = new Intent();
 		intent.setClass(activity, clazz);
-		intent.putExtra("latitude", latitude);
-		intent.putExtra("longitude", longitude);
-		intent.putExtra("address", address);
-		intent.putExtra("city", city);
+		intent.putExtra(MapActivityNew.USER_LATITUDE, latitude);
+		intent.putExtra(MapActivityNew.USER_LONGTITUDE, longitude);
+		intent.putExtra(MapActivityNew.USER_ADDRESS, address);
 		activity.startActivityForResult(intent,Constant.CONSULT_WORK_MAP);
 		activity.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
 	}
