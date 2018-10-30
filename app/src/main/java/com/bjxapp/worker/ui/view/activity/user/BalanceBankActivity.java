@@ -24,8 +24,11 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
     private XTextView mTitleTextView;
     private XImageView mBackImageView;
 
+
     private EditText mBankCardEdit, mBankNameEdit, mBankPersonEdit, mBankMobileEdit;
-    private XButton mSaveButton;
+
+
+    XButton mSaveButton;
 
     private XWaitingDialog mWaitingDialog;
 

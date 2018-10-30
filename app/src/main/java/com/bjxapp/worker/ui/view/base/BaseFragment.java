@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
+
 public abstract class BaseFragment extends Fragment {
     protected View mRoot;
     protected Activity mActivity;
@@ -31,6 +33,7 @@ public abstract class BaseFragment extends Fragment {
                 parent.removeView(mRoot);
             }
         }
+        ButterKnife.bind(this , mRoot);
         return mRoot;
     }
  

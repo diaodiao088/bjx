@@ -348,7 +348,6 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     private void refreshItem(int status){
 
 
-
     }
 
 }

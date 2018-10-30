@@ -27,7 +27,6 @@ public class WithdrawInputDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initialize();
     }
 
@@ -37,7 +36,6 @@ public class WithdrawInputDialog extends Dialog {
         setContentView(view);
 
         XButton confirmButton = (XButton) view.findViewById(R.id.balance_withdraw_input_save);
-
         confirmButton.setOnClickListener(new clickListener());
     }
 
@@ -50,10 +48,12 @@ public class WithdrawInputDialog extends Dialog {
         public void onClick(View v) {
             int id = v.getId();
             switch (id) {
-            case R.id.balance_withdraw_input_save:
-                clickListenerInterface.doConfirm();
-                break;
+                case R.id.balance_withdraw_input_save:
+                    clickListenerInterface.doConfirm();
+                    break;
             }
         }
-    };
+    }
+
+    ;
 }

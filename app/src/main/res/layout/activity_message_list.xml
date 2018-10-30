@@ -29,7 +29,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"
                 android:text="2015-01-01"
-                android:textColor="#cc4125"
+                android:textColor="#E6463D"
                 android:textSize="14sp"/>
 
             <com.bjxapp.worker.controls.XTextView
@@ -65,11 +65,5 @@
 	            android:src="@drawable/right" />
         </RelativeLayout>
     </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1.0dip"
-        android:layout_alignParentBottom="true"
-        android:background="@color/separator_color" />
 
 </RelativeLayout>

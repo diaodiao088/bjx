@@ -34,6 +34,7 @@ import com.bjxapp.worker.push.XPushManager;
 import com.bjxapp.worker.ui.titlemenu.ActionItem;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup.OnItemOnClickListener;
+import com.bjxapp.worker.ui.view.activity.JoinUsActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragmentActivity;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
@@ -80,9 +81,12 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     @BindView(R.id.title_text_tv)
     TextView mTitleTv;
 
-    @OnClick
-    void onRightClick(){
+    @BindView(R.id.title_image_back)
+    XImageView mBackIv;
 
+    @OnClick(R.id.title_right_small_tv)
+    void onRightClick(){
+        JoinUsActivity.goToActivity(this);
     }
 
     @Override
@@ -212,11 +216,13 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 }
                 mFirstReminder.setVisibility(View.GONE);
                 mTitleTextView.setText(getString(R.string.main_tab_first_text));
+                mTitleRightTv.setVisibility(View.VISIBLE);
                 mRightImageView.setImageResource(R.drawable.icon_menu_add);
                 mRightImageView.setPadding(0, 0, 0, 0);
                 break;
             case R.id.main_tab_second:
                 mIndex = 1;
+                mTitleRightTv.setVisibility(View.GONE);
                 mTitleTextView.setText(getString(R.string.main_tab_second_text));
                 if (mMainSecondFragment != null) {
                     mMainSecondFragment.refresh(enterType);
@@ -225,6 +231,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             case R.id.main_tab_third:
                 mIndex = 2;
                 mTitleTextView.setText(getString(R.string.main_tab_third_text));
+                mTitleRightTv.setVisibility(View.GONE);
                 if (mMainThirdFragment != null) {
                     mMainThirdFragment.refresh(enterType);
                 }
@@ -233,6 +240,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             case R.id.main_tab_fourth:
                 mIndex = 3;
                 mTitleTextView.setText(getString(R.string.main_tab_fourth_text));
+                mTitleRightTv.setVisibility(View.GONE);
                 if (mMainFourthFragment != null) {
                     mMainFourthFragment.refresh(enterType);
                 }
@@ -320,6 +328,8 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private void initViews() {
         mRightImageView.setVisibility(View.GONE);
         mRightImageView.setImageResource(R.drawable.icon_menu_main);
+        mBackIv.setVisibility(View.GONE);
+        mTitleRightTv.setVisibility(View.VISIBLE);
     }
 
     private void setOnListener() {

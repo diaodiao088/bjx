@@ -90,7 +90,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
     public void initView() {
         mListView = mRootView.findViewById(R.id.main_first_order_listview);
-        mListView.setDividerHeight(DimenUtils.dp2px(5 , getContext()));
+        mListView.setDividerHeight(DimenUtils.dp2px(5, getContext()));
         mOrderAdapter = new OrderAdapter(mRootView.getContext(), mOrdersArray);
         mListView.setAdapter(mOrderAdapter);
 

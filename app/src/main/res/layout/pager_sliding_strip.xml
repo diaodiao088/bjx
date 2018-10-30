@@ -17,8 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:background="#00A551" />
 
         <ImageView
@@ -70,8 +70,8 @@
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
             android:background="#00A551"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:visibility="gone" />
 
         <ImageView
@@ -124,8 +124,8 @@
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
             android:background="#00A551"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:visibility="gone" />
 
         <ImageView
@@ -178,8 +178,8 @@
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
             android:background="#00A551"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:visibility="gone" />
 
         <ImageView
@@ -232,8 +232,8 @@
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
             android:background="#00A551"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:visibility="gone" />
 
         <ImageView
@@ -286,8 +286,8 @@
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
             android:background="#00A551"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:visibility="gone" />
 
         <ImageView

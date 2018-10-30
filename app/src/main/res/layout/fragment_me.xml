@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_title" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -13,7 +11,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#F5F5F5"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <LinearLayout
@@ -29,6 +27,7 @@
                 android:paddingRight="18dp">
 
                 <com.bjxapp.worker.controls.XCircleImageView
+                    android:id="@+id/me_header_iv"
                     android:layout_width="65dp"
                     android:layout_height="65dp"
                     android:src="@drawable/head" />
@@ -41,6 +40,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/me_name_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="张三"
@@ -48,6 +48,7 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/me_phone_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="7dp"
@@ -56,6 +57,7 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/me_phone_year"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="7dp"
@@ -116,6 +118,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/total_bill_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="13"
@@ -141,6 +144,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/total_cash_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="13"
@@ -166,6 +170,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/rank_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="13"
@@ -186,6 +191,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/balance_cash_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -340,6 +346,7 @@
             </LinearLayout>
 
             <com.bjxapp.worker.ui.widget.FlowLayout
+                android:id="@+id/flow_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -400,15 +407,16 @@
             </com.bjxapp.worker.ui.widget.FlowLayout>
 
             <LinearLayout
+                android:id="@+id/me_about_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="18dp"
+                android:layout_marginTop="30dp"
+                android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingBottom="10dp"
-                android:background="@color/white"
-                android:layout_marginTop="30dp">
+                android:paddingLeft="8dp"
+                android:paddingRight="18dp">
 
                 <ImageView
                     android:layout_width="17dp"
@@ -432,12 +440,13 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/me_update_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
                 android:layout_marginTop="15dp"
                 android:background="@color/white"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp">
 
                 <ImageView
                     android:layout_width="17dp"
@@ -455,12 +464,13 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/me_service_phone_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
                 android:layout_marginTop="25dp"
                 android:background="@color/white"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp">
 
                 <ImageView
                     android:layout_width="17dp"
@@ -478,7 +488,7 @@
             </LinearLayout>
 
             <com.bjxapp.worker.controls.XButton
-                android:id="@+id/order_receive_detail_save"
+                android:id="@+id/log_out_btn"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginBottom="10dp"

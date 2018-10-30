@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/separator_color"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -26,11 +27,12 @@
                 android:layout_height="wrap_content"
                 android:text="累计接单：10单"
                 android:textColor="#545454"
+                android:textStyle="bold"
                 android:textSize="14sp" />
 
             <ImageView
-                android:layout_width="14dp"
-                android:layout_height="17dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:src="@drawable/history_total" />
 
@@ -43,10 +45,10 @@
 
             <View
                 android:id="@+id/history_total_divider"
-                android:layout_width="20dp"
-                android:layout_height="1dp"
+                android:layout_width="30dp"
+                android:layout_height="2dp"
                 android:layout_marginTop="8dp"
-                android:background="#564978" />
+                android:background="#00a551" />
 
         </LinearLayout>
 
@@ -64,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="累计接单：10单"
                 android:textColor="#545454"
+                android:textStyle="bold"
                 android:textSize="14sp" />
 
             <ImageView
@@ -81,14 +84,13 @@
 
             <View
                 android:id="@+id/history_safe_divider"
-                android:layout_width="20dp"
-                android:layout_height="1dp"
+                android:layout_width="30dp"
+                android:layout_height="2dp"
                 android:layout_marginTop="8dp"
-                android:background="#564978"
+                android:background="#00a551"
                 android:visibility="gone" />
 
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/history_unsafe_ly"
@@ -103,6 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="累计接单：10单"
+                android:textStyle="bold"
                 android:textColor="#545454"
                 android:textSize="14sp" />
 
@@ -121,10 +124,10 @@
 
             <View
                 android:id="@+id/history_unsafe_divider"
-                android:layout_width="20dp"
-                android:layout_height="1dp"
+                android:layout_width="30dp"
+                android:layout_height="2dp"
                 android:layout_marginTop="8dp"
-                android:background="#564978"
+                android:background="#00a551"
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -142,9 +145,9 @@
             android:layout_alignParentLeft="true"
             android:choiceMode="singleChoice"
             android:divider="@color/transparent"
-            android:dividerHeight="0dp"
+            android:dividerHeight="5dp"
             android:listSelector="@android:color/transparent"
-            android:paddingTop="10dp"
+            android:layout_marginTop="5dp"
             android:visibility="gone" />
 
         <RelativeLayout

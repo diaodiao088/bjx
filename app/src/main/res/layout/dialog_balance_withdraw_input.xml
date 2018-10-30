@@ -3,12 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#ffffff"
-    android:orientation="vertical" >
+    android:orientation="vertical">
+
     <LinearLayout
         style="@style/XDialogStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <com.bjxapp.worker.controls.XTextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -16,18 +18,21 @@
             android:layout_marginLeft="0dp"
             android:gravity="center"
             android:text="提醒"
-            android:textColor="#353535"
-            android:textSize="24dp" />
-        
+            android:textColor="@color/main_text_color"
+            android:textSize="18sp" />
+
         <com.bjxapp.worker.controls.XTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="0dp"
-            android:text="        提现后的金额我们将在可提现日期之后的1个工作日内汇入您的银行账户，请及时查收。"
-            android:textColor="#353535"
-            android:textSize="18dp" />
-        
+            android:lineSpacingExtra="3dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="提现后的金额我们将在可提现日期之后的1个工作日内汇入您的银行账户，请及时查收。"
+            android:textColor="@color/main_text_color"
+            android:textSize="15sp" />
+
         <com.bjxapp.worker.controls.XTextView
             android:id="@+id/balance_withdraw_input_infomation"
             android:layout_width="match_parent"
@@ -35,14 +40,17 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="10dp"
-            android:text="        每月1至5日提现，将在5日后的第一个工作日汇钱。15日至18日提现，则在18日后的第一个工作日汇钱。"
-            android:textColor="#353535"
-            android:textSize="18dp" />
-        
+            android:lineSpacingExtra="3dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="每月1至5日提现，将在5日后的第一个工作日汇钱。15日至18日提现，则在18日后的第一个工作日汇钱。"
+            android:textColor="@color/main_text_color"
+            android:textSize="15sp" />
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
-            android:layout_height="48dp" >
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp">
 
             <com.bjxapp.worker.controls.XEditText
                 android:id="@+id/balance_withdraw_input_edit"
@@ -55,37 +63,37 @@
                 android:maxLength="8"
                 android:paddingLeft="110dp"
                 android:singleLine="true"
-                android:textColorHint="#DDDDDD"
                 android:textColor="@color/greeny"
-                android:textSize="20sp" />
+                android:textColorHint="#DDDDDD"
+                android:textSize="15sp" />
+
             <com.bjxapp.worker.controls.XTextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/balance_withdraw_input_edit"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="0dp"
+                android:layout_marginLeft="20dp"
                 android:text="提现金额："
-                android:textColor="#353535"
-                android:textSize="20dp" />
+                android:textColor="@color/main_text_color"
+                android:textSize="15sp" />
+
             <com.bjxapp.worker.controls.XTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
                 android:text="元"
-                android:textColor="#353535"
-                android:textSize="20dp" />
+                android:textColor="@color/main_text_color"
+                android:textSize="15sp" />
         </RelativeLayout>
-               
-        <View
-			android:background="@color/separator_color"
-			android:layout_width="fill_parent"
-			android:layout_height="1.0dip" />
-            
+
         <com.bjxapp.worker.controls.XButton
             android:id="@+id/balance_withdraw_input_save"
             android:layout_width="match_parent"
             android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/button_background_green"
             android:paddingBottom="7dp"

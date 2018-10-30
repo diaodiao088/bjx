@@ -43,8 +43,8 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:textColor="#A6A6A6"
                     android:text="6217900100006564978"
+                    android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -74,8 +74,8 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:textColor="#A6A6A6"
                     android:text="中国工商"
+                    android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -105,8 +105,8 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:textColor="#A6A6A6"
                     android:text="张三丰"
+                    android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -136,8 +136,8 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:textColor="#A6A6A6"
                     android:text="15650785283"
+                    android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -167,8 +167,8 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:textColor="#A6A6A6"
                     android:text="15650785283"
+                    android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -197,8 +197,8 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:textColor="#A6A6A6"
                     android:text="123456"
+                    android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
                 <com.bjxapp.worker.controls.XImageView
@@ -206,10 +206,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
                     android:src="@drawable/question" />
-
 
 
             </LinearLayout>
@@ -230,10 +229,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="提示："
                 android:layout_marginLeft="18dp"
                 android:layout_marginRight="10dp"
-                android:textColor="#ABABAB"/>
+                android:text="提示："
+                android:textColor="#ABABAB" />
 
 
             <com.bjxapp.worker.controls.XTextView
@@ -247,7 +246,6 @@
                 android:text="提示：\n每个月1至5日、15日至18日为提现日，每个提现日只能提现一次。客服电话： 010-65511127"
                 android:textColor="#ABABAB"
                 android:textSize="12sp" />
-
 
         </LinearLayout>
     </ScrollView>
