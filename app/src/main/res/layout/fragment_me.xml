@@ -362,7 +362,7 @@
                     android:background="@drawable/score_bg"
                     android:padding="3dp"
                     android:text="着装外观（12）"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -372,7 +372,7 @@
                     android:background="@drawable/score_bg"
                     android:padding="4dp"
                     android:text="着装外观（12）"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -382,7 +382,7 @@
                     android:background="@drawable/score_bg"
                     android:padding="4dp"
                     android:text="着装外观（12）"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -392,7 +392,7 @@
                     android:background="@drawable/score_bg"
                     android:padding="4dp"
                     android:text="着装外观（12）"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -402,7 +402,7 @@
                     android:background="@drawable/score_bg"
                     android:padding="4dp"
                     android:text="着装外观（12）"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
             </com.bjxapp.worker.ui.widget.FlowLayout>
 
