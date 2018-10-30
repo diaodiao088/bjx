@@ -360,7 +360,7 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginRight="12dp"
                     android:background="@drawable/score_bg"
-                    android:padding="4dp"
+                    android:padding="3dp"
                     android:text="着装外观（12）"
                     android:textSize="12sp" />
 

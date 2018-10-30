@@ -35,8 +35,8 @@
             android:paddingLeft="17dp"
             android:paddingTop="15dp"
             android:singleLine="true"
-            android:textColorHint="#a6a6a6"
-            android:textSize="14sp" />
+            android:textColorHint="@color/main_text_hint_color"
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             android:paddingTop="15dp"
             android:singleLine="true"
             android:textColorHint="#A6A6A6"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -75,7 +75,7 @@
         android:paddingTop="15dp"
         android:text="登录"
         android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        android:textSize="18sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"

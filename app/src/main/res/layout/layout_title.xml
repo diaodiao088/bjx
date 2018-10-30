@@ -20,7 +20,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
         android:contentDescription="@string/app_name"
         android:src="@drawable/back"
         android:visibility="visible" />

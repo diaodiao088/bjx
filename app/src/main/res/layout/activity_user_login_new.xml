@@ -35,7 +35,7 @@
             android:paddingLeft="17dp"
             android:paddingTop="15dp"
             android:singleLine="true"
-            android:textColorHint="#DDDDDD"
+            android:textColorHint="@color/main_text_hint_color"
             android:textSize="16sp" />
 
         <View
@@ -62,7 +62,7 @@
                 android:singleLine="true"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
-                android:textColorHint="#DDDDDD"
+                android:textColorHint="@color/main_text_hint_color"
                 android:textSize="16sp" />
 
             <com.bjxapp.worker.controls.XImageView
@@ -99,7 +99,7 @@
                 android:inputType="number"
                 android:paddingLeft="17dp"
                 android:singleLine="true"
-                android:textColorHint="#DDDDDD"
+                android:textColorHint="@color/main_text_hint_color"
                 android:textSize="16sp" />
 
             <com.bjxapp.worker.controls.XButton

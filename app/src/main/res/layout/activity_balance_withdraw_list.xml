@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
-    <include layout="@layout/layout_title"/>
-    
+    <include layout="@layout/layout_title" />
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:background="@color/white" >
+        android:background="@color/white">
 
         <com.bjxapp.worker.controls.XTextView
             android:layout_width="120dp"
@@ -19,8 +18,9 @@
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
             android:text="已提现金额累计："
-            android:textColor="#353535"
-            android:textSize="14sp" />
+            android:textColor="@color/main_text_color"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <com.bjxapp.worker.controls.XTextView
             android:id="@+id/withdraw_list_total_money"
@@ -30,35 +30,30 @@
             android:layout_marginRight="10dp"
             android:gravity="center_vertical|right"
             android:text="¥0元"
-            android:textColor="@color/red"
+            android:textColor="#E6463D"
             android:textSize="15sp"
             android:textStyle="bold" />
 
     </RelativeLayout>
-    
-    <View
-		android:background="@color/separator_color"
-		android:layout_width="fill_parent"
-		android:layout_height="1.0dip" />
-    
+
     <com.bjxapp.worker.controls.listview.XListView
         android:id="@+id/withdraw_list_listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="0dp"
         android:layout_alignParentLeft="true"
+        android:layout_margin="0dp"
         android:choiceMode="singleChoice"
+        android:layout_marginTop="4dp"
         android:divider="@color/transparent"
-        android:dividerHeight="0dp"
-        android:visibility="gone" >
-    </com.bjxapp.worker.controls.listview.XListView>
-    
+        android:dividerHeight="3dp"
+        android:visibility="gone"/>
+
     <RelativeLayout
         android:id="@+id/withdraw_list_load_again"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@color/white"
-        android:padding="10dp" >
+        android:padding="10dp">
 
         <com.bjxapp.worker.controls.XImageView
             android:id="@+id/withdraw_list_load_again_image"
@@ -66,5 +61,5 @@
             android:layout_height="match_parent"
             android:scaleType="center"
             android:src="@drawable/load_again" />
-    </RelativeLayout>    
+    </RelativeLayout>
 </LinearLayout>

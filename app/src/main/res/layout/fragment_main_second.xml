@@ -27,8 +27,8 @@
                 android:layout_height="wrap_content"
                 android:text="累计接单：10单"
                 android:textColor="#545454"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="全部"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <View
                 android:id="@+id/history_total_divider"
@@ -64,10 +64,10 @@
                 android:id="@+id/history_safe_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="累计接单：10单"
+                android:text="累计金额：10单"
                 android:textColor="#545454"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:layout_width="14dp"
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="质保期内"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <View
                 android:id="@+id/history_safe_divider"
@@ -104,10 +104,10 @@
                 android:id="@+id/history_unsafe_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="累计接单：10单"
-                android:textStyle="bold"
+                android:text="累计收入：10单"
                 android:textColor="#545454"
-                android:textSize="14sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:layout_width="14dp"
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="已过质保期"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <View
                 android:id="@+id/history_unsafe_divider"
@@ -143,11 +143,11 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentLeft="true"
+            android:layout_marginTop="5dp"
             android:choiceMode="singleChoice"
             android:divider="@color/transparent"
             android:dividerHeight="5dp"
             android:listSelector="@android:color/transparent"
-            android:layout_marginTop="5dp"
             android:visibility="gone" />
 
         <RelativeLayout
