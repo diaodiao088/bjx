@@ -1,10 +1,13 @@
 package com.bjxapp.worker.ui.view.activity.order;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -24,6 +27,7 @@ import com.bjxapp.worker.model.XResult;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.DateUtils;
+import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
 import com.bjxapp.worker.utils.Utils;
 
 import java.util.ArrayList;
@@ -48,9 +52,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @BindView(R.id.order_status_tv)
     XTextView mStatusTv;
 
+    @BindView(R.id.save_ly)
+    RelativeLayout mSaveLy;
+
     /* 新订单 */
-    @BindView(R.id.order_receive_textview_service)
-    XTextView mBillNumTv;  // 订单号
     @BindView(R.id.bill_name)
     XTextView mServiceNameTv; // 维修项目
     @BindView(R.id.order_receive_textview_orderdate)
@@ -69,8 +74,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     /* 待预约 */
     @BindView(R.id.last_hour)
     XTextView mHourLastTv;
-    @BindView(R.id.wait_contact_change_btn)
-    XButton mChangeDateBtn;
+    @BindView(R.id.send_message_tv)
+    TextView mSendMsgTv;
+
     @BindView(R.id.wait_contact_ok_btn)
     XButton mChangeDateOk;
 
@@ -99,6 +105,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     LinearLayout mPreBillLy;
 
     /* 订单总和 */
+    @BindView(R.id.final_money_ly)
+    LinearLayout mFinalMoneyLy;
     @BindView(R.id.enter_room_content_tv)
     XTextView mEnterRoomPrice;
     @BindView(R.id.entire_price_content_tv)
@@ -163,7 +171,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
      */
     @OnClick(R.id.wait_contact_ok_btn)
     void changeContactOk() {
-
+        toDetailStatus();
     }
 
     /**
@@ -286,13 +294,24 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
 
     private void toDetailStatus() {
-        // mOrderStatus.setText("已联系");
+
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
+
+        mStatusTv.setText("已联系");
         mSaveButton.setText("完成");
         mSaveButton.setEnabled(true);
         mServiceEditBtn.setEnabled(true);
         mHourLastTv.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.GONE);
         mSaveButton.setVisibility(View.VISIBLE);
+        mCancelBillTv.setVisibility(View.GONE);
+        mSaveLy.setVisibility(View.VISIBLE);
+
+        modifyLy.setVisibility(View.VISIBLE);
+        mFinalMoneyLy.setVisibility(View.VISIBLE);
+        mPreBillLy.setVisibility(View.VISIBLE);
     }
 
     private AsyncTask<String, Void, OrderDetail> mLoadDataTask;
@@ -335,76 +354,20 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         mOrderCode = result.getOrderID();
 
-        /*mOrderDate.setText(result.getOrderDate() + " " + result.getOrderTime());
-        mAddress.setText(result.getAddress() + result.getHouseNumber());
-        mContacts.setText(result.getContacts() + " / " + result.getTelephone());
-        mContacts.setTag(result.getTelephone());
-        mServiceName.setText(result.getServiceSubName());
-        if (Utils.isNotEmpty(result.getRemark())) {
-            mRemark.setText(result.getRemark());
-        } else {
-            mRemark.setText("无备注");
-        }*/
-        if (Utils.isNotEmpty(result.getAddItem())) {
-            mIssueReasonTv.setText(result.getAddItem());
-        } else {
-            mIssueReasonTv.setText("无");
-        }
+        mDateTv.setText(result.getOrderDate() + " " + result.getOrderTime());
+        mAdressTv.setText(result.getAddress() + result.getHouseNumber());
 
+        mPhoneTv.setText(result.getContacts() + " / " + result.getTelephone());
+        mPhoneTv.setTag(result.getTelephone());
+
+        mServiceNameTv.setText(result.getServiceSubName());
+        mRemarkTv.setText(result.getRemark());
+
+        changeStatusUI(result);
+    }
+
+    private void changeStatusUI(OrderDetail result) {
         String statusString = "";
-        String feeInfo = "";
-        switch (result.getOrderStatus()) {
-            case 0:
-                statusString = "新订单";
-                feeInfo = "费用预估：";
-                mSaveButton.setText("接单");
-                mSaveButton.setEnabled(true);
-                break;
-            case 1:
-                statusString = "已接单";
-                feeInfo = "费用：";
-                mSaveButton.setText("完成");
-                mSaveButton.setEnabled(true);
-                mServiceEditBtn.setEnabled(true);
-                break;
-            case 2:
-                statusString = "待支付";
-                feeInfo = "费用：";
-                mSaveButton.setText("支付");
-                mSaveButton.setEnabled(true);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            case 3:
-                statusString = "已结算";
-                feeInfo = "费用：";
-                mSaveButton.setText("查看支付情况");
-                mSaveButton.setEnabled(true);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            case 4:
-                statusString = "已结算";
-                feeInfo = "费用：";
-                mSaveButton.setVisibility(View.GONE);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            case 98:
-                statusString = "已取消";
-                feeInfo = "费用：";
-                mSaveButton.setVisibility(View.GONE);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            case 99:
-                statusString = "异常";
-                feeInfo = "费用：";
-                mSaveButton.setVisibility(View.GONE);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            default:
-                break;
-        }
-        mSaveButton.setTag(result.getOrderStatus());
-        /*mTotalMoney.setText(feeInfo + result.getTotalMoney() + "元");
-        mOrderStatus.setText(statusString);*/
 
         mIDImageUrls = new ArrayList<String>();
         if (Utils.isNotEmpty(result.getImageOne().trim())) {
@@ -419,7 +382,112 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         if (mIDImageUrls.size() > 0) {
             mOrderImagesLinear.setVisibility(View.VISIBLE);
         }
+
+        switch (result.getOrderStatus()) {
+            case OrderStatusCtrl.TYPE_NEW_BILL:
+                toNewBillStatus();
+                break;
+            case 1:
+                statusString = "已接单";
+                mSaveButton.setText("完成");
+                mSaveButton.setEnabled(true);
+                mServiceEditBtn.setEnabled(true);
+                break;
+            case 2:
+                statusString = "待支付";
+                mSaveButton.setText("支付");
+                mSaveButton.setEnabled(true);
+                mServiceEditBtn.setVisibility(View.GONE);
+                break;
+            case 3:
+                statusString = "已结算";
+                mSaveButton.setText("查看支付情况");
+                mSaveButton.setEnabled(true);
+                mServiceEditBtn.setVisibility(View.GONE);
+                break;
+            case 4:
+                statusString = "已结算";
+                mSaveButton.setVisibility(View.GONE);
+                mServiceEditBtn.setVisibility(View.GONE);
+                break;
+            case 98:
+                statusString = "已取消";
+                mSaveButton.setVisibility(View.GONE);
+                mServiceEditBtn.setVisibility(View.GONE);
+                break;
+            case 99:
+                statusString = "异常";
+                mSaveButton.setVisibility(View.GONE);
+                mServiceEditBtn.setVisibility(View.GONE);
+                break;
+            default:
+                break;
+        }
+        mSaveButton.setTag(result.getOrderStatus());
     }
+
+    /**
+     * 新订单状态
+     */
+    private void toNewBillStatus() {
+        mSaveButton.setText("接单");
+        mSaveButton.setEnabled(true);
+        mStatusTv.setText("新订单");
+        modifyLy.setVisibility(View.GONE);
+        mPreBillLy.setVisibility(View.GONE);
+        mFinalMoneyLy.setVisibility(View.GONE);
+        mHourLastTv.setVisibility(View.GONE);
+        mOrderWaitLy.setVisibility(View.GONE);
+        mSaveLy.setVisibility(View.VISIBLE);
+        mCurrentStatus = OrderStatusCtrl.TYPE_NEW_BILL;
+    }
+
+    /**
+     * 待预约状态
+     */
+    private void toWaitStatus() {
+
+        mStatusTv.setText("待预约");
+        mHourLastTv.setVisibility(View.VISIBLE);
+        mPreBillLy.setVisibility(View.GONE);
+        mFinalMoneyLy.setVisibility(View.GONE);
+        mSaveLy.setVisibility(View.GONE);
+        mOrderWaitLy.setVisibility(View.VISIBLE);
+
+        mCountDownTimer = new CountDownTimer(30 * 60 * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mHourLastTv.setText(String.valueOf(millisUntilFinished));
+            }
+
+            @Override
+            public void onFinish() {
+                mHourLastTv.setText("已超时");
+                mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+            }
+        };
+
+        mSendMsgTv.setText(Html.fromHtml(getResources().getString(R.string.send_msg)));
+        HandleUrlLinkMovementMethod instance = HandleUrlLinkMovementMethod.getInstance();
+        instance.setOnLinkCallBack(new HandleUrlLinkMovementMethod.OnLinkCallBack() {
+            @Override
+            public void onClick(String url) {
+                if (url.contains("action")) {
+                    Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                    sendIntent.setData(Uri.parse("smsto:" + mPhoneTv.getText()));
+                    sendIntent.putExtra("sms_body", "此处为短信模板");
+                    OrderDetailActivity.this.startActivity(sendIntent);
+                }
+            }
+        });
+
+        mSendMsgTv.setMovementMethod(instance);
+        mSendMsgTv.setLinkTextColor(Color.parseColor("#00A551"));
+        mSendMsgTv.setHighlightColor(Color.TRANSPARENT);
+
+        mCountDownTimer.start();
+    }
+
 
     private void SaveOperation() {
         if (!Utils.isNetworkAvailable(context)) {
@@ -473,7 +541,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                    /* Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
                     Utils.finishWithoutAnim(OrderDetailActivity.this);*/
-                    changeStatusToWaitTime();
+                    toWaitStatus();
                 } else {
                     Utils.showShortToast(context, "接单失败，请重试！");
                 }
@@ -482,32 +550,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }.execute(orderID);
     }
 
-
-    private void changeStatusToWaitTime() {
-        mHourLastTv.setVisibility(View.VISIBLE);
-
-        if (mSaveButton != null) {
-            mSaveButton.setVisibility(View.GONE);
-        }
-
-        mOrderWaitLy.setVisibility(View.VISIBLE);
-
-        mCountDownTimer = new CountDownTimer(5000, 1) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                mHourLastTv.setText(String.valueOf(millisUntilFinished));
-            }
-
-            @Override
-            public void onFinish() {
-                mHourLastTv.setText("已超时");
-            }
-        };
-
-        mCountDownTimer.start();
-
-
-    }
 
     private void finishOperation() {
         String orderID = getIntent().getStringExtra("order_id");

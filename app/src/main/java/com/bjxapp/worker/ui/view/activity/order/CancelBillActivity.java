@@ -16,6 +16,10 @@ import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by zhangdan on 2018/10/11.
  * <p>
@@ -29,13 +33,23 @@ public class CancelBillActivity extends Activity implements View.OnClickListener
     private TextView mContentLimitTv;
     private XWaitingDialog mWaitDialog;
 
+    @BindView(R.id.title_text_tv)
+    TextView mTitleTv;
+
+    @OnClick(R.id.title_image_back)
+    void onBack(){
+        finish();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ButterKnife.bind(this);
         setContentView(R.layout.activity_cancel_bill);
         mEditTv = findViewById(R.id.cancel_content);
         mConfirmTv = findViewById(R.id.confirm);
         mContentLimitTv = findViewById(R.id.content_limit);
+        mTitleTv.setText("取消订单");
         initListener();
     }
 
@@ -45,9 +59,6 @@ public class CancelBillActivity extends Activity implements View.OnClickListener
         mEditTv.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-
-
 
             }
 

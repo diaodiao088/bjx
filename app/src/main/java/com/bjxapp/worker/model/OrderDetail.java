@@ -1,5 +1,7 @@
 package com.bjxapp.worker.model;
 
+import android.text.TextUtils;
+
 public class OrderDetail {
 	private int orderID;
 	private String orderCode;
@@ -115,7 +117,7 @@ public class OrderDetail {
 	}
 	
 	public String getRemark() {
-		return remark;
+		return TextUtils.isEmpty(remark) ? "无备注" : remark;
 	}
 	
 	public void setRemark(String remark) {

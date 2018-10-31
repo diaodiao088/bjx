@@ -7,7 +7,7 @@ package com.bjxapp.worker.ui.view.activity.order;
 
 public class OrderStatusCtrl {
 
-    public static final int TYPE_NEW_BILL = 0x01;
+    public static final int TYPE_NEW_BILL = 0x00;
     public static final int TYPE_WAIT_CONTACT = 0x02;
     public static final int TYPE_CONTACT_TIME_OUT = 0x03;
     public static final int TYPE_ORDER_DETAIL = 0x04;
