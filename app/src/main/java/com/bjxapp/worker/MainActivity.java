@@ -30,6 +30,8 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.RedDot;
+import com.bjxapp.worker.push.BJXPushService;
+import com.bjxapp.worker.push.PushIntentService;
 import com.bjxapp.worker.push.XPushManager;
 import com.bjxapp.worker.ui.titlemenu.ActionItem;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup;
@@ -44,6 +46,7 @@ import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Third;
 import com.bjxapp.worker.utils.TimeUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.zxing.CaptureActivity;
+import com.igexin.sdk.PushManager;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -85,7 +88,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     XImageView mBackIv;
 
     @OnClick(R.id.title_right_small_tv)
-    void onRightClick(){
+    void onRightClick() {
         JoinUsActivity.goToActivity(this);
     }
 
@@ -121,11 +124,17 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         initLocation();
 
         //注册推送ID
-        // registerPush();
+        initPush();
 
         //检查最新APK版本
         checkNewVersion();
     }
+
+    private void initPush() {
+        PushManager.getInstance().initialize(this.getApplicationContext(), BJXPushService.class);
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext() , PushIntentService.class);
+    }
+
 
     @Override
     public void onStart() {
@@ -426,9 +435,9 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 if (Utils.isNotEmpty(location.getAddrStr()) && Utils.isNotEmpty(location.getCity())) {
 
 
-                    Log.d("slog_zd","lat : " + location.getLatitude() + " , longti : " + location.getLongitude());
+                    Log.d("slog_zd", "lat : " + location.getLatitude() + " , longti : " + location.getLongitude());
 
-                    Log.d("slog_zd","addr : " + location.getAddrStr() + " , city : " + location.getCity());
+                    Log.d("slog_zd", "addr : " + location.getAddrStr() + " , city : " + location.getCity());
 
 
                     Constant.USER_LOCATION_LATITUDE = location.getLatitude();
@@ -469,34 +478,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         //option.setIsNeedLocationPoiList(true);
         mLocationClient.setLocOption(option);
         mLocationClient.start();
-    }
-
-    private AsyncTask<Void, Void, Integer> mRegisterPushTask;
-
-    private void registerPush() {
-        if (ConfigManager.getInstance(MainActivity.this).getUserChannelUploaded()) {
-            //return;
-        }
-
-        mRegisterPushTask = new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                int result = LogicFactory.getAccountLogic(MainActivity.this).updateChannelID();
-                if (isCancelled()) {
-                    return 0;
-                }
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(Integer result) {
-                if (result == APIConstants.RESULT_CODE_SUCCESS) {
-                    ConfigManager.getInstance(MainActivity.this).setUserChannelUploaded(true);
-                }
-            }
-        };
-
-        mRegisterPushTask.execute();
     }
 
     private AsyncTask<Void, Void, Integer> mCheckNewVersionTask;
@@ -656,9 +637,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             if (mDisplayRedDotTask != null) {
                 mDisplayRedDotTask.cancel(true);
             }
-            if (mRegisterPushTask != null) {
-                mRegisterPushTask.cancel(true);
-            }
+
             if (mGetStatusTask != null) {
                 mGetStatusTask.cancel(true);
             }

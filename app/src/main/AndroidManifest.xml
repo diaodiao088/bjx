@@ -70,6 +70,7 @@
         android:name="com.bjxapp.worker.App"
         android:allowBackup="true"
         android:icon="@drawable/icon"
+        android:usesCleartextTraffic="true"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
@@ -204,9 +205,6 @@
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.user.ApplyActivity"
             android:screenOrientation="portrait">
-
-
-
         </activity>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.PublicActivity"
@@ -289,6 +287,16 @@
             android:screenOrientation="portrait"></activity>
 
         <service android:name="com.bjxapp.worker.service.XAppService"></service>
+
+        <service
+            android:name=".push.BJXPushService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushservice">
+        </service>
+
+        <service android:name=".push.PushIntentService"/>
+
 
         <!-- push应用定义消息receiver声明 -->
         <receiver android:name="com.bjxapp.worker.receiver.XPushMessageReceiver">

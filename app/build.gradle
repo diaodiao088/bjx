@@ -10,6 +10,17 @@ android {
         versionName "1.0"
         useLibrary 'org.apache.http.legacy'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86_64"
+        }
+
+        manifestPlaceholders = [
+                GETUI_APP_ID : "va63C5q0Bm67h8M6hbVx35",
+                GETUI_APP_KEY : "xTa8BxKblAAwh7uuaZ5aU4",
+                GETUI_APP_SECRET : "iV9JSIUrjb8IbMENCFTWt1"
+        ]
+
     }
     buildTypes {
         release {
@@ -55,5 +66,7 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
 
     compile files('libs/BaiduLBS_Android.jar')
+
+    compile 'com.getui:sdk:2.12.5.0'
 
 }
