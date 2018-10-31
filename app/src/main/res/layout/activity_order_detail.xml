@@ -26,6 +26,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
+                android:background="@color/white"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -258,7 +259,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true">
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/issue_edit_btn">
 
                         <com.bjxapp.worker.controls.XTextView
                             android:id="@+id/modify_divider"
@@ -391,6 +393,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/issue_add_image_ly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"

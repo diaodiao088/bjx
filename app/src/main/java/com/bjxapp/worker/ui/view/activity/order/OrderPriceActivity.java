@@ -23,12 +23,17 @@ import android.widget.LinearLayout;
 import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XButton;
+import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
 import com.bjxapp.worker.utils.UploadFile;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by zhangdan on 2018/10/14.
@@ -50,12 +55,22 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
 
     private int mScreenShotCount;
 
+    @BindView(R.id.title_text_tv)
+    XTextView mTitleTv;
+
+    @OnClick(R.id.title_image_back)
+    void onBack() {
+        finish();
+    }
+
     private List<String> mScreenShotList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_price);
+        ButterKnife.bind(this);
+        mTitleTv.setText("预付项");
         mContentTv = findViewById(R.id.enter_pwd_tv);
         mPriceTv = findViewById(R.id.enter_pwd_tv_sure);
         mAddIv = findViewById(R.id.btn_screen_shot);
@@ -168,18 +183,18 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
         }
     }
 
-    private void getQrCode(){
+    private void getQrCode() {
 
     }
 
-    public static void goToActivity(Context ctx){
+    public static void goToActivity(Context ctx) {
 
-        if (ctx == null){
+        if (ctx == null) {
             ctx = App.getInstance();
         }
 
         Intent intent = new Intent();
-        intent.setClass(ctx , OrderPriceActivity.class);
+        intent.setClass(ctx, OrderPriceActivity.class);
         ctx.startActivity(intent);
     }
 

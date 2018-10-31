@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
@@ -41,90 +42,86 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     private int mCurrentStatus;
 
     @BindView(R.id.title_image_back)
-     XImageView mBackImageView;
+    XImageView mBackImageView;
 
     /* 通用状态 btn */
     @BindView(R.id.order_status_tv)
-     XTextView mStatusTv;
+    XTextView mStatusTv;
 
     /* 新订单 */
     @BindView(R.id.order_receive_textview_service)
-     XTextView mBillNumTv;  // 订单号
+    XTextView mBillNumTv;  // 订单号
     @BindView(R.id.bill_name)
-     XTextView mServiceNameTv; // 维修项目
+    XTextView mServiceNameTv; // 维修项目
     @BindView(R.id.order_receive_textview_orderdate)
-     XTextView mDateTv; // 日期
+    XTextView mDateTv; // 日期
     @BindView(R.id.order_receive_textview_address)
-     XTextView mAdressTv;
+    XTextView mAdressTv;
     @BindView(R.id.order_receive_textview_money)
-     XTextView mPriceTv;
+    XTextView mPriceTv;
     @BindView(R.id.order_receive_textview_remark)
-     XTextView mRemarkTv;
+    XTextView mRemarkTv;
     @BindView(R.id.order_receive_textview_contact)
-     XTextView mPhoneTv;
+    XTextView mPhoneTv;
     @BindView(R.id.cancel_bill)
-     XTextView mCancelBillTv;
+    TextView mCancelBillTv;
 
     /* 待预约 */
     @BindView(R.id.last_hour)
-     XTextView mLastHourTv;
+    XTextView mHourLastTv;
     @BindView(R.id.wait_contact_change_btn)
-     XButton mChangeDateBtn;
+    XButton mChangeDateBtn;
     @BindView(R.id.wait_contact_ok_btn)
-     XButton mChangeDateOk;
+    XButton mChangeDateOk;
 
     /* 订单详情 */
     @BindView(R.id.modify_strategy_ly)
-     LinearLayout modifyLy;
+    LinearLayout modifyLy;
     @BindView(R.id.issue_reason_tv)
-     XTextView mIssueReasonTv;
+    XTextView mIssueReasonTv;
     @BindView(R.id.strategy_content_tv)
-     XTextView mStrategyContentTv; // 维修措施
+    XTextView mStrategyContentTv; // 维修措施
     @BindView(R.id.price_content)
-     XTextView mIssuePriceTv; // 维修报价
+    XTextView mIssuePriceTv; // 维修报价
     @BindView(R.id.issue_edit_btn)
-     XButton mIssueEditBtn;  // 维修编辑
+    XButton mServiceEditBtn;  // 维修编辑
     @BindView(R.id.add_image_content)
-     XTextView mIssueImgTv;  // 添加维修照片
+    XTextView mIssueImgTv;  // 添加维修照片
 
     /* 预付项 */
     @BindView(R.id.order_bill_btn)
-     XButton preBillBtn;
+    XButton preBillBtn;
     @BindView(R.id.pre_bill_tv)
-     XTextView preBillContentTv;
+    XTextView preBillContentTv;
     @BindView(R.id.order_bill_cash_content_tv)
-     XTextView preBillCashTv;
+    XTextView preBillCashTv;
     @BindView(R.id.order_bill_ly)
-     LinearLayout mPreBillLy;
+    LinearLayout mPreBillLy;
 
     /* 订单总和 */
     @BindView(R.id.enter_room_content_tv)
-     XTextView mEnterRoomPrice;
+    XTextView mEnterRoomPrice;
     @BindView(R.id.entire_price_content_tv)
-     XTextView mTotalPriceTv;
+    XTextView mTotalPriceTv;
     @BindView(R.id.total_content_tv)
-     XTextView mTotalTv;
+    XTextView mTotalTv;
     @BindView(R.id.price_ready_content_tv)
-     XTextView mPrePayPriceTv;
+    XTextView mPrePayPriceTv;
     @BindView(R.id.fukuan_content_tv)
-     XTextView mFuKuanContentTv;
+    XTextView mFuKuanContentTv;
 
     /* 查看故障照片 */
     @BindView(R.id.order_receive_detail_images_text)
-     XTextView mLookImageTv;
+    XTextView mLookImageTv;
     @BindView(R.id.order_receive_detail_images)
-     LinearLayout mLookImageLy;
+    LinearLayout mOrderImagesLinear;
 
-    private XButton mAdditionEditButton;
-    private XButton mWaitOkBtn, mWaitCancelBtn;
     ArrayList<String> mIDImageUrls;
-    private XTextView mAdditionContent;
-    private XButton mSaveButton;
-    private XTextView mHourLastTv;
 
-    LinearLayout mIncomeLinear, mOrderImagesLinear;
-    RelativeLayout mOrderFastLayout;
+    @BindView(R.id.order_receive_detail_save)
+    XButton mSaveButton;
 
+    @BindView(R.id.order_receiver_ly)
     LinearLayout mOrderWaitLy;
 
     private CountDownTimer mCountDownTimer;
@@ -224,26 +221,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     @Override
     protected void initControl() {
-
         initTitle();
-
-        mAdditionEditButton = (XButton) findViewById(R.id.issue_edit_btn);
-
-        mAdditionContent = (XTextView) findViewById(R.id.issue_reason_tv);
-        mOrderImagesLinear = (LinearLayout) findViewById(R.id.order_receive_detail_images);
-        mOrderWaitLy = findViewById(R.id.order_receiver_ly);
-        mHourLastTv = findViewById(R.id.last_hour);
-
-        mIncomeLinear.setVisibility(View.GONE);
-        mLookImageLy.setVisibility(View.GONE);
-        mOrderFastLayout.setVisibility(View.GONE);
+        mOrderImagesLinear.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.GONE);
         mHourLastTv.setVisibility(View.GONE);
-
-        mSaveButton = (XButton) findViewById(R.id.order_receive_detail_save);
         mSaveButton.setEnabled(false);
-        mAdditionEditButton.setEnabled(false);
-
         mWaitingDialog = new XWaitingDialog(context);
     }
 
@@ -252,7 +234,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mTitleTextView.setText("订单详情");
         mBackImageView.setVisibility(View.VISIBLE);
     }
-
 
     @Override
     protected void initView() {
@@ -267,7 +248,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @Override
     protected void setListener() {
         mBackImageView.setOnClickListener(this);
-        mAdditionEditButton.setOnClickListener(this);
         mSaveButton.setOnClickListener(this);
         findViewById(R.id.order_receive_detail_images).setOnClickListener(this);
     }
@@ -306,11 +286,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
 
     private void toDetailStatus() {
-       // mOrderStatus.setText("已联系");
+        // mOrderStatus.setText("已联系");
         mSaveButton.setText("完成");
         mSaveButton.setEnabled(true);
-        mIncomeLinear.setVisibility(View.VISIBLE);
-        mAdditionEditButton.setEnabled(true);
+        mServiceEditBtn.setEnabled(true);
         mHourLastTv.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.GONE);
         mSaveButton.setVisibility(View.VISIBLE);
@@ -354,10 +333,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             return;
         }
 
-        if (result.getOrderType() == 1) {
-            mOrderFastLayout.setVisibility(View.VISIBLE);
-        }
-
         mOrderCode = result.getOrderID();
 
         /*mOrderDate.setText(result.getOrderDate() + " " + result.getOrderTime());
@@ -371,9 +346,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mRemark.setText("无备注");
         }*/
         if (Utils.isNotEmpty(result.getAddItem())) {
-            mAdditionContent.setText(result.getAddItem());
+            mIssueReasonTv.setText(result.getAddItem());
         } else {
-            mAdditionContent.setText("无");
+            mIssueReasonTv.setText("无");
         }
 
         String statusString = "";
@@ -384,53 +359,45 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 feeInfo = "费用预估：";
                 mSaveButton.setText("接单");
                 mSaveButton.setEnabled(true);
-                mIncomeLinear.setVisibility(View.GONE);
-                mAdditionEditButton.setEnabled(false);
                 break;
             case 1:
                 statusString = "已接单";
                 feeInfo = "费用：";
                 mSaveButton.setText("完成");
                 mSaveButton.setEnabled(true);
-                mIncomeLinear.setVisibility(View.VISIBLE);
-                mAdditionEditButton.setEnabled(true);
+                mServiceEditBtn.setEnabled(true);
                 break;
             case 2:
                 statusString = "待支付";
                 feeInfo = "费用：";
                 mSaveButton.setText("支付");
                 mSaveButton.setEnabled(true);
-                mIncomeLinear.setVisibility(View.VISIBLE);
-                mAdditionEditButton.setVisibility(View.GONE);
+                mServiceEditBtn.setVisibility(View.GONE);
                 break;
             case 3:
                 statusString = "已结算";
                 feeInfo = "费用：";
                 mSaveButton.setText("查看支付情况");
                 mSaveButton.setEnabled(true);
-                mIncomeLinear.setVisibility(View.VISIBLE);
-                mAdditionEditButton.setVisibility(View.GONE);
+                mServiceEditBtn.setVisibility(View.GONE);
                 break;
             case 4:
                 statusString = "已结算";
                 feeInfo = "费用：";
                 mSaveButton.setVisibility(View.GONE);
-                mIncomeLinear.setVisibility(View.VISIBLE);
-                mAdditionEditButton.setVisibility(View.GONE);
+                mServiceEditBtn.setVisibility(View.GONE);
                 break;
             case 98:
                 statusString = "已取消";
                 feeInfo = "费用：";
                 mSaveButton.setVisibility(View.GONE);
-                mIncomeLinear.setVisibility(View.GONE);
-                mAdditionEditButton.setVisibility(View.GONE);
+                mServiceEditBtn.setVisibility(View.GONE);
                 break;
             case 99:
                 statusString = "异常";
                 feeInfo = "费用：";
                 mSaveButton.setVisibility(View.GONE);
-                mIncomeLinear.setVisibility(View.GONE);
-                mAdditionEditButton.setVisibility(View.GONE);
+                mServiceEditBtn.setVisibility(View.GONE);
                 break;
             default:
                 break;
@@ -623,7 +590,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         Intent intent = new Intent();
         intent.setClass(context, OrderDetailAdditionActivity.class);
         intent.putExtra("order_id", String.valueOf(mOrderCode));
-        intent.putExtra("add_item", mAdditionContent.getText());
+        intent.putExtra("add_item", mIssueReasonTv.getText());
         context.startActivityForResult(intent, Constant.ACTIVITY_ORDER_ADDITION_RESULT_CODE);
         context.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
