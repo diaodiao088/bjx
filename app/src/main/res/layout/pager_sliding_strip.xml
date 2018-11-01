@@ -37,8 +37,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
             android:text="全部"
+            android:textSize="12sp"
             android:textColor="#545454" />
-
 
         <TextView
             android:id="@+id/total_reddot_tv"
@@ -69,9 +69,9 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="#00A551"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:background="#00A551"
             android:visibility="gone" />
 
         <ImageView
@@ -90,6 +90,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
             android:text="新订单"
+            android:textSize="12sp"
             android:textColor="#545454" />
 
 
@@ -123,9 +124,9 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="#00A551"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:background="#00A551"
             android:visibility="gone" />
 
         <ImageView
@@ -144,6 +145,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
             android:text="待联系"
+            android:textSize="12sp"
             android:textColor="#545454" />
 
 
@@ -177,15 +179,15 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="#00A551"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:background="#00A551"
             android:visibility="gone" />
 
         <ImageView
             android:id="@+id/img_waiting_room"
-            android:layout_width="18dp"
-            android:layout_height="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:scaleType="fitXY"
@@ -198,6 +200,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
             android:text="待上门"
+            android:textSize="12sp"
             android:textColor="#545454" />
 
 
@@ -231,15 +234,15 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="#00A551"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:background="#00A551"
             android:visibility="gone" />
 
         <ImageView
             android:id="@+id/img_already_enter"
-            android:layout_width="18dp"
-            android:layout_height="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:scaleType="fitXY"
@@ -252,6 +255,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
             android:text="已上门"
+            android:textSize="12sp"
             android:textColor="#545454" />
 
 
@@ -292,8 +296,8 @@
 
         <ImageView
             android:id="@+id/img_waiting_pay"
-            android:layout_width="18dp"
-            android:layout_height="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:scaleType="fitXY"
@@ -306,6 +310,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
             android:text="待支付"
+            android:textSize="12sp"
             android:textColor="#545454" />
 
 
