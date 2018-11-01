@@ -40,7 +40,8 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true">
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true">
 
                         <com.bjxapp.worker.controls.XTextView
                             android:id="@+id/bill_name"
@@ -70,6 +71,7 @@
                         android:id="@+id/last_hour"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="20dp"
                         android:layout_toLeftOf="@+id/order_status_tv"
                         android:text="30:00"
@@ -400,7 +402,7 @@
                         android:gravity="center_vertical"
                         android:text="请添加维修前，维修中，维修后的照片"
                         android:textColor="#999999"
-                        android:textSize="14sp" />
+                        android:textSize="12sp" />
                 </RelativeLayout>
 
 
@@ -434,7 +436,7 @@
 
                         <com.bjxapp.worker.controls.XTextView
                             android:id="@+id/order_divider"
-                            android:layout_width="1dp"
+                            android:layout_width="2dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:background="@drawable/layout_textview_radius"
@@ -562,7 +564,7 @@
 
                         <com.bjxapp.worker.controls.XTextView
                             android:id="@+id/money_divider"
-                            android:layout_width="1dp"
+                            android:layout_width="2dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:background="@drawable/layout_textview_radius"
@@ -828,7 +830,8 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
                         android:layout_marginTop="8dp"
-                        android:textColor="#999999" />
+                        android:textColor="#999999"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
             </RelativeLayout>
