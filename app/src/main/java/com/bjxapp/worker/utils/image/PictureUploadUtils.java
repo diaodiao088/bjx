@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,11 +15,15 @@ import java.net.HttpURLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
 import org.json.JSONObject;
+
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.utils.BitmapUtils;
 import com.bjxapp.worker.utils.FileUtils;
@@ -30,6 +35,18 @@ import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.http.HttpUtils;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.igexin.sdk.GTServiceManager.context;
+import static java.lang.String.valueOf;
 
 public class PictureUploadUtils {
 	public static final String TAG = "PictureUploadUtils";
@@ -121,46 +138,46 @@ public class PictureUploadUtils {
 	}
 
 	public static String uploadImage(String uploadUrl, String key, Context context, String serverDir) {
-		String returnUrl = "";
-		
-		String filename = FileUtils.getImgNameWithImageExt(key);
-		
-		//String url = constructNetUploadPath(uploadUrl,filename);
-		String url = uploadUrl;
-		String contentType = getBitmapContentType(filename);
-		try {
-			url = ImageSyncLogic.getInstance(context).constructUrlAppends(url, serverDir);
-			File file = new File(key);
-			HttpURLConnection conn = HttpUtils.sendFormdata(url, filename, contentType, FileUtils.getBytesFromFile(file));
-			int responseCode = conn.getResponseCode();
-			if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
-				String encoding = conn.getContentEncoding();
-				InputStream in = conn.getInputStream();
-	            if (encoding != null && encoding.equals("gzip")) {
-	                in = new GZIPInputStream(in);
-	            }
-	            String result = HttpUtils.inputStream2String(in);
-	            try{
-		            JSONObject json = new JSONObject(result);
-					if (!json.isNull("file_path")) {
-						returnUrl = json.getString("file_path");
-					}
-	            }
-	            catch(Exception ex){
-	            	
-	            }
-			}
-		} 
-		catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
+
+		post_file(uploadUrl , null ,new File(key));
+
+		return null;
+	}
+
+
+	public static void post_file(final String url, final Map<String, Object> map, File file) {
+		OkHttpClient client = new OkHttpClient();
+		MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+		if (file != null) {
+			RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+			requestBody.addFormDataPart("file", file.getName(), body);
 		}
 
-		return returnUrl;
+		if (map != null) {
+			for (Map.Entry entry : map.entrySet()) {
+				requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+			}
+		}
+		Request request = new Request.Builder().url(url).post(requestBody.build()).tag(context).build();
+		// readTimeout("请求超时时间" , 时间单位);
+		client.newBuilder().readTimeout(5000, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new Callback() {
+			@Override
+			public void onFailure(Call call, IOException e) {
+			}
+
+			@Override
+			public void onResponse(Call call, Response response) throws IOException {
+				if (response.isSuccessful()) {
+					String str = response.body().string();
+
+					Log.d("slog_zd","body: " + str + " , msg: " + response.message().toString());
+
+				} else {
+				}
+			}
+		});
 	}
-	
+
 	public static String uploadImage(String uploadUrl, String key, Context context, String serverDir, String fileName, long maxSize) {
 		String returnUrl = ""; 
 		

@@ -1,8 +1,6 @@
 package com.bjxapp.worker.http.httpcore.utils;
 
-
-import android.util.Log;
-
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.http.httpcore.adapter.KCallAdapterFactory;
 import com.bjxapp.worker.http.httpcore.config.HttpConfig;
 import com.bjxapp.worker.http.httpcore.converter.KFileModelConvertorFactory;
@@ -19,7 +17,6 @@ import com.bjxapp.worker.http.keyboard.commonutils.KSystemUtils;
 import com.bjxapp.worker.http.keyboard.commonutils.job.HttpThreadUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
@@ -27,7 +24,6 @@ import okhttp3.Cache;
 import okhttp3.Dispatcher;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -71,12 +67,10 @@ public class ObjectSupplier {
         @Override
         public Retrofit get() {
             Retrofit.Builder builder = new Retrofit.Builder();
-            builder.baseUrl(HttpUrl.parse(HttpConfig.BASE_URL_HTTP))
+            builder.baseUrl(HttpUrl.parse(LoginApi.URL))
                     .callFactory(okHttpClient())
                     .addCallAdapterFactory(KCallAdapterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(KFileModelConvertorFactory.create())
-                    .addConverterFactory(KResultModelConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create());
             return builder.build();
         }

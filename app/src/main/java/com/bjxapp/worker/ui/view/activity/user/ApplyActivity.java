@@ -10,8 +10,11 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
@@ -21,6 +24,7 @@ import android.widget.RelativeLayout;
 
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XCircleImageView;
 import com.bjxapp.worker.controls.XEditText;
@@ -44,17 +48,36 @@ import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.image.BitmapManager;
 import com.bjxapp.worker.utils.image.PictureUploadUtils;
+import com.bumptech.glide.Glide;
 
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.igexin.sdk.GTServiceManager.context;
+import static java.lang.String.valueOf;
 
 public class ApplyActivity extends BaseActivity implements OnClickListener {
     protected static final String TAG = "注册界面";
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     /* title bar */
     @BindView(R.id.title_text_tv)
@@ -400,40 +423,91 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         }
     }
 
-    private AsyncTask<String, Void, String> mHeadImageTask;
+    private String mImageAddress = "";
 
     private void uploadHeadImage(String filename) {
         mWaitingDialog.show("正在上传头像，请稍候...", false);
-
-        mHeadImageTask = new AsyncTask<String, Void, String>() {
-            @Override
-            protected String doInBackground(String... params) {
-                String uploadUrl = APIConstants.IMAGE_HEAD_UPLOAD_URL;
-                String result = PictureUploadUtils.uploadImage(uploadUrl, params[0], context, Constant.UPLOAD_URL_SERVER_DIR_USER);
-
-                if (isCancelled()) {
-                    return "";
-                }
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                mWaitingDialog.dismiss();
-
-                if (Utils.isNotEmpty(result)) {
-                    Utils.showShortToast(context, "头像上传成功！");
-                    mHeadImage.setTag(result);
-                    ConfigManager.getInstance(context).setUserHeadImageUrl(result);
-                } else {
-                    mHeadImage.setTag(null);
-                    Utils.showShortToast(context, "头像上传失败，请重新选择头像！");
-                }
-            }
-        };
-
-        mHeadImageTask.execute(filename);
+        post_file(LoginApi.URL + "/image/upload", null, new File(filename));
     }
+
+    public void post_file(final String url, final Map<String, Object> map, File file) {
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        if (file != null) {
+            RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+            requestBody.addFormDataPart("file", file.getName(), body);
+        }
+
+        if (map != null) {
+            for (Map.Entry entry : map.entrySet()) {
+                requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+            }
+        }
+        Request request = new Request.Builder().url(url).post(requestBody.build()).tag(ApplyActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+                ApplyActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(context, "头像上传失败，请重新选择头像！");
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+                    try {
+                        JSONObject object = new JSONObject(str);
+
+                        String accessAddress = object.getString("accessAddress");
+
+                        if (TextUtils.isEmpty(accessAddress)) {
+
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.showShortToast(context, "头像上传失败，请重新选择头像！");
+                                }
+                            });
+                        } else {
+                            mImageAddress = accessAddress;
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.showShortToast(context, "头像上传成功！");
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(context, "头像上传失败，请重新选择头像！");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
 
     private void displayHeadImage() {
         String imageUrl = ConfigManager.getInstance(context).getUserHeadImageUrl();

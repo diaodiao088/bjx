@@ -205,6 +205,7 @@
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.user.ApplyActivity"
             android:screenOrientation="portrait">
+
         </activity>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.PublicActivity"

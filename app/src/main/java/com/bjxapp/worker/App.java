@@ -2,6 +2,7 @@ package com.bjxapp.worker;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.bjxapp.worker.dataupload.Uploader;
+import com.bjxapp.worker.http.keyboard.commonutils.CommonUtilsEnv;
 
 import android.app.Application;
 import android.content.Context;
@@ -20,6 +21,9 @@ public class App extends Application {
 
         //初始化数据上报sdk
         Uploader.onApplicationStart(_context);
+
+        CommonUtilsEnv.createInstance(this);
+
     }
 
     @Override

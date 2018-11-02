@@ -30,9 +30,10 @@ import retrofit2.Retrofit;
 
 /**
  * 网络请求类
- * @since 2017.09.14 19:50
+ *
  * @author renwenjie
  * @version 1.0
+ * @since 2017.09.14 19:50
  */
 public final class KHttpWorker {
 
@@ -40,7 +41,8 @@ public final class KHttpWorker {
         static final KHttpWorker INSTANCE = new KHttpWorker();
     }
 
-    private KHttpWorker() { }
+    private KHttpWorker() {
+    }
 
     public static KHttpWorker ins() {
         return LazyHolder.INSTANCE;
@@ -58,7 +60,7 @@ public final class KHttpWorker {
 
     public <S> S createHttpService(String baseUrl, Class<S> service) {
         String originBaseUrl = Preconditions.checkNotNull(ObjectSupplier.retrofit().baseUrl().toString());
-        if (!TextUtils.isEmpty(baseUrl) && !originBaseUrl.equals(baseUrl))  {
+        if (!TextUtils.isEmpty(baseUrl) && !originBaseUrl.equals(baseUrl)) {
             Retrofit base = ObjectSupplier.retrofit();
             Retrofit.Builder builder = base.newBuilder();
             builder.baseUrl(HttpUrl.parse(baseUrl));
@@ -68,7 +70,7 @@ public final class KHttpWorker {
     }
 
     public <T> Result<T> requestSync(Call<Result<T>> call) {
-        return request(call, null, false, false , JobPriority.JOB_PRIORITY_HIGH);
+        return request(call, null, false, false, JobPriority.JOB_PRIORITY_HIGH);
     }
 
     public <T> Result<T> requestSync(Call<Result<T>> call, boolean forceUpdate) {
@@ -80,7 +82,7 @@ public final class KHttpWorker {
     }
 
     public <T> void requestAsync(Call<Result<T>> call, INetWorkWatcher<Result<T>> watcher) {
-        request(call, watcher, true, false , JobPriority.JOB_PRIORITY_HIGH);
+        request(call, watcher, true, false, JobPriority.JOB_PRIORITY_HIGH);
     }
 
     public <T> void requestAsync(Call<Result<T>> call, INetWorkWatcher<Result<T>> watcher, boolean forceUpdate) {

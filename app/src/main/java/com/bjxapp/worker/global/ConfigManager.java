@@ -11,10 +11,10 @@ import android.content.SharedPreferences.Editor;
 public final class ConfigManager {
 
 	//user info
-	private static final String PREF_KEY_USER_CODE = "pref_key_user_code";
+	private static final String PREF_KEY_USER_CODE = "pref_key_user_code_new";
     private static final String PREF_KEY_USER_NAME = "pref_key_user_name";
     private static final String PREF_KEY_USER_STATUS = "pref_key_user_status";
-    private static final String PREF_KEY_USER_SESSION = "pref_key_user_session";
+    private static final String PREF_KEY_USER_SESSION = "pref_key_user_session_new";
     private static final String PREF_KEY_USER_HEAD_IMAGE_URL = "pref_key_user_head_image_url";
     
     //push channelid

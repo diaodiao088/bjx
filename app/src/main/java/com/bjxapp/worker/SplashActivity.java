@@ -12,6 +12,7 @@ import com.bjxapp.worker.global.ActivitiesManager;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.service.ServiceManager;
+import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.user.LoginActivity;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
@@ -59,7 +60,10 @@ public class SplashActivity extends BaseActivity {
 			Intent intent = new Intent();
 			if (mLogined) 
 			{
-				gotoTargetActivity();
+			//	gotoTargetActivity();
+                Intent intent1 = new Intent();
+                intent1.setClass(SplashActivity.this , ApplyActivity.class);
+                startActivity(intent1);
 			} 
 			else 
 			{
@@ -74,7 +78,10 @@ public class SplashActivity extends BaseActivity {
         switch (requestCode) {
             case LOGIN_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    gotoTargetActivity();
+                  //  gotoTargetActivity();
+                    Intent intent1 = new Intent();
+                    intent1.setClass(SplashActivity.this , ApplyActivity.class);
+                    startActivity(intent1);
                 }
                 else {
                 	ActivitiesManager.getInstance().finishAllActivities();
