@@ -115,17 +115,14 @@ public class ChangeCityActivity extends BaseActivity implements View.OnClickList
                     for (Map.Entry<String, JsonElement> entry : cityJson.entrySet()) {
 
                         String key = entry.getKey();
-
                         JsonArray cityArray = (JsonArray) entry.getValue();
-
                         for (int i = 0; i < cityArray.size(); i++) {
                             JsonObject item = (JsonObject) cityArray.get(i);
-
-                            Log.d("slog_zd", "item : " + item.toString());
 
                             CityInfo cityBean = new CityInfo();
                             cityBean.setShowCategory(i == 0);
                             cityBean.setCategoryId(key);
+                            cityBean.setmCityId(item.get("regionId").getAsString());
                             cityBean.setCityName(item.get("name").getAsString());
 
                             mList.add(cityBean);
@@ -224,6 +221,7 @@ public class ChangeCityActivity extends BaseActivity implements View.OnClickList
                 public void onClick(View v) {
                     Intent intent = new Intent();
                     intent.putExtra("city", cityInfo.getCityName());
+                    intent.putExtra("city_id", cityInfo.getmCityId());
                     setResult(RESULT_OK, intent);
                     Utils.finishWithoutAnim(ChangeCityActivity.this);
                 }

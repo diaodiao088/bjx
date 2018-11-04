@@ -26,6 +26,9 @@ public class SimpleTreeRecyclerAdapter extends TreeRecyclerAdapter {
         super(mTree, context, datas, defaultExpandLevel);
     }
 
+
+
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 

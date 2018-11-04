@@ -14,6 +14,16 @@ public class CityInfo {
 
     private String cityName;
 
+    public String getmCityId() {
+        return mCityId;
+    }
+
+    public void setmCityId(String mCityId) {
+        this.mCityId = mCityId;
+    }
+
+    private String mCityId;
+
     private int id;
 
     public boolean isShowCategory() {

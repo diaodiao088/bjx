@@ -46,7 +46,7 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
     private String mLoginKey = "";
 
     @OnClick(R.id.title_image_back)
-    void onBack(){
+    void onBack() {
         finish();
     }
 
@@ -235,7 +235,7 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
 
                     if (result != null) {
                         if (result.getResultCode() == APIConstants.RESULT_CODE_SUCCESS) {
-                           loginSuccess = true;
+                            loginSuccess = true;
                         }
                     }
 
@@ -253,10 +253,10 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
         }
     }
 
-    private void doNextStep(){
+    private void doNextStep() {
         mLoginButton.setBackgroundResource(R.drawable.button_background_green);
         mLoginButton.setClickable(true);
-        ChangePwdActivity.goToActivityForResult(this);
+        ChangePwdActivity.goToActivityForResult(this, ChangePwdActivity.FROM_FORGET_PWD);
         Utils.finishWithoutAnim(this);
     }
 
@@ -290,7 +290,7 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
             if (mSendAuthCode != null) {
                 mSendAuthCode.cancel(true);
             }
-            if (mLoginButton != null){
+            if (mLoginButton != null) {
                 mLoginButton.setClickable(false);
             }
         } catch (Exception e) {
@@ -299,9 +299,9 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
         super.onDestroy();
     }
 
-    public static void goToActivity(Context ctx){
+    public static void goToActivity(Context ctx) {
         Intent intent = new Intent();
-        intent.setClass(ctx , ForgetPwdActivity.class);
+        intent.setClass(ctx, ForgetPwdActivity.class);
         ctx.startActivity(intent);
     }
 

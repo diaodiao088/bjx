@@ -40,14 +40,31 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 
     String pattern = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$";
 
+    public static final int FROM_FORGET_PWD = 0x01;
+    public static final int FROM_REGISTER_PWD = 0x02;
+
+    public static final String FROM_TYPE = "from_type";
+
+    public static final String KEY_TYPE = "key_type";
+
+    private int mFrom;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_change_pwd);
         ButterKnife.bind(this);
 
         mTitleTv.setText("设置密码");
-
+        handleIntent();
         super.onCreate(savedInstanceState);
+    }
+
+    private void handleIntent() {
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            mFrom = intent.getIntExtra(FROM_TYPE, 0x00);
+        }
     }
 
     @Override
@@ -79,9 +96,10 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
         return TAG;
     }
 
-    public static void goToActivityForResult(Activity ctx) {
+    public static void goToActivityForResult(Activity ctx, int from) {
         Intent intent = new Intent();
         intent.setClass(ctx, ChangePwdActivity.class);
+        intent.putExtra(FROM_TYPE, from);
         ctx.startActivityForResult(intent, Constant.CONSULT_SETTING_PWD);
     }
 
@@ -127,7 +145,17 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
             Utils.showShortToast(context, "密码格式错误！");
         }
 
-        // TODO: 2018/10/7 网络请求
+        if (mFrom == FROM_REGISTER_PWD) {
+            Intent intent = new Intent();
+            intent.putExtra(KEY_TYPE, mPwdSureTv.getText().toString());
+            setResult(RESULT_OK, intent);
+            finish();
+        } else if (mFrom == FROM_FORGET_PWD) {
+            changePwdReal();
+        }
+    }
+
+    private void changePwdReal() {
 
     }
 

@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.RegisterApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XCircleImageView;
 import com.bjxapp.worker.controls.XEditText;
@@ -33,6 +34,7 @@ import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.LocationInfo;
 import com.bjxapp.worker.model.UserApplyInfo;
@@ -49,14 +51,17 @@ import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.image.BitmapManager;
 import com.bjxapp.worker.utils.image.PictureUploadUtils;
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -116,6 +121,8 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
     private RelativeLayout mPwdLy;
 
     private Uri mPhotoUri;
+
+    private String mPwd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -251,7 +258,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                 ChangeCityActivity.goToActivityForResult(this);
                 break;
             case R.id.user_apply_work_pwd_ly:
-                ChangePwdActivity.goToActivityForResult(this);
+                ChangePwdActivity.goToActivityForResult(this, ChangePwdActivity.FROM_REGISTER_PWD);
                 break;
             default:
                 break;
@@ -392,28 +399,29 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                         locationInfo.setLongitude(data.getDoubleExtra(MapActivityNew.USER_LONGTITUDE, 0.0));
                         locationInfo.setAddress(data.getStringExtra(MapActivityNew.USER_ADDRESS));
                         mUserOrderAreaEdit.setTag(locationInfo);
-                        mUserOrderAreaEdit.setText(data.getStringExtra("address"));
+                        mUserOrderAreaEdit.setText(data.getStringExtra(MapActivityNew.USER_ADDRESS));
                     }
                     break;
                 case Constant.CONSULT_ID_IMAGES:
                     if (resultCode == RESULT_OK && data != null) {
                         mIDImageUrls = data.getStringArrayListExtra("result");
-                        mUploadImageLy.setTag(new Object());
-                        // displayIDImages();
+                        mUploadImageLy.setTag(mIDImageUrls);
                     }
                     break;
                 case Constant.CONSULT_WORK_CITY:
                     if (resultCode == RESULT_OK && data != null) {
-                        // TODO: 2018/9/18
                         String city = data.getStringExtra("city");
+                        String regionId = data.getStringExtra("city_id");
                         if (!TextUtils.isEmpty(city)) {
                             mCityEditTv.setText(city);
-                            mCityEditTv.setTag(new Object());
+                            mCityEditTv.setTag(regionId);
                         }
                     }
                     break;
                 case Constant.CONSULT_SETTING_PWD:
                     if (resultCode == RESULT_OK && data != null) {
+                        String pwd = data.getStringExtra(ChangePwdActivity.KEY_TYPE);
+                        mPwd = pwd;
                         mPwdLy.setTag(new Object());
                     }
                     break;
@@ -435,7 +443,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
         if (file != null) {
             RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
-            requestBody.addFormDataPart("file", file.getName(), body);
+            requestBody.addFormDataPart("files", file.getName(), body);
         }
 
         if (map != null) {
@@ -474,9 +482,11 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                     try {
                         JSONObject object = new JSONObject(str);
 
-                        String accessAddress = object.getString("accessAddress");
+                        JSONArray accessAddress = object.getJSONArray("list");
 
-                        if (TextUtils.isEmpty(accessAddress)) {
+                        String img = accessAddress.get(0).toString();
+
+                        if (TextUtils.isEmpty(img)) {
 
                             mHandler.post(new Runnable() {
                                 @Override
@@ -485,10 +495,11 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                                 }
                             });
                         } else {
-                            mImageAddress = accessAddress;
+                            mImageAddress = img;
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
+                                    mHeadImage.setTag(new Object());
                                     Utils.showShortToast(context, "头像上传成功！");
                                 }
                             });
@@ -575,7 +586,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
             return;
         }
 
-        //验证表单合法性
+        //验证表单合法性sd
         if (mHeadImage.getTag() == null) {
             Utils.showShortToast(context, "请选择您的头像！");
             return;
@@ -590,6 +601,12 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
             Utils.showShortToast(context, "请输入您的姓名！");
             return;
         }
+
+        if (TextUtils.isEmpty(mUserWorkYearsEdit.getText().toString())) {
+            Utils.showShortToast(context, "请输入工作年限！");
+            return;
+        }
+
         if (!Utils.isNotEmpty(mUserIDEdit.getText().toString())) {
             Utils.showShortToast(context, "请输入您的身份证号！");
             return;
@@ -621,7 +638,64 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
             return;
         }
 
-        //save user infomation
+        // todo 工作年限校验
+        mWaitingDialog.show("正在提交注册信息，请稍候...", false);
+
+        RegisterApi httpService = KHttpWorker.ins().createHttpService(LoginApi.URL, RegisterApi.class);
+
+        Map params = new HashMap();
+
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("password", mPwd);
+        params.put("avatarUrl", mImageAddress);
+        params.put("name", mUserNameTv.getText().toString());
+        params.put("identityCardNo", resultIDCard);
+        params.put("regionId", String.valueOf(mCityEditTv.getTag()));
+        params.put("workingYear", mUserWorkYearsEdit.getText().toString());
+        params.put("serviceIds", mUserWorkTypesEdit.getTag().toString());
+
+        ArrayList<String> imgs = (ArrayList<String>) mUploadImageLy.getTag();
+
+        if (imgs.size() >= 2) {
+            params.put("identityCardFrontImgUrl", imgs.get(0));
+            params.put("identityCardBehindImgUrl", imgs.get(1));
+        }
+
+        LocationInfo info = (LocationInfo) mUserOrderAreaEdit.getTag();
+
+        if (info != null) {
+            params.put("locationAddress", info.getAddress());
+            params.put("latitude", info.getLatitude());
+            params.put("longitude", info.getLongitude());
+        }
+
+
+        retrofit2.Call<JsonObject> registerRequest = httpService.getRegister(params);
+
+        registerRequest.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+                Utils.showShortToast(context, "提交注册信息失败，请重试！");
+            }
+        });
+
+        /*//save user infomation
         final UserApplyInfo applyInfo = new UserApplyInfo();
         applyInfo.setHeadImageUrl(mHeadImage.getTag().toString());
         applyInfo.setPersonName(mUserNameTv.getText().toString().trim());
@@ -636,7 +710,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         applyInfo.setWorkYear(Integer.parseInt(mUserWorkYearsEdit.getTag().toString()));
         applyInfo.setServiceSubIDs(mUserWorkTypesEdit.getTag().toString());
 
-        mWaitingDialog.show("正在提交注册信息，请稍候...", false);
+
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {
@@ -657,7 +731,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                 }
             }
 
-        }.execute();
+        }.execute();*/
     }
 
     private AsyncTask<String, Void, UserApplyInfo> mLoadDataTask;
