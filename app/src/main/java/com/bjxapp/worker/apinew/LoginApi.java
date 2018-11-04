@@ -38,6 +38,10 @@ public interface LoginApi {
     Call<JsonObject> pwdLogin(@FieldMap Map<String , String> params); // 账号密码登录
 
     @FormUrlEncoded
+    @POST("/profile/password")
+    Call<JsonObject> changePwd(@FieldMap Map<String , String> params);
+
+    @FormUrlEncoded
     @POST("/logout")
     Call<JsonObject> logOut(@FieldMap Map<String , String> params); // 退出登录
 

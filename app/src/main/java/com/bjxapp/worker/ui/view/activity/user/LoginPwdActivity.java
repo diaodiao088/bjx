@@ -3,14 +3,29 @@ package com.bjxapp.worker.ui.view.activity.user;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bjxapp.worker.R;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
+import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by zhangdan on 2018/9/10.
@@ -29,6 +44,10 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
     private TextView mForgetPwdTv;
     private TextView mPhoneLoginTv;
     private TextView mRegisterTv;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private XWaitingDialog mWaitingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +122,74 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
 
         if (!TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(pwd)) {
             // TODO: 2018/10/29
-
-        } else if (TextUtils.isEmpty(phoneNumber)){
+            getLoginReal(phoneNumber, pwd);
+        } else if (TextUtils.isEmpty(phoneNumber)) {
             Utils.showLongToast(LoginPwdActivity.this, "请填写手机号");
-        } else if (TextUtils.isEmpty(pwd)){
+        } else if (TextUtils.isEmpty(pwd)) {
             Utils.showLongToast(LoginPwdActivity.this, "请输入密码");
         }
     }
 
+    private void getLoginReal(final String phoneNumber, String pwd) {
+
+        mWaitingDialog = new XWaitingDialog(LoginPwdActivity.this);
+
+        mWaitingDialog.show(getString(R.string.login_waiting_message), false);
+
+        LoginApi httpService = KHttpWorker.ins().createHttpService(LoginApi.URL, LoginApi.class);
+
+        Map params = new HashMap();
+
+        params.put("userCode", phoneNumber);
+        params.put("password", pwd);
+
+        Call<JsonObject> loginRequest = httpService.pwdLogin(params);
+
+        loginRequest.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject object = response.body();
+                    if (object != null) {
+                        if (object.get("token") != null) {
+                            String token = object.get("token").getAsString();
+                            if (!TextUtils.isEmpty(token)) {
+                                ConfigManager.getInstance(context).setUserCode(phoneNumber);
+                                ConfigManager.getInstance(context).setUserSession(token);
+                                setResult(RESULT_OK);
+                                Utils.finishWithoutAnim(LoginPwdActivity.this);
+                            }
+                        }
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showLongToast(LoginPwdActivity.this, getString(R.string.login_fail_warning));
+                            }
+                        });
+                    }
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showLongToast(LoginPwdActivity.this, getString(R.string.login_fail_warning));
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showLongToast(LoginPwdActivity.this, getString(R.string.login_fail_warning));
+                    }
+                });
+            }
+        });
+
+    }
 
 }

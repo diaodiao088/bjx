@@ -681,7 +681,23 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                     mWaitingDialog.dismiss();
                 }
 
-
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    JsonObject object = response.body();
+                    if (object != null && object.get("code").getAsInt() == 0) {
+                        Intent intent = new Intent();
+                        intent.putExtra("workyears", mUserWorkYearsEdit.getText().toString());
+                        ConfigManager.getInstance(context).setUserName(mUserNameTv.getText().toString());
+                        setResult(RESULT_OK, intent);
+                        Utils.finishWithoutAnim(ApplyActivity.this);
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(context, "提交注册信息失败，请重试！");
+                            }
+                        });
+                    }
+                }
             }
 
             @Override
@@ -691,7 +707,13 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                     mWaitingDialog.dismiss();
                 }
 
-                Utils.showShortToast(context, "提交注册信息失败，请重试！");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showShortToast(context, "提交注册信息失败，请重试！");
+                    }
+                });
+
             }
         });
 

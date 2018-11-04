@@ -3,22 +3,36 @@ package com.bjxapp.worker.ui.view.activity.user;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.bjxapp.worker.R;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
+import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by zhangdan on 2018/9/10.
@@ -48,6 +62,10 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
     public static final String KEY_TYPE = "key_type";
 
     private int mFrom;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private XWaitingDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +175,70 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 
     private void changePwdReal() {
 
+        mDialog = new XWaitingDialog(this);
+
+        LoginApi httpService = KHttpWorker.ins().createHttpService(LoginApi.URL, LoginApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("userCode", ConfigManager.getInstance(ChangePwdActivity.this).getUserCode());
+        params.put("token", ConfigManager.getInstance(ChangePwdActivity.this).getUserSession());
+        params.put("password", mPwdTv.getText().toString());
+
+        Call<JsonObject> request = httpService.changePwd(params);
+
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    JsonObject object = response.body();
+                    if (object != null && object.get("code").getAsInt() == 0) {
+
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(context, "修改密码成功！");
+                            }
+                        });
+
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        }, 1000);
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (mDialog != null) {
+                                    mDialog.dismiss();
+                                }
+
+                                Utils.showShortToast(context, "修改密码失败！");
+                            }
+                        });
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mDialog != null) {
+                            mDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(context, "修改密码失败！");
+                    }
+                });
+            }
+        });
     }
 
 }

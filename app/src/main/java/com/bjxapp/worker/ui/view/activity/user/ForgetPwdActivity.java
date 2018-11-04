@@ -3,15 +3,19 @@ package com.bjxapp.worker.ui.view.activity.user;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XEditText;
 import com.bjxapp.worker.controls.XImageView;
@@ -20,15 +24,29 @@ import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.dataupload.ReportEvent;
 import com.bjxapp.worker.dataupload.Uploader;
 import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.Account;
 import com.bjxapp.worker.model.XResult;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
+import com.google.gson.JsonObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
     protected static final String TAG = "登陆界面";
@@ -44,6 +62,8 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
     private XEditText mPasswordEditText, mVerifyCodeEditText;
     private XWaitingDialog mWaitingDialog;
     private String mLoginKey = "";
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @OnClick(R.id.title_image_back)
     void onBack() {
@@ -80,7 +100,8 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void initData() {
         mMobileEditText.setText(ConfigManager.getInstance(context).getUserCode());
-        getLoginKey();
+        // getLoginKey();
+        getLoginKeyNew();
     }
 
     @Override
@@ -136,6 +157,80 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
         mGetLoginKey.execute();
     }
 
+    private void getLoginKeyNew() {
+
+        LoginApi httpService = KHttpWorker.ins().createHttpService(LoginApi.URL, LoginApi.class);
+
+        Call<JsonObject> getKeyRequest = httpService.getLoginKey();
+
+        getKeyRequest.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                JsonObject object = response.body();
+                if (object != null) {
+                    mLoginKey = object.get("loginKey").getAsString();
+                    if (!TextUtils.isEmpty(mLoginKey)) {
+                        getVerifyImageNew();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+            }
+        });
+    }
+
+    private void getVerifyImageNew() {
+
+        if (!Utils.isNotEmpty(mLoginKey)) {
+            ForgetPwdActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.showShortToast(context, "获取数据失败，请退出应用，重新进入！");
+                }
+            });
+            return;
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        String url = LoginApi.URL + "/login/captcha";
+        try {
+
+            RequestBody requestBodyPost = new FormBody.Builder().add("loginKey", mLoginKey).build();
+
+            Request request = new Request.Builder().url(url).post(requestBodyPost).build();
+
+            client.newCall(request).enqueue(new okhttp3.Callback() {
+                @Override
+                public void onFailure(okhttp3.Call call, IOException e) {
+                    ForgetPwdActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(context, "验证码获取失败，请重新进入！");
+                        }
+                    });
+                }
+
+                @Override
+                public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                    InputStream is = response.body().byteStream();
+                    final Bitmap bm = BitmapFactory.decodeStream(is);
+
+                    ForgetPwdActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mVerifyCodeImageView.setImageBitmap(bm);
+                        }
+                    });
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private AsyncTask<Void, Void, Bitmap> mGetVerifyImage;
 
     private void getVerifyImage() {
@@ -180,27 +275,46 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
         }
         mCounter.start();
 
-        mSendAuthCode = new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                String mobile = mMobileEditText.getText().toString();
-                return LogicFactory.getAccountLogic(context).sendAuth(mobile, mLoginKey, verifyCode);
-            }
+        LoginApi httpService = KHttpWorker.ins().createHttpService(LoginApi.URL, LoginApi.class);
 
-            @Override
-            protected void onPostExecute(Integer result) {
-                if (result == APIConstants.RESULT_CODE_SUCCESS) {
+        Map params = new HashMap();
 
-                } else {
-                    Utils.showLongToast(context, "获取验证码失败，请检查图形码是否正确！");
-                    mCounter.cancel();
-                    mSendAuthButton.setEnabled(true);
-                    mSendAuthButton.setText("获取验证码");
+        params.put("loginKey", mLoginKey);
+        params.put("captchaCode", verifyCode);
+        params.put("userCode", mobile);
+
+        Call<JsonObject> getKeyRequest = httpService.getAuthCode(params);
+
+        getKeyRequest.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.code() != APIConstants.RESULT_CODE_SUCCESS) {
+                    ForgetPwdActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showLongToast(context, "获取验证码失败，请检查图形码是否正确！");
+                            mCounter.cancel();
+                            mSendAuthButton.setEnabled(true);
+                            mSendAuthButton.setText("获取验证码");
+                        }
+                    });
                 }
             }
-        };
 
-        mSendAuthCode.execute();
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                ForgetPwdActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showLongToast(context, "获取验证码失败，请检查图形码是否正确！");
+                        mCounter.cancel();
+                        mSendAuthButton.setEnabled(true);
+                        mSendAuthButton.setText("获取验证码");
+                    }
+                });
+            }
+        });
     }
 
 
@@ -221,35 +335,60 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
             mWaitingDialog.show("正在验证，请稍后...", false);
 
 
-            new AsyncTask<Void, Void, XResult>() {
-                Boolean loginSuccess = false;
+            LoginApi httpService = KHttpWorker.ins().createHttpService(LoginApi.URL, LoginApi.class);
 
+            Map params = new HashMap();
+
+            params.put("userCode", userCode);
+            params.put("authCode", password);
+
+            Call<JsonObject> loginRequest = httpService.authCodeLogin(params);
+
+            loginRequest.enqueue(new Callback<JsonObject>() {
                 @Override
-                protected XResult doInBackground(Void... params) {
-                    return LogicFactory.getAccountLogic(context).login(account);
-                }
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
-                @Override
-                protected void onPostExecute(XResult result) {
-                    mWaitingDialog.dismiss();
+                        JsonObject object = response.body();
+                        if (object != null) {
+                            if (object.get("token") != null) {
+                                String token = object.get("token").getAsString();
+                                if (!TextUtils.isEmpty(token)) {
+                                    ConfigManager.getInstance(context).setUserCode(userCode);
+                                    ConfigManager.getInstance(context).setUserSession(token);
 
-                    if (result != null) {
-                        if (result.getResultCode() == APIConstants.RESULT_CODE_SUCCESS) {
-                            loginSuccess = true;
+                                    ChangePwdActivity.goToActivityForResult(ForgetPwdActivity.this, ChangePwdActivity.FROM_FORGET_PWD);
+                                    finish();
+                                }
+                            }
+                        } else {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.showLongToast(ForgetPwdActivity.this, "验证失败");
+                                }
+                            });
                         }
-                    }
-
-                    if (loginSuccess) {
-                        doNextStep();
                     } else {
-                        Utils.showLongToast(ForgetPwdActivity.this, getString(R.string.login_fail_warning));
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showLongToast(ForgetPwdActivity.this, "验证失败");
+                            }
+                        });
                     }
                 }
 
-            }.execute();
-
-        } else {
-            Utils.showLongToast(ForgetPwdActivity.this, getString(R.string.login_account_warning));
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showLongToast(ForgetPwdActivity.this, "验证失败");
+                        }
+                    });
+                }
+            });
         }
     }
 
