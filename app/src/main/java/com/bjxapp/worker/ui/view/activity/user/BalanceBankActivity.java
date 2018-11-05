@@ -1,22 +1,19 @@
 package com.bjxapp.worker.ui.view.activity.user;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 
-import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
-import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.BankInfo;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.BankCardValidate;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
 
 public class BalanceBankActivity extends BaseActivity implements OnClickListener {
 
@@ -130,7 +127,10 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
         bankInfo.setMobile(bankMobile.trim());
 
         mWaitingDialog.show("正在保存，请稍候...", false);
-        new AsyncTask<String, Void, Integer>() {
+
+
+
+        /*new AsyncTask<String, Void, Integer>() {
             @Override
             protected Integer doInBackground(String... params) {
                 return LogicFactory.getAccountLogic(context).saveBalanceBankInfomation(bankInfo);
@@ -147,7 +147,10 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
                 }
             }
 
-        }.execute();
+        }.execute();*/
+
+
+
     }
 
     @Override

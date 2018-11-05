@@ -20,4 +20,10 @@ public interface ProfileApi {
     @POST("/profile/mine")
     Call<JsonObject> getProfileDetail(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/withdrawal/bindBank")
+    Call<JsonObject> bindBank(@FieldMap Map<String, String> params);
+
+
+
 }

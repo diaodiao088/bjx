@@ -10,9 +10,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bjxapp.worker.App;
 import com.bjxapp.worker.SplashActivity;
+import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XCircleImageView;
@@ -23,19 +26,30 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
+import com.bjxapp.worker.model.AccountInfo;
+import com.bjxapp.worker.model.EvaluationStatInfo;
+import com.bjxapp.worker.model.LabelStat;
 import com.bjxapp.worker.model.UserApplyInfo;
+import com.bjxapp.worker.model.UserInfo;
+import com.bjxapp.worker.model.UserInfoDetail;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.user.BalanceBankActivity;
 import com.bjxapp.worker.ui.view.activity.user.BalanceBankWithdrawActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
+import com.bjxapp.worker.ui.view.fragment.ctrl.UserInfoManagerCtrl;
+import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.FlowLayout;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.image.BitmapManager;
 import com.bjxapp.worker.R;
+import com.bumptech.glide.Glide;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,6 +87,21 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
     @BindView(R.id.flow_ly)
     FlowLayout mFlowLy;
 
+    @BindView(R.id.attitude_view)
+    TextView mAttitudeView;
+    @BindView(R.id.attitude_percent_tv)
+    TextView mAttitudeTv;
+    @BindView(R.id.skill_view)
+    TextView mSkillView;
+    @BindView(R.id.skill_percent_tv)
+    TextView mSkillTv;
+    @BindView(R.id.look_view)
+    TextView mLookView;
+    @BindView(R.id.look_percent_tv)
+    TextView mLookTv;
+
+    public static final int MAX_VIEW_WIDTH = DimenUtils.dp2px(200, App.getInstance());
+
     @OnClick(R.id.me_about_ly)
     void onClickAbout() {
         Utils.startActivity(mActivity, WebViewActivity.class,
@@ -101,7 +130,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         checkUpdate();
     }
 
-
     private XWaitingDialog mWaitingDialog;
 
     @Override
@@ -126,7 +154,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
     }
 
     private void initViews() {
-        Log.d("slog_zd","profile initview . ");
 
         String userMobile = ConfigManager.getInstance(mActivity).getUserCode();
         mMobileTv.setText(userMobile);
@@ -246,29 +273,173 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         };
         mLoadDataTask.execute();*/
 
-        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL , ProfileApi.class);
-        Map<String , String> params = new HashMap<>();
-        params.put("userCode",ConfigManager.getInstance(getContext()).getUserCode());
-        params.put("token",ConfigManager.getInstance(getContext()).getUserSession());
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("userCode", ConfigManager.getInstance(getContext()).getUserCode());
+        params.put("token", ConfigManager.getInstance(getContext()).getUserSession());
 
         Call<JsonObject> request = profileApi.getProfileDetail(params);
 
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.d("slog_zd","profile : " + response.body().toString());
+                Log.d("slog_zd", "profile : " + response.body().toString());
 
+                JsonObject result = response.body();
+                int code = result.get("code").getAsInt();
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS && code == 0) {
 
+                    UserInfo userInfo = new UserInfo();
+                    JsonObject masterItem = result.getAsJsonObject("master");
 
+                    userInfo.setmPhoneNum(masterItem.get("phone").getAsString());
+                    userInfo.setmServiceStat(masterItem.get("serviceState").getAsInt());
+
+                    JsonObject accountItem = masterItem.getAsJsonObject("account");
+                    AccountInfo accountInfo = new AccountInfo(accountItem.get("balanceAmount").getAsFloat(),
+                            accountItem.get("canWithdrawalAmount").getAsFloat(),
+                            accountItem.get("incomeRank").getAsInt(),
+                            accountItem.get("orderQuantity").getAsInt(),
+                            accountItem.get("totalIncome").getAsFloat(),
+                            accountItem.get("totalOrderAmount").getAsFloat(),
+                            accountItem.get("withdrawnAmount").getAsFloat());
+                    userInfo.setAccountInfo(accountInfo);
+
+                    JsonObject evaluationStatInfo = masterItem.getAsJsonObject("evaluationStat");
+
+                    EvaluationStatInfo statInfo = new EvaluationStatInfo();
+
+                    statInfo.setAppearanceLevel(evaluationStatInfo.get("appearanceLevel").getAsFloat());
+                    statInfo.setAttitudeLevel(evaluationStatInfo.get("attitudeLevel").getAsFloat());
+                    statInfo.setSkillLevel(evaluationStatInfo.get("skillLevel").getAsFloat());
+
+                    JsonArray labelArray = evaluationStatInfo.getAsJsonArray("labelList");
+
+                    if (labelArray != null && labelArray.size() > 0) {
+
+                        for (int i = 0; i < labelArray.size(); i++) {
+                            JsonObject labelItem = (JsonObject) labelArray.get(i);
+
+                            LabelStat statItem = new LabelStat(labelItem.get("labelName").getAsString(),
+                                    labelItem.get("quantity").getAsInt());
+
+                            statInfo.getmLabelList().add(statItem);
+                        }
+                    }
+
+                    userInfo.setEvaluationStatInfo(statInfo);
+
+                    JsonObject infoDetail = masterItem.getAsJsonObject("info");
+                    UserInfoDetail infoDetail1 = new UserInfoDetail(infoDetail.get("avatarUrl").getAsString(),
+                            infoDetail.get("identityCardBehindImgUrl").getAsString(),
+                            infoDetail.get("identityCardFrontImgUrl").getAsString(),
+                            infoDetail.get("latitude").getAsString(),
+                            infoDetail.get("locationAddress").getAsString(),
+                            infoDetail.get("longitude").getAsString(),
+                            infoDetail.get("name").getAsString(),
+                            infoDetail.get("regionId").getAsString(),
+                            infoDetail.get("regionName").getAsString(),
+                            infoDetail.get("workingYear").getAsInt());
+
+                    userInfo.setInfoDetail(infoDetail1);
+                    UserInfoManagerCtrl.getsIns().setmUserInfo(userInfo);
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateUiStatus();
+                        }
+                    });
+                }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.d("slog_zd","profile fail : " + t.getLocalizedMessage());
+
             }
         });
-
     }
+
+    private void updateUiStatus() {
+
+        updateAcccountInfo();
+
+        updateStatInfo();
+
+        updateUserInfo();
+    }
+
+    private void updateUserInfo(){
+
+        UserInfoDetail detail = UserInfoManagerCtrl.getsIns().getmUserInfo().getInfoDetail();
+
+        if (detail != null){
+
+            Glide.with(this).load(detail.getAvatarUrl()).into(mHeadImage);
+
+            mUserName.setText(detail.getName());
+            mYearsTv.setText(detail.getmWorkingYear() + "年经验");
+            mMobileTv.setText(UserInfoManagerCtrl.getsIns().getmUserInfo().getmPhoneNum());
+        }
+    }
+
+    private void updateAcccountInfo() {
+        AccountInfo accountInfo = UserInfoManagerCtrl.getsIns().getmUserInfo().getAccountInfo();
+
+        if (accountInfo != null) {
+            mTotalBillsTv.setText(String.valueOf(accountInfo.getOrderQuantity()));
+            mRankTv.setText(String.valueOf(accountInfo.getIncomeRank()));
+            mTotalCashTv.setText(String.valueOf(accountInfo.getTotalIncome()));
+        }
+    }
+
+    private void updateStatInfo() {
+
+        EvaluationStatInfo statInfo = UserInfoManagerCtrl.getsIns().getmUserInfo().getEvaluationStatInfo();
+
+        if (statInfo != null) {
+
+            float appearPercent = statInfo.getAppearanceLevel() / 5;
+            mLookView.setWidth((int) (MAX_VIEW_WIDTH * appearPercent));
+            mLookTv.setText(formattedDecimalToPercentage(appearPercent));
+
+            float skillPercent = statInfo.getSkillLevel() / 5;
+            mSkillView.setWidth((int) (MAX_VIEW_WIDTH * skillPercent));
+            mSkillTv.setText(formattedDecimalToPercentage(skillPercent));
+
+            float attitudePercent = statInfo.getAttitudeLevel() / 5;
+            mAttitudeView.setWidth((int) (MAX_VIEW_WIDTH * attitudePercent));
+            mAttitudeTv.setText(formattedDecimalToPercentage(attitudePercent));
+
+            ArrayList<LabelStat> labelList = statInfo.getmLabelList();
+
+            int padding = DimenUtils.dp2px(3, App.getInstance());
+            for (int i = 0; i < labelList.size(); i++) {
+
+                LabelStat statItem = labelList.get(i);
+                TextView textItem = new TextView(getActivity());
+                textItem.setPadding(padding, padding, padding, padding);
+                textItem.setTextSize(10);
+                textItem.setBackgroundResource(R.drawable.score_bg);
+                ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.bottomMargin = DimenUtils.dp2px(6, App.getInstance());
+                params.rightMargin = DimenUtils.dp2px(12, App.getInstance());
+
+                textItem.setLayoutParams(params);
+                textItem.setText(statItem.getLabelName() + "(" + statItem.getQuantity() + ")");
+                mFlowLy.addView(textItem);
+            }
+        }
+    }
+
+    private static String formattedDecimalToPercentage(double decimal) {
+        //获取格式化对象
+        NumberFormat nt = NumberFormat.getPercentInstance();
+        //设置百分数精确度2即保留两位小数
+        nt.setMinimumFractionDigits(0);
+        return nt.format(decimal);
+    }
+
 
     private AsyncTask<Void, Void, Integer> mGetBankStatusTask;
 
@@ -280,7 +451,9 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
 
         mWaitingDialog.show("正在查询银行信息，请稍候...", false);
 
-        mGetBankStatusTask = new AsyncTask<Void, Void, Integer>() {
+        Utils.startActivity(mActivity, BalanceBankActivity.class);
+
+        /*mGetBankStatusTask = new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {
                 int result = LogicFactory.getAccountLogic(mActivity).getBalanceBankStatus();
@@ -305,7 +478,7 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
             }
         };
 
-        mGetBankStatusTask.execute();
+        mGetBankStatusTask.execute();*/
     }
 
     @Override
