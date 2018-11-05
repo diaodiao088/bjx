@@ -10,6 +10,8 @@ import java.util.Map;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 
 import com.bjxapp.worker.adapter.WithdrawAdapter;
+import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XImageView;
@@ -34,6 +37,7 @@ import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Logger;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.R;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
@@ -85,7 +89,7 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
         mXListView.setAdapter(mWithdrawAdapter);
         mXListView.setCacheColorHint(Color.TRANSPARENT);		
 		mXListView.setPullLoadEnable(true);
-		mXListView.setPullRefreshEnable(true);
+		mXListView.setPullRefreshEnable(false);
 		mXListView.setXListViewListener(this);
 	}
 
@@ -104,6 +108,8 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 		mBackImageView.setOnClickListener(this);
 	}
 
+	private Handler mHandler = new Handler(Looper.getMainLooper());
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -118,9 +124,9 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 	private void onLoadFinished() {
 		mXListView.stopRefresh();
 		mXListView.stopLoadMore();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String refreshTimeString = format.format(new Date());
-		mXListView.setRefreshTime(refreshTimeString);
+		//SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		//String refreshTimeString = format.format(new Date());
+		//mXListView.setRefreshTime(refreshTimeString);
 	}
 
 	private AsyncTask<Void, Void, WithdrawList> mFirstLoadTask;
@@ -165,6 +171,53 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 
 				Log.d("slog_zd",response.body().toString());
 
+				JsonObject jsonObject = response.body();
+				String msg = jsonObject.get("msg").getAsString();
+				int code = jsonObject.get("code").getAsInt();
+
+				if (response.code() == APIConstants.RESULT_CODE_SUCCESS && code == 0){
+
+					final String withdrawnAmount = jsonObject.get("withdrawnAmount").getAsString();
+
+					JsonObject pageObject = jsonObject.getAsJsonObject("page");
+
+					String total = pageObject.get("total").getAsString();
+
+					JsonArray itemArray = pageObject.getAsJsonArray("list");
+
+					mWithdrawArray.clear();
+
+					if (itemArray != null && itemArray.size() > 0){
+						for (int i = 0; i < itemArray.size(); i++) {
+							JsonObject item = (JsonObject) itemArray.get(i);
+							WithdrawInfo withdrawInfoItem = new WithdrawInfo();
+							withdrawInfoItem.setDate(item.get("createTime").getAsString());
+							withdrawInfoItem.setMoney(item.get("amount").getAsString());
+							withdrawInfoItem.setStatus(item.get("status").getAsInt());
+							mWithdrawArray.add(withdrawInfoItem);
+						}
+					}
+
+					mHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							mCurrentBatch = 1;
+
+							mWithdrawTotalMoney.setText((TextUtils.isEmpty(withdrawnAmount) ? 0 : withdrawnAmount) + "元");
+
+							if (mWithdrawArray.size() > 0) {
+								mLoadAgainLayout.setVisibility(View.GONE);
+								mXListView.setVisibility(View.VISIBLE);
+							}else{
+								mWithdrawAdapter = new WithdrawAdapter(context, mWithdrawArray);
+								mXListView.setAdapter(mWithdrawAdapter);
+								mCurrentBatch++;
+								onLoadFinished();
+							}
+						}
+					});
+
+				}
 			}
 
 			@Override
@@ -212,42 +265,16 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 	private AsyncTask<Void, Void, WithdrawList> mRefreshTask;
 	@Override
 	public void onRefresh() {
-		mRefreshTask = new AsyncTask<Void, Void, WithdrawList>() {
-	        @Override
-	        protected WithdrawList doInBackground(Void... params) {
-	            return LogicFactory.getAccountLogic(context).getWithdrawList(1, mBatchCount);
-	        }
 
-	        @SuppressWarnings("unchecked")
-			@Override
-	        protected void onPostExecute(WithdrawList result) {
-	        	if(result == null){
-	        		try{
-		        		onLoadFinished();
-	        		}
-	        		catch(Exception e){
-	        			Logger.i(e.getMessage());
-	        		}
-	        		return;
-	        	}
-	        	
-	        	mWithdrawTotalMoney.setText("¥" + result.getTotalMoney() + "元");
-	        	
-	        	mCurrentBatch = 1;
-	        	mWithdrawArray.clear();
-	        	mWithdrawArray.addAll((List<WithdrawInfo>)result.getDataObject());
-				mWithdrawAdapter = new WithdrawAdapter(context,mWithdrawArray);
-				mXListView.setAdapter(mWithdrawAdapter);
-				onLoadFinished();
-				mCurrentBatch++;
-	        }
-	    };
-	    mRefreshTask.execute();
 	}
 
 	private AsyncTask<Void, Void, WithdrawList> mLoadMoreTask;
 	@Override
 	public void onLoadMore() {
+
+
+
+
 		mLoadMoreTask = new AsyncTask<Void, Void, WithdrawList>() {
 	        @Override
 	        protected WithdrawList doInBackground(Void... params) {

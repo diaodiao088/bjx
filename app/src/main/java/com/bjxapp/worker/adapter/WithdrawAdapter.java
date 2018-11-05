@@ -55,35 +55,24 @@ public class WithdrawAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String statusString = "";
-        switch (aInfo.get(position).getStatus()) {
-            case 0:
-                statusString = "待处理";
-                break;
-            case 1:
-                statusString = "提现成功";
-                break;
-            case 2:
-                statusString = "提现失败";
-                break;
-            default:
-                break;
+        holder.textViewMoney.setText((aInfo.get(position).getStatus() == 1 ? "+" : "-") + aInfo.get(position).getMoney());
+
+        String statusText = "";
+        if (aInfo.get(position).getStatus() == 1){
+            statusText = "于 [" + getFormatDateString(aInfo.get(position).getDate()) + "] 提现" + aInfo.get(position).getMoney() + "成功";
+        }else{
+            statusText = "于 [" + getFormatDateString(aInfo.get(position).getDate()) + "] 提现" + aInfo.get(position).getMoney() + "失败，请联系客服！";
         }
 
-        //  holder.textViewDate.setText(getFormatDateString(aInfo.get(position).getDate()));
-        //  holder.textViewMoney.setText(aInfo.get(position).getMoney() + "元");
-        //  holder.textViewStatus.setText(statusString);
+        holder.textViewStatus.setText(statusText);
 
         return convertView;
     }
 
     public String getFormatDateString(String dateString) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        DateFormat toFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
-        Date date = null;
         try {
-            date = format.parse(dateString);
-            return toFormat.format(date);
+            return format.format(Double.parseDouble(dateString));
         } catch (Exception e) {
             return dateString;
         }

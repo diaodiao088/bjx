@@ -416,6 +416,9 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
             ArrayList<LabelStat> labelList = statInfo.getmLabelList();
 
             int padding = DimenUtils.dp2px(3, App.getInstance());
+
+            mFlowLy.removeAllViews();
+
             for (int i = 0; i < labelList.size(); i++) {
 
                 LabelStat statItem = labelList.get(i);
