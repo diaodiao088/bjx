@@ -74,7 +74,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private int mKeyBackClickCount = 0;
 
     private LocationClient mLocationClient;
-    private MyLocationListener listener;
     private XWaitingDialog mWaitingDialog;
 
     @BindView(R.id.title_right_small_tv)
@@ -118,9 +117,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
         //显示红点
         displayRedDot();
-
-        //测试定位
-        initLocation();
 
         //注册推送ID
         initPush();
@@ -421,62 +417,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             default:
                 break;
         }
-    }
-
-    /**
-     * 百度定位测试
-     */
-    public class MyLocationListener implements BDLocationListener {
-        @Override
-        public void onReceiveLocation(BDLocation location) {
-            //Receive Location
-            if (location != null) {
-                if (Utils.isNotEmpty(location.getAddrStr()) && Utils.isNotEmpty(location.getCity())) {
-
-
-                    Log.d("slog_zd", "lat : " + location.getLatitude() + " , longti : " + location.getLongitude());
-
-                    Log.d("slog_zd", "addr : " + location.getAddrStr() + " , city : " + location.getCity());
-
-
-                    Constant.USER_LOCATION_LATITUDE = location.getLatitude();
-                    Constant.USER_LOCATION_LONGITUDE = location.getLongitude();
-                    Constant.USER_LOCATION_ADDRESS = location.getAddrStr();
-                    Constant.USER_LOCATION_CITY = location.getCity();
-                }
-                mLocationClient.stop();
-            }
-        }
-    }
-
-    private void initLocation() {
-        mLocationClient = new LocationClient(MainActivity.this);
-        listener = new MyLocationListener();
-        mLocationClient.registerLocationListener(listener);
-
-        LocationClientOption option = new LocationClientOption();
-        //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-        //option.setLocationMode(LocationMode.Hight_Accuracy);
-        //可选，默认gcj02，设置返回的定位结果坐标系
-        //option.setCoorType("gcj02");
-        //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
-        option.setScanSpan((int) TimeUtils.ONE_SECOND_MILLIS * 5);
-        //可选，设置是否需要地址信息，默认不需要
-        option.setIsNeedAddress(true);
-        //可选，默认false,设置是否使用gps
-        option.setOpenGps(true);
-        //可选，默认false，设置是否当gps有效时按照1S1次频率输出GPS结果
-        //option.setLocationNotify(true);
-        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
-        //option.setIgnoreKillProcess(true);
-        //可选，默认false，设置是否需要过滤gps仿真结果，默认需要
-        //option.setEnableSimulateGps(false);
-        //可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
-        //option.setIsNeedLocationDescribe(true);
-        //可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
-        //option.setIsNeedLocationPoiList(true);
-        mLocationClient.setLocOption(option);
-        mLocationClient.start();
     }
 
     private AsyncTask<Void, Void, Integer> mCheckNewVersionTask;

@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
@@ -123,6 +125,18 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 
 	private AsyncTask<Void, Void, WithdrawList> mFirstLoadTask;
 
+	private String mCreateTime;
+
+	private String getFormatedTime(){
+
+		if (TextUtils.isEmpty(mCreateTime)){
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			mCreateTime =  format.format(new Date());
+		}
+
+		return mCreateTime;
+	}
+
 	private void onFirstLoadData(final Boolean loading) {
 
 		if (!Utils.isNetworkAvailable(context)) {
@@ -141,12 +155,15 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 		params.put("userCode", ConfigManager.getInstance(this).getUserCode());
 		params.put("pageNum", String.valueOf(1));
 		params.put("pageSize",String.valueOf(20));
+		params.put("endCreateTime",getFormatedTime());
 
 		Call<JsonObject> call = profileApi.getWithDrawHistory(params);
 
 		call.enqueue(new Callback<JsonObject>() {
 			@Override
 			public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+				Log.d("slog_zd",response.body().toString());
 
 			}
 
@@ -156,12 +173,7 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 			}
 		});
 
-
-
-
-
-
-		mFirstLoadTask = new AsyncTask<Void, Void, WithdrawList>() {
+		/*mFirstLoadTask = new AsyncTask<Void, Void, WithdrawList>() {
 			@Override
 			protected WithdrawList doInBackground(Void... params) {
 				return LogicFactory.getAccountLogic(context).getWithdrawList(1, mBatchCount);
@@ -194,7 +206,7 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 				}
 			}
 		};
-		mFirstLoadTask.execute();
+		mFirstLoadTask.execute();*/
 	}
 	
 	private AsyncTask<Void, Void, WithdrawList> mRefreshTask;
