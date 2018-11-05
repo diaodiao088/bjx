@@ -19,75 +19,69 @@ import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.R;
 
 public class SplashActivity extends BaseActivity {
-	protected static final String TAG = "启动封面";
-	
-	private static final int LOGIN_REQUEST_CODE = 1;
+    protected static final String TAG = "启动封面";
+
+    private static final int LOGIN_REQUEST_CODE = 1;
     private String mStrClassName = null;
     private final static String MAIN_ACTION = "android.intent.action.MAIN";
     private int mEnterAppMethod = -1;
     private boolean mLogined = false;
-    
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		handleExtraParam();
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_start);
-		
-		//启动service
-		ServiceManager.startServices(this.getApplicationContext());
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        handleExtraParam();
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start);
+
+        //启动service
+        ServiceManager.startServices(this.getApplicationContext());
         Intent intent = this.getIntent();
         mStrClassName = intent.getStringExtra(Constant.EXTRA_KEY_CLASS_NAME);
 
         getLogin();
-	}
+    }
 
-	private void getLogin() {
-		String name = ConfigManager.getInstance(SplashActivity.this).getUserCode();
-		String session = ConfigManager.getInstance(SplashActivity.this).getUserSession();
-		
-		if (TextUtils.isEmpty(name) || TextUtils.isEmpty(session)){
-			mLogined = false;
-		}
-		else
-		{
-			mLogined = true;
-		}
-		mHandler.sendEmptyMessageDelayed(0, 1500);
-	}
+    private void getLogin() {
+        String name = ConfigManager.getInstance(SplashActivity.this).getUserCode();
+        String session = ConfigManager.getInstance(SplashActivity.this).getUserSession();
 
-	private Handler mHandler = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			Intent intent = new Intent();
-			if (mLogined) 
-			{
-			//	gotoTargetActivity();
-                Intent intent1 = new Intent();
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(session)) {
+            mLogined = false;
+        } else {
+            mLogined = true;
+        }
+        mHandler.sendEmptyMessageDelayed(0, 1500);
+    }
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            Intent intent = new Intent();
+            if (mLogined) {
+                gotoTargetActivity();
+                /*Intent intent1 = new Intent();
                 intent1.setClass(SplashActivity.this , ApplyActivity.class);
-                startActivity(intent1);
-			} 
-			else 
-			{
-				intent.setClass(SplashActivity.this, LoginActivity.class);
-				startActivityForResult(intent, LOGIN_REQUEST_CODE);
-			}
-		}
-	};
-	
+                startActivity(intent1);*/
+            } else {
+                intent.setClass(SplashActivity.this, LoginActivity.class);
+                startActivityForResult(intent, LOGIN_REQUEST_CODE);
+            }
+        }
+    };
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
             case LOGIN_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                  //  gotoTargetActivity();
-                    Intent intent1 = new Intent();
+                    gotoTargetActivity();
+                   /* Intent intent1 = new Intent();
                     intent1.setClass(SplashActivity.this , ApplyActivity.class);
-                    startActivity(intent1);
+                    startActivity(intent1);*/
+                } else {
+                    ActivitiesManager.getInstance().finishAllActivities();
+                    Utils.finishWithoutAnim(this);
+
                 }
-                else {
-                	ActivitiesManager.getInstance().finishAllActivities();
-					Utils.finishWithoutAnim(this);
-					
-				}
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, intent);
@@ -95,8 +89,8 @@ public class SplashActivity extends BaseActivity {
                 break;
         }
     }
-    
-	 /**
+
+    /**
      * 启动主界面，再利用传入的类名做跳转
      * 所有通知栏进入某个页面都需要通过此处做跳转，不可以直接进入该页面
      *
@@ -133,7 +127,7 @@ public class SplashActivity extends BaseActivity {
             }
         }
     }
-    
+
     /**
      * 跳到目标界面
      */
@@ -148,9 +142,9 @@ public class SplashActivity extends BaseActivity {
         }
         if (mStrClassName != null && (mStrClassName.equals(MainActivity.class.getName()))) {
             setIntentFlag(it);
-            if(it.hasExtra(Constant.LOCATE_MAIN_ACTIVITY_INDEX) == false){
-            	it.putExtra(Constant.LOCATE_MAIN_ACTIVITY_INDEX, 0);
-            }            
+            if (it.hasExtra(Constant.LOCATE_MAIN_ACTIVITY_INDEX) == false) {
+                it.putExtra(Constant.LOCATE_MAIN_ACTIVITY_INDEX, 0);
+            }
         } else {
             it.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
@@ -160,7 +154,7 @@ public class SplashActivity extends BaseActivity {
         startActivity(it);
         Utils.finishWithoutAnim(this);
     }
-    
+
     /**
      * 针对启动的方式做不同的处理
      * 从通知栏的就用singleTop, 效果是每次都会进入MainActivity
@@ -169,40 +163,38 @@ public class SplashActivity extends BaseActivity {
      * @param intent
      */
     private void setIntentFlag(Intent intent) {
-        if (mEnterAppMethod == Constant.EXTRA_VALUE_ENTER_IN_APP_FROM_NOTIFY 
-        		|| mEnterAppMethod == Constant.EXTRA_VALUE_ENTER_IN_APP_FROM_WAP
-        		|| mEnterAppMethod == Constant.EXTRA_VALUE_ENTER_IN_APP_FROM_PUSH) 
-        {
+        if (mEnterAppMethod == Constant.EXTRA_VALUE_ENTER_IN_APP_FROM_NOTIFY
+                || mEnterAppMethod == Constant.EXTRA_VALUE_ENTER_IN_APP_FROM_WAP
+                || mEnterAppMethod == Constant.EXTRA_VALUE_ENTER_IN_APP_FROM_PUSH) {
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        } 
-        else {
+        } else {
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
     }
 
-	@Override
-	protected void initControl() {
-	
-	}
+    @Override
+    protected void initControl() {
 
-	@Override
-	protected void initView() {
-	
-	}
+    }
 
-	@Override
-	protected void initData() {
-	
-	}
+    @Override
+    protected void initView() {
 
-	@Override
-	protected void setListener() {
+    }
 
-	}
+    @Override
+    protected void initData() {
 
-	@Override
-	protected String getPageName() {
-		return TAG;
-	}
+    }
+
+    @Override
+    protected void setListener() {
+
+    }
+
+    @Override
+    protected String getPageName() {
+        return TAG;
+    }
 
 }

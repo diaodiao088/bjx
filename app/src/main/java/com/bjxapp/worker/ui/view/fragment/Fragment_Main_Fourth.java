@@ -7,17 +7,21 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.bjxapp.worker.SplashActivity;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XCircleImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ActivitiesManager;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.UserApplyInfo;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
@@ -30,10 +34,17 @@ import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.image.BitmapManager;
 import com.bjxapp.worker.R;
+import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Main_Fourth extends BaseFragment implements OnClickListener {
     protected static final String TAG = "我的";
@@ -96,7 +107,7 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
     @Override
     protected void initView() {
         initViews();
-        //loadData();
+        loadData();
     }
 
     @Override
@@ -111,10 +122,11 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
 
     @Override
     public void refresh(int enterType) {
-        // loadData();
+        loadData();
     }
 
     private void initViews() {
+        Log.d("slog_zd","profile initview . ");
 
         String userMobile = ConfigManager.getInstance(mActivity).getUserCode();
         mMobileTv.setText(userMobile);
@@ -213,7 +225,7 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
     private AsyncTask<String, Void, UserApplyInfo> mLoadDataTask;
 
     private void loadData() {
-        mLoadDataTask = new AsyncTask<String, Void, UserApplyInfo>() {
+        /*mLoadDataTask = new AsyncTask<String, Void, UserApplyInfo>() {
             @Override
             protected UserApplyInfo doInBackground(String... params) {
                 return LogicFactory.getAccountLogic(mActivity).getRegisterInfo();
@@ -232,14 +244,37 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
                 displayHeadImage();
             }
         };
-        mLoadDataTask.execute();
+        mLoadDataTask.execute();*/
+
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL , ProfileApi.class);
+        Map<String , String> params = new HashMap<>();
+        params.put("userCode",ConfigManager.getInstance(getContext()).getUserCode());
+        params.put("token",ConfigManager.getInstance(getContext()).getUserSession());
+
+        Call<JsonObject> request = profileApi.getProfileDetail(params);
+
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.d("slog_zd","profile : " + response.body().toString());
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d("slog_zd","profile fail : " + t.getLocalizedMessage());
+            }
+        });
+
     }
 
     private AsyncTask<Void, Void, Integer> mGetBankStatusTask;
 
     private void showWithdraw() {
 
-        if (mWaitingDialog == null){
+        if (mWaitingDialog == null) {
             mWaitingDialog = new XWaitingDialog(mActivity);
         }
 

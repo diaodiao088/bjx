@@ -21,7 +21,6 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
@@ -519,7 +518,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 if (result != -2) {
                     ConfigManager.getInstance(MainActivity.this).setUserStatus(result);
                 }
-                showStatusDialog(result);
+             //   showStatusDialog(result);
             }
         };
 
