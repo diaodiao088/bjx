@@ -43,7 +43,6 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:text="6217900100006564978"
                     android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
@@ -61,7 +60,7 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="能提现金额"
+                    android:text="开户银行"
                     android:textColor="#545454"
                     android:textSize="14sp" />
 
@@ -74,7 +73,6 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:text="中国工商"
                     android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
@@ -105,7 +103,6 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:text="张三丰"
                     android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
@@ -136,7 +133,6 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:text="15650785283"
                     android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
@@ -167,7 +163,6 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:text="15650785283"
                     android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 
@@ -197,7 +192,6 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="10dp"
-                    android:text="123456"
                     android:textColor="#A6A6A6"
                     android:textSize="14sp" />
 

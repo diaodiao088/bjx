@@ -146,7 +146,6 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
 
         mWaitingDialog.show("正在保存，请稍候...", false);
 
-
         ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
 
         Map<String, String> params = new HashMap<>();

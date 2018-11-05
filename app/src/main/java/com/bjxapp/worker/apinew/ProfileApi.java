@@ -28,4 +28,20 @@ public interface ProfileApi {
     @POST("/bankInfo/get")
     Call<JsonObject> getBankInfo(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/withdrawal/apply")
+    Call<JsonObject> applyCash(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/config/guaranteePeriod")
+    Call<JsonObject> getGuarPeriod(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/config/withdrawalDay")
+    Call<JsonObject> getWithDrawDay(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/withdrawal/list")
+    Call<JsonObject> getWithDrawHistory(@FieldMap Map<String , String> params);
+
 }

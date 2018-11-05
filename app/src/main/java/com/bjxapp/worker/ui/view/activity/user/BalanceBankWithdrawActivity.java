@@ -6,24 +6,42 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XEditText;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.dialog.WithdrawInputDialog;
+import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.BankInfo;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.R;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BalanceBankWithdrawActivity extends BaseActivity {
 
@@ -125,7 +143,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setIcon(android.R.drawable.ic_dialog_info);
         builder.setTitle("百家修");
-        builder.setMessage(mQuestionInformation);
+        builder.setMessage(getQuestion(mPeriodDay));
         builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -138,8 +156,43 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
     private AsyncTask<String, Void, BankInfo> mLoadDataTask;
 
     private void loadData() {
+
         mWaitingDialog.show("正在加载中，请稍候...", false);
-        mLoadDataTask = new AsyncTask<String, Void, BankInfo>() {
+
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+
+        Call<JsonObject> call = profileApi.getBankInfo(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject object = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
+                    JsonObject bankInfoItem = object.getAsJsonObject("bankInfo");
+                    if (bankInfoItem == null || bankInfoItem.get("bankAccountName") == null) {
+                        getBankInfoFailed();
+                    } else {
+                        getBankInfoSucc(bankInfoItem);
+                    }
+                } else {
+                    getBankInfoFailed();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                getBankInfoFailed();
+            }
+        });
+
+        loadConfig();
+
+        /*mLoadDataTask = new AsyncTask<String, Void, BankInfo>() {
             @Override
             protected BankInfo doInBackground(String... params) {
                 return LogicFactory.getAccountLogic(context).getBalanceBankInfomation();
@@ -168,7 +221,131 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
 
             }
         };
-        mLoadDataTask.execute();
+        mLoadDataTask.execute();*/
+    }
+
+    private int mPeriodDay = 15;
+
+    private String mCashInfoStr;
+
+    private void loadConfig() {
+
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+
+        Call<JsonObject> call = profileApi.getWithDrawDay(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject object = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
+                    JsonArray infoArray = object.getAsJsonArray("value");
+
+                    if (infoArray != null && infoArray.size() > 0) {
+                        mCashInfoStr = getCashInfo(infoArray);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtils.isEmpty(mCashInfoStr)) {
+                                    mInformationEdit.setText(mCashInfoStr);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+
+
+        Map<String, String> params1 = new HashMap<>();
+        params1.put("token", ConfigManager.getInstance(this).getUserSession());
+        params1.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        Call<JsonObject> callPeriod = profileApi.getGuarPeriod(params1);
+        callPeriod.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                JsonObject object = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
+                    int value = object.get("value").getAsInt();
+                    mPeriodDay = value > 0 ? value : 14;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private String getCashInfo(JsonArray array) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("提示：\n每个月");
+        for (int i = 0; i < array.size(); i++) {
+            builder.append(array.get(i).toString() + "日、");
+        }
+        builder.append("为提现日，每个提现日只能提现一次。客服电话： 010-65511127");
+        return builder.toString();
+    }
+
+    private void getBankInfoFailed() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+                Utils.showShortToast(BalanceBankWithdrawActivity.this, "银行卡信息加载失败！");
+            }
+        });
+    }
+
+    private void getBankInfoSucc(final JsonObject backInfoItem) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+                String bankNum = backInfoItem.get("bankCardNo").getAsString();
+                String bankName = backInfoItem.get("bankName").getAsString();
+                String bankPerson = backInfoItem.get("bankAccountName").getAsString();
+                String bankPhone = backInfoItem.get("masterPhone").getAsString();
+                String bankAmout = backInfoItem.get("balanceAmount").getAsString();
+                String canWithdrawalAmount = backInfoItem.get("canWithdrawalAmount").getAsString();
+
+                mBankCardEdit.setText(bankNum != null ? bankNum : "");
+                mBankNameTv.setText(bankName != null ? bankName : "");
+                mBankPersonTv.setText(bankPerson != null ? bankPerson : "");
+                mBankMobileTv.setText(bankPhone != null ? bankPhone : "");
+                mBalanceEdit.setText(bankAmout != null ? bankAmout : "");
+                mAllowCashEdit.setText(canWithdrawalAmount != null ? canWithdrawalAmount : "");
+            }
+        });
+    }
+
+
+    private boolean isCashValid(String str) {
+        Pattern pattern = Pattern.compile("^(([1-9]{1}\\d*)|([0]{1}))(\\.(\\d){0,2})?$"); // 判断小数点后2位的数字的正则表达式
+        Matcher match = pattern.matcher(str);
+        if (!match.matches()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private String getInformation(BankInfo bankInfo) {
@@ -206,6 +383,11 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
         return "为了保证维修的质量，需要质押维修金" + bankInfo.getPledgeDays() + "个工作日，" + bankInfo.getPledgeDays() + "个工作日后，方能将维修金提现。";
     }
 
+    private String getQuestion(int day) {
+        return "为了保证维修的质量，需要质押维修金" + day + "个工作日，" + day + "个工作日后，方能将维修金提现。";
+    }
+
+
     private AsyncTask<Void, Void, Integer> mGetBankStatusTask;
 
     private void saveOperation() {
@@ -214,7 +396,10 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
             return;
         }
 
-        mWaitingDialog.show("正在获取提现信息，请稍候...", false);
+        withdrawOperation();
+
+        /*mWaitingDialog.show("正在获取提现信息，请稍候...", false);
+
         mGetBankStatusTask = new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {
@@ -240,8 +425,10 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
             }
         };
 
-        mGetBankStatusTask.execute();
+        mGetBankStatusTask.execute();*/
     }
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     public void withdrawOperation() {
         final WithdrawInputDialog withdrawDialog = new WithdrawInputDialog(context);
@@ -259,19 +446,90 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
                     Utils.showShortToast(context, "提现金额不能为空！");
                     return;
                 }
-                if (!Utils.isNumber(moneyString)) {
+                /*if (!Utils.isNumber(moneyString)) {
                     Utils.showShortToast(context, "您只能输入整形数字！");
                     return;
+                }*/
+                final double cashMoney = Double.parseDouble(mAllowCashEdit.getText().toString());
+                double inputMoney;
+
+                try {
+                    inputMoney = Double.parseDouble(moneyString);
+                } catch (Exception e) {
+                    inputMoney = -1;
                 }
-                final double cashMoney = Double.parseDouble(mAllowCashEdit.getTag().toString());
-                final double inputMoney = Double.parseDouble(moneyString);
+
                 if (inputMoney > cashMoney || inputMoney <= 0.0) {
                     Utils.showShortToast(context, "您输入提现金额必须大于0小于" + cashMoney + "的整数！");
                     return;
                 }
 
                 mWaitingDialog.show("正在提交申请，请稍候...", false);
-                new AsyncTask<String, Void, Integer>() {
+
+                ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
+                Map<String, String> params = new HashMap<>();
+                params.put("token", ConfigManager.getInstance(BalanceBankWithdrawActivity.this).getUserSession());
+                params.put("userCode", ConfigManager.getInstance(BalanceBankWithdrawActivity.this).getUserCode());
+                params.put("amount", moneyString);
+
+                Call<JsonObject> call = profileApi.applyCash(params);
+
+                call.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                        Log.d("slog_zd", "response : " + response.body().toString());
+
+                        JsonObject object = response.body();
+
+                        final String msg = object.get("msg").getAsString();
+                        final int code = object.get("code").getAsInt();
+
+                        if (response.code() == APIConstants.RESULT_CODE_SUCCESS && code == 0) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mWaitingDialog != null) {
+                                        mWaitingDialog.dismiss();
+                                        Utils.showShortToast(BalanceBankWithdrawActivity.this, "提现成功！");
+                                    }
+
+                                    if (withdrawDialog != null) {
+                                        withdrawDialog.dismiss();
+                                        loadData(); // 重新刷一次数据
+                                    }
+
+                                }
+                            });
+                        } else {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mWaitingDialog != null) {
+                                        mWaitingDialog.dismiss();
+                                        Utils.showShortToast(BalanceBankWithdrawActivity.this, code + " : " + msg);
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mWaitingDialog != null) {
+                                    mWaitingDialog.dismiss();
+                                    Utils.showShortToast(BalanceBankWithdrawActivity.this, "提现失败，请重试！");
+                                }
+                            }
+                        });
+                    }
+                });
+
+
+                /*new AsyncTask<String, Void, Integer>() {
                     @Override
                     protected Integer doInBackground(String... params) {
                         return LogicFactory.getAccountLogic(context).saveWithdrawCashMoney(String.valueOf(inputMoney));
@@ -293,7 +551,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
                             }
                         }
                     }
-                }.execute();
+                }.execute();*/
             }
         });
     }

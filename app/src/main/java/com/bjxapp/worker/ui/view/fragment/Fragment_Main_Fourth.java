@@ -315,6 +315,8 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
 
                     JsonArray labelArray = evaluationStatInfo.getAsJsonArray("labelList");
 
+                    statInfo.getmLabelList().clear();
+
                     if (labelArray != null && labelArray.size() > 0) {
 
                         for (int i = 0; i < labelArray.size(); i++) {
@@ -323,7 +325,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
                             LabelStat statItem = new LabelStat(labelItem.get("labelName").getAsString(),
                                     labelItem.get("quantity").getAsInt());
 
-                            statInfo.getmLabelList().clear();
                             statInfo.getmLabelList().add(statItem);
                         }
                     }
@@ -441,9 +442,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         return nt.format(decimal);
     }
 
-
-    private AsyncTask<Void, Void, Integer> mGetBankStatusTask;
-
     private void showWithdraw() {
 
         if (mWaitingDialog == null) {
@@ -451,8 +449,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         }
 
         mWaitingDialog.show("正在查询银行信息，请稍候...", false);
-
-        Utils.startActivity(mActivity, BalanceBankActivity.class);
 
         ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
 
@@ -469,15 +465,12 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
                 JsonObject object = response.body();
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
-
                     JsonObject bankInfoItem = object.getAsJsonObject("bankInfo");
-
-                    if (bankInfoItem == null || bankInfoItem.get("bankAccountName") == null){
+                    if (bankInfoItem == null || bankInfoItem.get("bankAccountName") == null) {
                         getBankInfoFailed();
-                    }else{
+                    } else {
                         getBankInfoSucc();
                     }
-
                 } else {
                     getBankInfoFailed();
                 }
@@ -488,34 +481,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
                 getBankInfoFailed();
             }
         });
-
-
-        /*mGetBankStatusTask = new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                int result = LogicFactory.getAccountLogic(mActivity).getBalanceBankStatus();
-                if (isCancelled()) {
-                    return -1;
-                }
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(Integer result) {
-                mWaitingDialog.dismiss();
-                if (result != -1) {
-                    if (result == 0) {
-                        Utils.startActivity(mActivity, BalanceBankActivity.class);
-                    } else {
-                        Utils.startActivity(mActivity, BalanceBankWithdrawActivity.class);
-                    }
-                } else {
-                    Utils.showShortToast(mActivity, "未知错误，请稍候重试！");
-                }
-            }
-        };
-
-        mGetBankStatusTask.execute();*/
     }
 
     private void getBankInfoFailed() {
@@ -554,9 +519,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         try {
             if (mLoadDataTask != null) {
                 mLoadDataTask.cancel(true);
-            }
-            if (mGetBankStatusTask != null) {
-                mGetBankStatusTask.cancel(true);
             }
         } catch (Exception e) {
         }

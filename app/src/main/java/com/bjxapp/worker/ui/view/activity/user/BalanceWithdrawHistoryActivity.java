@@ -3,21 +3,28 @@ package com.bjxapp.worker.ui.view.activity.user;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 
 import com.bjxapp.worker.adapter.WithdrawAdapter;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.controls.listview.XListView.IXListViewListener;
+import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.WithdrawInfo;
 import com.bjxapp.worker.model.WithdrawList;
@@ -25,6 +32,11 @@ import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Logger;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.R;
+import com.google.gson.JsonObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnClickListener,IXListViewListener {
 	protected static final String TAG = "提现历史界面";
@@ -110,49 +122,79 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 	}
 
 	private AsyncTask<Void, Void, WithdrawList> mFirstLoadTask;
-	private void onFirstLoadData(final Boolean loading){
-        if(Utils.isNetworkAvailable(context)){
-        	if(loading){
-        		mWaitingDialog.show("正在加载中，请稍候...", false);
-        	}
-        	mFirstLoadTask = new AsyncTask<Void, Void, WithdrawList>() {
-    	        @Override
-    	        protected WithdrawList doInBackground(Void... params) {
-    	            return LogicFactory.getAccountLogic(context).getWithdrawList(1, mBatchCount);
-    	        }
 
-    	        @SuppressWarnings("unchecked")
-				@Override
-    	        protected void onPostExecute(WithdrawList result) {
-    	        	if(loading){
-    	        		mWaitingDialog.dismiss();
-    	        	}
-    	        	if(result == null){
-    	        		mLoadAgainLayout.setVisibility(View.VISIBLE);
-    	        		mXListView.setVisibility(View.GONE);
-    	        		return;
-    	        	}
-    	        	
-    	        	mWithdrawTotalMoney.setText("¥" + result.getTotalMoney() + "元");
-    	        	
-    	        	mCurrentBatch = 1;
-    	        	mWithdrawArray.clear();
-    	        	mWithdrawArray.addAll((List<WithdrawInfo>)result.getDataObject());
-    				mWithdrawAdapter = new WithdrawAdapter(context,mWithdrawArray);
-    				mXListView.setAdapter(mWithdrawAdapter);
-    	        	mCurrentBatch++;
-    	        	
-    	        	if(mWithdrawArray.size() > 0){
-    	          		mLoadAgainLayout.setVisibility(View.GONE);
-    	        		mXListView.setVisibility(View.VISIBLE);
-    	        	}
-    	        }
-    	    };
-    	    mFirstLoadTask.execute();
-        }
-        else {
+	private void onFirstLoadData(final Boolean loading) {
+
+		if (!Utils.isNetworkAvailable(context)) {
 			Utils.showShortToast(context, getString(R.string.common_no_network_message));
-		}	
+			return;
+		}
+
+		if (loading) {
+			mWaitingDialog.show("正在加载中，请稍候...", false);
+		}
+
+		ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL , ProfileApi.class);
+
+		Map<String, String> params = new HashMap<>();
+		params.put("token", ConfigManager.getInstance(this).getUserSession());
+		params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+		params.put("pageNum", String.valueOf(1));
+		params.put("pageSize",String.valueOf(20));
+
+		Call<JsonObject> call = profileApi.getWithDrawHistory(params);
+
+		call.enqueue(new Callback<JsonObject>() {
+			@Override
+			public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+			}
+
+			@Override
+			public void onFailure(Call<JsonObject> call, Throwable t) {
+
+			}
+		});
+
+
+
+
+
+
+		mFirstLoadTask = new AsyncTask<Void, Void, WithdrawList>() {
+			@Override
+			protected WithdrawList doInBackground(Void... params) {
+				return LogicFactory.getAccountLogic(context).getWithdrawList(1, mBatchCount);
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			protected void onPostExecute(WithdrawList result) {
+				if (loading) {
+					mWaitingDialog.dismiss();
+				}
+				if (result == null) {
+					mLoadAgainLayout.setVisibility(View.VISIBLE);
+					mXListView.setVisibility(View.GONE);
+					return;
+				}
+
+				mWithdrawTotalMoney.setText("¥" + result.getTotalMoney() + "元");
+
+				mCurrentBatch = 1;
+				mWithdrawArray.clear();
+				mWithdrawArray.addAll((List<WithdrawInfo>) result.getDataObject());
+				mWithdrawAdapter = new WithdrawAdapter(context, mWithdrawArray);
+				mXListView.setAdapter(mWithdrawAdapter);
+				mCurrentBatch++;
+
+				if (mWithdrawArray.size() > 0) {
+					mLoadAgainLayout.setVisibility(View.GONE);
+					mXListView.setVisibility(View.VISIBLE);
+				}
+			}
+		};
+		mFirstLoadTask.execute();
 	}
 	
 	private AsyncTask<Void, Void, WithdrawList> mRefreshTask;
