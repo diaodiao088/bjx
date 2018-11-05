@@ -24,6 +24,8 @@ public interface ProfileApi {
     @POST("/withdrawal/bindBank")
     Call<JsonObject> bindBank(@FieldMap Map<String, String> params);
 
-
+    @FormUrlEncoded
+    @POST("/bankInfo/get")
+    Call<JsonObject> getBankInfo(@FieldMap Map<String, String> params);
 
 }

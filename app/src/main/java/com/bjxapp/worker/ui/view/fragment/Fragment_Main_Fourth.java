@@ -323,6 +323,7 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
                             LabelStat statItem = new LabelStat(labelItem.get("labelName").getAsString(),
                                     labelItem.get("quantity").getAsInt());
 
+                            statInfo.getmLabelList().clear();
                             statInfo.getmLabelList().add(statItem);
                         }
                     }
@@ -369,11 +370,11 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         updateUserInfo();
     }
 
-    private void updateUserInfo(){
+    private void updateUserInfo() {
 
         UserInfoDetail detail = UserInfoManagerCtrl.getsIns().getmUserInfo().getInfoDetail();
 
-        if (detail != null){
+        if (detail != null) {
 
             Glide.with(this).load(detail.getAvatarUrl()).into(mHeadImage);
 
@@ -453,6 +454,42 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
 
         Utils.startActivity(mActivity, BalanceBankActivity.class);
 
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+
+        Call<JsonObject> call = profileApi.getBankInfo(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject object = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
+
+                    JsonObject bankInfoItem = object.getAsJsonObject("bankInfo");
+
+                    if (bankInfoItem == null || bankInfoItem.get("bankAccountName") == null){
+                        getBankInfoFailed();
+                    }else{
+                        getBankInfoSucc();
+                    }
+
+                } else {
+                    getBankInfoFailed();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                getBankInfoFailed();
+            }
+        });
+
+
         /*mGetBankStatusTask = new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {
@@ -479,6 +516,32 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         };
 
         mGetBankStatusTask.execute();*/
+    }
+
+    private void getBankInfoFailed() {
+        if (mActivity != null && !mActivity.isFinishing()) {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mWaitingDialog != null) {
+                        mWaitingDialog.dismiss();
+                    }
+                    Utils.showShortToast(mActivity, "未知错误，请稍候重试！");
+                }
+            });
+        }
+    }
+
+    private void getBankInfoSucc() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                    Utils.startActivity(mActivity, BalanceBankWithdrawActivity.class);
+                }
+            }
+        });
     }
 
     @Override

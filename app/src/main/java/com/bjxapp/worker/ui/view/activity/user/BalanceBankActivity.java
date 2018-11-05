@@ -1,19 +1,35 @@
 package com.bjxapp.worker.ui.view.activity.user;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 
 import com.bjxapp.worker.R;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.BankInfo;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.BankCardValidate;
 import com.bjxapp.worker.utils.Utils;
+import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BalanceBankActivity extends BaseActivity implements OnClickListener {
 
@@ -26,6 +42,8 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
     XButton mSaveButton;
 
     private XWaitingDialog mWaitingDialog;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,6 +147,70 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
         mWaitingDialog.show("正在保存，请稍候...", false);
 
 
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("bankCardNo", bankCard);
+        params.put("bankName", bankName);
+        params.put("bankAccountName", bankPerson);
+        params.put("bankAccountPhone", bankMobile);
+
+        final Call<JsonObject> request = profileApi.bindBank(params);
+
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject object = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                                Utils.showShortToast(BalanceBankActivity.this, "保存成功");
+                            }
+                        }
+                    });
+
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.startActivity(context, BalanceBankWithdrawActivity.class);
+                            Utils.finishActivity(BalanceBankActivity.this);
+                        }
+                    }, 500);
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                                Utils.showShortToast(BalanceBankActivity.this, "保存失败，请重试！");
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                            Utils.showShortToast(BalanceBankActivity.this, "保存失败，请重试！");
+                        }
+                    }
+                });
+            }
+        });
+
+
 
         /*new AsyncTask<String, Void, Integer>() {
             @Override
@@ -148,7 +230,6 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
             }
 
         }.execute();*/
-
 
 
     }
