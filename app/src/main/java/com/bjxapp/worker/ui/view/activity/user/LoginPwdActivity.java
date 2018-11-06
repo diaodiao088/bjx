@@ -150,7 +150,12 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
                     JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
                     if (object != null) {
+
                         if (object.get("token") != null) {
                             String token = object.get("token").getAsString();
                             if (!TextUtils.isEmpty(token)) {
@@ -164,7 +169,7 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                Utils.showLongToast(LoginPwdActivity.this, getString(R.string.login_fail_warning));
+                                Utils.showLongToast(LoginPwdActivity.this, msg + ":" + code);
                             }
                         });
                     }

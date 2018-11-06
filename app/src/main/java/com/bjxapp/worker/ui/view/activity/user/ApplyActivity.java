@@ -670,7 +670,6 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
             params.put("longitude", info.getLongitude());
         }
 
-
         retrofit2.Call<JsonObject> registerRequest = httpService.getRegister(params);
 
         registerRequest.enqueue(new retrofit2.Callback<JsonObject>() {
@@ -683,7 +682,11 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
                     JsonObject object = response.body();
-                    if (object != null && object.get("code").getAsInt() == 0) {
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (object != null && code == 0) {
                         Intent intent = new Intent();
                         intent.putExtra("workyears", mUserWorkYearsEdit.getText().toString());
                         ConfigManager.getInstance(context).setUserName(mUserNameTv.getText().toString());
@@ -693,7 +696,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                Utils.showShortToast(context, "提交注册信息失败，请重试！");
+                                Utils.showShortToast(context, msg + ":" + code);
                             }
                         });
                     }

@@ -7,24 +7,26 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.BillApi;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.controls.listview.XListView.IXListViewListener;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.DateTime;
 import com.bjxapp.worker.model.ReceiveButton;
-import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.ui.view.fragment.ctrl.PageSlipingCtrl;
@@ -37,8 +39,15 @@ import com.bjxapp.worker.ui.view.fragment.subfragment.WaitingPayFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.WaitingRoomFragment;
 import com.bjxapp.worker.ui.widget.ToggleSwitchButton;
 import com.bjxapp.worker.utils.Utils;
+import com.google.gson.JsonObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Main_First extends BaseFragment implements OnClickListener, IXListViewListener {
 
@@ -133,16 +142,85 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
             @Override
             public void onCheckedChanged(View view, boolean isChecked) {
 
-                if (isChecked) {
-                    mSwitchStatusTv.setText("恭喜你，开启了你的赚钱旅程");
-                } else {
-                    mSwitchStatusTv.setText("今天你赚钱了吗？马上开启你的赚钱旅程吧！");
-                    // TODO: 2018/9/20
-                }
+                changeStatusUi(isChecked);
+
+                changeStatusReal(isChecked);
 
                 ConfigManager.getInstance(getContext()).setReceiverBillStatus(isChecked);
             }
         });
+    }
+
+    private void changeStatusUi(boolean isChecked) {
+        if (isChecked) {
+            mSwitchStatusTv.setText("恭喜你，开启了你的赚钱旅程");
+        } else {
+            mSwitchStatusTv.setText("今天你赚钱了吗？马上开启你的赚钱旅程吧！");
+        }
+    }
+
+    /**
+     * @param shouldReceiveBill
+     */
+    private void changeStatusReal(boolean shouldReceiveBill) {
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+
+        Map<String, String> params = new HashMap<>();
+
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+
+        if (shouldReceiveBill) {
+            Call<JsonObject> request = billApi.receiveBill(params);
+
+            KHttpWorker.ins().requestWithOrigin(request, new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                    Log.d("slog_zd", "success");
+
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                }
+            });
+
+        } else {
+            Call<JsonObject> request = billApi.denyBill(params);
+
+            KHttpWorker.ins().requestWithOrigin(request, new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    Log.d("slog_zd", "deny");
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                }
+            });
+        }
+
+    }
+
+    /**
+     * 是否接单
+     *
+     * @param receiveBill
+     */
+    public void changeServiceStatusReal(boolean receiveBill) {
+        ConfigManager.getInstance(getContext()).setReceiverBillStatus(receiveBill);
+
+        if (receiveBill) {
+            mSwitchBtn.setCheckedWithoutCallback(true);
+        } else {
+            mSwitchBtn.setCheckedWithoutCallback(false);
+        }
+
+        changeStatusUi(receiveBill);
     }
 
     @Override

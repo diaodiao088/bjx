@@ -195,6 +195,9 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
     }
 
     private void logOut() {
+
+        startLogoutReal();
+
         ConfigManager.getInstance(mActivity).setUserCode("");
         ConfigManager.getInstance(mActivity).setUserSession("");
         ConfigManager.getInstance(mActivity).setUserName("");
@@ -207,6 +210,30 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         ActivitiesManager.getInstance().finishAllActivities();
         Utils.startActivity(mActivity, SplashActivity.class);
     }
+
+    private void startLogoutReal() {
+
+        LoginApi loginApi = KHttpWorker.ins().createHttpService(LoginApi.URL, LoginApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+
+        Call<JsonObject> call = loginApi.logOut(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     private void callService() {
         String mobile = getString(R.string.service_telephone);

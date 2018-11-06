@@ -106,7 +106,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void initData() {
         mMobileEditText.setText(ConfigManager.getInstance(context).getUserCode());
-        getLoginKey();
         getLoginKeyNew();
     }
 
@@ -125,7 +124,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 Utils.finishWithoutAnim(LoginActivity.this);
                 break;
             case R.id.login_image_verify_code:
-                getVerifyImage();
+                getVerifyImageNew();
                 break;
             case R.id.login_button_sendauthcode:
                 sendAuthCode();
@@ -141,27 +140,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             default:
                 break;
         }
-    }
-
-    private AsyncTask<Void, Void, String> mGetLoginKey;
-
-    private void getLoginKey() {
-        mGetLoginKey = new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                return LogicFactory.getAccountLogic(context).getLoginKey();
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                if (Utils.isNotEmpty(result)) {
-                    mLoginKey = result;
-                    getVerifyImage();
-                }
-            }
-        };
-
-        mGetLoginKey.execute();
     }
 
 
@@ -187,30 +165,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             public void onFailure(Call<JsonObject> call, Throwable t) {
             }
         });
-    }
-
-    private AsyncTask<Void, Void, Bitmap> mGetVerifyImage;
-
-    private void getVerifyImage() {
-       /* if (!Utils.isNotEmpty(mLoginKey)) {
-            Utils.showShortToast(context, "获取数据失败，请退出应用，重新进入！");
-            return;
-        }
-        mGetVerifyImage = new AsyncTask<Void, Void, Bitmap>() {
-            @Override
-            protected Bitmap doInBackground(Void... params) {
-                return LogicFactory.getAccountLogic(context).getVerifyCode(mLoginKey);
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap result) {
-                if (result != null) {
-                    mVerifyCodeImageView.setImageBitmap(result);
-                }
-            }
-        };
-
-        mGetVerifyImage.execute();*/
     }
 
     private void getVerifyImageNew() {

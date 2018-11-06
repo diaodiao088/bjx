@@ -191,7 +191,9 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
                     JsonObject object = response.body();
-                    if (object != null && object.get("code").getAsInt() == 0) {
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+                    if (object != null && code == 0) {
 
                         mHandler.post(new Runnable() {
                             @Override
@@ -215,7 +217,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
                                     mDialog.dismiss();
                                 }
 
-                                Utils.showShortToast(context, "修改密码失败！");
+                                Utils.showShortToast(context, "code: " + code + ":" + msg);
                             }
                         });
                     }

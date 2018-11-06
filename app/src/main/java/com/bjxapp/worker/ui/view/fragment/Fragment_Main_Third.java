@@ -3,7 +3,9 @@ package com.bjxapp.worker.ui.view.fragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.message.BasicNameValuePair;
 
@@ -14,6 +16,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -21,18 +24,30 @@ import android.widget.RelativeLayout;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.bjxapp.worker.adapter.MessageAdapter;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.NotificationApi;
+import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.controls.listview.XListView.IXListViewListener;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.Message;
+import com.bjxapp.worker.model.WithdrawInfo;
 import com.bjxapp.worker.ui.view.activity.MessageDetailActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.utils.Logger;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.R;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Main_Third extends BaseFragment implements OnClickListener, IXListViewListener {
     protected static final String TAG = "通知";
@@ -67,7 +82,16 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Message message = (Message) mXListView.getItemAtPosition(position);
-                Utils.startActivity(getActivity(), MessageDetailActivity.class, new BasicNameValuePair("message_id", String.valueOf(message.getId())));
+                //  Utils.startActivity(getActivity(), MessageDetailActivity.class, new BasicNameValuePair("message_id", String.valueOf(message.getId())));
+
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), MessageDetailActivity.class);
+                intent.putExtra(MessageDetailActivity.MSG_CONTENT, message.getContent());
+                intent.putExtra(MessageDetailActivity.MSG_TIME, message.getDate());
+                intent.putExtra(MessageDetailActivity.MSG_TITLE, message.getTitle());
+
+                getActivity().startActivity(intent);
+
             }
         });
 
@@ -118,76 +142,135 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
 
     private String mCreateTime;
 
-    private String getFormatedTime(){
+    private String getFormatedTime() {
 
-        if (TextUtils.isEmpty(mCreateTime)){
+        if (TextUtils.isEmpty(mCreateTime)) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            mCreateTime =  format.format(new Date());
+            mCreateTime = format.format(new Date());
         }
 
         return mCreateTime;
     }
 
-    private void updateFormatedTime(){
+    private String updateFormatedTime() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        mCreateTime =  format.format(new Date());
+        mCreateTime = format.format(new Date());
+        return mCreateTime;
     }
 
     private AsyncTask<Void, Void, List<Message>> mFirstLoadTask;
 
     private void onFirstLoadData(final Boolean loading) {
 
-        if(!Utils.isNetworkAvailable(mActivity)){
-
-        }
-
-
-        if (Utils.isNetworkAvailable(mActivity)) {
-            if (loading) {
-                mWaitingDialog.show("正在加载中，请稍候...", false);
-            }
-            mFirstLoadTask = new AsyncTask<Void, Void, List<Message>>() {
-                @Override
-                protected List<Message> doInBackground(Void... params) {
-                    return LogicFactory.getMessageLogic(mActivity).getMessages(0);
-                }
-
-                @Override
-                protected void onPostExecute(List<Message> result) {
-                    if (loading) {
-                        mWaitingDialog.dismiss();
-                    }
-                    if (result == null) {
-                        mLoadAgainLayout.setVisibility(View.VISIBLE);
-                        mXListView.setVisibility(View.GONE);
-                        return;
-                    }
-
-                    mCurrentBatch = 0;
-                    mMessagesArray.clear();
-                    mMessagesArray.addAll(result);
-                    mMessageAdapter = new MessageAdapter(mActivity, mMessagesArray);
-                    mXListView.setAdapter(mMessageAdapter);
-                    mCurrentBatch++;
-
-                    if (mMessagesArray.size() > 0) {
-                        ConfigManager.getInstance(mActivity).setDesktopMessagesDot(ConfigManager.getInstance(mActivity).getDesktopMessagesDotServer());
-                        mLoadAgainLayout.setVisibility(View.GONE);
-                        mXListView.setVisibility(View.VISIBLE);
-                    }
-                }
-            };
-            mFirstLoadTask.execute();
-        } else {
+        if (!Utils.isNetworkAvailable(mActivity)) {
             Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
+            return;
         }
+
+        if (loading && mWaitingDialog != null) {
+            mWaitingDialog.show("正在加载中，请稍候...", false);
+        }
+
+        NotificationApi notificationApi = KHttpWorker.ins().createHttpService(LoginApi.URL, NotificationApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+        params.put("pageNum", String.valueOf(1));
+        params.put("pageSize", String.valueOf(20));
+        params.put("endCreateTime", getFormatedTime());
+
+        Call<JsonObject> call = notificationApi.getNoticeList(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (loading) {
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                        }
+                    });
+                }
+
+                JsonObject jsonObject = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    String msg = jsonObject.get("msg").getAsString();
+                    int code = jsonObject.get("code").getAsInt();
+
+                    if (code == 0) {
+                        JsonObject pageObject = jsonObject.getAsJsonObject("page");
+                        JsonArray itemArray = pageObject.getAsJsonArray("list");
+
+                        if (itemArray != null && itemArray.size() > 0) {
+                            mMessagesArray.clear();
+                            for (int i = 0; i < itemArray.size(); i++) {
+                                JsonObject item = (JsonObject) itemArray.get(i);
+                                /*WithdrawInfo withdrawInfoItem = new WithdrawInfo();
+                                withdrawInfoItem.setDate(item.get("createTime").getAsString());
+                                withdrawInfoItem.setMoney(item.get("amount").getAsString());
+                                withdrawInfoItem.setStatus(item.get("status").getAsInt());
+                                mMessagesArray.add(withdrawInfoItem);*/
+
+                                Message messageItem = new Message();
+                                messageItem.setTitle(item.get("title").getAsString());
+                                messageItem.setContent(item.get("content").getAsString());
+                                messageItem.setDate(item.get("createTime").getAsString());
+
+                                mMessagesArray.add(messageItem);
+                            }
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mCurrentBatch = 1;
+                                mMessageAdapter = new MessageAdapter(mActivity, mMessagesArray);
+                                mXListView.setAdapter(mMessageAdapter);
+                                mCurrentBatch++;
+
+                                if (mMessagesArray.size() > 0) {
+                                    //  ConfigManager.getInstance(mActivity).setDesktopMessagesDot(ConfigManager.getInstance(mActivity).getDesktopMessagesDotServer());
+                                    mLoadAgainLayout.setVisibility(View.GONE);
+                                    mXListView.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        });
+
+                    } else {
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                if (loading) {
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private AsyncTask<Void, Void, List<Message>> mRefreshTask;
 
     @Override
     public void onRefresh() {
-        mRefreshTask = new AsyncTask<Void, Void, List<Message>>() {
+        /*mRefreshTask = new AsyncTask<Void, Void, List<Message>>() {
             @Override
             protected List<Message> doInBackground(Void... params) {
                 return LogicFactory.getMessageLogic(mActivity).getMessages(0);
@@ -213,37 +296,164 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
                 mCurrentBatch++;
             }
         };
-        mRefreshTask.execute();
-    }
+        mRefreshTask.execute();*/
 
-    private AsyncTask<Void, Void, List<Message>> mLoadMoreTask;
+
+        if (!Utils.isNetworkAvailable(mActivity)) {
+            Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
+            return;
+        }
+
+        NotificationApi notificationApi = KHttpWorker.ins().createHttpService(LoginApi.URL, NotificationApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+        params.put("pageNum", String.valueOf(1));
+        params.put("pageSize", String.valueOf(20));
+        params.put("endCreateTime", updateFormatedTime());
+
+        Call<JsonObject> call = notificationApi.getNoticeList(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject jsonObject = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    String msg = jsonObject.get("msg").getAsString();
+                    int code = jsonObject.get("code").getAsInt();
+
+                    if (code == 0) {
+                        JsonObject pageObject = jsonObject.getAsJsonObject("page");
+                        JsonArray itemArray = pageObject.getAsJsonArray("list");
+
+                        if (itemArray != null && itemArray.size() > 0) {
+                            mMessagesArray.clear();
+                            for (int i = 0; i < itemArray.size(); i++) {
+                                JsonObject item = (JsonObject) itemArray.get(i);
+
+                                Message messageItem = new Message();
+                                messageItem.setTitle(item.get("title").getAsString());
+                                messageItem.setContent(item.get("content").getAsString());
+                                messageItem.setDate(item.get("createTime").getAsString());
+
+                                mMessagesArray.add(messageItem);
+                            }
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mCurrentBatch = 1;
+
+                                mMessageAdapter = new MessageAdapter(mActivity, mMessagesArray);
+                                mXListView.setAdapter(mMessageAdapter);
+
+                                mCurrentBatch++;
+
+                                onLoadFinished();
+
+                            }
+                        });
+
+                    } else {
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+            }
+        });
+
+    }
 
     @Override
     public void onLoadMore() {
-        mLoadMoreTask = new AsyncTask<Void, Void, List<Message>>() {
+
+        if (!Utils.isNetworkAvailable(mActivity)) {
+            Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
+        }
+
+        NotificationApi notificationApi = KHttpWorker.ins().createHttpService(LoginApi.URL, NotificationApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+        params.put("pageNum", String.valueOf(mCurrentBatch));
+        params.put("pageSize", String.valueOf(2));
+        params.put("endCreateTime", getFormatedTime());
+
+        Call<JsonObject> call = notificationApi.getNoticeList(params);
+
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            protected List<Message> doInBackground(Void... params) {
-                return LogicFactory.getMessageLogic(mActivity).getMessages(mCurrentBatch);
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject jsonObject = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    String msg = jsonObject.get("msg").getAsString();
+                    int code = jsonObject.get("code").getAsInt();
+
+                    if (code == 0) {
+                        JsonObject pageObject = jsonObject.getAsJsonObject("page");
+                        JsonArray itemArray = pageObject.getAsJsonArray("list");
+
+                        final ArrayList<Message> list = new ArrayList<>();
+                        if (itemArray != null && itemArray.size() > 0) {
+
+                            for (int i = 0; i < itemArray.size(); i++) {
+                                JsonObject item = (JsonObject) itemArray.get(i);
+
+                                Message messageItem = new Message();
+                                messageItem.setTitle(item.get("title").getAsString());
+                                messageItem.setContent(item.get("content").getAsString());
+                                messageItem.setDate(item.get("createTime").getAsString());
+
+                                list.add(messageItem);
+                            }
+                        } else {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.showShortToast(mActivity, getString(R.string.common_no_more_data_message));
+                                    onLoadFinished();
+                                }
+                            });
+                            return;
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mMessagesArray.addAll(list);
+                                mMessageAdapter.notifyDataSetChanged();
+                                onLoadFinished();
+                                mCurrentBatch++;
+                            }
+                        });
+
+                    } else {
+
+                    }
+                }
+
             }
 
             @Override
-            protected void onPostExecute(List<Message> result) {
-                if (result == null) {
-                    try {
-                        Utils.showShortToast(mActivity, getString(R.string.common_no_more_data_message));
-                        onLoadFinished();
-                    } catch (Exception e) {
-                        Logger.i(e.getMessage());
-                    }
-                    return;
-                }
-                mMessagesArray.addAll(result);
-                mMessageAdapter.notifyDataSetChanged();
-                onLoadFinished();
-                mCurrentBatch++;
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
             }
-        };
-        mLoadMoreTask.execute();
+        });
+
+
     }
 
     @Override
@@ -259,9 +469,6 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
             }
             if (mRefreshTask != null) {
                 mRefreshTask.cancel(true);
-            }
-            if (mLoadMoreTask != null) {
-                mLoadMoreTask.cancel(true);
             }
             //注销广播
             mActivity.unregisterReceiver(broadcastReceiver);

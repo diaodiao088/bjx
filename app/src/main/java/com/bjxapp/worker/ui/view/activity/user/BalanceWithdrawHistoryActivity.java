@@ -1,24 +1,16 @@
 package com.bjxapp.worker.ui.view.activity.user;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 
+import com.bjxapp.worker.R;
 import com.bjxapp.worker.adapter.WithdrawAdapter;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
@@ -36,198 +28,217 @@ import com.bjxapp.worker.model.WithdrawList;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Logger;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnClickListener,IXListViewListener {
-	protected static final String TAG = "提现历史界面";
-	private XTextView mTitleTextView;
-	private XImageView mBackImageView;
-	
-	private RelativeLayout mLoadAgainLayout;
-	private ArrayList<WithdrawInfo> mWithdrawArray = new ArrayList<WithdrawInfo>();
+public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnClickListener, IXListViewListener {
+    protected static final String TAG = "提现历史界面";
+    private XTextView mTitleTextView;
+    private XImageView mBackImageView;
+
+    private RelativeLayout mLoadAgainLayout;
+    private ArrayList<WithdrawInfo> mWithdrawArray = new ArrayList<WithdrawInfo>();
     private WithdrawAdapter mWithdrawAdapter;
-    private XListView  mXListView;
+    private XListView mXListView;
     private XTextView mWithdrawTotalMoney;
     private int mBatchCount = 10;
     private int mCurrentBatch = 1;
-    
-	private XWaitingDialog mWaitingDialog;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.activity_balance_withdraw_list);
-		super.onCreate(savedInstanceState);
-	}
+    private XWaitingDialog mWaitingDialog;
 
-	@Override
-	protected void initControl() {
-		mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
-		mTitleTextView.setText("提现历史");
-		mBackImageView = (XImageView) findViewById(R.id.title_image_back);
-		mBackImageView.setVisibility(View.VISIBLE);
-		
-		mWithdrawTotalMoney = (XTextView) findViewById(R.id.withdraw_list_total_money);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.activity_balance_withdraw_list);
+        super.onCreate(savedInstanceState);
+    }
 
-		mWaitingDialog = new XWaitingDialog(context);
-		
-		mLoadAgainLayout = (RelativeLayout) findViewById(R.id.withdraw_list_load_again);
-		mLoadAgainLayout.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				onFirstLoadData(true);
-			}
-		});
-		
-		mXListView = (XListView) findViewById(R.id.withdraw_list_listview);
-		mWithdrawAdapter= new WithdrawAdapter(context, mWithdrawArray);
+    @Override
+    protected void initControl() {
+        mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
+        mTitleTextView.setText("提现历史");
+        mBackImageView = (XImageView) findViewById(R.id.title_image_back);
+        mBackImageView.setVisibility(View.VISIBLE);
+
+        mWithdrawTotalMoney = (XTextView) findViewById(R.id.withdraw_list_total_money);
+
+        mWaitingDialog = new XWaitingDialog(context);
+
+        mLoadAgainLayout = (RelativeLayout) findViewById(R.id.withdraw_list_load_again);
+        mLoadAgainLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFirstLoadData(true);
+            }
+        });
+
+        mXListView = (XListView) findViewById(R.id.withdraw_list_listview);
+        mWithdrawAdapter = new WithdrawAdapter(context, mWithdrawArray);
         mXListView.setAdapter(mWithdrawAdapter);
-        mXListView.setCacheColorHint(Color.TRANSPARENT);		
-		mXListView.setPullLoadEnable(true);
-		mXListView.setPullRefreshEnable(false);
-		mXListView.setXListViewListener(this);
-	}
+        mXListView.setCacheColorHint(Color.TRANSPARENT);
+        mXListView.setPullLoadEnable(true);
+        mXListView.setPullRefreshEnable(false);
+        mXListView.setXListViewListener(this);
+    }
 
-	@Override
-	protected void initView() {
+    @Override
+    protected void initView() {
 
-	}
+    }
 
-	@Override
-	protected void initData() {
-		onFirstLoadData(false);
-	}
+    @Override
+    protected void initData() {
+        onFirstLoadData(false);
+    }
 
-	@Override
-	protected void setListener() {
-		mBackImageView.setOnClickListener(this);
-	}
+    @Override
+    protected void setListener() {
+        mBackImageView.setOnClickListener(this);
+    }
 
-	private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.title_image_back:
-			Utils.finishActivity(BalanceWithdrawHistoryActivity.this);
-			break;
-		default:
-			break;
-		}
-	}
-	
-	private void onLoadFinished() {
-		mXListView.stopRefresh();
-		mXListView.stopLoadMore();
-		//SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		//String refreshTimeString = format.format(new Date());
-		//mXListView.setRefreshTime(refreshTimeString);
-	}
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.title_image_back:
+                Utils.finishActivity(BalanceWithdrawHistoryActivity.this);
+                break;
+            default:
+                break;
+        }
+    }
 
-	private AsyncTask<Void, Void, WithdrawList> mFirstLoadTask;
+    private void onLoadFinished() {
+        mXListView.stopRefresh();
+        mXListView.stopLoadMore();
+        //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //String refreshTimeString = format.format(new Date());
+        //mXListView.setRefreshTime(refreshTimeString);
+    }
 
-	private String mCreateTime;
+    private AsyncTask<Void, Void, WithdrawList> mFirstLoadTask;
 
-	private String getFormatedTime(){
+    private String mCreateTime;
 
-		if (TextUtils.isEmpty(mCreateTime)){
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			mCreateTime =  format.format(new Date());
-		}
+    private String getFormatedTime() {
 
-		return mCreateTime;
-	}
+        if (TextUtils.isEmpty(mCreateTime)) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            mCreateTime = format.format(new Date());
+        }
 
-	private void onFirstLoadData(final Boolean loading) {
+        return mCreateTime;
+    }
 
-		if (!Utils.isNetworkAvailable(context)) {
-			Utils.showShortToast(context, getString(R.string.common_no_network_message));
-			return;
-		}
+    private void onFirstLoadData(final Boolean loading) {
 
-		if (loading) {
-			mWaitingDialog.show("正在加载中，请稍候...", false);
-		}
+        if (!Utils.isNetworkAvailable(context)) {
+            Utils.showShortToast(context, getString(R.string.common_no_network_message));
+            return;
+        }
 
-		ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL , ProfileApi.class);
+        if (loading) {
+            mWaitingDialog.show("正在加载中，请稍候...", false);
+        }
 
-		Map<String, String> params = new HashMap<>();
-		params.put("token", ConfigManager.getInstance(this).getUserSession());
-		params.put("userCode", ConfigManager.getInstance(this).getUserCode());
-		params.put("pageNum", String.valueOf(1));
-		params.put("pageSize",String.valueOf(20));
-		params.put("endCreateTime",getFormatedTime());
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
 
-		Call<JsonObject> call = profileApi.getWithDrawHistory(params);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("pageNum", String.valueOf(1));
+        params.put("pageSize", String.valueOf(20));
+        params.put("endCreateTime", getFormatedTime());
 
-		call.enqueue(new Callback<JsonObject>() {
-			@Override
-			public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+        Call<JsonObject> call = profileApi.getWithDrawHistory(params);
 
-				Log.d("slog_zd",response.body().toString());
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-				JsonObject jsonObject = response.body();
-				String msg = jsonObject.get("msg").getAsString();
-				int code = jsonObject.get("code").getAsInt();
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null){
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
 
-				if (response.code() == APIConstants.RESULT_CODE_SUCCESS && code == 0){
 
-					final String withdrawnAmount = jsonObject.get("withdrawnAmount").getAsString();
+                JsonObject jsonObject = response.body();
+                String msg = jsonObject.get("msg").getAsString();
+                int code = jsonObject.get("code").getAsInt();
 
-					JsonObject pageObject = jsonObject.getAsJsonObject("page");
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS && code == 0) {
 
-					String total = pageObject.get("total").getAsString();
+                    final String withdrawnAmount = jsonObject.get("withdrawnAmount").getAsString();
 
-					JsonArray itemArray = pageObject.getAsJsonArray("list");
+                    JsonObject pageObject = jsonObject.getAsJsonObject("page");
 
-					mWithdrawArray.clear();
+                    String total = pageObject.get("total").getAsString();
 
-					if (itemArray != null && itemArray.size() > 0){
-						for (int i = 0; i < itemArray.size(); i++) {
-							JsonObject item = (JsonObject) itemArray.get(i);
-							WithdrawInfo withdrawInfoItem = new WithdrawInfo();
-							withdrawInfoItem.setDate(item.get("createTime").getAsString());
-							withdrawInfoItem.setMoney(item.get("amount").getAsString());
-							withdrawInfoItem.setStatus(item.get("status").getAsInt());
-							mWithdrawArray.add(withdrawInfoItem);
-						}
-					}
+                    JsonArray itemArray = pageObject.getAsJsonArray("list");
 
-					mHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							mCurrentBatch = 1;
+                    if (itemArray != null && itemArray.size() > 0) {
+                        mWithdrawArray.clear();
+                        for (int i = 0; i < itemArray.size(); i++) {
+                            JsonObject item = (JsonObject) itemArray.get(i);
+                            WithdrawInfo withdrawInfoItem = new WithdrawInfo();
+                            withdrawInfoItem.setDate(item.get("createTime").getAsString());
+                            withdrawInfoItem.setMoney(item.get("amount").getAsString());
+                            withdrawInfoItem.setStatus(item.get("status").getAsInt());
+                            mWithdrawArray.add(withdrawInfoItem);
+                        }
+                    }
 
-							mWithdrawTotalMoney.setText((TextUtils.isEmpty(withdrawnAmount) ? 0 : withdrawnAmount) + "元");
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCurrentBatch = 1;
 
-							if (mWithdrawArray.size() > 0) {
-								mLoadAgainLayout.setVisibility(View.GONE);
-								mXListView.setVisibility(View.VISIBLE);
-							}else{
-								mWithdrawAdapter = new WithdrawAdapter(context, mWithdrawArray);
-								mXListView.setAdapter(mWithdrawAdapter);
-								mCurrentBatch++;
-								onLoadFinished();
-							}
-						}
-					});
+                            mWithdrawTotalMoney.setText((TextUtils.isEmpty(withdrawnAmount) ? 0 : withdrawnAmount) + "元");
 
-				}
-			}
+                            mWithdrawAdapter = new WithdrawAdapter(context, mWithdrawArray);
+                            mXListView.setAdapter(mWithdrawAdapter);
+                            mCurrentBatch++;
+                            onLoadFinished();
 
-			@Override
-			public void onFailure(Call<JsonObject> call, Throwable t) {
+                            if (mWithdrawArray.size() > 0) {
+                                mLoadAgainLayout.setVisibility(View.GONE);
+                                mXListView.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+                }
+            }
 
-			}
-		});
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null){
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
 
 		/*mFirstLoadTask = new AsyncTask<Void, Void, WithdrawList>() {
-			@Override
+            @Override
 			protected WithdrawList doInBackground(Void... params) {
 				return LogicFactory.getAccountLogic(context).getWithdrawList(1, mBatchCount);
 			}
@@ -260,73 +271,116 @@ public class BalanceWithdrawHistoryActivity extends BaseActivity implements OnCl
 			}
 		};
 		mFirstLoadTask.execute();*/
-	}
-	
-	private AsyncTask<Void, Void, WithdrawList> mRefreshTask;
-	@Override
-	public void onRefresh() {
+    }
 
-	}
+    private AsyncTask<Void, Void, WithdrawList> mRefreshTask;
 
-	private AsyncTask<Void, Void, WithdrawList> mLoadMoreTask;
-	@Override
-	public void onLoadMore() {
+    @Override
+    public void onRefresh() {
 
+    }
 
+    private AsyncTask<Void, Void, WithdrawList> mLoadMoreTask;
 
+    @Override
+    public void onLoadMore() {
 
-		mLoadMoreTask = new AsyncTask<Void, Void, WithdrawList>() {
-	        @Override
-	        protected WithdrawList doInBackground(Void... params) {
-	            return LogicFactory.getAccountLogic(context).getWithdrawList(mCurrentBatch, mBatchCount);
-	        }
+        if (!Utils.isNetworkAvailable(context)) {
+            Utils.showShortToast(context, getString(R.string.common_no_network_message));
+            return;
+        }
 
-	        @SuppressWarnings("unchecked")
-			@Override
-	        protected void onPostExecute(WithdrawList result) {
-	        	if(result == null){
-	        		try{
-		        		Utils.showShortToast(context, getString(R.string.common_no_more_data_message));
-		        		onLoadFinished();
-	        		}
-	        		catch(Exception e){
-	        			Logger.i(e.getMessage());
-	        		}
-	        		return;
-	        	}
-	        	
-	        	mWithdrawTotalMoney.setText("¥" + result.getTotalMoney() + "元");
-	        	
-	        	mWithdrawArray.addAll((List<WithdrawInfo>)result.getDataObject());
-				mWithdrawAdapter.notifyDataSetChanged();
-				onLoadFinished();
-				mCurrentBatch++;
-	        }
-	    };
-	    mLoadMoreTask.execute();
-	}
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
 
-	@Override
-	protected String getPageName() {
-		return TAG;
-	}
-	
-	@Override
-	public void onDestroy(){
-		try{
-	        if (mFirstLoadTask != null){
-	        	mFirstLoadTask.cancel(true);
-	        }
-	        if (mRefreshTask != null){
-	        	mRefreshTask.cancel(true);
-	        }
-	        if (mLoadMoreTask != null){
-	        	mLoadMoreTask.cancel(true);
-	        }
-		}
-		catch(Exception e){}
-		
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("pageNum", String.valueOf(mCurrentBatch));
+        params.put("pageSize", String.valueOf(20));
+        params.put("endCreateTime", getFormatedTime());
+
+        Call<JsonObject> call = profileApi.getWithDrawHistory(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject jsonObject = response.body();
+                String msg = jsonObject.get("msg").getAsString();
+                int code = jsonObject.get("code").getAsInt();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS && code == 0) {
+
+                    final String withdrawnAmount = jsonObject.get("withdrawnAmount").getAsString();
+
+                    JsonObject pageObject = jsonObject.getAsJsonObject("page");
+
+                    String total = pageObject.get("total").getAsString();
+
+                    JsonArray itemArray = pageObject.getAsJsonArray("list");
+
+                    final ArrayList<WithdrawInfo> arrayList = new ArrayList<>();
+
+                    if (itemArray != null && itemArray.size() > 0) {
+                        for (int i = 0; i < itemArray.size(); i++) {
+                            JsonObject item = (JsonObject) itemArray.get(i);
+                            WithdrawInfo withdrawInfoItem = new WithdrawInfo();
+                            withdrawInfoItem.setDate(item.get("createTime").getAsString());
+                            withdrawInfoItem.setMoney(item.get("amount").getAsString());
+                            withdrawInfoItem.setStatus(item.get("status").getAsInt());
+                            arrayList.add(withdrawInfoItem);
+                        }
+                    } else {
+
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(context, getString(R.string.common_no_more_data_message));
+                                onLoadFinished();
+                            }
+                        });
+
+                        return;
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mWithdrawArray.addAll((arrayList));
+                            mWithdrawAdapter.notifyDataSetChanged();
+                            onLoadFinished();
+                            mCurrentBatch++;
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    protected String getPageName() {
+        return TAG;
+    }
+
+    @Override
+    public void onDestroy() {
+        try {
+            if (mFirstLoadTask != null) {
+                mFirstLoadTask.cancel(true);
+            }
+            if (mRefreshTask != null) {
+                mRefreshTask.cancel(true);
+            }
+        } catch (Exception e) {
+        }
+
         super.onDestroy();
-	}
+    }
 
 }

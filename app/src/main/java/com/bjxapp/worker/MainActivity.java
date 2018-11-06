@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,12 +20,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.LocationClient;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.BillApi;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ActivitiesManager;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.RedDot;
 import com.bjxapp.worker.push.BJXPushService;
@@ -40,14 +47,20 @@ import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Second;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Third;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.zxing.CaptureActivity;
+import com.google.gson.JsonObject;
 import com.igexin.sdk.PushManager;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends BaseFragmentActivity implements OnClickListener {
 
@@ -122,7 +135,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
     private void initPush() {
         PushManager.getInstance().initialize(this.getApplicationContext(), BJXPushService.class);
-        PushManager.getInstance().registerPushIntentService(this.getApplicationContext() , PushIntentService.class);
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), PushIntentService.class);
     }
 
 
@@ -433,52 +446,134 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         mCheckNewVersionTask.execute();
     }
 
-    private AsyncTask<Void, Void, Integer> mGetStatusTask;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private void getUserStatus() {
+
         mWaitingDialog.show("正在查询注册信息，请稍候...", false);
-        mGetStatusTask = new AsyncTask<Void, Void, Integer>() {
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        Call<JsonObject> request = billApi.getServiceStatus(params);
+        request.enqueue(new Callback<JsonObject>() {
             @Override
-            protected Integer doInBackground(Void... params) {
-                int result = LogicFactory.getAccountLogic(MainActivity.this).getRegisterStatus();
-                if (isCancelled()) {
-                    return -2;
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                JsonObject jsonObject = response.body();
+                final String msg = jsonObject.get("msg").getAsString();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    int code = jsonObject.get("code").getAsInt();
+                    if (code == 0) {
+                        int status = jsonObject.get("status").getAsInt();
+                        toStatusDialog(status);
+
+                        final int serviceStat = jsonObject.get("serviceState").getAsInt();
+
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mMainFirstFragment != null) {
+                                    mMainFirstFragment.changeServiceStatusReal(serviceStat == 1);
+                                }
+                            }
+                        });
+
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                showStatusDialog(msg);
+                            }
+                        });
+                    }
+                } else {
+                    toStatusDialog(99);
                 }
-                return result;
             }
 
             @Override
-            protected void onPostExecute(Integer result) {
-                mWaitingDialog.dismiss();
-                if (result != -2) {
-                    ConfigManager.getInstance(MainActivity.this).setUserStatus(result);
-                }
-             //   showStatusDialog(result);
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                            showStatusDialog(99);
+                        }
+                    }
+                });
             }
-        };
-
-        mGetStatusTask.execute();
+        });
     }
+
+    private void toStatusDialog(final int code) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                showStatusDialog(code);
+            }
+        });
+    }
+
+    private void showStatusDialog(String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        builder.setTitle("师傅注册通知");
+        builder.setMessage(msg);
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ActivitiesManager.getInstance().finishAllActivities();
+            }
+        });
+
+        builder.setNeutralButton("电话询问", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                callService();
+                ActivitiesManager.getInstance().finishAllActivities();
+            }
+        });
+
+        builder.create().show();
+    }
+
 
     private void showStatusDialog(int status) {
         String message = "";
 
         switch (status) {
-            case -2:
-                break;
-            case -1:
-                callWorkerApply();
-                return;
-            case 0:
-                message = "您的资料正在审核中，请保持手机畅通，收到确认短信后，请重新打开【百家修】，咨询电话:" + getString(R.string.service_telephone_display);
-                break;
             case 1:
                 return;
             case 2:
-                message = "您的资料审核没有通过！\n" + "咨询电话:" + getString(R.string.service_telephone_display);
-                break;
+                callWorkerApply();
+                return;
             case 3:
+                message = "您的资料正在审核中，请保持手机畅通，收到确认短信后，请重新打开【百家修】，咨询电话:" + getString(R.string.service_telephone_display);
+                break;
+            case 7:
+            case 5:
+            case 6:
                 message = "您的账户已被禁用！\n" + "咨询电话:" + getString(R.string.service_telephone_display);
+                break;
+            case 4:
+                message = "你的资料未通过 ！ 请重新提交";
                 break;
             case 11:
                 message = "您的资料已提交，请保持手机畅通，收到确认短信后，请重新打开【百家修】，咨询电话:" + getString(R.string.service_telephone_display);
@@ -572,9 +667,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 mDisplayRedDotTask.cancel(true);
             }
 
-            if (mGetStatusTask != null) {
-                mGetStatusTask.cancel(true);
-            }
             if (mCheckNewVersionTask != null) {
                 mCheckNewVersionTask.cancel(true);
             }

@@ -1,5 +1,7 @@
 package com.bjxapp.worker.adapter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -54,11 +56,21 @@ public class MessageAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.textViewDate.setText(aInfo.get(position).getDate());
+        holder.textViewDate.setText(getFormatDateString(aInfo.get(position).getDate()));
         holder.textViewTitle.setText(aInfo.get(position).getTitle());    
 		
 		return convertView;
 	}
+
+    public String getFormatDateString(String dateString) {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            return format.format(Double.parseDouble(dateString));
+        } catch (Exception e) {
+            return dateString;
+        }
+    }
+
 
     class ViewHolder {
     	XTextView textViewDate;
