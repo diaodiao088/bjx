@@ -60,7 +60,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
     private View mRootView;
     private XListView mListView;
     private OrderAdapter mOrderAdapter;
-    private ArrayList<OrderDes> mOrdersArray = new ArrayList<OrderDes>();
+    protected ArrayList<OrderDes> mOrdersArray = new ArrayList<OrderDes>();
     private XWaitingDialog mWaitingDialog;
     private RelativeLayout mLoadAgainLayout;
 
@@ -115,7 +115,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         mLoadAgainLayout.setVisibility(View.GONE);
                         mOrdersArray.clear();
                         mOrdersArray.addAll(pageResult);
-                        mOrderAdapter.setReceiverInfo(mOrdersArray);
+                        mOrderAdapter.setReceiverInfo(getOrderArray());
                         mOrderAdapter.notifyDataSetChanged();
                     }
                 });
@@ -393,7 +393,6 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
         mOrderAdapter.setReceiverInfo(getOrderArray());
         mOrderAdapter.notifyDataSetChanged();
         mListView.setAdapter(mOrderAdapter);
-
 
     }
 

@@ -1,6 +1,7 @@
 package com.bjxapp.worker.model;
 
 public class ReceiveOrder {
+
 	private int orderID;
 	private int orderStatus;
 	private String orderDate;

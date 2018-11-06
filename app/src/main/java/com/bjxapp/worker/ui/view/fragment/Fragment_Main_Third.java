@@ -386,7 +386,7 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
         params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
         params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
         params.put("pageNum", String.valueOf(mCurrentBatch));
-        params.put("pageSize", String.valueOf(2));
+        params.put("pageSize", String.valueOf(20));
         params.put("endCreateTime", getFormatedTime());
 
         Call<JsonObject> call = notificationApi.getNoticeList(params);

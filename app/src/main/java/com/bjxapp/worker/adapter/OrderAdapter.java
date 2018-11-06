@@ -24,7 +24,7 @@ public class OrderAdapter extends BaseAdapter {
     }
 
     public void setReceiverInfo(ArrayList<OrderDes> list) {
-        if (list == null || list.isEmpty()) {
+        if (list == null) {
             return;
         }
         this.aInfo = list;

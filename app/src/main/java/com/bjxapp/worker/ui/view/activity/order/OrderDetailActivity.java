@@ -136,10 +136,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private XWaitingDialog mWaitingDialog;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_order_detail);
         ButterKnife.bind(this);
+        handleIntent();
         super.onCreate(savedInstanceState);
     }
 
@@ -226,6 +228,16 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         picker.show();
     }
 
+    String orderId = "";
+    int processStatus = -1;
+
+    private void handleIntent() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            orderId = intent.getStringExtra("order_id");
+            processStatus = intent.getIntExtra("processStatus", -1);
+        }
+    }
 
     @Override
     protected void initControl() {
@@ -315,6 +327,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     }
 
     private AsyncTask<String, Void, OrderDetail> mLoadDataTask;
+
 
     private void loadData(final Boolean loading) {
         String orderID = getIntent().getStringExtra("order_id");
