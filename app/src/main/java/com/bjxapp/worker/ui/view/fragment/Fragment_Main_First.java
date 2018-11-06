@@ -26,6 +26,7 @@ import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.DateTime;
+import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.ReceiveButton;
 import com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
@@ -41,6 +42,7 @@ import com.bjxapp.worker.ui.widget.ToggleSwitchButton;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +105,7 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
 
     private void initVp() {
         mVp = (ViewPager) findViewById(R.id.main_pager);
+        mVp.setOffscreenPageLimit(5);
         mBillAdapter = new BillAdapter(getChildFragmentManager());
 
         mBillAdapter.addFragment(TotalFragment.getIns());
@@ -178,7 +181,6 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                    Log.d("slog_zd", "success");
 
                 }
 
@@ -194,7 +196,7 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
             KHttpWorker.ins().requestWithOrigin(request, new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    Log.d("slog_zd", "deny");
+
                 }
 
                 @Override
@@ -464,6 +466,14 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
     protected String getPageName() {
         return TAG;
     }
+
+    public void refreshRedot(ArrayList<OrderDes> list){
+
+        if (getActivity() != null && !getActivity().isFinishing()) {
+            mSlipCtrl.updateRedot(list);
+        }
+    }
+
 
     @Override
     public void onDestroy() {

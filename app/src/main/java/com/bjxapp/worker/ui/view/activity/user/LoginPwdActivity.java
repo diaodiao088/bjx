@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.bjxapp.worker.MainActivity;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
@@ -147,6 +148,16 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
         loginRequest.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null){
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
                     JsonObject object = response.body();
@@ -161,9 +172,20 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
                             if (!TextUtils.isEmpty(token)) {
                                 ConfigManager.getInstance(context).setUserCode(phoneNumber);
                                 ConfigManager.getInstance(context).setUserSession(token);
-                                setResult(RESULT_OK);
+
+                                Intent intent = new Intent();
+                                intent.setClass(LoginPwdActivity.this , MainActivity.class);
+                                LoginPwdActivity.this.startActivity(intent);
+
                                 Utils.finishWithoutAnim(LoginPwdActivity.this);
                             }
+                        }else{
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.showLongToast(LoginPwdActivity.this, msg + ":" + code);
+                                }
+                            });
                         }
                     } else {
                         mHandler.post(new Runnable() {
@@ -185,6 +207,16 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null){
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {

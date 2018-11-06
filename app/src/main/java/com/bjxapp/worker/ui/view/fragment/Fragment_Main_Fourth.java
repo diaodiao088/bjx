@@ -46,6 +46,7 @@ import com.bjxapp.worker.utils.image.BitmapManager;
 import com.bjxapp.worker.R;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import java.text.NumberFormat;
@@ -233,7 +234,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
             }
         });
     }
-
 
     private void callService() {
         String mobile = getString(R.string.service_telephone);
@@ -495,9 +495,15 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
                 JsonObject object = response.body();
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
+
+                    if (object.get("bankInfo") instanceof JsonNull){
+                        goToBankActivity();
+                        return;
+                    }
+
                     JsonObject bankInfoItem = object.getAsJsonObject("bankInfo");
                     if (bankInfoItem == null || bankInfoItem.get("bankAccountName") == null) {
-                        getBankInfoFailed();
+                        goToBankActivity();
                     } else {
                         getBankInfoSucc();
                     }
@@ -527,14 +533,28 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         }
     }
 
+    private void goToBankActivity(){
+        if (mActivity != null && !mActivity.isFinishing()) {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mWaitingDialog != null) {
+                        mWaitingDialog.dismiss();
+                    }
+                    Utils.startActivity(mActivity, BalanceBankActivity.class);
+                }
+            });
+        }
+    }
+
     private void getBankInfoSucc() {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (mWaitingDialog != null) {
                     mWaitingDialog.dismiss();
-                    Utils.startActivity(mActivity, BalanceBankWithdrawActivity.class);
                 }
+                Utils.startActivity(mActivity, BalanceBankWithdrawActivity.class);
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.bjxapp.worker.ui.view.fragment.ctrl;
 
 import com.bjxapp.worker.model.FirstPageResult;
+import com.bjxapp.worker.model.OrderDes;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -14,8 +15,9 @@ import java.util.concurrent.ExecutorService;
 public class DataManagerCtrl {
 
     private static DataManagerCtrl sIns;
-
     private FirstPageResult pageResult;
+
+    private ArrayList<OrderDes> mList;
 
     private ArrayList<OnDataLoadFinishListener> mListenerList = new ArrayList<>();
 
@@ -30,10 +32,11 @@ public class DataManagerCtrl {
         return sIns;
     }
 
-    public void setPageResult(FirstPageResult result) {
-        this.pageResult = result;
+    public void setPageResult(ArrayList<OrderDes> result) {
+        this.mList = result;
         notifyFragment();
     }
+
 
     private void notifyFragment() {
         for (OnDataLoadFinishListener listener : mListenerList) {
@@ -43,8 +46,8 @@ public class DataManagerCtrl {
         }
     }
 
-    public FirstPageResult getPageResult() {
-        return pageResult;
+    public ArrayList<OrderDes> getPageResult() {
+        return mList;
     }
 
     public interface OnDataLoadFinishListener {
@@ -63,9 +66,7 @@ public class DataManagerCtrl {
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
-
 
 
 }

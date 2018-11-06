@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bjxapp.worker.R;
+import com.bjxapp.worker.model.OrderDes;
+
+import java.util.ArrayList;
 
 /**
  * Created by zhangdan on 2018/9/25.
@@ -13,6 +16,7 @@ import com.bjxapp.worker.R;
  */
 
 public class PageSlipingCtrl {
+
 
     private View mTotalDivTv;
     private TextView mRedotTotalTv;
@@ -33,7 +37,7 @@ public class PageSlipingCtrl {
         this.mCtx = ctx;
     }
 
-    public void init(){
+    public void init() {
 
         mTotalDivTv = mCtx.findViewById(R.id.total_divider);
         mRedotTotalTv = mCtx.findViewById(R.id.total_reddot_tv);
@@ -56,9 +60,9 @@ public class PageSlipingCtrl {
     }
 
 
-    public void updateUnderLineUi(int type){
+    public void updateUnderLineUi(int type) {
 
-        switch (type){
+        switch (type) {
             case 0:
                 mTotalDivTv.setVisibility(View.VISIBLE);
                 mNewBillDivTv.setVisibility(View.GONE);
@@ -110,9 +114,72 @@ public class PageSlipingCtrl {
         }
     }
 
+    public static final int TOTAL_COUNT = 0x00;
+    public static final int NEW_BILL_COUNT = 0x01;
+    public static final int WAITING_CONTACT_COUNT = 0x02;
+    public static final int WAITING_ROOM = 0x03;
+    public static final int ALREADY_ROOM = 0X04;
+    public static final int WAITING_PAY = 0x05;
 
+    public void updateRedot(ArrayList<OrderDes> list) {
 
+        if (list == null || list.size() <= 0) {
+            mRedotTotalTv.setVisibility(View.GONE);
+            mRedotNewBillTv.setVisibility(View.GONE);
+            mRedotAlreadyEnterTv.setVisibility(View.GONE);
+            mRedotWaitingPayTv.setVisibility(View.GONE);
+            mRedotContactTv.setVisibility(View.GONE);
+            mRedotWaitingRoomTv.setVisibility(View.GONE);
+            return;
+        }
 
+        mRedotTotalTv.setText(String.valueOf(list.size()));
+        mRedotTotalTv.setVisibility(View.VISIBLE);
 
+        int newBillCount = getSpecItemCount(NEW_BILL_COUNT, list);
+        if (newBillCount > 0) {
+            mRedotNewBillTv.setVisibility(View.VISIBLE);
+            mRedotNewBillTv.setText(String.valueOf(newBillCount));
+        }
+
+        int alreadyEnterCount = getSpecItemCount(ALREADY_ROOM, list);
+        if (alreadyEnterCount > 0) {
+            mRedotAlreadyEnterTv.setVisibility(View.VISIBLE);
+            mRedotAlreadyEnterTv.setText(String.valueOf(alreadyEnterCount));
+        }
+
+        int waitPayCount = getSpecItemCount(WAITING_PAY, list);
+        if (waitPayCount > 0) {
+            mRedotWaitingPayTv.setVisibility(View.VISIBLE);
+            mRedotWaitingPayTv.setText(String.valueOf(waitPayCount));
+        }
+
+        int contactCount = getSpecItemCount(WAITING_CONTACT_COUNT, list);
+        if (contactCount > 0) {
+            mRedotContactTv.setVisibility(View.VISIBLE);
+            mRedotContactTv.setText(String.valueOf(contactCount));
+        }
+
+        int waitingRoomCount = getSpecItemCount(WAITING_ROOM, list);
+        if (waitingRoomCount > 0) {
+            mRedotWaitingRoomTv.setVisibility(View.VISIBLE);
+            mRedotWaitingRoomTv.setText(String.valueOf(waitingRoomCount));
+        }
+
+    }
+
+    public int getSpecItemCount(int type, ArrayList<OrderDes> list) {
+
+        int count = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+            OrderDes item = list.get(i);
+            if (item.getProcessStatus() == type) {
+                count++;
+            }
+        }
+
+        return count;
+    }
 
 }

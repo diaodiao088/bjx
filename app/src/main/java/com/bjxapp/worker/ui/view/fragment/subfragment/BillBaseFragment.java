@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +18,36 @@ import android.widget.RelativeLayout;
 
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.adapter.OrderAdapter;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.BillApi;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.FirstPageResult;
+import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.ReceiveOrder;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
+import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.Utils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by zhangdan on 2018/9/20.
@@ -43,7 +60,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
     private View mRootView;
     private XListView mListView;
     private OrderAdapter mOrderAdapter;
-    private ArrayList<ReceiveOrder> mOrdersArray = new ArrayList<ReceiveOrder>();
+    private ArrayList<OrderDes> mOrdersArray = new ArrayList<OrderDes>();
     private XWaitingDialog mWaitingDialog;
     private RelativeLayout mLoadAgainLayout;
 
@@ -61,7 +78,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
         DataManagerCtrl.getIns().registerListener(this);
 
-        FirstPageResult pageResult = DataManagerCtrl.getIns().getPageResult();
+        /*FirstPageResult pageResult = DataManagerCtrl.getIns().getPageResult();
 
         if (pageResult == null || pageResult.getOrderObject() == null) {
             loadData(false);
@@ -71,9 +88,40 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
             mOrdersArray.addAll((List<ReceiveOrder>) pageResult.getOrderObject());
             mOrderAdapter.setReceiverInfo(mOrdersArray);
             mOrderAdapter.notifyDataSetChanged();
-        }
+        }*/
     }
 
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            final ArrayList<OrderDes> pageResult = DataManagerCtrl.getIns().getPageResult();
+            if (pageResult == null || pageResult.size() == 0) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadData(false);
+                    }
+                });
+            } else {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLoadAgainLayout.setVisibility(View.GONE);
+                        mOrdersArray.clear();
+                        mOrdersArray.addAll(pageResult);
+                        mOrderAdapter.setReceiverInfo(mOrdersArray);
+                        mOrderAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }
+    }
 
     @Nullable
     @Override
@@ -102,8 +150,8 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ReceiveOrder order = (ReceiveOrder) mListView.getItemAtPosition(position);
-                startOrderDetailActivity(String.valueOf(order.getOrderID()));
+                OrderDes order = (OrderDes) mListView.getItemAtPosition(position);
+                startOrderDetailActivity(order);
             }
         });
 
@@ -127,27 +175,77 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
     @Override
     public void onRefresh() {
 
-        mRefreshTask = new AsyncTask<Void, Void, FirstPageResult>() {
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        Call<JsonObject> orderRequest = billApi.getOrderList(params);
+
+        orderRequest.enqueue(new Callback<JsonObject>() {
             @Override
-            protected FirstPageResult doInBackground(Void... params) {
-                return LogicFactory.getDesktopLogic(getContext()).getFirstPageData();
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                Log.d("slog_zd", "refresh list : " + response.body().toString());
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject object = response.body();
+                    String msg = object.get("msg").getAsString();
+                    int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        JsonArray listArray = object.getAsJsonArray("list");
+
+                        if (listArray != null && listArray.size() > 0) {
+
+                            ArrayList<OrderDes> list = new ArrayList<>();
+
+                            for (int i = 0; i < listArray.size(); i++) {
+
+                                JsonObject item = (JsonObject) listArray.get(i);
+
+                                String orderId = item.get("orderId").getAsString();
+                                int processStatus = item.get("processStatus").getAsInt();
+                                int status = item.get("status").getAsInt();
+
+                                JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
+
+                                String serviceName = detailItem.get("serviceName").getAsString();
+                                String appointmentDay = detailItem.get("appointmentDay").getAsString();
+                                String appointmentEndTime = detailItem.get("appointmentEndTime").getAsString();
+                                String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
+                                String locationAddress = detailItem.get("locationAddress").getAsString();
+                                String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
+
+                                OrderDes orderItem = new OrderDes(orderId, processStatus, status,
+                                        serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
+                                        locationAddress, serviceVisitCost);
+
+                                list.add(orderItem);
+                            }
+
+                            DataManagerCtrl.getIns().setPageResult(list);
+                        }
+                    }
+                } else {
+                }
             }
 
-            @SuppressWarnings("unchecked")
             @Override
-            protected void onPostExecute(FirstPageResult result) {
-
-                DataManagerCtrl.getIns().setPageResult(result);
-                onLoadFinish();
+            public void onFailure(Call<JsonObject> call, Throwable t) {
             }
-        };
-        mRefreshTask.execute();
+        });
+
+
     }
 
-    private void startOrderDetailActivity(String orderID) {
+    private void startOrderDetailActivity(OrderDes order) {
         Intent intent = new Intent();
         intent.setClass(getActivity(), OrderDetailActivity.class);
-        intent.putExtra("order_id", orderID);
+        intent.putExtra("order_id", order.getOrderId());
+        intent.putExtra("processStatus", order.getProcessStatus());
         startActivityForResult(intent, Constant.ACTIVITY_ORDER_DETAIL_RESULT_CODE);
         getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
@@ -168,30 +266,105 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
     @SuppressLint("StaticFieldLeak")
     private void loadData(final Boolean loading) {
-        if (Utils.isNetworkAvailable(getContext())) {
-            if (loading) {
-                mWaitingDialog.show("正在加载中，请稍候...", false);
-            }
-            mFirstLoadTask = new AsyncTask<Void, Void, FirstPageResult>() {
-                @Override
-                protected FirstPageResult doInBackground(Void... params) {
-                    return LogicFactory.getDesktopLogic(getContext()).getFirstPageData();
-                }
 
-                @SuppressWarnings("unchecked")
-                @Override
-                protected void onPostExecute(FirstPageResult result) {
-                    if (loading) {
-                        mWaitingDialog.dismiss();
-                    }
-
-                    DataManagerCtrl.getIns().setPageResult(result);
-                }
-            };
-            mFirstLoadTask.execute();
-        } else {
+        if (!Utils.isNetworkAvailable(getContext())) {
             Utils.showShortToast(getContext(), getString(R.string.common_no_network_message));
         }
+
+        if (loading) {
+            mWaitingDialog.show("正在加载中，请稍候...", false);
+        }
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        Call<JsonObject> orderRequest = billApi.getOrderList(params);
+
+        orderRequest.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                Log.d("slog_zd", "order list : " + response.body().toString());
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (loading && mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject object = response.body();
+                    String msg = object.get("msg").getAsString();
+                    int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        JsonArray listArray = object.getAsJsonArray("list");
+
+                        if (listArray != null && listArray.size() > 0) {
+
+                            ArrayList<OrderDes> list = new ArrayList<>();
+
+                            for (int i = 0; i < listArray.size(); i++) {
+
+                                JsonObject item = (JsonObject) listArray.get(i);
+
+                                String orderId = item.get("orderId").getAsString();
+                                int processStatus = item.get("processStatus").getAsInt();
+                                int status = item.get("status").getAsInt();
+
+                                JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
+
+                                String serviceName = detailItem.get("serviceName").getAsString();
+                                String appointmentDay = detailItem.get("appointmentDay").getAsString();
+                                String appointmentEndTime = detailItem.get("appointmentEndTime").getAsString();
+                                String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
+                                String locationAddress = detailItem.get("locationAddress").getAsString();
+                                String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
+
+                                OrderDes orderItem = new OrderDes(orderId, processStatus, status,
+                                        serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
+                                        locationAddress, serviceVisitCost);
+
+                                list.add(orderItem);
+                            }
+
+                            DataManagerCtrl.getIns().setPageResult(list);
+
+                        }
+                    }
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (loading && mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (loading && mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+
     }
 
     @Override
@@ -199,35 +372,42 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
         onLoadFinished();
 
-        FirstPageResult result = DataManagerCtrl.getIns().getPageResult();
+        ArrayList<OrderDes> result = DataManagerCtrl.getIns().getPageResult();
 
-        if (result == null || result.getOrderObject() == null) {
+        refreshRedot(result);
+
+        if (result == null || result.size() <= 0) {
             mLoadAgainLayout.setVisibility(View.VISIBLE);
             mListView.setVisibility(View.GONE);
             return;
         }
 
-        mOrdersArray.clear();
-        mOrdersArray.addAll((List<ReceiveOrder>) result.getOrderObject());
-        mOrderAdapter.setReceiverInfo(mOrdersArray);
-        mListView.setAdapter(mOrderAdapter);
-
-        if (mOrdersArray.size() > 0) {
+        if (result.size() > 0) {
             ConfigManager.getInstance(getContext()).setDesktopOrdersDot(ConfigManager.getInstance(getContext()).getDesktopOrdersDotServer());
             mLoadAgainLayout.setVisibility(View.GONE);
             mListView.setVisibility(View.VISIBLE);
         }
 
-        if (mOrderAdapter != null && mListView != null) {
-            mOrderAdapter.setReceiverInfo(getOrderArray());
-            mOrderAdapter.notifyDataSetChanged();
+        mOrdersArray.clear();
+        mOrdersArray.addAll(result);
+        mOrderAdapter.setReceiverInfo(getOrderArray());
+        mOrderAdapter.notifyDataSetChanged();
+        mListView.setAdapter(mOrderAdapter);
+
+
+    }
+
+    private void refreshRedot(ArrayList<OrderDes> orderArray){
+        if (getParentFragment() != null && getParentFragment() instanceof Fragment_Main_First){
+            ((Fragment_Main_First) getParentFragment()).refreshRedot(orderArray);
         }
     }
 
+
     protected abstract int getLayoutRes();
 
-    protected ArrayList<ReceiveOrder> getOrderArray() {
-        return null;
+    protected ArrayList<OrderDes> getOrderArray() {
+        return mOrdersArray;
     }
 
     ;

@@ -9,20 +9,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.ReceiveOrder;
 import com.bjxapp.worker.R;
 
 public class OrderAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
-    private ArrayList<ReceiveOrder> aInfo;
+    private ArrayList<OrderDes> aInfo;
 
-    public OrderAdapter(Context context, ArrayList<ReceiveOrder> info) {
+    public OrderAdapter(Context context, ArrayList<OrderDes> info) {
         mInflater = LayoutInflater.from(context);
         aInfo = info;
     }
 
-    public void setReceiverInfo(ArrayList<ReceiveOrder> list) {
+    public void setReceiverInfo(ArrayList<OrderDes> list) {
         if (list == null || list.isEmpty()) {
             return;
         }
@@ -59,45 +60,45 @@ public class OrderAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.textViewService.setText(aInfo.get(position).getServiceSubName());
-        holder.textViewOrderDate.setText(aInfo.get(position).getOrderDate() + " " + aInfo.get(position).getOrderTime());
-        holder.textViewAddress.setText(aInfo.get(position).getAddress() + aInfo.get(position).getHouseNumber());
+        holder.textViewService.setText(aInfo.get(position).getServiceName());
+        holder.textViewOrderDate.setText(aInfo.get(position).getAppointmentDay() + " " + aInfo.get(position).getAppointmentEndTime());
+        holder.textViewAddress.setText(aInfo.get(position).getLocationAddress());
 
         String statusString = "";
         String feeInfo = "";
-        switch (aInfo.get(position).getOrderStatus()) {
-            case 0:
-                statusString = "新订单";
-                feeInfo = "费用预估：";
-                break;
-            case 1:
-                statusString = "已接单";
-                feeInfo = "费用：";
-                break;
-            case 2:
+        switch (aInfo.get(position).getProcessStatus()) {
+            case 5:
                 statusString = "待支付";
                 feeInfo = "费用：";
                 break;
+            case 1:
+                statusString = "待接单";
+                feeInfo = "费用预估：";
+                break;
+            case 2:
+                statusString = "待联系";
+                feeInfo = "费用：";
+                break;
             case 3:
-                statusString = "已结算";
+                statusString = "待上门";
                 feeInfo = "费用：";
                 break;
             case 4:
-                statusString = "已结算";
+                statusString = "已上门";
                 feeInfo = "费用：";
                 break;
-            case 98:
-                statusString = "已取消";
+            case 6:
+                statusString = "待评价";
                 feeInfo = "费用：";
                 break;
-            case 99:
-                statusString = "异常";
+            case 7:
+                statusString = "已评价";
                 feeInfo = "费用：";
                 break;
             default:
                 break;
         }
-        holder.textViewMoney.setText(feeInfo + aInfo.get(position).getTotalMoney() + "元");
+        holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
         holder.textViewStatus.setText(statusString);
 
         return convertView;

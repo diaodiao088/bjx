@@ -25,6 +25,7 @@ import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.controls.listview.XListView.IXListViewListener;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.logic.LogicFactory;
+import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.ReceiveOrder;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
@@ -38,7 +39,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
     private RelativeLayout mLoadAgainLayout;
     private XWaitingDialog mWaitingDialog;
-    private ArrayList<ReceiveOrder> mOrdersArray = new ArrayList<ReceiveOrder>();
+    private ArrayList<OrderDes> mOrdersArray = new ArrayList<OrderDes>();
     private OrderAdapter mOrderAdapter;
     private XListView mXListView;
 
@@ -157,7 +158,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     private AsyncTask<Void, Void, List<ReceiveOrder>> mFirstLoadTask;
 
     private void onFirstLoadData(final Boolean loading) {
-        if (Utils.isNetworkAvailable(mActivity)) {
+        /*if (Utils.isNetworkAvailable(mActivity)) {
             if (loading) {
                 mWaitingDialog.show("正在加载中，请稍候...", false);
             }
@@ -194,14 +195,14 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
             mFirstLoadTask.execute();
         } else {
             Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
-        }
+        }*/
     }
 
     private AsyncTask<Void, Void, List<ReceiveOrder>> mRefreshTask;
 
     @Override
     public void onRefresh() {
-        mRefreshTask = new AsyncTask<Void, Void, List<ReceiveOrder>>() {
+        /*mRefreshTask = new AsyncTask<Void, Void, List<ReceiveOrder>>() {
             @Override
             protected List<ReceiveOrder> doInBackground(Void... params) {
                 return LogicFactory.getDesktopLogic(mActivity).getHistoryOrders(1, mBatchSize);
@@ -227,14 +228,14 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                 onLoadFinished();
             }
         };
-        mRefreshTask.execute();
+        mRefreshTask.execute();*/
     }
 
     private AsyncTask<Void, Void, List<ReceiveOrder>> mLoadMoreTask;
 
     @Override
     public void onLoadMore() {
-        mLoadMoreTask = new AsyncTask<Void, Void, List<ReceiveOrder>>() {
+        /*mLoadMoreTask = new AsyncTask<Void, Void, List<ReceiveOrder>>() {
             @Override
             protected List<ReceiveOrder> doInBackground(Void... params) {
                 return LogicFactory.getDesktopLogic(mActivity).getHistoryOrders(mCurrentBatch, mBatchSize);
@@ -257,7 +258,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                 mCurrentBatch++;
             }
         };
-        mLoadMoreTask.execute();
+        mLoadMoreTask.execute();*/
     }
 
     private void startOrderDetailActivity(String orderID) {

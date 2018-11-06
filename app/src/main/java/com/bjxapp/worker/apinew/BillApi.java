@@ -29,4 +29,8 @@ public interface BillApi {
     @POST("/profile/serviceState/1")
     Call<JsonObject> receiveBill(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/order/list/0")
+    Call<JsonObject> getOrderList(@FieldMap Map<String , String> params);
+
 }

@@ -22,4 +22,7 @@ public class NewBillFragment extends BillBaseFragment {
     protected int getLayoutRes() {
         return R.layout.fragment_total;
     }
+
+
+
 }

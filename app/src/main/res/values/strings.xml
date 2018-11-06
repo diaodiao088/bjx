@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="app_name">百家修师傅</string>
-    <string name="service_telephone">01056109590</string>
-    <string name="service_telephone_display">010-56109590</string>
+    <string name="service_telephone">4006180698</string>
+    <string name="service_telephone_display">4006180698</string>
     <string name="service_about_url">http://u.100jiaxiu.com/personalcenter/aboutour.html</string>
     <string name="service_protocol_url">http://u.100jiaxiu.com/receive_order.html</string>
     <string name="notify_push_title">推送显示的标题</string>
