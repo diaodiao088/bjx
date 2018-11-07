@@ -417,9 +417,9 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
             }
             Request request = new Request.Builder().url(url).post(requestBody.build()).tag(PublicImagesActivity.this).build();
             // readTimeout("请求超时时间" , 时间单位);
-            client.newBuilder().readTimeout(5000, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new Callback() {
+            client.newBuilder().readTimeout(5000 * 10, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {
+                public void onFailure(Call call, final IOException e) {
 
                     PublicImagesActivity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -429,7 +429,7 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
                                 mWaitingDialog.dismiss();
                             }
 
-                            Utils.showShortToast(context, "头像上传失败，请重新选择头像！");
+                            Utils.showShortToast(context, "头像上传失败，请重新选择头像！:" + e.getLocalizedMessage());
                         }
                     });
                 }
@@ -450,12 +450,15 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
 
                             String img = accessAddress.get(0).toString();
 
+                            final String msg = object.get("msg").toString();
+                            final int code = (int) object.get("code");
+
                             if (TextUtils.isEmpty(img)) {
 
                                 mHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Utils.showShortToast(context, "头像上传失败，请重新选择头像！");
+                                        Utils.showShortToast(context, "头像上传失败，请重新选择头像！: code: " + code + "msg: " + msg);
                                     }
                                 });
                             } else {

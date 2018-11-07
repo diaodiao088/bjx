@@ -6,7 +6,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,26 +19,43 @@ import android.widget.TextView;
 
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.logic.LogicFactory;
+import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
+import com.bjxapp.worker.model.OrderDetailInfo;
 import com.bjxapp.worker.model.XResult;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
 import com.bjxapp.worker.utils.Utils;
+import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.qqtheme.framework.picker.DoublePicker;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class OrderDetailActivity extends BaseActivity implements OnClickListener {
 
@@ -136,6 +156,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private XWaitingDialog mWaitingDialog;
 
+    private OrderDetailInfo mDetailInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -241,6 +262,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     @Override
     protected void initControl() {
+        initStatus();
         initTitle();
         mOrderImagesLinear.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.GONE);
@@ -248,6 +270,19 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mSaveButton.setEnabled(false);
         mWaitingDialog = new XWaitingDialog(context);
     }
+
+    private void initStatus() {
+
+        if (processStatus < 0)
+            return;
+
+        if (processStatus == 1) {
+            toNewBillStatus();
+        } else if (processStatus == 2) {
+            toWaitStatus();
+        }
+    }
+
 
     private void initTitle() {
         XTextView mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
@@ -328,10 +363,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private AsyncTask<String, Void, OrderDetail> mLoadDataTask;
 
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
 
     private void loadData(final Boolean loading) {
-        String orderID = getIntent().getStringExtra("order_id");
-        if (!Utils.isNotEmpty(orderID)) {
+
+        if (TextUtils.isEmpty(orderId)) {
             return;
         }
 
@@ -339,25 +376,180 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mWaitingDialog.show("正在加载中，请稍候...", false);
         }
 
-        mLoadDataTask = new AsyncTask<String, Void, OrderDetail>() {
+        String url = LoginApi.URL + "/order/info/" + Long.parseLong(orderId);
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+
+        RequestBody body = new FormBody.Builder()
+                .add("token", ConfigManager.getInstance(this).getUserSession())
+                .add("userCode", ConfigManager.getInstance(this).getUserCode()).build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        Call call = okHttpClient.newCall(request);
+
+        call.enqueue(new Callback() {
             @Override
-            protected OrderDetail doInBackground(String... params) {
-                int id = Integer.valueOf(params[0]);
-                return LogicFactory.getDesktopLogic(context).getOrderDetail(id);
+            public void onFailure(Call call, IOException e) {
+
+                Log.d("slog_zd", "detail error : " + e.getLocalizedMessage());
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (loading && mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
             }
 
             @Override
-            protected void onPostExecute(OrderDetail result) {
-                if (loading) {
-                    mWaitingDialog.dismiss();
+            public void onResponse(Call call, Response response) throws IOException {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (loading && mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                try {
+                    JSONObject object = new JSONObject(response.body().string());
+
+                    if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                        int code = (int) object.get("code");
+
+                        if (code == 0) {
+
+                            JSONObject detailJson = (JSONObject) object.get("order");
+                            mDetailInfo = new OrderDetailInfo();
+                            mDetailInfo.setOrderDes(getOrderDes(detailJson));
+                            // TODO: 2018/11/7
+
+                            refreshUiSync();
+
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
-                changeStatus(result);
             }
-        };
-
-        mLoadDataTask.execute(orderID);
+        });
     }
+
+
+    private void refreshUiSync() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                refreshBasic();
+                toDiffStatus();
+            }
+        });
+    }
+
+    private void refreshBasic() {
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        if (isFinishing()) {
+            return;
+        }
+
+        OrderDes order = mDetailInfo.getOrderDes();
+
+        mServiceNameTv.setText(order.getServiceName());
+        mPhoneTv.setText(order.getPersonName() + "/" + order.getContactPhone());
+        mDateTv.setText(order.getAppointmentDay() + " " + order.getAppointmentStartTime() + " - " + order.getAppointmentEndTime());
+        mAdressTv.setText(order.getLocationAddress());
+        mPriceTv.setText(order.getServiceVisitCost());
+        mRemarkTv.setText(order.getmRemarkDes());
+
+    }
+
+
+    private void toDiffStatus() {
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        int processStatus = mDetailInfo.getOrderDes().getProcessStatus();
+
+        switch (processStatus){
+
+            case 1:
+                toNewBillStatus();
+                break;
+            case 2:
+                toWaitStatus();
+                break;
+
+
+        }
+
+    }
+
+
+    private OrderDes getOrderDes(JSONObject detailJson) {
+
+        try {
+            String orderId = (String) detailJson.getString("orderId");
+            int processStatus = (int) detailJson.getInt("processStatus");
+            int status = (int) detailJson.getInt("status");
+
+            JSONObject detailItem = detailJson.getJSONObject("appointmentDetail");
+
+            String serviceName = detailItem.getString("serviceName");
+            String appointmentDay = detailItem.getString("appointmentDay");
+            String appointmentEndTime = detailItem.getString("appointmentEndTime");
+            String appointmentStartTime = detailItem.getString("appointmentStartTime");
+            String locationAddress = detailItem.getString("locationAddress");
+            String serviceVisitCost = detailItem.getString("serviceVisitCost");
+
+            String phoneNum = detailItem.getString("contactPhone");
+            String selectTime = detailItem.getString("selectMasterTime");
+            String remark = detailItem.getString("customerRemark");
+            String personName = detailItem.getString("contactPerson");
+
+            JSONArray urlArray = detailItem.getJSONArray("customerImgUrls");
+
+            ArrayList<String> customImgUrls = new ArrayList<>();
+
+            if (urlArray != null && urlArray.length() > 0) {
+                for (int i = 0; i < urlArray.length(); i++) {
+                    String itemUrl = urlArray.get(i).toString();
+                    customImgUrls.add(itemUrl);
+                }
+            }
+
+            OrderDes orderItem = new OrderDes(orderId, processStatus, status,
+                    serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
+                    locationAddress, serviceVisitCost);
+
+            orderItem.setContactPhone(phoneNum);
+            orderItem.setmSelectTime(selectTime);
+            orderItem.setmCustomImageUrls(customImgUrls);
+            orderItem.setmRemarkDes(remark);
+            orderItem.setPersonName(personName);
+            return orderItem;
+
+        } catch (Exception e) {
+        }
+
+        return null;
+    }
+
 
     private void changeStatus(OrderDetail result) {
 
@@ -666,9 +858,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     }
 
     private void callService() {
-        /*if (mContacts.getTag() == null) return;
-        String mobile = mContacts.getTag().toString();*/
-        String mobile = "";
+
+        String mobile = mDetailInfo != null ? mDetailInfo.getOrderDes().getContactPhone() : "0";
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + mobile));

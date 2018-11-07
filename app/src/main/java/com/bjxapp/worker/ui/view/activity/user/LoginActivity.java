@@ -330,9 +330,23 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             loginRequest.enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mWaitingDialog != null){
+                                mWaitingDialog.dismiss();
+                            }
+                        }
+                    });
+
                     if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
                         JsonObject object = response.body();
+
+                        final String msg = object.get("msg").getAsString();
+                        final int code = object.get("code").getAsInt();
+
                         if (object != null) {
                             if (object.get("token") != null) {
                                 String token = object.get("token").getAsString();
@@ -342,12 +356,22 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                                     setResult(RESULT_OK);
                                     Utils.finishWithoutAnim(LoginActivity.this);
                                 }
+                            }else{
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (mWaitingDialog != null){
+                                            mWaitingDialog.dismiss();
+                                        }
+                                        Utils.showLongToast(LoginActivity.this, msg + " : " + code);
+                                    }
+                                });
                             }
                         } else {
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Utils.showLongToast(LoginActivity.this, getString(R.string.login_fail_warning));
+                                    Utils.showLongToast(LoginActivity.this, msg + " : " + code);
                                 }
                             });
                         }
@@ -363,6 +387,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mWaitingDialog != null){
+                                mWaitingDialog.dismiss();
+                            }
+                        }
+                    });
+
+
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {

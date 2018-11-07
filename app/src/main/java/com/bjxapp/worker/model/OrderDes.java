@@ -1,5 +1,7 @@
 package com.bjxapp.worker.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by zhangdan on 2018/11/6.
  * comments:
@@ -25,6 +27,16 @@ public class OrderDes {
 
     private String serviceVisitCost;
 
+    private String contactPhone;
+
+    private ArrayList<String> mCustomImageUrls;
+
+    private String mSelectTime;
+
+    private String mRemarkDes;
+
+    private String personName;
+
     public OrderDes(String orderId, int processStatus, int status, String serviceName,
                     String appointmentDay, String appointmentEndTime,
                     String appointmentStartTime, String locationAddress,
@@ -38,6 +50,46 @@ public class OrderDes {
         this.appointmentStartTime = appointmentStartTime;
         this.locationAddress = locationAddress;
         this.serviceVisitCost = serviceVisitCost;
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public String getmRemarkDes() {
+        return mRemarkDes;
+    }
+
+    public void setmRemarkDes(String mRemarkDes) {
+        this.mRemarkDes = mRemarkDes;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public ArrayList<String> getmCustomImageUrls() {
+        return mCustomImageUrls;
+    }
+
+    public void setmCustomImageUrls(ArrayList<String> mCustomImageUrls) {
+        this.mCustomImageUrls = mCustomImageUrls;
+    }
+
+    public String getmSelectTime() {
+        return mSelectTime;
+    }
+
+    public void setmSelectTime(String mSelectTime) {
+        this.mSelectTime = mSelectTime;
     }
 
     public String getOrderId() {

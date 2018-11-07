@@ -118,7 +118,7 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
                 Utils.finishWithoutAnim(ForgetPwdActivity.this);
                 break;
             case R.id.login_image_verify_code:
-                getVerifyImage();
+                getVerifyImageNew();
                 break;
             case R.id.login_button_sendauthcode:
                 sendAuthCode();
@@ -134,27 +134,6 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
             default:
                 break;
         }
-    }
-
-    private AsyncTask<Void, Void, String> mGetLoginKey;
-
-    private void getLoginKey() {
-        mGetLoginKey = new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                return LogicFactory.getAccountLogic(context).getLoginKey();
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                if (Utils.isNotEmpty(result)) {
-                    mLoginKey = result;
-                    getVerifyImage();
-                }
-            }
-        };
-
-        mGetLoginKey.execute();
     }
 
     private void getLoginKeyNew() {
@@ -230,30 +209,6 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
         }
     }
 
-
-    private AsyncTask<Void, Void, Bitmap> mGetVerifyImage;
-
-    private void getVerifyImage() {
-        if (!Utils.isNotEmpty(mLoginKey)) {
-            Utils.showShortToast(context, "获取数据失败，请退出应用，重新进入！");
-            return;
-        }
-        mGetVerifyImage = new AsyncTask<Void, Void, Bitmap>() {
-            @Override
-            protected Bitmap doInBackground(Void... params) {
-                return LogicFactory.getAccountLogic(context).getVerifyCode(mLoginKey);
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap result) {
-                if (result != null) {
-                    mVerifyCodeImageView.setImageBitmap(result);
-                }
-            }
-        };
-
-        mGetVerifyImage.execute();
-    }
 
     private MyCount mCounter;
     private AsyncTask<Void, Void, Integer> mSendAuthCode;
@@ -347,9 +302,24 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
             loginRequest.enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mWaitingDialog != null){
+                                mWaitingDialog.dismiss();
+                            }
+                        }
+                    });
+
+
                     if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
                         JsonObject object = response.body();
+
+                        final String msg = object.get("msg").getAsString();
+                        final int code = object.get("code").getAsInt();
+
                         if (object != null) {
                             if (object.get("token") != null) {
                                 String token = object.get("token").getAsString();
@@ -360,12 +330,14 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
                                     ChangePwdActivity.goToActivityForResult(ForgetPwdActivity.this, ChangePwdActivity.FROM_FORGET_PWD);
                                     finish();
                                 }
+                            }else{
+                                Utils.showLongToast(ForgetPwdActivity.this, msg + " : " + code);
                             }
                         } else {
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Utils.showLongToast(ForgetPwdActivity.this, "验证失败");
+                                    Utils.showLongToast(ForgetPwdActivity.this, msg + " : " + code);
                                 }
                             });
                         }
@@ -381,9 +353,13 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
+
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
+                            if (mWaitingDialog != null){
+                                mWaitingDialog.dismiss();
+                            }
                             Utils.showLongToast(ForgetPwdActivity.this, "验证失败");
                         }
                     });
