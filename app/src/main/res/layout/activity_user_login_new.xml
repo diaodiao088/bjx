@@ -125,8 +125,6 @@
         android:layout_marginRight="30dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/button_background_green"
-        android:paddingBottom="7dp"
-        android:paddingTop="7dp"
         android:text="@string/login_button_login"
         android:textColor="@android:color/white"
         android:textSize="18sp" />

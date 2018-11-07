@@ -167,9 +167,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         try {
             if (isInstallByRead("com.autonavi.minimap")) {
-                goToNaviActivity(getPageName(), mDetailInfo.getOrderDes().getLocationAddress(),
-                        mDetailInfo.getOrderDes().getmLatitude(), mDetailInfo.getOrderDes().getmLongtitude(),
-                        String.valueOf(0), String.valueOf(0));
+                setUpGaodeAppByMine();
             } else {
                 Utils.showShortToast(this, "请安装高德地图或者自行打开");
             }
@@ -178,13 +176,28 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
     }
 
+    void setUpGaodeAppByMine() {
+        try {
+            Intent intent = Intent.getIntent("androidamap://route?sourceApplication=softname&sname=我的位置&dlat="
+                    + mDetailInfo.getOrderDes().getmLatitude() + "&dlon=" + mDetailInfo.getOrderDes().getmLongtitude()
+                    + "&dname=" + mDetailInfo.getOrderDes().getLocationAddress() + "&dev=0&m=1&t=1");
+
+            startActivity(intent);
+            Log.e(TAG, "高德地图客户端已经安装");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void goToNaviActivity(String sourceApplication, String poiname, String lat, String lon, String dev, String style) {
-        StringBuffer stringBuffer = new StringBuffer("androidamap://navi?sourceApplication=")
+        StringBuffer stringBuffer = new StringBuffer("androidamap://route?sourceApplication=")
                 .append(sourceApplication);
         if (!TextUtils.isEmpty(poiname)) {
             stringBuffer.append("&poiname=").append(poiname);
         }
-        stringBuffer.append("&lat=").append(lat)
+        stringBuffer.append("sname=我的位置")
+                .append("&lat=").append(lat)
                 .append("&lon=").append(lon)
                 .append("&dev=").append(dev)
                 .append("&style=").append(style);
@@ -481,7 +494,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                             // TODO: 2018/11/7
 
                             refreshUiSync();
-
                         }
                     }
                 } catch (JSONException e) {
@@ -811,8 +823,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             @Override
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
 
-                Log.d("slog_zd","receive bill : " + response.body().toString());
-
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -830,7 +840,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     final int code = jsonObject.get("code").getAsInt();
 
                     if (code == 0) {
-
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                toWaitStatus();
+                            }
+                        });
                     } else {
                         mHandler.post(new Runnable() {
                             @Override
