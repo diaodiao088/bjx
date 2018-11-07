@@ -37,6 +37,10 @@ public class OrderDes {
 
     private String personName;
 
+    private String mLatitude;
+
+    private String mLongtitude;
+
     public OrderDes(String orderId, int processStatus, int status, String serviceName,
                     String appointmentDay, String appointmentEndTime,
                     String appointmentStartTime, String locationAddress,
@@ -162,5 +166,21 @@ public class OrderDes {
 
     public void setServiceVisitCost(String serviceVisitCost) {
         this.serviceVisitCost = serviceVisitCost;
+    }
+
+    public String getmLatitude() {
+        return mLatitude;
+    }
+
+    public void setmLatitude(String mLatitude) {
+        this.mLatitude = mLatitude;
+    }
+
+    public String getmLongtitude() {
+        return mLongtitude;
+    }
+
+    public void setmLongtitude(String mLongtitude) {
+        this.mLongtitude = mLongtitude;
     }
 }

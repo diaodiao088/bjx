@@ -161,6 +161,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 
         if (!isMatch) {
             Utils.showShortToast(context, "密码格式错误！");
+            return;
         }
 
         if (mFrom == FROM_REGISTER_PWD) {

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XImageView;
@@ -26,6 +27,7 @@ import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
@@ -42,8 +44,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -144,13 +149,55 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @BindView(R.id.order_receive_detail_images)
     LinearLayout mOrderImagesLinear;
 
-    ArrayList<String> mIDImageUrls;
+    ArrayList<String> mIDImageUrls = new ArrayList<>();
 
     @BindView(R.id.order_receive_detail_save)
     XButton mSaveButton;
 
     @BindView(R.id.order_receiver_ly)
     LinearLayout mOrderWaitLy;
+
+
+    @OnClick(R.id.order_receive_textview_address)
+    void onAddressClick() {
+
+        if (mDetailInfo == null) {
+            return;
+        }
+
+        try {
+            if (isInstallByRead("com.autonavi.minimap")) {
+                goToNaviActivity(getPageName(), mDetailInfo.getOrderDes().getLocationAddress(),
+                        mDetailInfo.getOrderDes().getmLatitude(), mDetailInfo.getOrderDes().getmLongtitude(),
+                        String.valueOf(0), String.valueOf(0));
+            } else {
+                Utils.showShortToast(this, "请安装高德地图或者自行打开");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void goToNaviActivity(String sourceApplication, String poiname, String lat, String lon, String dev, String style) {
+        StringBuffer stringBuffer = new StringBuffer("androidamap://navi?sourceApplication=")
+                .append(sourceApplication);
+        if (!TextUtils.isEmpty(poiname)) {
+            stringBuffer.append("&poiname=").append(poiname);
+        }
+        stringBuffer.append("&lat=").append(lat)
+                .append("&lon=").append(lon)
+                .append("&dev=").append(dev)
+                .append("&style=").append(style);
+
+        Intent intent = new Intent("android.intent.action.VIEW", android.net.Uri.parse(stringBuffer.toString()));
+        intent.setPackage("com.autonavi.minimap");
+        startActivity(intent);
+    }
+
+    public boolean isInstallByRead(String packageName) {
+        return new File("/data/data/" + packageName).exists();
+    }
+
 
     private CountDownTimer mCountDownTimer;
 
@@ -475,6 +522,16 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mPriceTv.setText(order.getServiceVisitCost());
         mRemarkTv.setText(order.getmRemarkDes());
 
+        ArrayList<String> imgList = order.getmCustomImageUrls();
+
+        if (imgList != null && imgList.size() > 0) {
+            mIDImageUrls.clear();
+            mIDImageUrls.addAll(imgList);
+            mOrderImagesLinear.setVisibility(View.VISIBLE);
+        } else {
+            mOrderImagesLinear.setVisibility(View.GONE);
+        }
+
     }
 
 
@@ -486,7 +543,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         int processStatus = mDetailInfo.getOrderDes().getProcessStatus();
 
-        switch (processStatus){
+        switch (processStatus) {
 
             case 1:
                 toNewBillStatus();
@@ -522,6 +579,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String remark = detailItem.getString("customerRemark");
             String personName = detailItem.getString("contactPerson");
 
+            String latitude = detailItem.getString("latitude");
+            String lontitude = detailItem.getString("longitude");
+
             JSONArray urlArray = detailItem.getJSONArray("customerImgUrls");
 
             ArrayList<String> customImgUrls = new ArrayList<>();
@@ -542,6 +602,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             orderItem.setmCustomImageUrls(customImgUrls);
             orderItem.setmRemarkDes(remark);
             orderItem.setPersonName(personName);
+            orderItem.setmLatitude(latitude);
+            orderItem.setmLongtitude(lontitude);
             return orderItem;
 
         } catch (Exception e) {
@@ -573,20 +635,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private void changeStatusUI(OrderDetail result) {
         String statusString = "";
-
-        mIDImageUrls = new ArrayList<String>();
-        if (Utils.isNotEmpty(result.getImageOne().trim())) {
-            mIDImageUrls.add(result.getImageOne().trim());
-        }
-        if (Utils.isNotEmpty(result.getImageTwo().trim())) {
-            mIDImageUrls.add(result.getImageTwo().trim());
-        }
-        if (Utils.isNotEmpty(result.getImageThree().trim())) {
-            mIDImageUrls.add(result.getImageThree().trim());
-        }
-        if (mIDImageUrls.size() > 0) {
-            mOrderImagesLinear.setVisibility(View.VISIBLE);
-        }
 
         switch (result.getOrderStatus()) {
             case OrderStatusCtrl.TYPE_NEW_BILL:
@@ -700,7 +748,20 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             return;
         }
 
-        if (mSaveButton.getTag() == null) return;
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        OrderDes orderDes = mDetailInfo.getOrderDes();
+
+        switch (orderDes.getProcessStatus()) {
+            case 1:
+                acceptOperation();
+                break;
+        }
+
+
+        /*if (mSaveButton.getTag() == null) return;
 
         int status = Integer.parseInt(mSaveButton.getTag().toString());
 
@@ -722,16 +783,81 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         //查看支付情况
         if (status == 3) {
             showPaySuccessActivity();
-        }
+        }*/
     }
 
     private void acceptOperation() {
-        String orderID = getIntent().getStringExtra("order_id");
-        if (!Utils.isNotEmpty(orderID)) {
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
             return;
         }
 
+        OrderDes order = mDetailInfo.getOrderDes();
+
+        String id = order.getOrderId();
+
         mWaitingDialog.show("正在接单，请稍候...", false);
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("orderId", id);
+        params.put("isReceived", String.valueOf(true));
+
+        final retrofit2.Call<JsonObject> request = billApi.acceptOrder(params);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                Log.d("slog_zd","receive bill : " + response.body().toString());
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject jsonObject = response.body();
+
+                    final String msg = jsonObject.get("msg").getAsString();
+                    final int code = jsonObject.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(context, msg + " : " + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Utils.showShortToast(context, "接单失败，请重试！");
+                    }
+                });
+            }
+        });
+
+        /*mWaitingDialog.show("正在接单，请稍候...", false);
         new AsyncTask<String, Void, Integer>() {
             @Override
             protected Integer doInBackground(String... params) {
@@ -743,16 +869,16 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             protected void onPostExecute(Integer result) {
                 mWaitingDialog.dismiss();
                 if (result == APIConstants.RESULT_CODE_SUCCESS) {
-                   /* Intent intent = new Intent();
+                   *//* Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
-                    Utils.finishWithoutAnim(OrderDetailActivity.this);*/
+                    Utils.finishWithoutAnim(OrderDetailActivity.this);*//*
                     toWaitStatus();
                 } else {
                     Utils.showShortToast(context, "接单失败，请重试！");
                 }
             }
 
-        }.execute(orderID);
+        }.execute(orderID);*/
     }
 
 
@@ -871,6 +997,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             Utils.showShortToast(context, "用户没有上传照片！");
             return;
         }
+
         Intent intent = new Intent();
         intent.putStringArrayListExtra("urls", mIDImageUrls);
         intent.putExtra("operation_flag", "2");

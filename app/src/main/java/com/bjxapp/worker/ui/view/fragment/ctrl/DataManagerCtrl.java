@@ -17,6 +17,8 @@ public class DataManagerCtrl {
     private static DataManagerCtrl sIns;
     private FirstPageResult pageResult;
 
+    private boolean isDataDirty;
+
     private ArrayList<OrderDes> mList;
 
     private ArrayList<OnDataLoadFinishListener> mListenerList = new ArrayList<>();
@@ -66,6 +68,10 @@ public class DataManagerCtrl {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void markDataDirty(boolean isDataDirty){
+        this.isDataDirty = isDataDirty;
     }
 
 

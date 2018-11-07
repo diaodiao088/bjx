@@ -54,6 +54,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -89,12 +91,30 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
 
     private XWaitingDialog mWaitingDialog;
 
+    @BindView(R.id.tips)
+    LinearLayout tipLy;
+
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_images);
+        handleIntent();
+        ButterKnife.bind(this);
         super.onCreate(savedInstanceState);
+
+    }
+
+    private String flag_type = "";
+
+    private void handleIntent(){
+
+        Intent intent = getIntent();
+
+        if (intent != null){
+
+            flag_type = intent.getStringExtra("operation_flag");
+        }
     }
 
     @Override
@@ -178,6 +198,14 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
                 return true;
             }
         });
+
+        if ("2".equals(flag_type)){
+            tipLy.setVisibility(View.GONE);
+            mXListView.setOnItemLongClickListener(null);
+            mUploadButton.setVisibility(View.GONE);
+            mSmallTv.setVisibility(View.GONE);
+        }
+
     }
 
     private int imageHeight;
@@ -317,7 +345,9 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
         imageInfo.setFlag(flag);
         mImagesAdapter.addImage(imageInfo);
         mTipLy.setVisibility(View.GONE);
-        mUploadButton.setVisibility(View.VISIBLE);
+        if (!"2".equals(flag_type)){
+            mUploadButton.setVisibility(View.VISIBLE);
+        }
     }
 
     private void addDeletedFilename(String filePath) {
@@ -343,45 +373,6 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
         mWaitingDialog.show(getString(R.string.images_upload_waiting_message), false);
 
         post_file(LoginApi.URL + "/image/upload", null);
-
-        /*mUploadImagesTask = new AsyncTask<Void, Void, Boolean>() {
-
-            @Override
-            protected void onPreExecute() {
-
-            }
-
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                String uploadUrl = APIConstants.IMAGE_IDS_UPLOAD_URL;
-                String serverPath = "";
-                if (mType == Constant.UPLOAD_IMAGE_ID) {
-                    serverPath = ImagePathUtils.getUserIDUploadPath(context);
-                }
-
-                Boolean result = LogicFactory.getUploadImagesLogic(context).uploadImages(uploadUrl, serverPath, mImagesArray, mUploadedFilenames);
-                if (result) {
-                    LogicFactory.getUploadImagesLogic(context).deleteUploadedImages(serverPath, mDeletedFilenames);
-                    LogicFactory.getUploadImagesLogic(context).deleteLocalImages(DataType.UserData, mDeletedFilenames);
-                }
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result) {
-                mWaitingDialog.dismiss();
-
-                if (result) {
-                    Utils.showShortToast(context, "图片保存成功！");
-                    Intent intent = new Intent();
-                    intent.putStringArrayListExtra("result", mUploadedFilenames);
-                    setResult(RESULT_OK, intent);
-                    Utils.finishWithoutAnim(PublicImagesActivity.this);
-                } else {
-                    Utils.showShortToast(context, "抱歉，保存失败，请重试！");
-                }
-            }
-        };*/
     }
 
     private ArrayList<String> mImageUrl = new ArrayList<>();

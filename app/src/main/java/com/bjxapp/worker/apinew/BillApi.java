@@ -33,6 +33,10 @@ public interface BillApi {
     @POST("/order/list/0")
     Call<JsonObject> getOrderList(@FieldMap Map<String , String> params);
 
+    @FormUrlEncoded
+    @POST("/order/receive")
+    Call<JsonObject> acceptOrder(@FieldMap Map<String , String> params);
+
 
 
 }
