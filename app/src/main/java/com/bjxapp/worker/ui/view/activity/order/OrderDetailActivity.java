@@ -34,6 +34,8 @@ import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
 import com.bjxapp.worker.model.XResult;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
@@ -246,7 +248,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
      */
     @OnClick(R.id.cancel_bill)
     void cancelBill() {
-        CancelBillActivity.goToActivity(this);
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        CancelBillActivity.goToActivity(this, mDetailInfo.getOrderDes().getOrderId());
     }
 
     /**
@@ -275,6 +282,16 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         OrderPriceActivity.goToActivity(this);
     }
 
+    String orderId = "";
+    int processStatus = -1;
+
+    private void handleIntent() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            orderId = intent.getStringExtra("order_id");
+            processStatus = intent.getIntExtra("processStatus", -1);
+        }
+    }
 
     @OnClick(R.id.wait_contact_change_btn)
     void changeDate() {
@@ -291,7 +308,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         firstData.add(DateUtils.addDay(9));
 
         final ArrayList<String> secondData = new ArrayList<>();
-        secondData.add("8:00--11:00");
+        secondData.add("08:00:00--11:00:00");
         secondData.add("11:00--14:00");
         secondData.add("14:00--17:00");
         secondData.add("17:00--20:00");
@@ -303,22 +320,91 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         picker.setOnPickListener(new DoublePicker.OnPickListener() {
             @Override
             public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
-                // showToast(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
+                //  showToast(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
+
+                changeDateReal(firstData.get(selectedFirstIndex), secondData.get(selectedSecondIndex));
+
             }
         });
         picker.show();
     }
 
-    String orderId = "";
-    int processStatus = -1;
+    private void changeDateReal(String day, String time) {
 
-    private void handleIntent() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            orderId = intent.getStringExtra("order_id");
-            processStatus = intent.getIntExtra("processStatus", -1);
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
         }
+
+        String orderId = mDetailInfo.getOrderDes().getOrderId();
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("orderId", orderId);
+        params.put("appointmentDay", day + " 00:00:00");
+        params.put("appointmentStartTime", day + " " + time.split("--")[0]);
+        params.put("appointmentEndTime", day + " " + time.split("--")[1]);
+
+        retrofit2.Call<JsonObject> request = billApi.changeTime(params);
+
+        mWaitingDialog.show("正在修改时间..", false);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                Log.d("slog_zd", "change time : " + response.body().toString());
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject jsonObject = response.body();
+
+                    final String msg = jsonObject.get("msg").getAsString();
+                    final int code = jsonObject.get("code").getAsInt();
+
+                    if (code == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                // toWaitStatus();
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(context, msg + " : " + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showShortToast(context, "时间修改失败 ！");
+                    }
+                });
+            }
+        });
+
     }
+
 
     @Override
     protected void initControl() {
@@ -391,9 +477,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case R.id.order_receive_detail_save:
                 SaveOperation();
                 break;
-            case R.id.wait_contact_ok_btn:
-                toDetailStatus();
-                break;
             default:
                 break;
         }
@@ -402,11 +485,84 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private void toDetailStatus() {
 
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        final OrderDes orderDes = mDetailInfo.getOrderDes();
+
+
+        mWaitingDialog.show("正在确认，请稍候...", false);
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("orderId", String.valueOf(orderDes.getOrderId()));
+
+        final retrofit2.Call<JsonObject> request = billApi.confirmAppoinment(params);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                Log.d("slog_zd", "confirm : " + response.body().toString());
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject jsonObject = response.body();
+                    final String msg = jsonObject.get("msg").getAsString();
+                    final int code = jsonObject.get("code").getAsInt();
+                    if (code == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                orderDes.setProcessStatus(3);
+                                toDetailUi();
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(context, msg + " : " + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void toDetailUi() {
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
 
-        mStatusTv.setText("已联系");
+        mStatusTv.setText("待上门");
         mSaveButton.setText("完成");
         mSaveButton.setEnabled(true);
         mServiceEditBtn.setEnabled(true);
@@ -562,6 +718,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 break;
             case 2:
                 toWaitStatus();
+                break;
+            case 3:
+                toDetailUi();
                 break;
 
 
@@ -719,18 +878,41 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mSaveLy.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.VISIBLE);
 
-        mCountDownTimer = new CountDownTimer(30 * 60 * 1000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                mHourLastTv.setText(String.valueOf(millisUntilFinished));
-            }
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
 
-            @Override
-            public void onFinish() {
-                mHourLastTv.setText("已超时");
-                mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
-            }
-        };
+        long selectMasterTime = Long.parseLong(mDetailInfo.getOrderDes().getmSelectTime());
+
+        Log.d("slog_zd", "selectmaster time : " + selectMasterTime);
+
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - selectMasterTime <= 30 * 60 * 1000) {
+            mCountDownTimer = new CountDownTimer(30 * 60 * 1000 - (currentTime - selectMasterTime), 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                    int minute = (int) (millisUntilFinished / (60 * 1000));
+
+                    int second = (int) (millisUntilFinished % (60 * 1000));
+
+                    mHourLastTv.setText(minute + ":" + (second / 1000));
+                }
+
+                @Override
+                public void onFinish() {
+                    mHourLastTv.setText("已超时");
+                    mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+                }
+            };
+
+            mCountDownTimer.start();
+        } else {
+            mHourLastTv.setText("已超时");
+            mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+        }
+
 
         mSendMsgTv.setText(Html.fromHtml(getResources().getString(R.string.send_msg)));
         HandleUrlLinkMovementMethod instance = HandleUrlLinkMovementMethod.getInstance();
@@ -738,10 +920,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             @Override
             public void onClick(String url) {
                 if (url.contains("action")) {
-                    Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                    /*Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
                     sendIntent.setData(Uri.parse("smsto:" + mPhoneTv.getText()));
                     sendIntent.putExtra("sms_body", "此处为短信模板");
-                    OrderDetailActivity.this.startActivity(sendIntent);
+                    OrderDetailActivity.this.startActivity(sendIntent);*/
+                    showConfirmDialog();
                 }
             }
         });
@@ -749,8 +932,112 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mSendMsgTv.setMovementMethod(instance);
         mSendMsgTv.setLinkTextColor(Color.parseColor("#00A551"));
         mSendMsgTv.setHighlightColor(Color.TRANSPARENT);
+    }
 
-        mCountDownTimer.start();
+    private void showConfirmDialog() {
+
+        final SimpleConfirmDialog dialog = new SimpleConfirmDialog(this);
+
+        dialog.setTitleVisible(View.GONE);
+
+        dialog.setContent("确定给用户发送短信");
+
+        dialog.setOnNegativeListener(-1, new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dialog != null && dialog.isShow()) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        dialog.setOnPositiveListener(-1, new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (dialog != null && dialog.isShow()) {
+                    dialog.dismiss();
+                }
+
+                sendMessageToCustomer();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void sendMessageToCustomer() {
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        OrderDes orderDes = mDetailInfo.getOrderDes();
+
+        mWaitingDialog.show("正在发送短信，请稍候...", false);
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("orderId", String.valueOf(orderDes.getOrderId()));
+
+        final retrofit2.Call<JsonObject> request = billApi.sendMessage(params);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                Log.d("slog_zd", "send msg : " + response.body().toString());
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject jsonObject = response.body();
+
+                    final String msg = jsonObject.get("msg").getAsString();
+                    final int code = jsonObject.get("code").getAsInt();
+
+                    if (code == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(context, "短信发送成功.");
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(context, msg + " : " + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+
     }
 
 
@@ -804,7 +1091,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             return;
         }
 
-        OrderDes order = mDetailInfo.getOrderDes();
+        final OrderDes order = mDetailInfo.getOrderDes();
 
         String id = order.getOrderId();
 
@@ -843,6 +1130,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
+                                order.setProcessStatus(2);
                                 toWaitStatus();
                             }
                         });
@@ -1028,12 +1316,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     @Override
     public void onDestroy() {
-        try {
-            if (mLoadDataTask != null) {
-                mLoadDataTask.cancel(true);
-            }
-        } catch (Exception e) {
-        }
 
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();

@@ -604,7 +604,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             }
         });
 
-        if (status == 2) {
+        if (status == 4) {
             builder.setNeutralButton("完善注册信息", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

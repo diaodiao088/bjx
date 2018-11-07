@@ -44,4 +44,8 @@ public interface ProfileApi {
     @POST("/withdrawal/list")
     Call<JsonObject> getWithDrawHistory(@FieldMap Map<String , String> params);
 
+    @FormUrlEncoded
+    @POST("/register/info")
+    Call<JsonObject> getRegisterInfo(@FieldMap Map<String , String> params);
+
 }

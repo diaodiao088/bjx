@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.apinew.RegisterApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XCircleImageView;
@@ -38,6 +39,8 @@ import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.LocationInfo;
 import com.bjxapp.worker.model.UserApplyInfo;
+import com.bjxapp.worker.model.UserInfo;
+import com.bjxapp.worker.model.UserInfoA;
 import com.bjxapp.worker.ui.view.activity.ChangeCityActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
@@ -51,6 +54,7 @@ import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.image.BitmapManager;
 import com.bjxapp.worker.utils.image.PictureUploadUtils;
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -155,6 +159,8 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         mTitleTextView.setTextColor(Color.parseColor("#545454"));
 
         mWaitingDialog = new XWaitingDialog(context);
+
+        loadData();
     }
 
     @Override
@@ -574,6 +580,37 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         }*/
     }
 
+    private void updateInfo(UserInfoA userInfoA) {
+        try {
+            Glide.with(this).load(userInfoA.getAvatarUrl()).into(mHeadImage);
+            mHeadImage.setTag(new Object());
+
+            mCityEditTv.setText(userInfoA.getRegionName());
+            mCityEditTv.setTag(userInfoA.getRegionId());
+
+            mUserNameTv.setText(userInfoA.getName());
+            mUserWorkYearsEdit.setText(userInfoA.getWorkingYear());
+
+            mUserIDEdit.setText(userInfoA.getIdentityCardNo());
+
+            mIDImageUrls = new ArrayList<>();
+            mIDImageUrls.add(userInfoA.getIdentityCardBehindImgUrl());
+            mIDImageUrls.add(userInfoA.getIdentityCardFrontImgUrl());
+            mUploadImageLy.setTag(mIDImageUrls);
+
+            LocationInfo locationInfo = new LocationInfo();
+            locationInfo.setAddress(userInfoA.getLocationAddress());
+            locationInfo.setLatitude(Double.parseDouble(userInfoA.getLatitude()));
+            locationInfo.setLongitude(Double.parseDouble(userInfoA.getLongitude()));
+
+            mUserOrderAreaEdit.setTag(locationInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
     private void saveOperation() {
         if (!Utils.isNetworkAvailable(context)) {
             Utils.showShortToast(context, getString(R.string.common_no_network_message));
@@ -632,11 +669,11 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
         //verify id card
         String idCard = mUserIDEdit.getText().toString().trim();
-        String resultIDCard = IDCardValidate.verify(idCard);
+        /*String resultIDCard = IDCardValidate.verify(idCard);
         if (!resultIDCard.equalsIgnoreCase(idCard)) {
             Utils.showShortToast(context, resultIDCard);
             return;
-        }
+        }*/
 
         // todo 工作年限校验
         mWaitingDialog.show("正在提交注册信息，请稍候...", false);
@@ -650,7 +687,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         params.put("password", mPwd);
         params.put("avatarUrl", mImageAddress);
         params.put("name", mUserNameTv.getText().toString());
-        params.put("identityCardNo", resultIDCard);
+        params.put("identityCardNo", idCard);
         params.put("regionId", String.valueOf(mCityEditTv.getTag()));
         params.put("workingYear", mUserWorkYearsEdit.getText().toString());
         params.put("serviceIds", mUserWorkTypesEdit.getTag().toString());
@@ -719,88 +756,72 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
             }
         });
-
-        /*//save user infomation
-        final UserApplyInfo applyInfo = new UserApplyInfo();
-        applyInfo.setHeadImageUrl(mHeadImage.getTag().toString());
-        applyInfo.setPersonName(mUserNameTv.getText().toString().trim());
-        applyInfo.setCardNo(mUserIDEdit.getText().toString().trim());
-
-        LocationInfo locationInfo = (LocationInfo) mUserOrderAreaEdit.getTag();
-        applyInfo.setCity(locationInfo.getCity());
-        applyInfo.setAddress(locationInfo.getAddress());
-        applyInfo.setLatitude(locationInfo.getLatitude());
-        applyInfo.setLongitude(locationInfo.getLongitude());
-
-        applyInfo.setWorkYear(Integer.parseInt(mUserWorkYearsEdit.getTag().toString()));
-        applyInfo.setServiceSubIDs(mUserWorkTypesEdit.getTag().toString());
-
-
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                return LogicFactory.getAccountLogic(context).saveRegisterInfo(applyInfo);
-            }
-
-            @Override
-            protected void onPostExecute(Integer result) {
-                mWaitingDialog.dismiss();
-                if (result == APIConstants.RESULT_CODE_SUCCESS) {
-                    Intent intent = new Intent();
-                    intent.putExtra("workyears", applyInfo.getWorkYear());
-                    ConfigManager.getInstance(context).setUserName(applyInfo.getPersonName());
-                    setResult(RESULT_OK, intent);
-                    Utils.finishWithoutAnim(ApplyActivity.this);
-                } else {
-                    Utils.showShortToast(context, "提交注册信息失败，请重试！");
-                }
-            }
-
-        }.execute();*/
     }
 
     private AsyncTask<String, Void, UserApplyInfo> mLoadDataTask;
 
     private void loadData() {
-        mLoadDataTask = new AsyncTask<String, Void, UserApplyInfo>() {
-            @Override
-            protected UserApplyInfo doInBackground(String... params) {
-                return LogicFactory.getAccountLogic(context).getRegisterInfo();
-            }
 
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+
+        retrofit2.Call<JsonObject> call = profileApi.getRegisterInfo(params);
+
+        call.enqueue(new retrofit2.Callback<JsonObject>() {
             @Override
-            protected void onPostExecute(UserApplyInfo result) {
-                if (result == null) {
-                    return;
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject jsonObject = response.body();
+                    int code = jsonObject.get("code").getAsInt();
+                    if (code == 0) {
+
+                        if (jsonObject.get("info") == null || jsonObject.get("info") instanceof JsonNull) {
+                            return;
+                        }
+
+                        JsonObject info = jsonObject.get("info").getAsJsonObject();
+
+                        if (info != null) {
+
+                            mImageAddress = info.get("avatarUrl").getAsString();
+                            String identityCardBehindImgUrl = info.get("identityCardBehindImgUrl").getAsString();
+                            String identityCardFrontImgUrl = info.get("identityCardFrontImgUrl").getAsString();
+                            String identityCardNo = info.get("identityCardNo").getAsString();
+                            String latitued = info.get("latitude").getAsString();
+                            String longitude = info.get("longitude").getAsString();
+                            String locationAddress = info.get("locationAddress").getAsString();
+                            String name = info.get("name").getAsString();
+                            int regionId = info.get("regionId").getAsInt();
+                            String regionName = info.get("regionName").getAsString();
+                            int workYear = info.get("workingYear").getAsInt();
+
+
+                            final UserInfoA userInfoA = new UserInfoA(mImageAddress, identityCardBehindImgUrl, identityCardFrontImgUrl,
+                                    identityCardNo, latitued, longitude, locationAddress, name, regionId, regionName, workYear);
+
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateInfo(userInfoA);
+                                }
+                            });
+                        }
+                    }
                 }
-
-                mHeadImage.setTag(result.getHeadImageUrl());
-                ConfigManager.getInstance(context).setUserHeadImageUrl(result.getHeadImageUrl());
-                mUserNameTv.setText(result.getPersonName());
-                mUserIDEdit.setText(result.getCardNo());
-
-                LocationInfo locationInfo = new LocationInfo();
-                locationInfo.setLatitude(result.getLatitude());
-                locationInfo.setLongitude(result.getLongitude());
-                locationInfo.setAddress(result.getAddress());
-                locationInfo.setCity(result.getCity());
-                mUserOrderAreaEdit.setTag(locationInfo);
-                mUserOrderAreaEdit.setText(result.getAddress());
-
-                mIDImageUrls = new ArrayList<String>();
-                mIDImageUrls.add(result.getCardFrontImageUrl());
-                mIDImageUrls.add(result.getCardBehindImageUrl());
-
-                mUserWorkYearsEdit.setText(result.getWorkYear() + "年");
-                mUserWorkYearsEdit.setTag(result.getWorkYear());
-                mUserWorkTypesEdit.setText(result.getServiceSubNames());
-                mUserWorkTypesEdit.setTag(result.getServiceSubIDs());
-
-                displayIDImages();
             }
-        };
-        mLoadDataTask.execute();
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+            }
+        });
     }
+
 
     @Override
     protected String getPageName() {

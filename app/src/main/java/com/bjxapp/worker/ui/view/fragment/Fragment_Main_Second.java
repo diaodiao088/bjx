@@ -44,7 +44,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     private XListView mXListView;
 
     private int mCurrentBatch = 1;
-    private int mBatchSize = 10;
+    private int mBatchSize = 20;
 
     private static final int TYPE_TOTAL = 0x01;
     private static final int TYPE_SAFE = 0X02;

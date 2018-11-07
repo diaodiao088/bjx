@@ -766,6 +766,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="20dp"
                         android:text="退单"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
                         android:textColor="#A9A9A9"
                         android:textSize="16sp" />
 

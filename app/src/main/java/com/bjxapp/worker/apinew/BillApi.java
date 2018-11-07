@@ -37,6 +37,18 @@ public interface BillApi {
     @POST("/order/receive")
     Call<JsonObject> acceptOrder(@FieldMap Map<String , String> params);
 
+    @FormUrlEncoded
+    @POST("/order/noContact")
+    Call<JsonObject> sendMessage(@FieldMap Map<String , String> params);
+
+    @FormUrlEncoded
+    @POST("/order/changeAppointment")
+    Call<JsonObject> changeTime(@FieldMap Map<String , String> params);
+
+    @FormUrlEncoded
+    @POST("/order/confirmAppointment")
+    Call<JsonObject> confirmAppoinment(@FieldMap Map<String , String> params);
+
 
 
 }
