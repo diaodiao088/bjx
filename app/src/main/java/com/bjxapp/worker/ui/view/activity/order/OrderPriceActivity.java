@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -22,18 +24,44 @@ import android.widget.LinearLayout;
 
 import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
+import com.bjxapp.worker.apinew.BillApi;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
+import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.UploadFile;
+import com.bjxapp.worker.utils.Utils;
+import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.internal.Util;
 
 /**
  * Created by zhangdan on 2018/10/14.
@@ -63,7 +91,13 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
         finish();
     }
 
+    private ArrayList<String> mImageUrl = new ArrayList<>();
+
     private List<String> mScreenShotList = new ArrayList<>();
+
+    private XWaitingDialog mDialog;
+
+    private String orderId = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +112,12 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
         mAddIv.setOnClickListener(this);
         mConfirmBtn.setOnClickListener(this);
         mContainer = findViewById(R.id.image_layout);
+        mDialog = new XWaitingDialog(this);
+        handleIntent();
+    }
+
+    private void handleIntent() {
+        orderId = getIntent() != null ? getIntent().getStringExtra("order_id") : "";
     }
 
     private void loadImages() {
@@ -183,11 +223,154 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
         }
     }
 
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
     private void getQrCode() {
 
+        if (mContentTv.getText().length() == 0 || mPriceTv.getText().length() == 0) {
+            Utils.showShortToast(this, "请填写完整信息");
+            return;
+        }
+
+        mDialog.show("正在生成二维码，请稍后..", false);
+
+        // step 1 : 上传图片
+        if (mScreenShotList == null || mScreenShotList.size() <= 1) {
+            toSecondStep();
+            return;
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        for (int i = 0; i < mScreenShotList.size(); i++) {
+
+            String url = mScreenShotList.get(i);
+
+            File file = new File(url);
+
+            if (!file.exists()) {
+                break;
+            }
+
+            String targetPath = getCacheDir() + file.getName();
+
+            final String compressImage = CompressUtil.compressImage(url, targetPath, 30);
+
+            final File compressFile = new File(compressImage);
+
+            if (compressFile.exists()) {
+                RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
+                requestBody.addFormDataPart("files", compressFile.getName(), body);
+            }
+        }
+
+        Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(OrderPriceActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000 * 100, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, final IOException e) {
+
+                OrderPriceActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showShortToast(OrderPriceActivity.this, "图片上传失败！:" + e.getLocalizedMessage());
+
+                        if (mDialog != null) {
+                            mDialog.dismiss();
+                        }
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+
+                    ArrayList<String> list = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(str);
+                        JSONArray accessAddress = object.getJSONArray("list");
+
+                        for (int i = 0; i < accessAddress.length(); i++) {
+                            list.add(accessAddress.get(i).toString());
+                        }
+
+                        mImageUrl.clear();
+                        mImageUrl.addAll(list);
+
+                        LogUtils.log("order pic upload pic succ . ");
+
+                        toSecondStep();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mDialog != null) {
+                                mDialog.dismiss();
+                            }
+
+                            Utils.showShortToast(OrderPriceActivity.this, "图片上传失败！");
+                        }
+                    });
+                }
+            }
+        });
     }
 
-    public static void goToActivity(Context ctx) {
+
+    private void toSecondStep() {
+
+        LogUtils.log("to second step . ");
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("orderId", orderId);
+        params.put("prepayService", mContentTv.getText().toString());
+        params.put("prepayCost", mPriceTv.getText().toString());
+
+        retrofit2.Call<JsonObject> request = billApi.prepay(params);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                LogUtils.log("two step info : " + response.body().toString());
+
+
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mDialog != null) {
+                            mDialog.dismiss();
+                        }
+                        Utils.showShortToast(OrderPriceActivity.this, "获取订单信息失败");
+                    }
+                });
+            }
+        });
+    }
+
+
+    public static void goToActivity(Context ctx, String orderId) {
 
         if (ctx == null) {
             ctx = App.getInstance();
@@ -195,6 +378,7 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
 
         Intent intent = new Intent();
         intent.setClass(ctx, OrderPriceActivity.class);
+        intent.putExtra("order_id", orderId);
         ctx.startActivity(intent);
     }
 

@@ -18,4 +18,12 @@ public class OrderDetailInfo {
     public void setOrderDes(OrderDes orderDes) {
         this.orderDes = orderDes;
     }
+
+    public MaintainInfo getMaintainInfo() {
+        return maintainInfo;
+    }
+
+    public void setMaintainInfo(MaintainInfo maintainInfo) {
+        this.maintainInfo = maintainInfo;
+    }
 }

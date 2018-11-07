@@ -29,6 +29,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
+import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
@@ -269,17 +270,17 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
      */
     @OnClick(R.id.issue_edit_btn)
     void editIssueDetail() {
-        ServiceBillActivity.goToActivity(this);
+        ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE);
     }
 
     @OnClick(R.id.add_image_content)
     void addIssueImage() {
-        AddImageActivity.goToActivity(this);
+        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD);
     }
 
     @OnClick(R.id.order_bill_btn)
     void editPreBill() {
-        OrderPriceActivity.goToActivity(this);
+        OrderPriceActivity.goToActivity(this , mDetailInfo != null ? mDetailInfo.getOrderDes().getOrderId() : String.valueOf(-1));
     }
 
     String orderId = "";
@@ -647,7 +648,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                             JSONObject detailJson = (JSONObject) object.get("order");
                             mDetailInfo = new OrderDetailInfo();
                             mDetailInfo.setOrderDes(getOrderDes(detailJson));
-                            // TODO: 2018/11/7
+
+                            mDetailInfo.setMaintainInfo(new MaintainInfo());
 
                             refreshUiSync();
                         }
@@ -722,8 +724,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case 3:
                 toDetailUi();
                 break;
-
-
         }
 
     }
@@ -1215,6 +1215,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }.execute(orderID);
     }
 
+    private ArrayList<String> mImageList = new ArrayList<>();
+
     private void payOperation() {
         String orderID = getIntent().getStringExtra("order_id");
         if (!Utils.isNotEmpty(orderID)) {
@@ -1280,6 +1282,31 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                         loadData(true);
                     }
                     break;
+                case AddImageActivity.OP_ADD:
+                    if (resultCode == RESULT_OK) {
+                        ArrayList<String> list = data.getStringArrayListExtra("result");
+                        if (list != null) {
+                            mImageList.addAll(list);
+                        }
+                    }
+                    break;
+                case ServiceBillActivity.SERVICE_BILL_CODE:
+                    if (resultCode == RESULT_OK) {
+
+                        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null) {
+                            return;
+                        }
+
+                        MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+                        maintainInfo.setFault(data.getStringExtra(ServiceBillActivity.REASON));
+                        maintainInfo.setPlan(data.getStringExtra(ServiceBillActivity.STRATEGY));
+                        maintainInfo.setCostDetail(data.getStringExtra(ServiceBillActivity.DETAIL));
+                        maintainInfo.setTotalCost(data.getStringExtra(ServiceBillActivity.PRICE));
+
+                        updateMainTainUi(maintainInfo);
+
+                    }
+                    break;
             }
         } catch (Exception e) {
 
@@ -1294,6 +1321,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         intent.setData(Uri.parse("tel:" + mobile));
         startActivity(intent);
     }
+
+    private void updateMainTainUi(MaintainInfo maintainInfo){
+        mIssueReasonTv.setText(maintainInfo.getFault());
+        mIssuePriceTv.setText(maintainInfo.getTotalCost());
+        mStrategyContentTv.setText(maintainInfo.getPlan());
+    }
+
 
     private void showUserImages() {
         if (mIDImageUrls == null || mIDImageUrls.size() == 0) {

@@ -79,6 +79,37 @@
             android:textColorHint="@color/main_text_hint_color"
             android:textSize="14sp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="总报价"
+                android:gravity="center"
+                android:textColor="#545454"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/total_price_edit_tv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/cancel_bill_bg"
+                android:layout_marginLeft="15dp"
+                android:textSize="14sp"
+                android:textColor="#545454"
+                android:textColorHint="@color/main_text_hint_color"
+                android:hint="请输入总报价"
+                android:inputType="phone"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
+
+
         <com.bjxapp.worker.controls.XButton
             android:id="@+id/confirm"
             android:layout_width="match_parent"

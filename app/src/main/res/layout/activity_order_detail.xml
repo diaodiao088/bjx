@@ -302,7 +302,6 @@
                         android:layout_toRightOf="@+id/order_receive_detail_addition_content_text"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
-                        android:text="马桶维修、冰箱维修、换灯泡"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>
@@ -332,7 +331,6 @@
                         android:layout_toRightOf="@+id/strategy_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
-                        android:text="电灯泡维修"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>
@@ -362,7 +360,6 @@
                         android:layout_toRightOf="@+id/price_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="100.00"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>

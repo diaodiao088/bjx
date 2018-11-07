@@ -107,11 +107,11 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
 
     private String flag_type = "";
 
-    private void handleIntent(){
+    private void handleIntent() {
 
         Intent intent = getIntent();
 
-        if (intent != null){
+        if (intent != null) {
 
             flag_type = intent.getStringExtra("operation_flag");
         }
@@ -199,7 +199,7 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
             }
         });
 
-        if ("2".equals(flag_type)){
+        if ("2".equals(flag_type)) {
             tipLy.setVisibility(View.GONE);
             mXListView.setOnItemLongClickListener(null);
             mUploadButton.setVisibility(View.GONE);
@@ -345,7 +345,7 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
         imageInfo.setFlag(flag);
         mImagesAdapter.addImage(imageInfo);
         mTipLy.setVisibility(View.GONE);
-        if (!"2".equals(flag_type)){
+        if (!"2".equals(flag_type)) {
             mUploadButton.setVisibility(View.VISIBLE);
         }
     }
@@ -429,7 +429,12 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
                 public void onResponse(Call call, Response response) throws IOException {
 
                     if (mImageUrl.size() >= 2 && mWaitingDialog != null) {
-                        mWaitingDialog.dismiss();
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mWaitingDialog.dismiss();
+                            }
+                        });
                     }
 
                     if (response.isSuccessful()) {
@@ -483,8 +488,6 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
                 }
             });
         }
-
-
     }
 
     @Override

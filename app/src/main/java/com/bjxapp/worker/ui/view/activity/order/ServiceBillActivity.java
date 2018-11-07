@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
@@ -14,6 +15,7 @@ import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
+import com.bjxapp.worker.utils.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +32,18 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
     private EditText mReasonTv;
     private EditText mDoTv;
     private EditText mPriceTv;
+
+    @BindView(R.id.total_price_edit_tv)
+    EditText mTotalPriceTv;
+
     private XWaitingDialog mWaitingDialog;
+
+    public static final String REASON = "reason";
+    public static final String STRATEGY = "strategy";
+    public static final String DETAIL = "detail";
+    public static final String PRICE = "price";
+
+    public static final int SERVICE_BILL_CODE = 0x03;
 
     @OnClick(R.id.title_image_back)
     void onClickBack() {
@@ -70,7 +83,7 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
 
         if (mDoTv.getText().length() == 0
                 || mReasonTv.getText().length() == 0
-                || mPriceTv.getText().length() == 0) {
+                || mPriceTv.getText().length() == 0 || mTotalPriceTv.getText().length() == 0) {
             final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
             dialog.setOnNegativeListener(new View.OnClickListener() {
                 @Override
@@ -89,16 +102,20 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
 
     private void commitReal() {
 
+        Intent intent = new Intent();
+        intent.putExtra(REASON, mReasonTv.getText().toString());
+        intent.putExtra(STRATEGY, mDoTv.getText().toString());
+        intent.putExtra(PRICE, mTotalPriceTv.getText().toString());
+        intent.putExtra(DETAIL, mPriceTv.getText().toString());
+
+        setResult(RESULT_OK, intent);
+        Utils.finishWithoutAnim(ServiceBillActivity.this);
     }
 
-    public static void goToActivity(Context context) {
-
-        if (context == null) {
-            context = App.getInstance();
-        }
+    public static void goToActivity(Activity context, int code) {
 
         Intent intent = new Intent();
         intent.setClass(context, ServiceBillActivity.class);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, code);
     }
 }

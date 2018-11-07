@@ -19,7 +19,7 @@ public interface BillApi {
 
     @FormUrlEncoded
     @POST("/profile/status")
-    Call<JsonObject> getServiceStatus(@FieldMap Map<String ,String> params);
+    Call<JsonObject> getServiceStatus(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("/profile/serviceState/0")
@@ -31,24 +31,30 @@ public interface BillApi {
 
     @FormUrlEncoded
     @POST("/order/list/0")
-    Call<JsonObject> getOrderList(@FieldMap Map<String , String> params);
+    Call<JsonObject> getOrderList(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("/order/receive")
-    Call<JsonObject> acceptOrder(@FieldMap Map<String , String> params);
+    Call<JsonObject> acceptOrder(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("/order/noContact")
-    Call<JsonObject> sendMessage(@FieldMap Map<String , String> params);
+    Call<JsonObject> sendMessage(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("/order/changeAppointment")
-    Call<JsonObject> changeTime(@FieldMap Map<String , String> params);
+    Call<JsonObject> changeTime(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("/order/confirmAppointment")
-    Call<JsonObject> confirmAppoinment(@FieldMap Map<String , String> params);
+    Call<JsonObject> confirmAppoinment(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/profile/bindPushService")
+    Call<JsonObject> bindPush(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/order/prepay")
+    Call<JsonObject> prepay(@FieldMap Map<String, String> params);
 
 }

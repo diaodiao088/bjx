@@ -33,6 +33,10 @@ public class MaintainInfo {
 
     private String totalCost;  // 总报价
 
+    public MaintainInfo(){
+
+    }
+
     public MaintainInfo(String costDetail, String fault, boolean isPaid,
                         String payAmount, String plan, String prePaid,
                         String preCost, String prePayService,

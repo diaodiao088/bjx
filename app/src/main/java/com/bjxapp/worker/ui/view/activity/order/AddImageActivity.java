@@ -7,14 +7,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +27,40 @@ import android.widget.ImageView;
 
 import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.model.ImageInfo;
+import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
 import com.bjxapp.worker.utils.UploadFile;
+import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static java.lang.String.valueOf;
 
 /**
  * Created by zhangdan on 2018/10/14.\
@@ -48,16 +79,27 @@ public class AddImageActivity extends Activity {
 
     private ArrayList<ImageBean> mList = new ArrayList<>();
 
+    public static final int OP_ADD = 0x01;
+
+    private XWaitingDialog mWaitingDialog;
+
+    @OnClick(R.id.title_image_back)
+    void onClickBack() {
+        onBackPressed();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_image);
+        ButterKnife.bind(this);
         mRecyclerView = findViewById(R.id.recycler_view);
         mGridLayoutManager = new GridLayoutManager(this, 4);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4 , 50 ,true));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, true));
         mAdapter = new MyAdapter();
         mRecyclerView.setAdapter(mAdapter);
+        mWaitingDialog = new XWaitingDialog(this);
         initData();
     }
 
@@ -86,7 +128,7 @@ public class AddImageActivity extends Activity {
 
         @Override
         public void goToImageDetail(ImageBean bean) {
-            ImageOrderActivity.goToActivity(AddImageActivity.this , bean.getUrl());
+            ImageOrderActivity.goToActivity(AddImageActivity.this, bean.getUrl());
         }
     };
 
@@ -139,7 +181,7 @@ public class AddImageActivity extends Activity {
                 ((VH_IMAGE_ITEM) holder).mIv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mListener != null){
+                        if (mListener != null) {
                             mListener.goToImageDetail(bean);
                         }
                     }
@@ -269,7 +311,7 @@ public class AddImageActivity extends Activity {
                           boolean showDelImg) {
 
         ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, imagePath);
-        mList.add(0 , bean);
+        mList.add(0, bean);
         mAdapter.setList(mList);
         mAdapter.notifyDataSetChanged();
     }
@@ -313,17 +355,137 @@ public class AddImageActivity extends Activity {
     }
 
 
-    public static void goToActivity(Context ctx){
-
-        if (ctx == null){
-            ctx = App.getInstance();
-        }
+    public static void goToActivity(Activity ctx , int code ) {
 
         Intent intent = new Intent();
-        intent.setClass(ctx , AddImageActivity.class);
-        ctx.startActivity(intent);
+        intent.setClass(ctx, AddImageActivity.class);
+        //ctx.startactivityfor(intent);
+        ctx.startActivityForResult(intent , code);
     }
 
+    @Override
+    public void onBackPressed() {
+
+        // super.onBackPressed();
+
+        if (mList.size() <= 1) {
+            super.onBackPressed();
+        } else {
+            startCommitImage();
+        }
+
+    }
+
+    private void startCommitImage() {
+
+        mWaitingDialog.show("正在上传图片..", false);
+
+        post_file();
+
+    }
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+
+    public void post_file() {
+
+        if (mList == null || mList.size() <= 1) {
+            return;
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        for (int i = 0; i < mList.size(); i++) {
+
+            ImageBean item = mList.get(i);
+
+            if (item.type == ImageBean.TYPE_ADD) {
+                File file = new File(item.getUrl());
+
+                if (!file.exists()) {
+                    break;
+                }
+
+                String targetPath = getCacheDir() + file.getName();
+
+                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
+
+                final File compressFile = new File(compressImage);
+
+                if (compressFile.exists()) {
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
+                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                }
+            }
+        }
+
+        Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(AddImageActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000 * 100, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, final IOException e) {
+
+                AddImageActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(AddImageActivity.this, "图片上传失败！:" + e.getLocalizedMessage());
+
+                        Utils.finishWithoutAnim(AddImageActivity.this);
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+
+                    ArrayList<String> list = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(str);
+                        JSONArray accessAddress = object.getJSONArray("list");
+
+                        for (int i = 0; i < accessAddress.length(); i++) {
+                            list.add(accessAddress.get(i).toString());
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Intent intent = new Intent();
+                    intent.putStringArrayListExtra("result", list);
+                    setResult(RESULT_OK, intent);
+                    Utils.finishWithoutAnim(AddImageActivity.this);
+
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(AddImageActivity.this, "图片上传失败！");
+                            Utils.finishWithoutAnim(AddImageActivity.this);
+                        }
+                    });
+                }
+            }
+        });
+    }
 
 
 }

@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -136,6 +137,50 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private void initPush() {
         PushManager.getInstance().initialize(this.getApplicationContext(), BJXPushService.class);
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), PushIntentService.class);
+
+        Log.d("slog_zd", "clientid is : " + PushManager.getInstance().getClientid(this));
+
+        String clientId = PushManager.getInstance().getClientid(this);
+
+        if (!TextUtils.isEmpty(clientId)) {
+            initPushToServer(clientId);
+        } else {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    String clientId = PushManager.getInstance().getClientid(MainActivity.this);
+                    if (!TextUtils.isEmpty(clientId)) {
+                        initPushToServer(clientId);
+                    } else {
+                        mHandler.postDelayed(this, 5000);
+                    }
+                }
+            }, 5000);
+        }
+
+    }
+
+    private void initPushToServer(String clientId) {
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("clientId", clientId);
+
+        Call<JsonObject> call = billApi.bindPush(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.d("slog_zd", "bind push : " + response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d("slog_zd", "bind push fail : " + t.getLocalizedMessage());
+            }
+        });
     }
 
 
