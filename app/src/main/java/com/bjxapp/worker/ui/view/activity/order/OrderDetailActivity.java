@@ -722,6 +722,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 toWaitStatus();
                 break;
             case 3:
+            case 4:
                 toDetailUi();
                 break;
         }

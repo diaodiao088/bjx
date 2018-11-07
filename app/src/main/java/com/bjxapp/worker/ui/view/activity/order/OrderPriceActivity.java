@@ -235,7 +235,7 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
         mDialog.show("正在生成二维码，请稍后..", false);
 
         // step 1 : 上传图片
-        if (mScreenShotList == null || mScreenShotList.size() <= 1) {
+        if (mScreenShotList == null || mScreenShotList.size() <= 0) {
             toSecondStep();
             return;
         }
@@ -307,7 +307,17 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
                         toSecondStep();
 
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (mDialog != null) {
+                                    mDialog.dismiss();
+                                }
+
+                                Utils.showShortToast(OrderPriceActivity.this, "图片上传失败！EXC");
+                            }
+                        });
                     }
 
                 } else {
@@ -348,8 +358,24 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
 
                 LogUtils.log("two step info : " + response.body().toString());
 
+                JsonObject object = response.body();
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
 
+                if (code == 0) {
+                    toThirdStep();
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
 
+                            if (mDialog != null) {
+                                mDialog.dismiss();
+                            }
+                            Utils.showShortToast(OrderPriceActivity.this, msg + ": " + code);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -367,6 +393,77 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
                 });
             }
         });
+    }
+
+    private void toThirdStep() {
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("orderId", orderId);
+        params.put("payType", String.valueOf(0));
+
+        retrofit2.Call<JsonObject> request = billApi.getPayUrl(params);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                LogUtils.log("pay url : " + response.body().toString());
+
+                JsonObject object = response.body();
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
+
+                if (code == 0) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mDialog != null) {
+                                mDialog.dismiss();
+                            }
+                        }
+                    });
+
+                    String url = object.get("url").getAsString();
+
+                    Intent intent = new Intent(OrderPriceActivity.this, OrderPayQRCodeActivity.class);
+                    intent.putExtra("url", url);
+                    OrderPriceActivity.this.startActivity(intent);
+
+
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mDialog != null) {
+                                mDialog.dismiss();
+                            }
+                            Utils.showShortToast(OrderPriceActivity.this, msg + ": " + code);
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mDialog != null) {
+                            mDialog.dismiss();
+                        }
+                        Utils.showShortToast(OrderPriceActivity.this, "获取支付链接失败");
+                    }
+                });
+            }
+        });
+
     }
 
 

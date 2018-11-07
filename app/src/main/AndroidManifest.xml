@@ -15,7 +15,7 @@
         android:resizeable="true"
         android:smallScreens="true" />
 
-    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -70,9 +70,9 @@
         android:name="com.bjxapp.worker.App"
         android:allowBackup="true"
         android:icon="@drawable/icon"
-        android:usesCleartextTraffic="true"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
 
         <!-- baidu location begin -->
         <service
@@ -156,10 +156,11 @@
 
         <activity
             android:name=".ui.view.activity.order.AddImageActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.view.activity.JoinUsActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.view.activity.JoinUsActivity"
+            android:screenOrientation="portrait" />
 
 
         <activity
@@ -200,8 +201,7 @@
         <activity
             android:name=".ui.view.activity.user.ChangePwdActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme" >
-        </activity>
+            android:theme="@style/XAppTheme"></activity>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.user.ApplyActivity"
             android:screenOrientation="portrait">
@@ -209,14 +209,14 @@
         </activity>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.PublicActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.MessageDetailActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.PublicImagesActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.MapActivity"
             android:screenOrientation="portrait"></activity>
@@ -225,8 +225,9 @@
             android:name=".ui.view.activity.map.MapActivityNew"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.view.activity.map.MapSearchActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.view.activity.map.MapSearchActivity"
+            android:screenOrientation="portrait" />
 
 
         <activity
@@ -252,10 +253,13 @@
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.search.SearchSingleActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity"
-            android:screenOrientation="portrait"></activity>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.view.activity.order.CancelBillActivity"
             android:screenOrientation="portrait" />
@@ -293,10 +297,9 @@
             android:name=".push.BJXPushService"
             android:exported="true"
             android:label="PushService"
-            android:process=":pushservice">
-        </service>
+            android:process=":pushservice"></service>
 
-        <service android:name=".push.PushIntentService"/>
+        <service android:name=".push.PushIntentService" />
 
 
         <!-- push应用定义消息receiver声明 -->
