@@ -170,7 +170,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
             intent.putExtra(KEY_TYPE, mPwdSureTv.getText().toString());
             setResult(RESULT_OK, intent);
             finish();
-        } else if (mFrom == FROM_FORGET_PWD) {
+        } else if (mFrom == FROM_FORGET_PWD || mFrom == FROM_EDIT_APPLY) {
             changePwdReal();
         }
     }

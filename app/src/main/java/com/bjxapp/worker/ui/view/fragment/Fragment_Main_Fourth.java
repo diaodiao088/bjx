@@ -34,6 +34,7 @@ import com.bjxapp.worker.model.UserInfo;
 import com.bjxapp.worker.model.UserInfoDetail;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
+import com.bjxapp.worker.ui.view.activity.user.ApplyEditActivity;
 import com.bjxapp.worker.ui.view.activity.user.BalanceBankActivity;
 import com.bjxapp.worker.ui.view.activity.user.BalanceBankWithdrawActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
@@ -102,6 +103,11 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
     TextView mLookTv;
 
     public static final int MAX_VIEW_WIDTH = DimenUtils.dp2px(200, App.getInstance());
+
+    @OnClick(R.id.me_header)
+    void onClickHeader(){
+        ApplyEditActivity.goToActivity(getActivity());
+    }
 
     @OnClick(R.id.me_about_ly)
     void onClickAbout() {

@@ -15,6 +15,7 @@
         android:src="@drawable/head" />
 
     <TextView
+        android:id="@+id/edit_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -24,6 +25,7 @@
         android:textSize="12sp" />
 
     <TextView
+        android:id="@+id/edit_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -33,6 +35,7 @@
         android:textSize="12sp" />
 
     <LinearLayout
+        android:id="@+id/city_ly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -46,16 +49,17 @@
             android:textColor="#545454" />
 
         <TextView
+            android:id="@+id/city_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:drawableRight="@drawable/right"
-            android:text="北京"
             android:textColor="#545454" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/map_ly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -69,16 +73,17 @@
             android:textColor="#545454" />
 
         <TextView
+            android:id="@+id/map_edit_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:drawableRight="@drawable/right"
-            android:text="北京市海淀区北京科技大学"
             android:textColor="#545454" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/edit_id_ly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -108,15 +113,16 @@
             android:textColor="#545454" />
 
         <TextView
+            android:id="@+id/edit_work_year_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="2年"
             android:textColor="#545454" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/service_ly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -131,16 +137,17 @@
             android:textColor="#545454" />
 
         <TextView
+            android:id="@+id/edit_service_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:drawableRight="@drawable/right"
-            android:text="马桶测试"
             android:textColor="#545454" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/pwd_ly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -151,7 +158,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/right"
-            android:text="查看证件照片"
+            android:text="修改密码"
             android:textColor="#545454" />
 
     </LinearLayout>
@@ -163,7 +170,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="65dp"
         android:layout_marginRight="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/button_background_green"
         android:text="保存注册信息"
         android:textColor="@color/white"
