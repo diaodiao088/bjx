@@ -66,5 +66,25 @@
 -keep class vi.com.** {*;}
 -dontwarn com.baidu.**
 
+-keepclassmembernames class retrofit2.Retrofit {
+    <fields>;
+}
+
+-keepclassmembernames class okhttp3.Request {
+   <fields>;
+}
+
+-keepclassmembernames class retrofit2.OkHttpCall$ExceptionCatchingRequestBody {
+   <fields>;
+}
+-keepclasseswithmembers class * {
+@retrofit2.http.* <methods>;
+}
+-keepclassmembers class okhttp3.RealCall$AsyncCall {
+    <methods>;
+}
+
+
+
 
 

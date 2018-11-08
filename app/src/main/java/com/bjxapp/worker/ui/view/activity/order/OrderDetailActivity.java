@@ -329,13 +329,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         picker.show();
     }
 
-    private void changeDateReal(String day, String time) {
+    private void changeDateReal(final String day, final String time) {
 
         if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
             return;
         }
 
-        String orderId = mDetailInfo.getOrderDes().getOrderId();
+        final OrderDes orderDes = mDetailInfo.getOrderDes();
+
+        String orderId = orderDes.getOrderId();
 
         BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
 
@@ -378,6 +380,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                             @Override
                             public void run() {
                                 // toWaitStatus();
+                                orderDes.setAppointmentDay(day);
+                                orderDes.setAppointmentStartTime(time.split("--")[0]);
+                                orderDes.setAppointmentEndTime(time.split("--")[1]);
+
+                                mDateTv.setText(day + " " + time.split("--")[0] + " - " + time.split("--")[1]);
                             }
                         });
                     } else {
