@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/separator_color"
+    android:background="#f5f5f5"
     android:orientation="vertical">
 
     <include layout="@layout/layout_title" />
@@ -37,6 +37,7 @@
             android:layout_marginTop="30dp"
             android:text="已经到账"
             android:textColor="#545454"
+            android:textStyle="bold"
             android:textSize="24sp" />
 
         <com.bjxapp.worker.controls.XTextView
@@ -49,7 +50,9 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:text="用户对您的评价，将会影响到您接单的质量！请叮嘱用户为您评价！"
-            android:textSize="16sp" />
+            android:textColor="@color/main_text_color"
+            android:textStyle="bold"
+            android:textSize="14sp" />
 
     </LinearLayout>
 </LinearLayout>

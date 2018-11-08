@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
@@ -85,6 +86,9 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
 
     @BindView(R.id.title_text_tv)
     XTextView mTitleTv;
+
+    @BindView(R.id.price)
+    TextView mPriceTotalTv;
 
     @OnClick(R.id.title_image_back)
     void onBack() {
@@ -232,6 +236,9 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
             return;
         }
 
+        mPriceTv.setVisibility(View.VISIBLE);
+        mPriceTv.setText(mPriceTv.getText().toString());
+
         mDialog.show("正在生成二维码，请稍后..", false);
 
         // step 1 : 上传图片
@@ -349,6 +356,18 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
         params.put("orderId", orderId);
         params.put("prepayService", mContentTv.getText().toString());
         params.put("prepayCost", mPriceTv.getText().toString());
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < mImageUrl.size(); i++) {
+            builder.append(mImageUrl.get(i));
+            if (i != mImageUrl.size() - 1) {
+                builder.append(",");
+            }
+        }
+
+        if (mImageUrl.size() > 0) {
+            params.put("prepayImgUrls", builder.toString());
+        }
 
         retrofit2.Call<JsonObject> request = billApi.prepay(params);
 

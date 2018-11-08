@@ -21,7 +21,7 @@ public class MaintainInfo {
 
     private String plan; //维修方案
 
-    private String prePaid; // 是否预付
+    private boolean prePaid; // 是否预付
 
     private String preCost; // 预付金额
 
@@ -38,7 +38,7 @@ public class MaintainInfo {
     }
 
     public MaintainInfo(String costDetail, String fault, boolean isPaid,
-                        String payAmount, String plan, String prePaid,
+                        String payAmount, String plan, boolean prePaid,
                         String preCost, String prePayService,
                         String totalAmount, String totalCost) {
         this.costDetail = costDetail;
@@ -93,11 +93,11 @@ public class MaintainInfo {
         this.plan = plan;
     }
 
-    public String getPrePaid() {
+    public boolean getPrePaid() {
         return prePaid;
     }
 
-    public void setPrePaid(String prePaid) {
+    public void setPrePaid(boolean prePaid) {
         this.prePaid = prePaid;
     }
 

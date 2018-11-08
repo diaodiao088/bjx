@@ -122,8 +122,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="总计： 0.01 元"
         android:textColor="#00A551"
+        android:visibility="gone"
         android:textSize="14sp" />
 
     <com.bjxapp.worker.controls.XButton

@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bjxapp.worker.MainActivity;
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
@@ -38,6 +39,7 @@ import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
+import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
 import com.bjxapp.worker.utils.Utils;
@@ -179,6 +181,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        loadData(false);
+    }
+
     void setUpGaodeAppByMine() {
         try {
             Intent intent = Intent.getIntent("androidamap://route?sourceApplication=softname&sname=我的位置&dlat="
@@ -214,7 +223,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         return new File("/data/data/" + packageName).exists();
     }
 
-
     private CountDownTimer mCountDownTimer;
 
     private XWaitingDialog mWaitingDialog;
@@ -226,6 +234,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         setContentView(R.layout.activity_order_detail);
         ButterKnife.bind(this);
         handleIntent();
+        DataManagerCtrl.getIns().markDataDirty(true);
         super.onCreate(savedInstanceState);
     }
 
@@ -280,7 +289,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     @OnClick(R.id.order_bill_btn)
     void editPreBill() {
-        OrderPriceActivity.goToActivity(this , mDetailInfo != null ? mDetailInfo.getOrderDes().getOrderId() : String.valueOf(-1));
+        OrderPriceActivity.goToActivity(this, mDetailInfo != null ? mDetailInfo.getOrderDes().getOrderId() : String.valueOf(-1));
     }
 
     String orderId = "";
@@ -427,6 +436,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             toNewBillStatus();
         } else if (processStatus == 2) {
             toWaitStatus();
+        } else if (processStatus == 3 || processStatus == 4 || processStatus == 5){
+            toDetailUi();
         }
     }
 
@@ -458,7 +469,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.title_image_back:
-                Bundle bundle = getIntent().getExtras();
+                /*Bundle bundle = getIntent().getExtras();
                 if (bundle != null && bundle.getString(Constant.EXTRA_RETURN_KEY_CLASS_NAME) != null) {
                     String returnClassName = bundle.getString(Constant.EXTRA_RETURN_KEY_CLASS_NAME);
                     Intent it = new Intent();
@@ -467,7 +478,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     it.setClassName(packageName == null ? Constant.APP_PACKAGE_NAME : packageName, returnClassName);
                     startActivity(it);
                 }
-                Utils.finishActivity(OrderDetailActivity.this);
+                Utils.finishActivity(OrderDetailActivity.this);*/
+                onBackPressed();
                 break;
             case R.id.order_receive_textview_contact:
                 callService();
@@ -491,7 +503,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
 
         final OrderDes orderDes = mDetailInfo.getOrderDes();
-
 
         mWaitingDialog.show("正在确认，请稍候...", false);
 
@@ -576,12 +587,20 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         modifyLy.setVisibility(View.VISIBLE);
         mFinalMoneyLy.setVisibility(View.VISIBLE);
         mPreBillLy.setVisibility(View.VISIBLE);
+
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+        preBillContentTv.setText(maintainInfo.getPrePayService() == null ? "" : maintainInfo.getPrePayService());
+        preBillCashTv.setText(maintainInfo.getPreCost());
+
     }
 
     private AsyncTask<String, Void, OrderDetail> mLoadDataTask;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
-
 
     private void loadData(final Boolean loading) {
 
@@ -648,8 +667,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                             JSONObject detailJson = (JSONObject) object.get("order");
                             mDetailInfo = new OrderDetailInfo();
                             mDetailInfo.setOrderDes(getOrderDes(detailJson));
-
-                            mDetailInfo.setMaintainInfo(new MaintainInfo());
+                            mDetailInfo.setMaintainInfo(getMainTainInfo(detailJson));
 
                             refreshUiSync();
                         }
@@ -657,7 +675,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         });
     }
@@ -727,6 +744,56 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 break;
         }
 
+    }
+
+    private MaintainInfo getMainTainInfo(JSONObject detailJson) {
+
+        try {
+            JSONObject detailItem = detailJson.getJSONObject("maintainDetail");
+
+            String costDetail = detailItem.getString("costDetail");
+            String fault = detailItem.getString("fault");
+            boolean paid = detailItem.getBoolean("paid");
+            String payAmount = detailItem.getString("payAmount");
+            String plan = detailItem.getString("plan");
+            boolean prePaid = detailItem.getBoolean("prepaid");
+            String preCost = detailItem.getString("prepayCost");
+            String prePayService = detailItem.getString("prepayService");
+            String totalAmount = detailItem.getString("totalAmount");
+            String totalCost = detailItem.getString("totalCost");
+
+            JSONArray urlArray = detailItem.getJSONArray("masterImgUrls");
+
+            ArrayList<String> customImgUrls = new ArrayList<>();
+            if (urlArray != null && urlArray.length() > 0) {
+                for (int i = 0; i < urlArray.length(); i++) {
+                    String itemUrl = urlArray.get(i).toString();
+                    customImgUrls.add(itemUrl);
+                }
+            }
+
+            // 预付照片
+            JSONArray prePayImgArray = detailItem.getJSONArray("prepayImgUrls");
+            ArrayList<String> prePayImgUrls = new ArrayList<>();
+            if (prePayImgArray != null && prePayImgArray.length() > 0) {
+                for (int i = 0; i < prePayImgArray.length(); i++) {
+                    String itemUrl = prePayImgArray.get(i).toString();
+                    prePayImgUrls.add(itemUrl);
+                }
+            }
+
+            MaintainInfo maintainInfo = new MaintainInfo(costDetail, fault, paid, payAmount,
+                    plan, prePaid, preCost, prePayService, totalAmount, totalCost);
+
+            maintainInfo.setMasterImgUrls(customImgUrls);
+            maintainInfo.setPrepayImgUrls(prePayImgUrls);
+
+            return maintainInfo;
+
+        } catch (Exception e) {
+
+        }
+        return null;
     }
 
 
@@ -1058,6 +1125,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case 1:
                 acceptOperation();
                 break;
+            case 4:
+            case 3:
+            case 5:
+                toWaitPay();
+                break;
         }
 
 
@@ -1084,6 +1156,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         if (status == 3) {
             showPaySuccessActivity();
         }*/
+    }
+
+    private void toWaitPay(){
+
+
+
+
     }
 
     private void acceptOperation() {
@@ -1323,7 +1402,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         startActivity(intent);
     }
 
-    private void updateMainTainUi(MaintainInfo maintainInfo){
+    private void updateMainTainUi(MaintainInfo maintainInfo) {
         mIssueReasonTv.setText(maintainInfo.getFault());
         mIssuePriceTv.setText(maintainInfo.getTotalCost());
         mStrategyContentTv.setText(maintainInfo.getPlan());
@@ -1357,5 +1436,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
 
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent intent = new Intent(this, MainActivity.class);
+
+        startActivity(intent);
+
+        Utils.finishActivity(this);
     }
 }

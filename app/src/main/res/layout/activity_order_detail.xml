@@ -489,7 +489,6 @@
                         android:layout_toRightOf="@+id/order_bill_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
-                        android:text="马桶维修、冰箱维修、换灯泡"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>

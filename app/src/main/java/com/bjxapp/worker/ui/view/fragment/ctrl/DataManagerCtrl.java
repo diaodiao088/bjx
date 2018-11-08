@@ -36,6 +36,7 @@ public class DataManagerCtrl {
 
     public void setPageResult(ArrayList<OrderDes> result) {
         this.mList = result;
+        markDataDirty(false);
         notifyFragment();
     }
 
@@ -74,5 +75,11 @@ public class DataManagerCtrl {
         this.isDataDirty = isDataDirty;
     }
 
+    public boolean isDataDirty() {
+        return isDataDirty;
+    }
 
+    public void setDataDirty(boolean dataDirty) {
+        isDataDirty = dataDirty;
+    }
 }

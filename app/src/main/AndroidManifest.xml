@@ -273,10 +273,10 @@
             android:screenOrientation="portrait"></activity>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.OrderPayQRCodeActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.user.BalanceBankWithdrawActivity"
             android:screenOrientation="portrait"></activity>

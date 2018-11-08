@@ -205,7 +205,6 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
                 }
             });
         }
-
     }
 
     /**

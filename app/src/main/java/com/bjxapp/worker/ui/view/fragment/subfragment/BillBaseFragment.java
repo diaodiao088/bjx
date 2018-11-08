@@ -78,6 +78,10 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
         DataManagerCtrl.getIns().registerListener(this);
 
+        if (DataManagerCtrl.getIns().isDataDirty()){
+            loadData(false);
+        }
+
         /*FirstPageResult pageResult = DataManagerCtrl.getIns().getPageResult();
 
         if (pageResult == null || pageResult.getOrderObject() == null) {
@@ -100,7 +104,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
         if (isVisibleToUser) {
             final ArrayList<OrderDes> pageResult = DataManagerCtrl.getIns().getPageResult();
-            if (pageResult == null || pageResult.size() == 0) {
+            if (pageResult == null || pageResult.size() == 0 || DataManagerCtrl.getIns().isDataDirty()) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
