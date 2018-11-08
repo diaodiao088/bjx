@@ -605,7 +605,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
 
         MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+
+        if (maintainInfo.getPrePaid()) {
+            preBillBtn.setVisibility(View.GONE);
+        }
+
         preBillContentTv.setText("null".equals(maintainInfo.getPrePayService()) ? "" : maintainInfo.getPrePayService());
+        preBillCashTv.setText(maintainInfo.getPreCost());
 
         mIssueReasonTv.setText("null".equals(maintainInfo.getFault()) ? "" : maintainInfo.getFault());
         mStrategyContentTv.setText("null".equals(maintainInfo.getPlan()) ? "" : maintainInfo.getPlan());

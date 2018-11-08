@@ -56,20 +56,5 @@
             android:textColor="#545454"
             android:textSize="16sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="自付"
-            android:textSize="16sp"
-            android:paddingLeft="22dp"
-            android:paddingRight="22dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginTop="30dp"
-            android:textColor="#918F8F"
-            android:background="@drawable/pay_qrcode_bg"
-            />
-
     </LinearLayout>
 </LinearLayout>

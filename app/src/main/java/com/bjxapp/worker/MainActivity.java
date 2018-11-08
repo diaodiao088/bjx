@@ -41,6 +41,7 @@ import com.bjxapp.worker.ui.titlemenu.TitlePopup;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup.OnItemOnClickListener;
 import com.bjxapp.worker.ui.view.activity.JoinUsActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseFragmentActivity;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Fourth;
@@ -138,8 +139,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         PushManager.getInstance().initialize(this.getApplicationContext(), BJXPushService.class);
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), PushIntentService.class);
 
-        Log.d("slog_zd", "clientid is : " + PushManager.getInstance().getClientid(this));
-
         String clientId = PushManager.getInstance().getClientid(this);
 
         if (!TextUtils.isEmpty(clientId)) {
@@ -173,12 +172,12 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.d("slog_zd", "bind push : " + response.body().toString());
+//                Log.d("slog_zd", "bind push : " + response.body().toString());
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.d("slog_zd", "bind push fail : " + t.getLocalizedMessage());
+//                Log.d("slog_zd", "bind push fail : " + t.getLocalizedMessage());
             }
         });
     }
@@ -518,11 +517,12 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 });
 
                 JsonObject jsonObject = response.body();
-                final String msg = jsonObject.get("msg").getAsString();
+
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
                     int code = jsonObject.get("code").getAsInt();
+                    final String msg = jsonObject.get("msg").getAsString();
                     if (code == 0) {
                         int status = jsonObject.get("status").getAsInt();
                         toStatusDialog(status);
@@ -576,7 +576,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     }
 
     private void showStatusDialog(String msg) {
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setIcon(android.R.drawable.ic_dialog_info);
         builder.setTitle("师傅注册通知");
         builder.setMessage(msg);
@@ -596,16 +596,11 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             }
         });
 
-        builder.create().show();*/
-
-
-
-
-
+        builder.create().show();
     }
 
 
-    private void showStatusDialog(int status) {
+    private void showStatusDialog(final int status) {
         String message = "";
 
         switch (status) {
@@ -646,7 +641,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             message = "您的账户出现异常！\n" + "咨询电话:" + getString(R.string.service_telephone_display);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setIcon(android.R.drawable.ic_dialog_info);
         builder.setTitle("工人注册通知");
         builder.setMessage(message);
@@ -675,7 +670,48 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             });
         }
 
-        builder.create().show();
+        builder.create().show();*/
+
+
+        final SimpleConfirmDialog dialog = new SimpleConfirmDialog(this);
+
+        dialog.setTitleVisible(View.VISIBLE);
+        dialog.setTitle("师傅注册通知");
+
+        dialog.setContent(message);
+
+        String negTxt = (status == 4) ? "完善注册信息" : "电话询问";
+
+        dialog.setOnNegativeListener(negTxt, new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (status == 4) {
+                    Utils.startActivityForResult(MainActivity.this, ApplyActivity.class, Constant.ACTIVITY_APPLY_RESULT_CODE);
+                } else {
+                    callService();
+                    ActivitiesManager.getInstance().finishAllActivities();
+                }
+            }
+        });
+
+
+        dialog.setOnPositiveListener("确认", new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (status == 6){
+                    if (dialog != null){
+                        dialog.dismiss();
+                    }
+                }else{
+                    ActivitiesManager.getInstance().finishAllActivities();
+                }
+            }
+        });
+
+        dialog.show();
+
     }
 
     private void callWorkerApply() {

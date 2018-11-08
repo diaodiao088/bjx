@@ -56,6 +56,7 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
             int pushType = intent.getIntExtra("push_type", 0);
             String message = intent.getStringExtra("message");
             String extra = intent.getStringExtra("extra");
+            int payType = intent.getIntExtra("pay_type", 0);
             Utils.showLongToast(OrderPayQRCodeActivity.this, message);
             // onFirstLoadData(false);
 
@@ -97,6 +98,7 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
         String url = getIntent().getStringExtra("url");
         String money = getIntent().getStringExtra("money");
 
+        moneyDetail = money;
         mPayTv.setText(!TextUtils.isEmpty(money) ? money + "元" : "");
 
         Bitmap qrcodeBitmap = EncodeManager.generateQRCode(url);

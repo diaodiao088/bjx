@@ -34,6 +34,10 @@ public interface BillApi {
     Call<JsonObject> getOrderList(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
+    @POST("/order/list/1")
+    Call<JsonObject> getCompleteList(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
     @POST("/order/receive")
     Call<JsonObject> acceptOrder(@FieldMap Map<String, String> params);
 

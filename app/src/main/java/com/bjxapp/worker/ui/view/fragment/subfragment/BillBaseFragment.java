@@ -293,8 +293,6 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                Log.d("slog_zd", "order list : " + response.body().toString());
-
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

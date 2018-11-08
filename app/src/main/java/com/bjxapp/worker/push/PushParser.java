@@ -32,7 +32,10 @@ public class PushParser {
             switch (type) {
 
                 case 11:
-                    sendSuccBroadcast();
+                    sendSuccBroadcast(type);
+                    break;
+                case 10:
+                    sendSuccBroadcast(type);
                     break;
 
             }
@@ -43,10 +46,11 @@ public class PushParser {
 
     }
 
-    private static void sendSuccBroadcast() {
+    private static void sendSuccBroadcast(int type) {
         Intent intent = new Intent();
         intent.setAction(Constant.PUSH_ACTION_ORDER_MODIFIED);
         intent.putExtra("push_type", Constant.PUSH_TYPE_ORDER_PAY);
+        intent.putExtra("pay_type", type);
         App.getInstance().sendBroadcast(intent);
     }
 

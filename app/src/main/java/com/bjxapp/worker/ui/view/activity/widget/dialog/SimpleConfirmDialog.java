@@ -61,7 +61,7 @@ public class SimpleConfirmDialog {
 
     public SimpleConfirmDialog setOnNegativeListener(int resId, View.OnClickListener listener) {
 
-        if (resId > 0){
+        if (resId > 0) {
             String text = mCtx.getResources().getString(resId);
 
             mCancelTv.setText(text);
@@ -72,9 +72,28 @@ public class SimpleConfirmDialog {
         return this;
     }
 
+    public SimpleConfirmDialog setOnNegativeListener(String resId, View.OnClickListener listener) {
+
+
+        mCancelTv.setText(resId);
+
+        mCancelTv.setOnClickListener(listener);
+
+        return this;
+    }
+
+    public SimpleConfirmDialog setOnPositiveListener(String resId, View.OnClickListener listener) {
+
+
+        mOkTv.setText(resId);
+        mOkTv.setOnClickListener(listener);
+
+        return this;
+    }
+
     public SimpleConfirmDialog setOnPositiveListener(int resId, View.OnClickListener listener) {
 
-        if (resId > 0){
+        if (resId > 0) {
             String text = mCtx.getResources().getString(resId);
 
             mOkTv.setText(text);
@@ -86,41 +105,49 @@ public class SimpleConfirmDialog {
     }
 
 
-    public SimpleConfirmDialog setOnCancelListener(DialogInterface.OnCancelListener listener){
+    public SimpleConfirmDialog setOnCancelListener(DialogInterface.OnCancelListener listener) {
         mDialog.setOnCancelListener(listener);
         return this;
     }
 
 
-    public SimpleConfirmDialog setTitle(int resId){
+    public SimpleConfirmDialog setTitle(int resId) {
 
         mTitleTv.setText(mCtx.getResources().getString(resId));
 
         return this;
     }
 
-    public SimpleConfirmDialog setContent(int resId){
+    public SimpleConfirmDialog setTitle(String txt) {
+
+        mTitleTv.setText(txt);
+
+        return this;
+    }
+
+    public SimpleConfirmDialog setContent(int resId) {
 
         mContentTv.setText(mCtx.getResources().getString(resId));
 
         return this;
     }
-    public SimpleConfirmDialog setContent(String content){
-        if(!TextUtils.isEmpty(content)) {
+
+    public SimpleConfirmDialog setContent(String content) {
+        if (!TextUtils.isEmpty(content)) {
             mContentTv.setText(content);
         }
 
         return this;
     }
 
-    public void show(){
-        if (mDialog != null){
+    public void show() {
+        if (mDialog != null) {
             mDialog.show();
         }
     }
 
-    public void dismiss(){
-        if (mDialog != null){
+    public void dismiss() {
+        if (mDialog != null) {
             mDialog.dismiss();
         }
     }
@@ -132,12 +159,12 @@ public class SimpleConfirmDialog {
     }
 
 
-    public SimpleConfirmDialog setContentVisible(int visibility){
+    public SimpleConfirmDialog setContentVisible(int visibility) {
         mContentTv.setVisibility(visibility);
         return this;
     }
 
-    public SimpleConfirmDialog setTitleVisible(int visibility){
+    public SimpleConfirmDialog setTitleVisible(int visibility) {
         mTitleTv.setVisibility(visibility);
         return this;
     }

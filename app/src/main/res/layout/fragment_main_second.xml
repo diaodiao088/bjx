@@ -156,7 +156,7 @@
             android:layout_height="fill_parent"
             android:background="@color/white"
             android:padding="10dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <com.bjxapp.worker.controls.XImageView
                 android:id="@+id/order_history_list_load_again_image"

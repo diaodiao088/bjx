@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -21,7 +22,10 @@ import android.widget.RelativeLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
+import com.bjxapp.worker.adapter.MessageAdapter;
 import com.bjxapp.worker.adapter.OrderAdapter;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XWaitingDialog;
@@ -39,6 +43,7 @@ import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.utils.Logger;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.R;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
@@ -109,26 +114,28 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                JsonObject result = response.body();
-                int code = result.get("code").getAsInt();
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    JsonObject result = response.body();
+                    int code = result.get("code").getAsInt();
 
-                if (code == 0) {
-                    JsonObject accountItem = result.getAsJsonObject("account");
+                    if (code == 0) {
+                        JsonObject accountItem = result.getAsJsonObject("account");
 
-                    final AccountInfo accountInfo = new AccountInfo(accountItem.get("balanceAmount").getAsFloat(),
-                            accountItem.get("canWithdrawalAmount").getAsFloat(),
-                            accountItem.get("incomeRank").getAsInt(),
-                            accountItem.get("orderQuantity").getAsInt(),
-                            accountItem.get("totalIncome").getAsFloat(),
-                            accountItem.get("totalOrderAmount").getAsFloat(),
-                            accountItem.get("withdrawnAmount").getAsFloat());
+                        final AccountInfo accountInfo = new AccountInfo(accountItem.get("balanceAmount").getAsFloat(),
+                                accountItem.get("canWithdrawalAmount").getAsFloat(),
+                                accountItem.get("incomeRank").getAsInt(),
+                                accountItem.get("orderQuantity").getAsInt(),
+                                accountItem.get("totalIncome").getAsFloat(),
+                                accountItem.get("totalOrderAmount").getAsFloat(),
+                                accountItem.get("withdrawnAmount").getAsFloat());
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateAccountInfo(accountInfo);
-                        }
-                    });
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateAccountInfo(accountInfo);
+                            }
+                        });
+                    }
                 }
             }
 
@@ -166,8 +173,8 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         mXListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ReceiveOrder order = (ReceiveOrder) mXListView.getItemAtPosition(position);
-                startOrderDetailActivity(String.valueOf(order.getOrderID()));
+                OrderDes order = (OrderDes) mXListView.getItemAtPosition(position);
+                startOrderDetailActivity(String.valueOf(order.getOrderId()));
             }
         });
 
@@ -222,53 +229,235 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         mXListView.setRefreshTime(refreshTimeString);
     }
 
-    private AsyncTask<Void, Void, List<ReceiveOrder>> mFirstLoadTask;
 
     private void onFirstLoadData(final Boolean loading) {
-        /*if (Utils.isNetworkAvailable(mActivity)) {
-            if (loading) {
-                mWaitingDialog.show("正在加载中，请稍候...", false);
-            }
-            mFirstLoadTask = new AsyncTask<Void, Void, List<ReceiveOrder>>() {
-                @Override
-                protected List<ReceiveOrder> doInBackground(Void... params) {
-                    return LogicFactory.getDesktopLogic(mActivity).getHistoryOrders(1, mBatchSize);
-                }
 
-                @Override
-                protected void onPostExecute(List<ReceiveOrder> result) {
-                    if (loading) {
-                        mWaitingDialog.dismiss();
-                    }
-
-                    if (result == null) {
-                        mLoadAgainLayout.setVisibility(View.VISIBLE);
-                        mXListView.setVisibility(View.GONE);
-                        return;
-                    }
-                    mCurrentBatch = 1;
-                    mOrdersArray.clear();
-                    mOrdersArray.addAll(result);
-                    mOrderAdapter = new OrderAdapter(mActivity, mOrdersArray);
-                    mXListView.setAdapter(mOrderAdapter);
-                    mCurrentBatch++;
-
-                    if (mOrdersArray.size() > 0) {
-                        mLoadAgainLayout.setVisibility(View.GONE);
-                        mXListView.setVisibility(View.VISIBLE);
-                    }
-                }
-            };
-            mFirstLoadTask.execute();
-        } else {
+        if (!Utils.isNetworkAvailable(mActivity)) {
             Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
-        }*/
+        }
+
+        if (loading && mWaitingDialog != null) {
+            mWaitingDialog.show("正在加载中，请稍候...", false);
+        }
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        params.put("pageNum", String.valueOf(1));
+        params.put("pageSize", String.valueOf(20));
+
+        Call<JsonObject> call = billApi.getCompleteList(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (loading) {
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                        }
+                    });
+                }
+
+                JsonObject jsonObject = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    String msg = jsonObject.get("msg").getAsString();
+                    int code = jsonObject.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        JsonObject pageObject = jsonObject.getAsJsonObject("page");
+                      //  JsonObject object = (JsonObject) pageObject.get(0);
+                        JsonArray itemArray = pageObject.getAsJsonArray("list");
+
+                        final ArrayList<OrderDes> list = new ArrayList<>();
+
+                        if (itemArray != null && itemArray.size() > 0) {
+
+                            for (int i = 0; i < itemArray.size(); i++) {
+
+                                JsonObject item = (JsonObject) itemArray.get(i);
+
+                                String orderId = item.get("orderId").getAsString();
+                                int processStatus = item.get("processStatus").getAsInt();
+                                int status = item.get("status").getAsInt();
+
+                                JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
+
+                                String serviceName = detailItem.get("serviceName").getAsString();
+                                String appointmentDay = detailItem.get("appointmentDay").getAsString();
+                                String appointmentEndTime = detailItem.get("appointmentEndTime").getAsString();
+                                String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
+                                String locationAddress = detailItem.get("locationAddress").getAsString();
+                                String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
+
+                                OrderDes orderItem = new OrderDes(orderId, processStatus, status,
+                                        serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
+                                        locationAddress, serviceVisitCost);
+
+                                list.add(orderItem);
+                            }
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mCurrentBatch = 1;
+
+                                mOrdersArray.clear();
+                                mOrdersArray.addAll(list);
+
+                                mOrderAdapter = new OrderAdapter(mActivity, mOrdersArray);
+                                mXListView.setAdapter(mOrderAdapter);
+                                mCurrentBatch++;
+
+                                if (mOrdersArray.size() > 0) {
+                                    mLoadAgainLayout.setVisibility(View.GONE);
+                                    mXListView.setVisibility(View.VISIBLE);
+                                }
+
+                            }
+                        });
+
+
+                    } else {
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                if (loading) {
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
+
+    private String mCreateTime;
+
+    private String getFormatedTime() {
+
+        if (TextUtils.isEmpty(mCreateTime)) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            mCreateTime = format.format(new Date());
+        }
+
+        return mCreateTime;
+    }
+
+    private String updateFormatedTime() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        mCreateTime = format.format(new Date());
+        return mCreateTime;
+    }
+
 
     private AsyncTask<Void, Void, List<ReceiveOrder>> mRefreshTask;
 
     @Override
     public void onRefresh() {
+
+        if (!Utils.isNetworkAvailable(mActivity)) {
+            Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
+        }
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        params.put("pageNum", String.valueOf(1));
+        params.put("pageSize", String.valueOf(20));
+
+        Call<JsonObject> call = billApi.getCompleteList(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject jsonObject = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    String msg = jsonObject.get("msg").getAsString();
+                    int code = jsonObject.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        JsonObject pageObject = jsonObject.getAsJsonObject("page");
+                        //  JsonObject object = (JsonObject) pageObject.get(0);
+                        JsonArray itemArray = pageObject.getAsJsonArray("list");
+
+                        final ArrayList<OrderDes> list = new ArrayList<>();
+
+                        if (itemArray != null && itemArray.size() > 0) {
+
+                            for (int i = 0; i < itemArray.size(); i++) {
+
+                                JsonObject item = (JsonObject) itemArray.get(i);
+
+                                String orderId = item.get("orderId").getAsString();
+                                int processStatus = item.get("processStatus").getAsInt();
+                                int status = item.get("status").getAsInt();
+
+                                JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
+
+                                String serviceName = detailItem.get("serviceName").getAsString();
+                                String appointmentDay = detailItem.get("appointmentDay").getAsString();
+                                String appointmentEndTime = detailItem.get("appointmentEndTime").getAsString();
+                                String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
+                                String locationAddress = detailItem.get("locationAddress").getAsString();
+                                String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
+
+                                OrderDes orderItem = new OrderDes(orderId, processStatus, status,
+                                        serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
+                                        locationAddress, serviceVisitCost);
+
+                                list.add(orderItem);
+                            }
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mCurrentBatch = 1;
+
+                                mOrdersArray.clear();
+                                mOrdersArray.addAll(list);
+
+                                mOrderAdapter = new OrderAdapter(mActivity, mOrdersArray);
+                                mXListView.setAdapter(mOrderAdapter);
+                                mCurrentBatch++;
+                            }
+                        });
+                    } else {
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+            }
+        });
+
+
+
         /*mRefreshTask = new AsyncTask<Void, Void, List<ReceiveOrder>>() {
             @Override
             protected List<ReceiveOrder> doInBackground(Void... params) {
@@ -302,6 +491,88 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
     @Override
     public void onLoadMore() {
+
+        if (!Utils.isNetworkAvailable(mActivity)) {
+            Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
+        }
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
+        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
+        params.put("pageNum", String.valueOf(mCurrentBatch));
+        params.put("pageSize", String.valueOf(20));
+
+        Call<JsonObject> call = billApi.getCompleteList(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject jsonObject = response.body();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    String msg = jsonObject.get("msg").getAsString();
+                    int code = jsonObject.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        JsonObject pageObject = jsonObject.getAsJsonObject("page");
+                        JsonArray itemArray = pageObject.getAsJsonArray("list");
+
+                        final ArrayList<OrderDes> list = new ArrayList<>();
+
+                        if (itemArray != null && itemArray.size() > 0) {
+
+                            for (int i = 0; i < itemArray.size(); i++) {
+
+                                JsonObject item = (JsonObject) itemArray.get(i);
+
+                                String orderId = item.get("orderId").getAsString();
+                                int processStatus = item.get("processStatus").getAsInt();
+                                int status = item.get("status").getAsInt();
+
+                                JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
+
+                                String serviceName = detailItem.get("serviceName").getAsString();
+                                String appointmentDay = detailItem.get("appointmentDay").getAsString();
+                                String appointmentEndTime = detailItem.get("appointmentEndTime").getAsString();
+                                String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
+                                String locationAddress = detailItem.get("locationAddress").getAsString();
+                                String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
+
+                                OrderDes orderItem = new OrderDes(orderId, processStatus, status,
+                                        serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
+                                        locationAddress, serviceVisitCost);
+
+                                list.add(orderItem);
+                            }
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mOrdersArray.addAll(list);
+                                mOrderAdapter.notifyDataSetChanged();
+                                mCurrentBatch++;
+                                onLoadFinished();
+                            }
+                        });
+                    } else {
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+            }
+        });
+
+
+
+
         /*mLoadMoreTask = new AsyncTask<Void, Void, List<ReceiveOrder>>() {
             @Override
             protected List<ReceiveOrder> doInBackground(Void... params) {
@@ -326,6 +597,12 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
             }
         };
         mLoadMoreTask.execute();*/
+
+
+
+
+
+
     }
 
     private void startOrderDetailActivity(String orderID) {
@@ -371,9 +648,6 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     @Override
     public void onDestroy() {
         try {
-            if (mFirstLoadTask != null) {
-                mFirstLoadTask.cancel(true);
-            }
             if (mRefreshTask != null) {
                 mRefreshTask.cancel(true);
             }
