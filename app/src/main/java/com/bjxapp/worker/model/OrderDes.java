@@ -43,6 +43,8 @@ public class OrderDes {
 
     private String esCost;
 
+    private boolean inGuaranteePeriod;
+
     public OrderDes(String orderId, int processStatus, int status, String serviceName,
                     String appointmentDay, String appointmentEndTime,
                     String appointmentStartTime, String locationAddress,
@@ -56,6 +58,14 @@ public class OrderDes {
         this.appointmentStartTime = appointmentStartTime;
         this.locationAddress = locationAddress;
         this.serviceVisitCost = serviceVisitCost;
+    }
+
+    public boolean isInGuaranteePeriod() {
+        return inGuaranteePeriod;
+    }
+
+    public void setInGuaranteePeriod(boolean inGuaranteePeriod) {
+        this.inGuaranteePeriod = inGuaranteePeriod;
     }
 
     public String getEsCost() {

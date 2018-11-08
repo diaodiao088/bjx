@@ -67,7 +67,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     private static final int TYPE_SAFE = 0X02;
     private static final int TYPE_UNSAFE = 0X03;
 
-    private int mCurrentType;
+    private int mCurrentType = TYPE_TOTAL;
 
     private LinearLayout mHistoryTotalLy, mHistorySafeLy, mHistoryUnsafeLy;
     private TextView mHistoryTotalTv, mHistorySafeTv, mHistoryUnsafeTv;
@@ -246,7 +246,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
         params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
         params.put("pageNum", String.valueOf(1));
-        params.put("pageSize", String.valueOf(20));
+        params.put("pageSize", String.valueOf(10));
 
         Call<JsonObject> call = billApi.getCompleteList(params);
 
@@ -274,7 +274,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                     if (code == 0) {
 
                         JsonObject pageObject = jsonObject.getAsJsonObject("page");
-                      //  JsonObject object = (JsonObject) pageObject.get(0);
+                        //  JsonObject object = (JsonObject) pageObject.get(0);
                         JsonArray itemArray = pageObject.getAsJsonArray("list");
 
                         final ArrayList<OrderDes> list = new ArrayList<>();
@@ -298,9 +298,15 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String locationAddress = detailItem.get("locationAddress").getAsString();
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
 
+                                JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
+
+                                boolean isGuarnt = maintainObject.get("inGuaranteePeriod").getAsBoolean();
+
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setInGuaranteePeriod(isGuarnt);
 
                                 list.add(orderItem);
                             }
@@ -315,7 +321,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 mOrdersArray.clear();
                                 mOrdersArray.addAll(list);
 
-                                mOrderAdapter = new OrderAdapter(mActivity, mOrdersArray);
+                                mOrderAdapter = new OrderAdapter(mActivity, getSpecItem(mCurrentType));
                                 mXListView.setAdapter(mOrderAdapter);
                                 mCurrentBatch++;
 
@@ -383,7 +389,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
         params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
         params.put("pageNum", String.valueOf(1));
-        params.put("pageSize", String.valueOf(20));
+        params.put("pageSize", String.valueOf(10));
 
         Call<JsonObject> call = billApi.getCompleteList(params);
 
@@ -424,9 +430,15 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String locationAddress = detailItem.get("locationAddress").getAsString();
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
 
+                                JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
+
+                                boolean isGuarnt = maintainObject.get("inGuaranteePeriod").getAsBoolean();
+
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setInGuaranteePeriod(isGuarnt);
 
                                 list.add(orderItem);
                             }
@@ -441,9 +453,11 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 mOrdersArray.clear();
                                 mOrdersArray.addAll(list);
 
-                                mOrderAdapter = new OrderAdapter(mActivity, mOrdersArray);
+                                mOrderAdapter = new OrderAdapter(mActivity, getSpecItem(mCurrentType));
                                 mXListView.setAdapter(mOrderAdapter);
                                 mCurrentBatch++;
+
+                                onLoadFinished();
                             }
                         });
                     } else {
@@ -456,35 +470,6 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
             }
         });
 
-
-
-        /*mRefreshTask = new AsyncTask<Void, Void, List<ReceiveOrder>>() {
-            @Override
-            protected List<ReceiveOrder> doInBackground(Void... params) {
-                return LogicFactory.getDesktopLogic(mActivity).getHistoryOrders(1, mBatchSize);
-            }
-
-            @Override
-            protected void onPostExecute(List<ReceiveOrder> result) {
-                if (result == null) {
-                    try {
-                        onLoadFinished();
-                    } catch (Exception e) {
-                        Logger.i(e.getMessage());
-                    }
-                    return;
-                }
-                mCurrentBatch = 1;
-                mOrdersArray.clear();
-                mOrdersArray.addAll(result);
-                mOrderAdapter = new OrderAdapter(mActivity, mOrdersArray);
-                mXListView.setAdapter(mOrderAdapter);
-                mCurrentBatch++;
-
-                onLoadFinished();
-            }
-        };
-        mRefreshTask.execute();*/
     }
 
     private AsyncTask<Void, Void, List<ReceiveOrder>> mLoadMoreTask;
@@ -502,7 +487,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
         params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
         params.put("pageNum", String.valueOf(mCurrentBatch));
-        params.put("pageSize", String.valueOf(20));
+        params.put("pageSize", String.valueOf(10));
 
         Call<JsonObject> call = billApi.getCompleteList(params);
 
@@ -542,9 +527,15 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String locationAddress = detailItem.get("locationAddress").getAsString();
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
 
+                                JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
+
+                                boolean isGuarnt = maintainObject.get("inGuaranteePeriod").getAsBoolean();
+
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setInGuaranteePeriod(isGuarnt);
 
                                 list.add(orderItem);
                             }
@@ -555,6 +546,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                             public void run() {
 
                                 mOrdersArray.addAll(list);
+                                mOrderAdapter.setReceiverInfo(getSpecItem(mCurrentType));
                                 mOrderAdapter.notifyDataSetChanged();
                                 mCurrentBatch++;
                                 onLoadFinished();
@@ -569,40 +561,6 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
             public void onFailure(Call<JsonObject> call, Throwable t) {
             }
         });
-
-
-
-
-        /*mLoadMoreTask = new AsyncTask<Void, Void, List<ReceiveOrder>>() {
-            @Override
-            protected List<ReceiveOrder> doInBackground(Void... params) {
-                return LogicFactory.getDesktopLogic(mActivity).getHistoryOrders(mCurrentBatch, mBatchSize);
-            }
-
-            @Override
-            protected void onPostExecute(List<ReceiveOrder> result) {
-                if (result == null) {
-                    try {
-                        Utils.showShortToast(mActivity, getString(R.string.common_no_more_data_message));
-                        onLoadFinished();
-                    } catch (Exception e) {
-                        Logger.i(e.getMessage());
-                    }
-                    return;
-                }
-                mOrdersArray.addAll(result);
-                mOrderAdapter.notifyDataSetChanged();
-                onLoadFinished();
-                mCurrentBatch++;
-            }
-        };
-        mLoadMoreTask.execute();*/
-
-
-
-
-
-
     }
 
     private void startOrderDetailActivity(String orderID) {
@@ -687,9 +645,42 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         }
     }
 
+    private ArrayList<OrderDes> getSpecItem(int status) {
+
+        ArrayList<OrderDes> list = new ArrayList<>();
+
+        switch (status) {
+            case TYPE_TOTAL:
+                return mOrdersArray;
+            case TYPE_SAFE:
+                for (int i = 0; i < mOrdersArray.size(); i++) {
+                    OrderDes item = mOrdersArray.get(i);
+                    if (item.isInGuaranteePeriod()) {
+                        list.add(item);
+                    }
+                }
+
+                return list;
+            case TYPE_UNSAFE:
+                for (int i = 0; i < mOrdersArray.size(); i++) {
+                    OrderDes item = mOrdersArray.get(i);
+                    if (!item.isInGuaranteePeriod()) {
+                        list.add(item);
+                    }
+                }
+                return list;
+        }
+        return list;
+    }
+
     private void refreshItem(int status) {
 
+        if (mOrdersArray == null || mOrdersArray.size() == 0) {
+            return;
+        }
 
+        mOrderAdapter.setReceiverInfo(getSpecItem(status));
+        mOrderAdapter.notifyDataSetChanged();
     }
 
 }
