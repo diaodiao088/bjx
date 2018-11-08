@@ -28,5 +28,4 @@ public class ApplyEditActivity extends Activity {
         context.startActivity(intent);
     }
 
-
 }

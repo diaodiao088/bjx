@@ -1,5 +1,7 @@
 package com.bjxapp.worker.model;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -33,7 +35,7 @@ public class MaintainInfo {
 
     private String totalCost;  // 总报价
 
-    public MaintainInfo(){
+    public MaintainInfo() {
 
     }
 
@@ -54,7 +56,7 @@ public class MaintainInfo {
     }
 
     public String getCostDetail() {
-        return costDetail;
+        return "null".equals(this.costDetail) ? "" : this.costDetail;
     }
 
     public void setCostDetail(String costDetail) {
@@ -62,7 +64,7 @@ public class MaintainInfo {
     }
 
     public String getFault() {
-        return fault;
+        return "null".equals(this.fault) ? "" : this.fault;
     }
 
     public void setFault(String fault) {
@@ -86,7 +88,7 @@ public class MaintainInfo {
     }
 
     public String getPlan() {
-        return plan;
+        return "null".equals(this.plan) ? "" : this.plan;
     }
 
     public void setPlan(String plan) {
@@ -103,9 +105,9 @@ public class MaintainInfo {
 
     public String getPreCost() {
 
-        if (getPrePaid()){
+        if (getPrePaid()) {
             return preCost;
-        }else{
+        } else {
             return "0.00";
         }
 

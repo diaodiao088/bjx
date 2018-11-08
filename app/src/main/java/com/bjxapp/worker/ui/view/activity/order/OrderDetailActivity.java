@@ -433,7 +433,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             toNewBillStatus();
         } else if (processStatus == 2) {
             toWaitStatus();
-        } else if (processStatus == 3 || processStatus == 4 || processStatus == 5) {
+        } else if (processStatus == 3 || processStatus == 4 || processStatus == 5
+                || processStatus == 6 || processStatus == 7) {
             toDetailUi();
         }
     }
@@ -593,11 +594,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         if (processStatus == 3) {
             mStatusTv.setText("待上门");
+            mSaveButton.setText("完成");
         } else if (processStatus == 4) {
             mStatusTv.setText("已上门");
+            mSaveButton.setText("完成");
         } else if (processStatus == 5) {
             mStatusTv.setText("待支付");
             preBillBtn.setVisibility(View.GONE);
+            mSaveButton.setText("支付");
             mServiceEditBtn.setVisibility(View.GONE);
         } else if (processStatus == 6) {
             mStatusTv.setText("待评价");
@@ -1231,6 +1235,18 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         params.put("totalAmount", maintainInfo.getTotalAmount());
         params.put("payAmount", maintainInfo.getPayAmount());
 
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < mImageList.size(); i++) {
+            builder.append(mImageList.get(i));
+            if (i != mImageList.size() - 1) {
+                builder.append(",");
+            }
+        }
+
+        if (mImageList.size() > 0) {
+            params.put("masterImgUrls", builder.toString());
+        }
+
         retrofit2.Call<JsonObject> request = billApi.completePay(params);
 
         request.enqueue(new retrofit2.Callback<JsonObject>() {
@@ -1269,7 +1285,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private void toThirdStep(boolean showDialog) {
 
-        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null) {
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null) {
             return;
         }
 
@@ -1278,6 +1294,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
 
         final String money = mDetailInfo.getMaintainInfo().getPayAmount();
+
+        final OrderDes orderDes = mDetailInfo.getOrderDes();
 
         BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
         Map<String, String> params = new HashMap<>();
@@ -1302,6 +1320,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
+
+                            mSaveButton.setText("支付");
+                            orderDes.setProcessStatus(5);
 
                             if (mWaitingDialog != null) {
                                 mWaitingDialog.dismiss();

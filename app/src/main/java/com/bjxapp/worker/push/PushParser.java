@@ -1,12 +1,15 @@
 package com.bjxapp.worker.push;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.text.TextUtils;
 
 import com.bjxapp.worker.App;
+import com.bjxapp.worker.R;
 import com.bjxapp.worker.global.Constant;
 
 import org.json.JSONObject;
+import java.io.IOException;
 
 /**
  * Created by zhangdan on 2018/11/8.
@@ -15,6 +18,7 @@ import org.json.JSONObject;
  */
 
 public class PushParser {
+
 
     public static void onMessageArrived(String content) {
 
@@ -37,13 +41,50 @@ public class PushParser {
                 case 10:
                     sendSuccBroadcast(type);
                     break;
+                case 0:
+                    newBillCome();
+                    break;
+                case 20:
+                    getMoneySuccess();
+                    break;
 
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    private static void getMoneySuccess() {
+        MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.pay_succ);
+
+        try {
+            mediaPlayer.prepare();
+        } catch (IllegalStateException e) {
+
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.start();
+    }
+
+
+    private static void newBillCome() {
+
+        MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.new_bill);
+
+        try {
+            mediaPlayer.prepare();
+        } catch (IllegalStateException e) {
+
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.start();
     }
 
     private static void sendSuccBroadcast(int type) {

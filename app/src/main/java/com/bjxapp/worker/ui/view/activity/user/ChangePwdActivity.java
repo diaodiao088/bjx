@@ -56,6 +56,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 
     public static final int FROM_FORGET_PWD = 0x01;
     public static final int FROM_REGISTER_PWD = 0x02;
+    public static final int FROM_EDIT_APPLY = 0x03;
 
     public static final String FROM_TYPE = "from_type";
 
@@ -218,7 +219,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
                                     mDialog.dismiss();
                                 }
 
-                                Utils.showShortToast(context, "code: " + code + ":" + msg);
+                                Utils.showShortToast(context, msg);
                             }
                         });
                     }

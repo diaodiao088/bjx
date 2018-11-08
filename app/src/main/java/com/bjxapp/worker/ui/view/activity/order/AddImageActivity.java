@@ -88,6 +88,11 @@ public class AddImageActivity extends Activity {
         onBackPressed();
     }
 
+    @OnClick(R.id.add_confirm_btn)
+    void onClickConfirm() {
+        startConfirmReal();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -355,25 +360,25 @@ public class AddImageActivity extends Activity {
     }
 
 
-    public static void goToActivity(Activity ctx , int code ) {
+    public static void goToActivity(Activity ctx, int code) {
 
         Intent intent = new Intent();
         intent.setClass(ctx, AddImageActivity.class);
         //ctx.startactivityfor(intent);
-        ctx.startActivityForResult(intent , code);
+        ctx.startActivityForResult(intent, code);
     }
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
+    }
 
-        // super.onBackPressed();
-
+    private void startConfirmReal() {
         if (mList.size() <= 1) {
-            super.onBackPressed();
+            Utils.showShortToast(this, "请先选择照片 ..");
         } else {
             startCommitImage();
         }
-
     }
 
     private void startCommitImage() {
@@ -456,7 +461,7 @@ public class AddImageActivity extends Activity {
                 if (response.isSuccessful()) {
                     String str = response.body().string();
 
-                    ArrayList<String> list = new ArrayList<>();
+                    final ArrayList<String> list = new ArrayList<>();
                     try {
                         JSONObject object = new JSONObject(str);
                         JSONArray accessAddress = object.getJSONArray("list");
@@ -469,11 +474,16 @@ public class AddImageActivity extends Activity {
                         e.printStackTrace();
                     }
 
-                    Intent intent = new Intent();
-                    intent.putStringArrayListExtra("result", list);
-                    setResult(RESULT_OK, intent);
-                    Utils.finishWithoutAnim(AddImageActivity.this);
-
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(AddImageActivity.this, "图片保存成功！");
+                            Intent intent = new Intent();
+                            intent.putStringArrayListExtra("result", list);
+                            setResult(RESULT_OK, intent);
+                            Utils.finishWithoutAnim(AddImageActivity.this);
+                        }
+                    });
                 } else {
                     mHandler.post(new Runnable() {
                         @Override

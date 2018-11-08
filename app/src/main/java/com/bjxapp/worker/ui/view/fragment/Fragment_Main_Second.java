@@ -174,7 +174,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 OrderDes order = (OrderDes) mXListView.getItemAtPosition(position);
-                startOrderDetailActivity(String.valueOf(order.getOrderId()));
+                startOrderDetailActivity(order);
             }
         });
 
@@ -563,12 +563,13 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         });
     }
 
-    private void startOrderDetailActivity(String orderID) {
+    private void startOrderDetailActivity(OrderDes order) {
         Intent intent = new Intent();
-        intent.setClass(mActivity, OrderDetailActivity.class);
-        intent.putExtra("order_id", orderID);
+        intent.setClass(getActivity(), OrderDetailActivity.class);
+        intent.putExtra("order_id", order.getOrderId());
+        intent.putExtra("processStatus", order.getProcessStatus());
         startActivityForResult(intent, Constant.ACTIVITY_ORDER_DETAIL_RESULT_CODE);
-        mActivity.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     /**
