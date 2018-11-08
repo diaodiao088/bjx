@@ -42,15 +42,6 @@ public abstract class BaseActivity extends Activity {
 		Uploader.onPageEnd(context, getPageName());
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Utils.finishActivity(this);
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-
 	/**
 	 * 绑定控件id
 	 */

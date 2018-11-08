@@ -589,7 +589,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
             mCityEditTv.setTag(userInfoA.getRegionId());
 
             mUserNameTv.setText(userInfoA.getName());
-            mUserWorkYearsEdit.setText(userInfoA.getWorkingYear());
+            mUserWorkYearsEdit.setText(String.valueOf(userInfoA.getWorkingYear()));
 
             mUserIDEdit.setText(userInfoA.getIdentityCardNo());
 
@@ -758,7 +758,6 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         });
     }
 
-    private AsyncTask<String, Void, UserApplyInfo> mLoadDataTask;
 
     private void loadData() {
 
@@ -800,7 +799,6 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                             String regionName = info.get("regionName").getAsString();
                             int workYear = info.get("workingYear").getAsInt();
 
-
                             final UserInfoA userInfoA = new UserInfoA(mImageAddress, identityCardBehindImgUrl, identityCardFrontImgUrl,
                                     identityCardNo, latitued, longitude, locationAddress, name, regionId, regionName, workYear);
 
@@ -830,12 +828,6 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
     @Override
     public void onDestroy() {
-        try {
-            if (mLoadDataTask != null) {
-                mLoadDataTask.cancel(true);
-            }
-        } catch (Exception e) {
-        }
 
         super.onDestroy();
     }

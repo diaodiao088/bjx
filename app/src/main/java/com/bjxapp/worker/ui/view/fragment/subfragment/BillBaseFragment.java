@@ -78,7 +78,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
         DataManagerCtrl.getIns().registerListener(this);
 
-        if (DataManagerCtrl.getIns().isDataDirty()){
+        if (DataManagerCtrl.getIns().isDataDirty()) {
             loadData(false);
         }
 
@@ -222,10 +222,13 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                                 String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
                                 String locationAddress = detailItem.get("locationAddress").getAsString();
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
+                                String serviceEsCost = detailItem.get("serviceVisitCost").getAsString();
 
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setEsCost(serviceEsCost);
 
                                 list.add(orderItem);
                             }
@@ -400,8 +403,8 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
     }
 
-    private void refreshRedot(ArrayList<OrderDes> orderArray){
-        if (getParentFragment() != null && getParentFragment() instanceof Fragment_Main_First){
+    private void refreshRedot(ArrayList<OrderDes> orderArray) {
+        if (getParentFragment() != null && getParentFragment() instanceof Fragment_Main_First) {
             ((Fragment_Main_First) getParentFragment()).refreshRedot(orderArray);
         }
     }

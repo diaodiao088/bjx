@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by zhangdan on 2018/10/22.
@@ -22,7 +23,12 @@ import butterknife.ButterKnife;
 public class ImageOrderActivity extends Activity {
 
     @BindView(R.id.image_iv)
-     ImageView mIv;
+    ImageView mIv;
+
+    @OnClick(R.id.title_image_back)
+    void onBack() {
+        finish();
+    }
 
     public static final String URL_IMAGE_PATH = "url_image_path";
 
@@ -37,24 +43,24 @@ public class ImageOrderActivity extends Activity {
         initView();
     }
 
-    private void handleIntent(){
+    private void handleIntent() {
         Intent intent = getIntent();
-        if (intent != null){
+        if (intent != null) {
             mImagePath = intent.getStringExtra(URL_IMAGE_PATH);
         }
     }
 
-    private void initView(){
-        if (TextUtils.isEmpty(mImagePath)){
+    private void initView() {
+        if (TextUtils.isEmpty(mImagePath)) {
             return;
         }
         Glide.with(this).load(mImagePath).into(mIv);
     }
 
-    public static void goToActivity(Context ctx , String url){
+    public static void goToActivity(Context ctx, String url) {
         Intent intent = new Intent();
-        intent.setClass(ctx , ImageOrderActivity.class );
-        intent.putExtra(URL_IMAGE_PATH , url);
+        intent.setClass(ctx, ImageOrderActivity.class);
+        intent.putExtra(URL_IMAGE_PATH, url);
         ctx.startActivity(intent);
     }
 

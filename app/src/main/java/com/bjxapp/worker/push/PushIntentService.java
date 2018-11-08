@@ -37,6 +37,7 @@ public class PushIntentService extends GTIntentService {
         if(payload != null){
             String content = new String(payload);
             Log.d("slog_zd","on receive msg : " + content);
+            PushParser.onMessageArrived(content);
         }
 
     }

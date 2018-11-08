@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.utils.Utils;
 
@@ -59,6 +61,18 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
         setContentView(R.layout.activity_service_bill);
         ButterKnife.bind(this);
         initView();
+        handleIntent();
+    }
+
+    private void handleIntent() {
+        if (getIntent() != null) {
+            String reason = getIntent().getStringExtra(REASON);
+            mReasonTv.setText(TextUtils.isEmpty(reason) ? "" : reason);
+            String strategy = getIntent().getStringExtra(STRATEGY);
+            mDoTv.setText(TextUtils.isEmpty(strategy) ? "" : strategy);
+            String detail = getIntent().getStringExtra(STRATEGY);
+            mPriceTv.setText(TextUtils.isEmpty(detail) ? "" : detail);
+        }
     }
 
     private void initView() {
@@ -112,10 +126,13 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
         Utils.finishWithoutAnim(ServiceBillActivity.this);
     }
 
-    public static void goToActivity(Activity context, int code) {
+    public static void goToActivity(Activity context, int code, MaintainInfo maintainInfo) {
 
         Intent intent = new Intent();
         intent.setClass(context, ServiceBillActivity.class);
+        intent.putExtra(REASON, maintainInfo.getFault());
+        intent.putExtra(STRATEGY, maintainInfo.getPlan());
+        intent.putExtra(DETAIL, maintainInfo.getCostDetail());
         context.startActivityForResult(intent, code);
     }
 }

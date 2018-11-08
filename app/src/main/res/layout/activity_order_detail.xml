@@ -519,7 +519,6 @@
                         android:layout_toRightOf="@+id/order_bill_cash_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="100.00"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>
@@ -536,7 +535,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -603,7 +602,6 @@
                         android:layout_toRightOf="@+id/enter_room_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="100.00"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>
@@ -633,7 +631,6 @@
                         android:layout_toRightOf="@+id/entire_price_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="100.00"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>
@@ -663,7 +660,6 @@
                         android:layout_toRightOf="@+id/total_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="100.00"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>
@@ -693,7 +689,6 @@
                         android:layout_toRightOf="@+id/price_ready_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="100.00"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>
@@ -723,7 +718,6 @@
                         android:layout_toRightOf="@+id/fukuan_tv"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical|right"
-                        android:text="100.00"
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>
@@ -765,6 +759,7 @@
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:textColor="#A9A9A9"
+                        android:visibility="gone"
                         android:textSize="16sp" />
 
                 </RelativeLayout>

@@ -76,8 +76,7 @@ public class OrderPaySuccessActivity extends BaseActivity implements OnClickList
 
     @Override
     public void onBackPressed() {
-       // super.onBackPressed();
-
+        super.onBackPressed();
         Intent intent = new Intent();
         intent.setClass(OrderPaySuccessActivity.this , OrderDetailActivity.class);
         startActivity(intent);

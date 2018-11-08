@@ -35,6 +35,8 @@ public class UserInfoA {
 
     private ArrayList<String> mServiceIdList;
 
+    private String pwd;
+
     public UserInfoA(String avatarUrl, String identityCardBehindImgUrl, String identityCardFrontImgUrl, String identityCardNo,
                      String latitude, String longitude, String locationAddress,
                      String name, int regionId, String regionName, int workingYear) {
@@ -49,6 +51,14 @@ public class UserInfoA {
         this.regionId = regionId;
         this.regionName = regionName;
         this.workingYear = workingYear;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
     public String getAvatarUrl() {

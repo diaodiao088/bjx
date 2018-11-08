@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 import com.bjxapp.worker.R;
 import com.bjxapp.worker.controls.XImageView;
@@ -17,6 +19,7 @@ import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.zxing.encoding.EncodeManager;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListener {
@@ -24,6 +27,9 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
     private XTextView mTitleTextView;
     private XImageView mBackImageView;
     private XImageView mQRCodeImageView;
+
+    @BindView(R.id.pay_price)
+    TextView mPayTv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +69,7 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
         Intent intent = new Intent();
         intent.setClass(this, OrderPaySuccessActivity.class);
         intent.putExtra("order_id", orderID);
-        intent.putExtra("money", money);
+        intent.putExtra("money", moneyDetail);
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         finish(this);
@@ -84,9 +90,15 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
 
     }
 
+    String moneyDetail = "";
+
     @Override
     protected void initData() {
         String url = getIntent().getStringExtra("url");
+        String money = getIntent().getStringExtra("money");
+
+        mPayTv.setText(!TextUtils.isEmpty(money) ? money + "元" : "");
+
         Bitmap qrcodeBitmap = EncodeManager.generateQRCode(url);
         mQRCodeImageView.setImageBitmap(qrcodeBitmap);
     }
@@ -110,6 +122,11 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
     @Override
     protected String getPageName() {
         return TAG;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override

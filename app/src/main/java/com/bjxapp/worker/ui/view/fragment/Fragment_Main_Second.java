@@ -3,7 +3,9 @@ package com.bjxapp.worker.ui.view.fragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,11 +22,16 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
 import com.bjxapp.worker.adapter.OrderAdapter;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.controls.listview.XListView.IXListViewListener;
+import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
+import com.bjxapp.worker.model.AccountInfo;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.ReceiveOrder;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
@@ -32,6 +39,11 @@ import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.utils.Logger;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.R;
+import com.google.gson.JsonObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Main_Second extends BaseFragment implements OnClickListener, IXListViewListener {
 
@@ -70,12 +82,67 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        loadBillInfo();
+    }
+
+    @Override
     protected int onCreateContent() {
         return R.layout.fragment_main_second;
     }
 
     @Override
     public void refresh(int enterType) {
+    }
+
+    private void loadBillInfo() {
+
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("userCode", ConfigManager.getInstance(getContext()).getUserCode());
+        params.put("token", ConfigManager.getInstance(getContext()).getUserSession());
+
+        Call<JsonObject> request = profileApi.getAccountInfo(params);
+
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject result = response.body();
+                int code = result.get("code").getAsInt();
+
+                if (code == 0) {
+                    JsonObject accountItem = result.getAsJsonObject("account");
+
+                    final AccountInfo accountInfo = new AccountInfo(accountItem.get("balanceAmount").getAsFloat(),
+                            accountItem.get("canWithdrawalAmount").getAsFloat(),
+                            accountItem.get("incomeRank").getAsInt(),
+                            accountItem.get("orderQuantity").getAsInt(),
+                            accountItem.get("totalIncome").getAsFloat(),
+                            accountItem.get("totalOrderAmount").getAsFloat(),
+                            accountItem.get("withdrawnAmount").getAsFloat());
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateAccountInfo(accountInfo);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void updateAccountInfo(AccountInfo accountInfo) {
+        mHistoryTotalTv.setText("累计订单：" + accountInfo.getOrderQuantity() + "单");
+        mHistorySafeTv.setText("累计金额" + accountInfo.getTotalOrderAmount() + "元");
+        mHistoryUnsafeTv.setText("累计收入" + accountInfo.getWithdrawnAmount() + "元");
     }
 
     private void initViews() {
@@ -346,7 +413,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         }
     }
 
-    private void refreshItem(int status){
+    private void refreshItem(int status) {
 
 
     }

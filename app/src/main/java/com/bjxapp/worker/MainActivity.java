@@ -576,7 +576,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     }
 
     private void showStatusDialog(String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setIcon(android.R.drawable.ic_dialog_info);
         builder.setTitle("师傅注册通知");
         builder.setMessage(msg);
@@ -596,7 +596,12 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             }
         });
 
-        builder.create().show();
+        builder.create().show();*/
+
+
+
+
+
     }
 
 
@@ -613,9 +618,13 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 message = "您的资料正在审核中，请保持手机畅通，收到确认短信后，请重新打开【百家修】，咨询电话:" + getString(R.string.service_telephone_display);
                 break;
             case 7:
-            case 5:
-            case 6:
                 message = "您的账户已被禁用！\n" + "咨询电话:" + getString(R.string.service_telephone_display);
+                break;
+            case 6:
+                message = "您的账户已被停用！\n" + "咨询电话:" + getString(R.string.service_telephone_display);
+                break;
+            case 5:
+                message = "您的账户已被冻结！\n" + "咨询电话:" + getString(R.string.service_telephone_display);
                 break;
             case 4:
                 message = "你的资料未通过 ！ 请重新提交";

@@ -102,7 +102,13 @@ public class MaintainInfo {
     }
 
     public String getPreCost() {
-        return preCost;
+
+        if (getPrePaid()){
+            return preCost;
+        }else{
+            return "0.00";
+        }
+
     }
 
     public void setPreCost(String preCost) {

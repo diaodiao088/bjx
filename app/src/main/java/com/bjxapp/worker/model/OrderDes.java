@@ -41,6 +41,8 @@ public class OrderDes {
 
     private String mLongtitude;
 
+    private String esCost;
+
     public OrderDes(String orderId, int processStatus, int status, String serviceName,
                     String appointmentDay, String appointmentEndTime,
                     String appointmentStartTime, String locationAddress,
@@ -54,6 +56,14 @@ public class OrderDes {
         this.appointmentStartTime = appointmentStartTime;
         this.locationAddress = locationAddress;
         this.serviceVisitCost = serviceVisitCost;
+    }
+
+    public String getEsCost() {
+        return esCost;
+    }
+
+    public void setEsCost(String esCost) {
+        this.esCost = esCost;
     }
 
     public String getPersonName() {

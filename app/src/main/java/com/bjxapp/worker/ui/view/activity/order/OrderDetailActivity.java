@@ -42,6 +42,7 @@ import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
+import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
 
@@ -201,24 +202,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
     }
 
-
-    public void goToNaviActivity(String sourceApplication, String poiname, String lat, String lon, String dev, String style) {
-        StringBuffer stringBuffer = new StringBuffer("androidamap://route?sourceApplication=")
-                .append(sourceApplication);
-        if (!TextUtils.isEmpty(poiname)) {
-            stringBuffer.append("&poiname=").append(poiname);
-        }
-        stringBuffer.append("sname=我的位置")
-                .append("&lat=").append(lat)
-                .append("&lon=").append(lon)
-                .append("&dev=").append(dev)
-                .append("&style=").append(style);
-
-        Intent intent = new Intent("android.intent.action.VIEW", android.net.Uri.parse(stringBuffer.toString()));
-        intent.setPackage("com.autonavi.minimap");
-        startActivity(intent);
-    }
-
     public boolean isInstallByRead(String packageName) {
         return new File("/data/data/" + packageName).exists();
     }
@@ -279,7 +262,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
      */
     @OnClick(R.id.issue_edit_btn)
     void editIssueDetail() {
-        ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE);
+
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null) {
+            return;
+        }
+
+        MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+
+        ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo);
     }
 
     @OnClick(R.id.add_image_content)
@@ -319,9 +309,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         final ArrayList<String> secondData = new ArrayList<>();
         secondData.add("08:00:00--11:00:00");
-        secondData.add("11:00--14:00");
-        secondData.add("14:00--17:00");
-        secondData.add("17:00--20:00");
+        secondData.add("11:00:00--14:00:00");
+        secondData.add("14:00:00--17:00:00");
+        secondData.add("17:00:00--20:00:00");
         final DoublePicker picker = new DoublePicker(this, firstData, secondData);
         picker.setDividerVisible(true);
         picker.setSelectedIndex(0, 0);
@@ -436,7 +426,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             toNewBillStatus();
         } else if (processStatus == 2) {
             toWaitStatus();
-        } else if (processStatus == 3 || processStatus == 4 || processStatus == 5){
+        } else if (processStatus == 3 || processStatus == 4 || processStatus == 5) {
             toDetailUi();
         }
     }
@@ -592,9 +582,40 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             return;
         }
 
+        int processStatus = mDetailInfo.getOrderDes().getProcessStatus();
+
+        if (processStatus == 3) {
+            mStatusTv.setText("待上门");
+        } else if (processStatus == 4) {
+            mStatusTv.setText("已上门");
+        } else if (processStatus == 5) {
+            mStatusTv.setText("待支付");
+            preBillBtn.setVisibility(View.GONE);
+            mServiceEditBtn.setVisibility(View.GONE);
+        } else if (processStatus == 6) {
+            mStatusTv.setText("待评价");
+            preBillBtn.setVisibility(View.GONE);
+            mServiceEditBtn.setVisibility(View.GONE);
+            mSaveButton.setVisibility(View.GONE);
+        } else if (processStatus == 7) {
+            mStatusTv.setText("已评价");
+            preBillBtn.setVisibility(View.GONE);
+            mServiceEditBtn.setVisibility(View.GONE);
+            mSaveButton.setVisibility(View.GONE);
+        }
+
         MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
-        preBillContentTv.setText(maintainInfo.getPrePayService() == null ? "" : maintainInfo.getPrePayService());
-        preBillCashTv.setText(maintainInfo.getPreCost());
+        preBillContentTv.setText("null".equals(maintainInfo.getPrePayService()) ? "" : maintainInfo.getPrePayService());
+
+        mIssueReasonTv.setText("null".equals(maintainInfo.getFault()) ? "" : maintainInfo.getFault());
+        mStrategyContentTv.setText("null".equals(maintainInfo.getPlan()) ? "" : maintainInfo.getPlan());
+        mIssuePriceTv.setText(maintainInfo.getTotalCost());
+
+        mTotalPriceTv.setText(maintainInfo.getTotalCost()); // 总报价
+        mTotalTv.setText(String.valueOf(Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost()))); //总计
+        mPrePayPriceTv.setText(maintainInfo.getPreCost());
+        mFuKuanContentTv.setText(String.valueOf(Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost()) - Double.parseDouble(maintainInfo.getPreCost())));
+
 
     }
 
@@ -709,6 +730,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mPriceTv.setText(order.getServiceVisitCost());
         mRemarkTv.setText(order.getmRemarkDes());
 
+        mEnterRoomPrice.setText(order.getServiceVisitCost());
+
         ArrayList<String> imgList = order.getmCustomImageUrls();
 
         if (imgList != null && imgList.size() > 0) {
@@ -740,6 +763,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 break;
             case 3:
             case 4:
+            case 5:
+            case 6:
+            case 7:
                 toDetailUi();
                 break;
         }
@@ -1127,8 +1153,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 break;
             case 4:
             case 3:
-            case 5:
                 toWaitPay();
+                break;
+            case 5:
+                toThirdStep(true);
                 break;
         }
 
@@ -1158,12 +1186,154 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }*/
     }
 
-    private void toWaitPay(){
+    private void toWaitPay() {
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null || mDetailInfo.getMaintainInfo() == null) {
+            return;
+        }
+
+        final OrderDes order = mDetailInfo.getOrderDes();
+        String id = order.getOrderId();
 
 
+        MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
 
+        if ("null".equals(maintainInfo.getFault()) || maintainInfo.getFault().length() == 0) {
+            Utils.showShortToast(this, "请填写维修项完整信息");
+            return;
+        }
+
+        mWaitingDialog.show("正在生成支付二维码，请稍后", false);
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("orderId", id);
+        // params.put("masterImgUrls" , mImageList)
+        params.put("fault", maintainInfo.getFault());
+        params.put("plan", maintainInfo.getPlan());
+        params.put("costDetail", maintainInfo.getCostDetail());
+        params.put("totalCost", maintainInfo.getTotalCost());
+        params.put("totalAmount", maintainInfo.getTotalAmount());
+        params.put("payAmount", maintainInfo.getPayAmount());
+
+        retrofit2.Call<JsonObject> request = billApi.completePay(params);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                LogUtils.log("pay complete : " + response.body().toString());
+
+                JsonObject object = response.body();
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
+
+                if (code == 0) {
+                    toThirdStep(false);
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                            Utils.showShortToast(OrderDetailActivity.this, msg + ": " + code);
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void toThirdStep(boolean showDialog) {
+
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null) {
+            return;
+        }
+
+        if (showDialog) {
+            mWaitingDialog.show("正在申请支付链接 ..", false);
+        }
+
+        final String money = mDetailInfo.getMaintainInfo().getPayAmount();
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("orderId", orderId);
+        params.put("payType", String.valueOf(1));
+
+        retrofit2.Call<JsonObject> request = billApi.getPayUrl(params);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                LogUtils.log("pay url : " + response.body().toString());
+
+                JsonObject object = response.body();
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
+
+                if (code == 0) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                        }
+                    });
+
+                    String url = object.get("url").getAsString();
+
+                    Intent intent = new Intent(OrderDetailActivity.this, OrderPayQRCodeActivity.class);
+                    intent.putExtra("url", url);
+                    intent.putExtra("money", money);
+                    OrderDetailActivity.this.startActivity(intent);
+
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                            Utils.showShortToast(OrderDetailActivity.this, msg + ": " + code);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Utils.showShortToast(OrderDetailActivity.this, "获取支付链接失败");
+                    }
+                });
+            }
+        });
 
     }
+
 
     private void acceptOperation() {
 
@@ -1264,65 +1434,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }.execute(orderID);*/
     }
 
-
-    private void finishOperation() {
-        String orderID = getIntent().getStringExtra("order_id");
-        if (!Utils.isNotEmpty(orderID)) {
-            return;
-        }
-
-        mWaitingDialog.show("正在完成订单，请稍候...", false);
-        new AsyncTask<String, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(String... params) {
-                int orderID = Integer.valueOf(params[0]);
-                return LogicFactory.getDesktopLogic(context).saveOrderFinishState(orderID);
-            }
-
-            @Override
-            protected void onPostExecute(Integer result) {
-                mWaitingDialog.dismiss();
-                if (result == APIConstants.RESULT_CODE_SUCCESS) {
-                    payOperation();
-                    Intent intent = new Intent();
-                    setResult(RESULT_OK, intent);
-                    Utils.finishWithoutAnim(OrderDetailActivity.this);
-                } else {
-                    Utils.showShortToast(context, "完成订单失败，请重试！");
-                }
-            }
-
-        }.execute(orderID);
-    }
-
     private ArrayList<String> mImageList = new ArrayList<>();
-
-    private void payOperation() {
-        String orderID = getIntent().getStringExtra("order_id");
-        if (!Utils.isNotEmpty(orderID)) {
-            return;
-        }
-
-        mWaitingDialog.show("正在生成支付二维码，请稍候...", false);
-        new AsyncTask<String, Void, XResult>() {
-            @Override
-            protected XResult doInBackground(String... params) {
-                int orderID = Integer.valueOf(params[0]);
-                return LogicFactory.getDesktopLogic(context).getOrderPayUrl(orderID);
-            }
-
-            @Override
-            protected void onPostExecute(XResult result) {
-                mWaitingDialog.dismiss();
-                if (result != null && result.getResultCode() == APIConstants.RESULT_CODE_SUCCESS) {
-                    createPayQRCode(result.getDataObject().toString());
-                } else {
-                    Utils.showShortToast(context, "生成支付二维码失败，请重试！");
-                }
-            }
-
-        }.execute(orderID);
-    }
 
     private void createPayQRCode(String url) {
         if (!Utils.isNotEmpty(url)) {
@@ -1367,6 +1479,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                         ArrayList<String> list = data.getStringArrayListExtra("result");
                         if (list != null) {
                             mImageList.addAll(list);
+
+                            if (mDetailInfo != null && mDetailInfo.getMaintainInfo() != null) {
+                                mDetailInfo.getMaintainInfo().setMasterImgUrls(mImageList);
+                            }
+
                         }
                     }
                     break;
@@ -1384,7 +1501,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                         maintainInfo.setTotalCost(data.getStringExtra(ServiceBillActivity.PRICE));
 
                         updateMainTainUi(maintainInfo);
-
                     }
                     break;
             }
@@ -1406,8 +1522,17 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mIssueReasonTv.setText(maintainInfo.getFault());
         mIssuePriceTv.setText(maintainInfo.getTotalCost());
         mStrategyContentTv.setText(maintainInfo.getPlan());
-    }
+        mTotalPriceTv.setText(maintainInfo.getTotalCost());
 
+        maintainInfo.setTotalAmount(String.valueOf(Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost())));
+        mTotalTv.setText(maintainInfo.getTotalAmount());
+        mPrePayPriceTv.setText(maintainInfo.getPreCost());
+
+        double payAmount = Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost()) - Double.parseDouble(maintainInfo.getPreCost());
+        payAmount = payAmount > 0 ? payAmount : 0.00;
+        maintainInfo.setPayAmount(String.valueOf(payAmount));
+        mFuKuanContentTv.setText(maintainInfo.getPayAmount());
+    }
 
     private void showUserImages() {
         if (mIDImageUrls == null || mIDImageUrls.size() == 0) {

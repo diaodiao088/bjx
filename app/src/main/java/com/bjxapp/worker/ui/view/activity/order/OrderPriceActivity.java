@@ -447,9 +447,9 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
                     });
 
                     String url = object.get("url").getAsString();
-
                     Intent intent = new Intent(OrderPriceActivity.this, OrderPayQRCodeActivity.class);
                     intent.putExtra("url", url);
+                    intent.putExtra("money", mPriceTv.getText().toString());
                     OrderPriceActivity.this.startActivity(intent);
 
 
