@@ -32,8 +32,10 @@ import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
+import com.bjxapp.worker.utils.CashReg;
 import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
@@ -233,6 +235,13 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
 
         if (mContentTv.getText().length() == 0 || mPriceTv.getText().length() == 0) {
             Utils.showShortToast(this, "请填写完整信息");
+            return;
+        }
+
+        String price = mPriceTv.getText().toString();
+
+        if (!CashReg.isCashValid(price)) {
+            Utils.showShortToast(this, "金额格式不合法");
             return;
         }
 

@@ -6,9 +6,12 @@ import android.text.TextUtils;
 
 import com.bjxapp.worker.App;
 import com.bjxapp.worker.R;
+import com.bjxapp.worker.db.BjxInfo;
+import com.bjxapp.worker.db.DBManager;
 import com.bjxapp.worker.global.Constant;
 
 import org.json.JSONObject;
+
 import java.io.IOException;
 
 /**
@@ -19,6 +22,7 @@ import java.io.IOException;
 
 public class PushParser {
 
+    private static DBManager mDbManager = new DBManager(App.getInstance());
 
     public static void onMessageArrived(String content) {
 
@@ -32,24 +36,34 @@ public class PushParser {
             int type = jsonObject.getInt("type");
             boolean isVoice = jsonObject.getBoolean("isVoice");
             String contentStr = jsonObject.getString("content");
+            String title = jsonObject.getString("title");
+            String remark = jsonObject.getString("remark");
+            String createTime = jsonObject.getString("createTime");
 
             switch (type) {
 
+                // 付款成功
                 case 11:
                     sendSuccBroadcast(type);
-                    getMoneySuccess();
+                    getMoneySuccess(11, contentStr, title, remark, createTime);
                     break;
+                // 预付成功
                 case 10:
                     sendSuccBroadcast(type);
-                    getMoneySuccess();
+                    getMoneySuccess(10, contentStr, title, remark, createTime);
                     break;
+                // 新订单到来
                 case 0:
-                    newBillCome();
+                    newBillCome(0, contentStr, title, remark, createTime);
                     break;
+                // 提现成功
                 case 20:
-                  //  getMoneySuccess();
+                    withDrawSuccess(20, contentStr, title, remark, createTime);
                     break;
-
+                // 提现失败
+                case 21:
+                    withDrawFailed(21, contentStr, title, remark, createTime);
+                    break;
             }
 
         } catch (Exception e) {
@@ -57,7 +71,8 @@ public class PushParser {
         }
     }
 
-    private static void getMoneySuccess() {
+    private static void getMoneySuccess(int type, String contentStr, String title, String remark, String createTime) {
+
         MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.pay_succ);
 
         try {
@@ -70,10 +85,14 @@ public class PushParser {
         }
 
         mediaPlayer.start();
+
+        BjxInfo info = new BjxInfo(type, contentStr, title, remark, Long.parseLong(createTime));
+
+        mDbManager.add(info);
+
     }
 
-
-    private static void newBillCome() {
+    private static void newBillCome(int type, String contentStr, String title, String remark, String createTime) {
 
         MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.new_bill);
 
@@ -87,6 +106,36 @@ public class PushParser {
         }
 
         mediaPlayer.start();
+
+        BjxInfo info = new BjxInfo(type, contentStr, title, remark, Long.parseLong(createTime));
+
+        mDbManager.add(info);
+    }
+
+
+    private static void getMoneySuccess() {
+
+
+    }
+
+    private static void withDrawSuccess(int type, String contentStr, String title, String remark, String createTime) {
+
+        BjxInfo info = new BjxInfo(type, contentStr, title, remark, Long.parseLong(createTime));
+
+        mDbManager.add(info);
+    }
+
+    private static void withDrawFailed(int type, String contentStr, String title, String remark, String createTime) {
+
+        BjxInfo info = new BjxInfo(type, contentStr, title, remark, Long.parseLong(createTime));
+
+        mDbManager.add(info);
+    }
+
+
+    private static void newBillCome() {
+
+
     }
 
     private static void sendSuccBroadcast(int type) {

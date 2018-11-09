@@ -10,15 +10,23 @@ public class BjxInfo {
 
     private boolean isVoice;
 
+    private int type;
+
     private String content;
-
-    private long createTime;
-
-    private String remark;
 
     private String title;
 
-    private int type;
+    private String remark;
+
+    private long createTime;
+
+    public BjxInfo(int type, String content, String title, String remark, long createTime) {
+        this.type = type;
+        this.content = content;
+        this.title = title;
+        this.remark = remark;
+        this.createTime = createTime;
+    }
 
     public boolean isVoice() {
         return isVoice;

@@ -17,6 +17,7 @@ import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
+import com.bjxapp.worker.utils.CashReg;
 import com.bjxapp.worker.utils.Utils;
 
 import butterknife.BindView;
@@ -109,7 +110,19 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
             });
             dialog.setContent("请填写完整的信息");
             dialog.show();
-        } else {
+        } else if(CashReg.isCashValid(mTotalPriceTv.getText().toString())){
+            final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
+            dialog.setOnNegativeListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            dialog.setContent("金额格式不正确");
+            dialog.show();
+        }else {
             commitReal();
         }
     }

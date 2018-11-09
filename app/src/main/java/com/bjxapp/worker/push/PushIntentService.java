@@ -26,7 +26,6 @@ public class PushIntentService extends GTIntentService {
     @Override
     public void onReceiveMessageData(Context context, GTTransmitMessage msg) {
 
-        Log.i("slog_zd", "onReceiveMessageData: ");
         String appid = msg.getAppid();
         String taskid = msg.getTaskId();
         String messageid = msg.getMessageId();
