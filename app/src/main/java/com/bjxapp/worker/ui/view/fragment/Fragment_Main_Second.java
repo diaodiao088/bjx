@@ -653,7 +653,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         switch (status) {
             case TYPE_TOTAL:
                 return mOrdersArray;
-            case TYPE_SAFE:
+            case TYPE_UNSAFE:
                 for (int i = 0; i < mOrdersArray.size(); i++) {
                     OrderDes item = mOrdersArray.get(i);
                     if (item.isInGuaranteePeriod()) {
@@ -662,7 +662,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                 }
 
                 return list;
-            case TYPE_UNSAFE:
+            case TYPE_SAFE:
                 for (int i = 0; i < mOrdersArray.size(); i++) {
                     OrderDes item = mOrdersArray.get(i);
                     if (!item.isInGuaranteePeriod()) {

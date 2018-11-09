@@ -37,15 +37,17 @@ public class PushParser {
 
                 case 11:
                     sendSuccBroadcast(type);
+                    getMoneySuccess();
                     break;
                 case 10:
                     sendSuccBroadcast(type);
+                    getMoneySuccess();
                     break;
                 case 0:
                     newBillCome();
                     break;
                 case 20:
-                    getMoneySuccess();
+                  //  getMoneySuccess();
                     break;
 
             }

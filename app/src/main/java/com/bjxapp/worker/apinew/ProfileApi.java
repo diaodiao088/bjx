@@ -25,7 +25,7 @@ public interface ProfileApi {
     Call<JsonObject> getAccountInfo(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST("/withdrawal/bindBank")
+    @POST("/bankInfo/bind")
     Call<JsonObject> bindBank(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
@@ -46,10 +46,14 @@ public interface ProfileApi {
 
     @FormUrlEncoded
     @POST("/withdrawal/list")
-    Call<JsonObject> getWithDrawHistory(@FieldMap Map<String , String> params);
+    Call<JsonObject> getWithDrawHistory(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("/register/info")
-    Call<JsonObject> getRegisterInfo(@FieldMap Map<String , String> params);
+    Call<JsonObject> getRegisterInfo(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/profile/modify")
+    Call<JsonObject> modifyRegisterInfo(@FieldMap Map<String, String> params);
 
 }

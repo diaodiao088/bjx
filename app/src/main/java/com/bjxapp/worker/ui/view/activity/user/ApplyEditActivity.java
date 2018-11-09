@@ -24,6 +24,7 @@ import com.bjxapp.worker.model.UserInfoA;
 import com.bjxapp.worker.ui.view.activity.ChangeCityActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.map.MapActivityNew;
+import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonNull;
@@ -36,6 +37,9 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by zhangdan on 2018/10/23.
@@ -88,6 +92,75 @@ public class ApplyEditActivity extends Activity {
     void onBack() {
         finish();
     }
+
+    @OnClick(R.id.user_apply_button_save)
+    void onConfirm() {
+
+        if (!Utils.isNetworkAvailable(this)) {
+            Utils.showShortToast(this, getString(R.string.common_no_network_message));
+            return;
+        }
+
+        ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+
+        if (mMapTv.getTag() != null) {
+            LocationInfo info = (LocationInfo) mMapTv.getTag();
+            if (info != null) {
+                params.put("locationAddress", info.getAddress());
+                params.put("latitude", String.valueOf(info.getLatitude()));
+                params.put("longitude", String.valueOf(info.getLongitude()));
+            }
+        }
+
+        if (mServiceTv.getTag() != null) {
+            params.put("serviceIds", mServiceTv.getTag().toString());
+        }
+
+        retrofit2.Call<JsonObject> call = profileApi.getRegisterInfo(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                LogUtils.log(response.body().toString());
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(ApplyEditActivity.this, "信息保存成功.");
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(ApplyEditActivity.this, msg + ":" + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+
+    }
+
 
     @OnClick(R.id.map_ly)
     void clickMap() {
@@ -193,7 +266,6 @@ public class ApplyEditActivity extends Activity {
     private void updateInfo(UserInfoA userInfoA) {
         try {
             Glide.with(this).load(userInfoA.getAvatarUrl()).into(mHeadImage);
-            mHeadImage.setTag(new Object());
 
             mNameTv.setText(userInfoA.getName());
 

@@ -164,6 +164,9 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
 
                 JsonObject object = response.body();
 
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
+
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
                     mHandler.post(new Runnable() {
                         @Override
@@ -188,7 +191,7 @@ public class BalanceBankActivity extends BaseActivity implements OnClickListener
                         public void run() {
                             if (mWaitingDialog != null) {
                                 mWaitingDialog.dismiss();
-                                Utils.showShortToast(BalanceBankActivity.this, "保存失败，请重试！");
+                                Utils.showShortToast(BalanceBankActivity.this, msg + ":" + code);
                             }
                         }
                     });

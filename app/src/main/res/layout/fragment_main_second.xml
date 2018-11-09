@@ -9,7 +9,6 @@
         android:id="@+id/history_header_ly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
         android:background="@color/white"
         android:orientation="horizontal">
 
@@ -23,9 +22,12 @@
 
             <TextView
                 android:id="@+id/history_total_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="累计接单：10单"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#F5F5F5"
+                android:gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
                 android:textColor="#545454"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -62,9 +64,12 @@
 
             <TextView
                 android:id="@+id/history_safe_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="累计金额：10单"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#F5F5F5"
+                android:gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
                 android:textColor="#545454"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -102,9 +107,12 @@
 
             <TextView
                 android:id="@+id/history_unsafe_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="累计收入：10单"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#F5F5F5"
+                android:gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
                 android:textColor="#545454"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -136,7 +144,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#F5F5F5">
 
         <com.bjxapp.worker.controls.listview.XListView
             android:id="@+id/order_history_list_listview"
@@ -145,8 +154,10 @@
             android:layout_alignParentLeft="true"
             android:layout_marginTop="5dp"
             android:choiceMode="singleChoice"
-            android:divider="@color/transparent"
+            android:divider="#F5F5F5"
             android:dividerHeight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:listSelector="@android:color/transparent"
             android:visibility="gone" />
 

@@ -25,7 +25,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/white"
+                android:background="@drawable/layout_radius"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -755,12 +755,12 @@
                         android:layout_below="@+id/order_receive_detail_save"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="20dp"
-                        android:text="退单"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
+                        android:text="退单"
                         android:textColor="#A9A9A9"
-                        android:visibility="gone"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                 </RelativeLayout>
 
@@ -783,7 +783,7 @@
                             android:layout_height="40dp"
                             android:layout_marginRight="30dp"
                             android:layout_weight="1"
-                            android:background="@null"
+                            android:background="@drawable/change_date_bg"
                             android:gravity="center"
                             android:text="改约"
                             android:textColor="#999999"

@@ -274,10 +274,14 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
     public void onBackPressed() {
         //super.onBackPressed();
 
-        if (mImagesArray.size() < mCount) {
-            Utils.showShortToast(context, "请至少上传两张照片！");
-        } else {
+        if (mOperationFlag == 2){
             super.onBackPressed();
+        }else{
+            if (mImagesArray.size() < mCount) {
+                Utils.showShortToast(context, "请至少上传两张照片！");
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 

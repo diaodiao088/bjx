@@ -123,13 +123,14 @@ public class PageSlipingCtrl {
 
     public void updateRedot(ArrayList<OrderDes> list) {
 
-        if (list == null || list.size() <= 0) {
-            mRedotTotalTv.setVisibility(View.GONE);
-            mRedotNewBillTv.setVisibility(View.GONE);
-            mRedotAlreadyEnterTv.setVisibility(View.GONE);
-            mRedotWaitingPayTv.setVisibility(View.GONE);
-            mRedotContactTv.setVisibility(View.GONE);
-            mRedotWaitingRoomTv.setVisibility(View.GONE);
+        mRedotTotalTv.setVisibility(View.GONE);
+        mRedotNewBillTv.setVisibility(View.GONE);
+        mRedotAlreadyEnterTv.setVisibility(View.GONE);
+        mRedotWaitingPayTv.setVisibility(View.GONE);
+        mRedotContactTv.setVisibility(View.GONE);
+        mRedotWaitingRoomTv.setVisibility(View.GONE);
+
+        if (list == null || list.size() <= 0){
             return;
         }
 

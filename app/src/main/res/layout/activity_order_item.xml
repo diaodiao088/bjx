@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_radius">
 
     <LinearLayout
         android:id="@+id/order_receive_item"
@@ -9,7 +10,6 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:background="@drawable/layout_radius"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -105,6 +105,7 @@
                 android:gravity="center_vertical"
                 android:text="费用预估：300元"
                 android:textColor="@color/main_text_color"
+                android:layout_marginBottom="7dp"
                 android:textSize="14sp" />
         </RelativeLayout>
     </LinearLayout>

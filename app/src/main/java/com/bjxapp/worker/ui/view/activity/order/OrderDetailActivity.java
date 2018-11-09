@@ -29,14 +29,11 @@ import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
-import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
-import com.bjxapp.worker.model.XResult;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
-import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
@@ -717,7 +714,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         });
     }
 
-
     private void refreshUiSync() {
         mHandler.post(new Runnable() {
             @Override
@@ -786,8 +782,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 toDetailUi();
                 break;
         }
-
     }
+
+    String reasonTemp = "";
+    String planTemp = "";
+    String costDetailTemp = "";
+    String totalCostTemp = "";
 
     private MaintainInfo getMainTainInfo(JSONObject detailJson) {
 
@@ -827,6 +827,22 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             MaintainInfo maintainInfo = new MaintainInfo(costDetail, fault, paid, payAmount,
                     plan, prePaid, preCost, prePayService, totalAmount, totalCost);
+
+            if (!TextUtils.isEmpty(costDetailTemp)) {
+                maintainInfo.setCostDetail(costDetail);
+            }
+
+            if (!TextUtils.isEmpty(planTemp)) {
+                maintainInfo.setPlan(plan);
+            }
+
+            if (!TextUtils.isEmpty(reasonTemp)) {
+                maintainInfo.setFault(reasonTemp);
+            }
+
+            if (!TextUtils.isEmpty(totalCostTemp)) {
+                maintainInfo.setTotalCost(totalCostTemp);
+            }
 
             maintainInfo.setMasterImgUrls(customImgUrls);
             maintainInfo.setPrepayImgUrls(prePayImgUrls);
@@ -1279,6 +1295,16 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             @Override
             public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
 
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Utils.showShortToast(OrderDetailActivity.this, "申请支付二维码失败.");
+                    }
+                });
             }
         });
     }
@@ -1529,6 +1555,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                         }
 
                         MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+
+                        reasonTemp = data.getStringExtra(ServiceBillActivity.REASON);
+                        planTemp = data.getStringExtra(ServiceBillActivity.STRATEGY);
+                        costDetailTemp = data.getStringExtra(data.getStringExtra(ServiceBillActivity.DETAIL));
+                        totalCostTemp = data.getStringExtra(ServiceBillActivity.PRICE);
+
                         maintainInfo.setFault(data.getStringExtra(ServiceBillActivity.REASON));
                         maintainInfo.setPlan(data.getStringExtra(ServiceBillActivity.STRATEGY));
                         maintainInfo.setCostDetail(data.getStringExtra(ServiceBillActivity.DETAIL));

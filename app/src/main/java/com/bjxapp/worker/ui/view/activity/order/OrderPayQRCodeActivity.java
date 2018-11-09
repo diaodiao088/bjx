@@ -57,8 +57,6 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
             String message = intent.getStringExtra("message");
             String extra = intent.getStringExtra("extra");
             int payType = intent.getIntExtra("pay_type", 0);
-            Utils.showLongToast(OrderPayQRCodeActivity.this, message);
-            // onFirstLoadData(false);
 
             if (pushType == Constant.PUSH_TYPE_ORDER_PAY) {
                 showPaySuccessActivity(orderID, extra);
