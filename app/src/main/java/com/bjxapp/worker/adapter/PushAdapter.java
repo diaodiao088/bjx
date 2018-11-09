@@ -55,8 +55,12 @@ public class PushAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        //  holder.textViewDate.setText(getFormatDateString(aInfo.get(position).getDate()));
+        BjxInfo item = aInfo.get(position);
 
+        holder.dateTv.setText(getFormatDateString(item.getCreateTime()));
+        holder.contentTv.setText(item.getContent());
+        holder.titleTv.setText(item.getTitle());
+        
         return convertView;
     }
 

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class CashReg {
 
-    static String pattern = "^((0)|([1-9][0-9]*)|(([0]\\\\.\\\\d{0,2}|[1-9][0-9]*\\\\.\\\\d{0,2})))$";
+    static String pattern = "^((0)|([1-9][0-9]*)|(([0]\\.\\d{0,2}|[1-9][0-9]*\\.\\d{0,2})))$";
 
     public static boolean isCashValid(String cash) {
 

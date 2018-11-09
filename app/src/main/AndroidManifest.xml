@@ -148,11 +148,15 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.bjxapp.worker.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme" />
+
+        <activity android:name=".ui.view.activity.PushDetailActivity"
+            android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.view.activity.user.ApplyEditActivity"
             android:screenOrientation="portrait"

@@ -20,20 +20,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp"
+        android:contentDescription="@string/app_name"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
-        android:contentDescription="@string/app_name"
         android:src="@drawable/back"
         android:visibility="visible" />
+
+    <View
+        android:id="@+id/main_ring"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_alignBottom="@+id/title_image_back"
+        android:layout_alignRight="@+id/title_image_back"
+        android:visibility="gone"
+        android:background="@drawable/ring_bg" />
 
     <com.bjxapp.worker.controls.XTextView
         android:id="@+id/title_text_tv"
         style="@style/title_textStyle"
         android:layout_centerInParent="true"
-        android:textStyle="bold"
-        android:text="@string/app_name" />
+        android:text="@string/app_name"
+        android:textStyle="bold" />
 
     <com.bjxapp.worker.controls.XImageView
         android:id="@+id/title_image_right"
@@ -49,8 +58,8 @@
     <com.bjxapp.worker.controls.XTextView
         android:id="@+id/title_text_right"
         style="@style/title_textStyle"
-        android:layout_alignParentRight="true"
         android:layout_alignBottom="@+id/title_text_tv"
+        android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:textSize="16sp" />
 
@@ -58,8 +67,8 @@
         android:id="@+id/title_right_small_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignBottom="@+id/title_text_tv"
+        android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:text="添加照片"
         android:textColor="#545454"

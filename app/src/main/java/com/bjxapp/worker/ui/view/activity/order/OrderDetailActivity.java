@@ -49,6 +49,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -626,10 +627,19 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mIssuePriceTv.setText(maintainInfo.getTotalCost());
 
         mTotalPriceTv.setText(maintainInfo.getTotalCost()); // 总报价
-        mTotalTv.setText(String.valueOf(Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost()))); //总计
-        mPrePayPriceTv.setText(maintainInfo.getPreCost());
-        mFuKuanContentTv.setText(String.valueOf(Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost()) - Double.parseDouble(maintainInfo.getPreCost())));
 
+        BigDecimal totalCost = new BigDecimal(Double.parseDouble(maintainInfo.getTotalCost()));
+        BigDecimal serviceCost = new BigDecimal(mDetailInfo.getOrderDes().getServiceVisitCost());
+        BigDecimal preCost = new BigDecimal(Double.parseDouble(maintainInfo.getPreCost()));
+
+        mTotalTv.setText(String.valueOf(totalCost.add(serviceCost).doubleValue())); //总计
+        mPrePayPriceTv.setText(maintainInfo.getPreCost());
+
+        // double payAmount = Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost()) - Double.parseDouble(maintainInfo.getPreCost());
+        double payAmount = totalCost.add(serviceCost).subtract(preCost).doubleValue();
+        payAmount = payAmount > 0 ? payAmount : 0.00;
+        maintainInfo.setPayAmount(String.valueOf(payAmount));
+        mFuKuanContentTv.setText(String.valueOf(payAmount));
 
     }
 
@@ -1590,11 +1600,16 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mStrategyContentTv.setText(maintainInfo.getPlan());
         mTotalPriceTv.setText(maintainInfo.getTotalCost());
 
-        maintainInfo.setTotalAmount(String.valueOf(Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost())));
+        BigDecimal totalCost = new BigDecimal(Double.parseDouble(maintainInfo.getTotalCost()));
+        BigDecimal serviceCost = new BigDecimal(mDetailInfo.getOrderDes().getServiceVisitCost());
+        BigDecimal preCost = new BigDecimal(Double.parseDouble(maintainInfo.getPreCost()));
+
+        mTotalTv.setText(String.valueOf(totalCost.add(serviceCost).doubleValue())); //总计
+        maintainInfo.setTotalAmount(String.valueOf(totalCost.add(serviceCost).doubleValue()));
         mTotalTv.setText(maintainInfo.getTotalAmount());
         mPrePayPriceTv.setText(maintainInfo.getPreCost());
 
-        double payAmount = Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost()) - Double.parseDouble(maintainInfo.getPreCost());
+        double payAmount = totalCost.add(serviceCost).subtract(preCost).doubleValue();
         payAmount = payAmount > 0 ? payAmount : 0.00;
         maintainInfo.setPayAmount(String.valueOf(payAmount));
         mFuKuanContentTv.setText(maintainInfo.getPayAmount());

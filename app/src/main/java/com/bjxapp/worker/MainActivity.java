@@ -26,6 +26,8 @@ import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.db.BjxInfo;
+import com.bjxapp.worker.db.DBManager;
 import com.bjxapp.worker.global.ActivitiesManager;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
@@ -34,11 +36,13 @@ import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.RedDot;
 import com.bjxapp.worker.push.BJXPushService;
 import com.bjxapp.worker.push.PushIntentService;
+import com.bjxapp.worker.push.PushParser;
 import com.bjxapp.worker.push.XPushManager;
 import com.bjxapp.worker.ui.titlemenu.ActionItem;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup.OnItemOnClickListener;
 import com.bjxapp.worker.ui.view.activity.JoinUsActivity;
+import com.bjxapp.worker.ui.view.activity.PushDetailActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseFragmentActivity;
@@ -51,6 +55,7 @@ import com.bjxapp.worker.utils.zxing.CaptureActivity;
 import com.google.gson.JsonObject;
 import com.igexin.sdk.PushManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -82,7 +87,8 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private int mCurrentTabIndex;
     private int mKeyBackClickCount = 0;
 
-    private LocationClient mLocationClient;
+    private DBManager mDbManager;
+
     private XWaitingDialog mWaitingDialog;
 
     @BindView(R.id.title_right_small_tv)
@@ -93,6 +99,18 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
     @BindView(R.id.title_image_back)
     XImageView mBackIv;
+
+    @BindView(R.id.main_ring)
+    View mRingView;
+
+
+    @OnClick(R.id.title_image_back)
+    void onRing() {
+        mRingView.setVisibility(View.GONE);
+        Intent intent = new Intent();
+        intent.setClass(this, PushDetailActivity.class);
+        startActivity(intent);
+    }
 
     @OnClick(R.id.title_right_small_tv)
     void onRightClick() {
@@ -114,6 +132,8 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         setOnListener();
         initPopWindow();
 
+        mDbManager = new DBManager(this);
+
         mWaitingDialog = new XWaitingDialog(MainActivity.this);
 
         if (!Utils.isNetworkAvailable(MainActivity.this)) {
@@ -133,6 +153,33 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         //检查最新APK版本
         checkNewVersion();
     }
+
+
+    private void checkRingRedot() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ArrayList<BjxInfo> list = (ArrayList<BjxInfo>) mDbManager.query(1, 0);
+                    if (list != null && list.size() > 0) {
+                        BjxInfo info = list.get(0);
+                        if (!info.isRead()) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mRingView.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }).start();
+    }
+
 
     private void initPush() {
         PushManager.getInstance().initialize(this.getApplicationContext(), BJXPushService.class);
@@ -272,6 +319,10 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 mFirstReminder.setVisibility(View.GONE);
                 mTitleTextView.setText(getString(R.string.main_tab_first_text));
                 mTitleRightTv.setVisibility(View.VISIBLE);
+
+                // mRingView.setVisibility(View.VISIBLE);
+                mBackIv.setVisibility(View.VISIBLE);
+
                 mRightImageView.setImageResource(R.drawable.icon_menu_add);
                 mRightImageView.setPadding(0, 0, 0, 0);
                 break;
@@ -279,6 +330,8 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 mIndex = 1;
                 mTitleRightTv.setVisibility(View.GONE);
                 mTitleTextView.setText(getString(R.string.main_tab_second_text));
+                mRingView.setVisibility(View.GONE);
+                mBackIv.setVisibility(View.GONE);
                 if (mMainSecondFragment != null) {
                     mMainSecondFragment.refresh(enterType);
                 }
@@ -290,12 +343,16 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 if (mMainThirdFragment != null) {
                     mMainThirdFragment.refresh(enterType);
                 }
+                mRingView.setVisibility(View.GONE);
+                mBackIv.setVisibility(View.GONE);
                 mThirdReminder.setVisibility(View.GONE);
                 break;
             case R.id.main_tab_fourth:
                 mIndex = 3;
                 mTitleTextView.setText(getString(R.string.main_tab_fourth_text));
                 mTitleRightTv.setVisibility(View.GONE);
+                mRingView.setVisibility(View.GONE);
+                mBackIv.setVisibility(View.GONE);
                 if (mMainFourthFragment != null) {
                     mMainFourthFragment.refresh(enterType);
                 }
@@ -350,6 +407,17 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     protected void onResume() {
         super.onResume();
 
+        /*mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                long time = System.currentTimeMillis();
+
+                String content = "{'content':'您有新的工单，请注意接单','createTime':" + time + ",'isVoice':true,'title':'新订单','type':0}";
+                PushParser.onMessageArrived(content);
+            }
+        }, 10000);*/
+
         switch (mCurrentTabIndex) {
             case 0:
                 showFragment(R.id.main_tab_first, 0);
@@ -366,6 +434,9 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             default:
                 break;
         }
+
+        //检查ring红点
+        checkRingRedot();
     }
 
     @Override
@@ -383,7 +454,8 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private void initViews() {
         mRightImageView.setVisibility(View.GONE);
         mRightImageView.setImageResource(R.drawable.icon_menu_main);
-        mBackIv.setVisibility(View.GONE);
+        mBackIv.setVisibility(View.VISIBLE);
+        mBackIv.setImageResource(R.drawable.ring);
         mTitleRightTv.setVisibility(View.VISIBLE);
     }
 
@@ -699,11 +771,11 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             @Override
             public void onClick(View v) {
 
-                if (status == 6){
-                    if (dialog != null){
+                if (status == 6) {
+                    if (dialog != null) {
                         dialog.dismiss();
                     }
-                }else{
+                } else {
                     ActivitiesManager.getInstance().finishAllActivities();
                 }
             }

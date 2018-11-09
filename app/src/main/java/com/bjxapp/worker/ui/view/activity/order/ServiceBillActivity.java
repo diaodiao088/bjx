@@ -110,7 +110,7 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
             });
             dialog.setContent("请填写完整的信息");
             dialog.show();
-        } else if(CashReg.isCashValid(mTotalPriceTv.getText().toString())){
+        } else if(!CashReg.isCashValid(mTotalPriceTv.getText().toString())){
             final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
             dialog.setOnNegativeListener(new View.OnClickListener() {
                 @Override

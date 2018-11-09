@@ -18,9 +18,15 @@ public class BjxInfo {
 
     private String remark;
 
-    private long createTime;
+    private String createTime;
 
-    public BjxInfo(int type, String content, String title, String remark, long createTime) {
+    private boolean isRead;
+
+    public BjxInfo() {
+
+    }
+
+    public BjxInfo(int type, String content, String title, String remark, String createTime) {
         this.type = type;
         this.content = content;
         this.title = title;
@@ -44,11 +50,11 @@ public class BjxInfo {
         this.content = content;
     }
 
-    public long getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(long createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -74,5 +80,25 @@ public class BjxInfo {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    @Override
+    public String toString() {
+        return "BjxInfo{" +
+                "isVoice=" + isVoice +
+                ", type=" + type +
+                ", content='" + content + '\'' +
+                ", title='" + title + '\'' +
+                ", remark='" + remark + '\'' +
+                ", createTime='" + createTime + '\'' +
+                '}';
     }
 }
