@@ -436,8 +436,27 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
         return sortArray(mOrdersArray);
     }
 
-    protected ArrayList<OrderDes> sortArray(ArrayList<OrderDes> mList){
-        Collections.sort(mList ,comparator);
+    protected ArrayList<OrderDes> sortArray(ArrayList<OrderDes> mList) {
+
+        ArrayList<OrderDes> list_unexpet = new ArrayList<>();
+
+        ArrayList<OrderDes> list_normal = new ArrayList<>();
+
+        for (int i = 0; i < mList.size(); i++) {
+
+            OrderDes orderDes = mList.get(i);
+
+            if (orderDes.getStatus() == 4) {
+                list_unexpet.add(orderDes);
+            } else {
+                list_normal.add(orderDes);
+            }
+        }
+
+        mList.clear();
+        mList.addAll(list_unexpet);
+        mList.addAll(list_normal);
+        //   Collections.sort(mList, comparator);
         return mList;
     }
 }

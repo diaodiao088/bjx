@@ -118,7 +118,7 @@ public class MaintainInfo {
     }
 
     public String getPrePayService() {
-        return prePayService;
+        return "null".equals(this.prePayService) ? "" : this.prePayService;
     }
 
     public void setPrePayService(String prePayService) {

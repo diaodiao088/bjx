@@ -36,7 +36,8 @@
     <string name="xlistview_footer_hint_normal">查看更多</string>
     <string name="xlistview_footer_hint_ready">松开载入更多</string>
     <string name="xlistview_footer_hint_load_more">正在加载数据，请稍候...</string>
-
     <string name="send_msg"> 当您与用户没有取得联系时，请点击 &lt;a href=\&quot;http://www.action.html\&quot;&gt;发送短信&lt;/a&gt; 告知用户</string>
+    <string name="bank_subtitle">为提现日，每个提现日只能提现一次。客服电话： &lt;a href=\&quot;http://www.action.html\&quot;&gt;010-5317025&lt;/a&gt;</string>
+    <string name="bank_title">提示：\n每个月1至5日、15日至18日为提现日，每个提现日只能提现一次。客服电话：&lt;a href=\&quot;http://www.action.html\&quot;&gt;010-5317025&lt;/a&gt;</string>
 
 </resources>

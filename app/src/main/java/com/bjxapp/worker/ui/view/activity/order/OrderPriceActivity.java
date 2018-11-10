@@ -33,6 +33,7 @@ import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
@@ -88,6 +89,7 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
     private int mScreenShotCount;
 
     private String totalCost;
+    private String content;
 
     @BindView(R.id.title_text_tv)
     XTextView mTitleTv;
@@ -97,7 +99,7 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
 
     @OnClick(R.id.title_image_back)
     void onBack() {
-        finish();
+        onBackPressed();
     }
 
     private ArrayList<String> mImageUrl = new ArrayList<>();
@@ -128,6 +130,8 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
     private void handleIntent() {
         orderId = getIntent() != null ? getIntent().getStringExtra("order_id") : "";
         totalCost = getIntent() != null ? getIntent().getStringExtra("total_cost") : "";
+        content = getIntent() != null ? getIntent().getStringExtra("content") : "";
+        mContentTv.setText(content);
     }
 
     private void loadImages() {
@@ -468,8 +472,8 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
                     Intent intent = new Intent(OrderPriceActivity.this, OrderPayQRCodeActivity.class);
                     intent.putExtra("url", url);
                     intent.putExtra("money", mPriceTv.getText().toString());
+                    intent.putExtra("from", OrderPayQRCodeActivity.FROM_PRE_PILL);
                     OrderPriceActivity.this.startActivity(intent);
-
 
                 } else {
                     mHandler.post(new Runnable() {
@@ -504,7 +508,8 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
     }
 
 
-    public static void goToActivity(Context ctx, String orderId, String totalCost) {
+    public static void goToActivity(Context ctx, String orderId, String totalCost, String content,
+                                    String price, ArrayList<String> imgList) {
 
         if (ctx == null) {
             ctx = App.getInstance();
@@ -514,8 +519,20 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
         intent.setClass(ctx, OrderPriceActivity.class);
         intent.putExtra("order_id", orderId);
         intent.putExtra("total_cost", totalCost);
+        intent.putExtra("content", content);
+        intent.putExtra("price", price);
+        intent.putStringArrayListExtra("img_list", imgList);
+
         ctx.startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
+        Intent intent = new Intent();
+        intent.setClass(this, OrderDetailActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

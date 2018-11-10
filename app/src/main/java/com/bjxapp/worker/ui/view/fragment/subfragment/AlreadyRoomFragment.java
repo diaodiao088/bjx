@@ -39,7 +39,6 @@ public class AlreadyRoomFragment extends BillBaseFragment {
             }
         }
 
-
         return sortArray(orderList);
     }
 }

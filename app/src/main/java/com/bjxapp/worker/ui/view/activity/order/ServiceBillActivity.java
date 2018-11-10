@@ -77,7 +77,10 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
             String detail = getIntent().getStringExtra(DETAIL);
             mPriceTv.setText(TextUtils.isEmpty(detail) ? "" : detail);
             String price = getIntent().getStringExtra(PRICE);
-            mTotalPriceTv.setText(TextUtils.isEmpty(price) ? "" : price);
+
+            if (Double.parseDouble(price) != 0){
+                mTotalPriceTv.setText(TextUtils.isEmpty(price) ? "" : price);
+            }
 
             prePrice = getIntent().getStringExtra(PRE_PRICE);
         }

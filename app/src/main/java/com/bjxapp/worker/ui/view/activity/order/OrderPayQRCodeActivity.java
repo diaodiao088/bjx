@@ -28,8 +28,16 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
     private XImageView mBackImageView;
     private XImageView mQRCodeImageView;
 
+    public static final int FROM_PRE_PILL = 0x01;
+    public static final int FROM_BILL = 0X02;
+
+    private int mFrom;
+
     @BindView(R.id.pay_price)
     TextView mPayTv;
+
+    @BindView(R.id.setting_tv)
+    XTextView mSettingTv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,20 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
         ButterKnife.bind(this);
         registerUpdateUIBroadcast();
         super.onCreate(savedInstanceState);
+
+        handleIntent();
+    }
+
+    private void handleIntent(){
+        if (getIntent() != null){
+            mFrom = getIntent().getIntExtra("from",0);
+        }
+
+        if (mFrom == 0x01){
+            mTitleTextView.setText("订单预支付");
+            mSettingTv.setText("请扫码完成预支付金额");
+        }
+
     }
 
     private void registerUpdateUIBroadcast() {
@@ -112,7 +134,8 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.title_image_back:
-                Utils.finishActivity(OrderPayQRCodeActivity.this);
+              //
+                onBackPressed();
                 break;
             default:
                 break;
@@ -126,7 +149,14 @@ public class OrderPayQRCodeActivity extends BaseActivity implements OnClickListe
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+      //  super.onBackPressed();
+        if (mFrom != FROM_PRE_PILL){
+            Intent intent = new Intent(this, OrderDetailActivity.class);
+            startActivity(intent);
+        }else {
+            Utils.finishActivity(OrderPayQRCodeActivity.this);
+        }
+
     }
 
     @Override

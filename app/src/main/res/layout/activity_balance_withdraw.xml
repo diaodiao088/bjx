@@ -228,7 +228,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                android:text="提示：\n每个月1至5日、15日至18日为提现日，每个提现日只能提现一次。客服电话： 010-65511127"
+                android:text="@string/bank_title"
                 android:textColor="#ABABAB"
                 android:textSize="12sp" />
 

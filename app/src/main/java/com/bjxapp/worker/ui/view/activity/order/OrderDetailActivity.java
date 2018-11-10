@@ -51,6 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -286,7 +287,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             Utils.showShortToast(this, "请先填写维修项信息");
         } else {
             OrderPriceActivity.goToActivity(this, mDetailInfo != null ? mDetailInfo.getOrderDes().getOrderId() : String.valueOf(-1),
-                    mIssuePriceTv.getText().toString());
+                    mIssuePriceTv.getText().toString(),
+                    mDetailInfo.getMaintainInfo().getPrePayService(),
+                    mDetailInfo.getMaintainInfo().getPreCost(),
+                    mDetailInfo.getMaintainInfo().getPrepayImgUrls());
         }
     }
 
@@ -322,7 +326,25 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         secondData.add("17:00:00--20:00:00");
         final DoublePicker picker = new DoublePicker(this, firstData, secondData);
         picker.setDividerVisible(true);
-        picker.setSelectedIndex(0, 0);
+
+        Calendar startTime = Calendar.getInstance();
+
+        int selectFirstIndex = 0;
+        int selectSecondIndex = 0;
+
+        if (startTime.get(Calendar.HOUR_OF_DAY) < 8) {
+            selectSecondIndex = 0;
+        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 11) {
+            selectSecondIndex = 1;
+        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 14) {
+            selectSecondIndex = 2;
+        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 17) {
+            selectSecondIndex = 3;
+        } else {
+            selectFirstIndex = 1;
+        }
+
+        picker.setSelectedIndex(selectFirstIndex, selectSecondIndex);
         picker.setTextSize(12);
         picker.setContentPadding(15, 10);
         picker.setOnPickListener(new DoublePicker.OnPickListener() {
@@ -813,10 +835,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
     }
 
-    String reasonTemp = "";
-    String planTemp = "";
-    String costDetailTemp = "";
-    String totalCostTemp = "";
+    public String reasonTemp = "";
+    public String planTemp = "";
+    public String costDetailTemp = "";
+    public String totalCostTemp = "";
 
     private MaintainInfo getMainTainInfo(JSONObject detailJson) {
 
@@ -858,11 +880,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     plan, prePaid, preCost, prePayService, totalAmount, totalCost);
 
             if (!TextUtils.isEmpty(costDetailTemp)) {
-                maintainInfo.setCostDetail(costDetail);
+                maintainInfo.setCostDetail(costDetailTemp);
             }
 
             if (!TextUtils.isEmpty(planTemp)) {
-                maintainInfo.setPlan(plan);
+                maintainInfo.setPlan(planTemp);
             }
 
             if (!TextUtils.isEmpty(reasonTemp)) {
@@ -1020,6 +1042,19 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mOrderWaitLy.setVisibility(View.GONE);
         mSaveLy.setVisibility(View.VISIBLE);
         mCurrentStatus = OrderStatusCtrl.TYPE_NEW_BILL;
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        int status = mDetailInfo.getOrderDes().getStatus();
+
+        if (status == 4) {
+            mStatusTv.setText("异常");
+            mSaveButton.setVisibility(View.GONE);
+        }
+
+
     }
 
     /**
@@ -1587,7 +1622,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
                         reasonTemp = data.getStringExtra(ServiceBillActivity.REASON);
                         planTemp = data.getStringExtra(ServiceBillActivity.STRATEGY);
-                        costDetailTemp = data.getStringExtra(data.getStringExtra(ServiceBillActivity.DETAIL));
+                        costDetailTemp = data.getStringExtra(ServiceBillActivity.DETAIL);
                         totalCostTemp = data.getStringExtra(ServiceBillActivity.PRICE);
 
                         maintainInfo.setFault(data.getStringExtra(ServiceBillActivity.REASON));

@@ -3,11 +3,13 @@ package com.bjxapp.worker.ui.view.activity.user;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +28,7 @@ import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.BankInfo;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
+import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.R;
 import com.google.gson.JsonArray;
@@ -112,6 +115,20 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
         mRightTextView.setVisibility(View.VISIBLE);
         mTitleTextView.setText("提现");
         mWaitingDialog = new XWaitingDialog(context);
+
+        HandleUrlLinkMovementMethod instance = HandleUrlLinkMovementMethod.getInstance();
+        instance.setOnLinkCallBack(new HandleUrlLinkMovementMethod.OnLinkCallBack() {
+            @Override
+            public void onClick(String url) {
+                if (url.contains("action")) {
+                    callService();
+                }
+            }
+        });
+
+        mInformationEdit.setMovementMethod(instance);
+        mInformationEdit.setLinkTextColor(Color.parseColor("#00A551"));
+        mInformationEdit.setHighlightColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -132,7 +149,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
     }
 
     private void callService() {
-        String mobile = getString(R.string.service_telephone);
+        String mobile = "010-5317025";
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + mobile));
@@ -253,7 +270,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 if (!TextUtils.isEmpty(mCashInfoStr)) {
-                                    mInformationEdit.setText(mCashInfoStr);
+                                    mInformationEdit.setText(Html.fromHtml(mCashInfoStr));
                                 }
                             }
                         });
@@ -296,7 +313,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
         for (int i = 0; i < array.size(); i++) {
             builder.append(array.get(i).toString() + "日、");
         }
-        builder.append("为提现日，每个提现日只能提现一次。客服电话： 010-65511127");
+        builder.append(getString(R.string.bank_subtitle));
         return builder.toString();
     }
 
@@ -491,7 +508,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
                                 public void run() {
                                     if (mWaitingDialog != null) {
                                         mWaitingDialog.dismiss();
-                                        Utils.showShortToast(BalanceBankWithdrawActivity.this, "提现成功！");
+                                        Utils.showShortToast(BalanceBankWithdrawActivity.this, "您的申请已提交，请耐心等待");
                                     }
 
                                     if (withdrawDialog != null) {
@@ -507,6 +524,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
                                 public void run() {
                                     if (mWaitingDialog != null) {
                                         mWaitingDialog.dismiss();
+                                        loadData(); // 重新刷一次数据
                                         Utils.showShortToast(BalanceBankWithdrawActivity.this, code + " : " + msg);
                                     }
                                 }
@@ -521,6 +539,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
                             public void run() {
                                 if (mWaitingDialog != null) {
                                     mWaitingDialog.dismiss();
+                                    loadData(); // 重新刷一次数据
                                     Utils.showShortToast(BalanceBankWithdrawActivity.this, "提现失败，请重试！");
                                 }
                             }

@@ -47,6 +47,7 @@
             android:src="@drawable/head" />
 
         <com.bjxapp.worker.controls.XTextView
+            android:id="@+id/setting_tv"
             style="@style/SettingTextTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
