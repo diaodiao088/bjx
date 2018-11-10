@@ -106,6 +106,7 @@ public class AddImageActivity extends Activity {
         mRecyclerView.setAdapter(mAdapter);
         mWaitingDialog = new XWaitingDialog(this);
         initData();
+        handleIntent();
     }
 
     private void initData() {
@@ -113,6 +114,29 @@ public class AddImageActivity extends Activity {
         mList.add(bean);
         mAdapter.setList(mList);
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void handleIntent(){
+
+        Intent intent = getIntent();
+
+        try{
+            ArrayList<String> mlist = intent.getStringArrayListExtra("img_list");
+
+            if (mlist != null && mlist.size() > 0){
+               // mList.addAll(0 , mlist);
+                ArrayList<ImageBean> temList = new ArrayList<>();
+                for (int i = 0; i < mlist.size(); i++) {
+                    ImageBean item = new ImageBean(ImageBean.TYPE_ADD , mlist.get(i));
+                    temList.add(item);
+                }
+                mList.addAll(0 ,temList);
+                mAdapter.notifyDataSetChanged();
+            }
+        }catch (Exception e){
+
+        }
+
     }
 
     /**
@@ -360,10 +384,11 @@ public class AddImageActivity extends Activity {
     }
 
 
-    public static void goToActivity(Activity ctx, int code) {
+    public static void goToActivity(Activity ctx, int code, ArrayList<String> mImgList) {
 
         Intent intent = new Intent();
         intent.setClass(ctx, AddImageActivity.class);
+        intent.putStringArrayListExtra("img_list" , mImgList);
         //ctx.startactivityfor(intent);
         ctx.startActivityForResult(intent, code);
     }

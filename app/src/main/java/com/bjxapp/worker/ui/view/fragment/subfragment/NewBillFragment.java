@@ -38,6 +38,6 @@ public class NewBillFragment extends BillBaseFragment {
             }
         }
 
-        return orderList;
+        return sortArray(orderList);
     }
 }

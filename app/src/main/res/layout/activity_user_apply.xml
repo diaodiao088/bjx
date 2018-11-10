@@ -301,6 +301,8 @@
                     android:paddingBottom="5dp"
                     android:paddingLeft="100dp"
                     android:paddingTop="5dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:textColor="#ABABAB"
                     android:textSize="14sp" />
 

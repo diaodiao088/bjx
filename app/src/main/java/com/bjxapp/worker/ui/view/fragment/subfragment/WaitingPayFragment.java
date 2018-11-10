@@ -39,6 +39,6 @@ public class WaitingPayFragment extends BillBaseFragment {
             }
         }
 
-        return orderList;
+        return sortArray(orderList);
     }
 }

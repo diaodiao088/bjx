@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -105,7 +106,9 @@ public class UserClipPictureActivity extends BaseActivity implements OnClickList
         int screenWidth = OurContext.getScreenWidth(getApplicationContext());
         int screenHeight = OurContext.getScreenHeight(getApplicationContext());
         Rect clipRect = new Rect(0, top, screenWidth, top + screenWidth);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) findViewById(R.id.clip_frame).getLayoutParams();
+        ImageView imageView = findViewById(R.id.clip_frame);
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
         params.height = screenWidth;
         params.width = screenWidth;
         findViewById(R.id.clip_frame).setLayoutParams(params);

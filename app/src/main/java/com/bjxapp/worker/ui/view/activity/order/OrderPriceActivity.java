@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +87,8 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
 
     private int mScreenShotCount;
 
+    private String totalCost;
+
     @BindView(R.id.title_text_tv)
     XTextView mTitleTv;
 
@@ -124,6 +127,7 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
 
     private void handleIntent() {
         orderId = getIntent() != null ? getIntent().getStringExtra("order_id") : "";
+        totalCost = getIntent() != null ? getIntent().getStringExtra("total_cost") : "";
     }
 
     private void loadImages() {
@@ -242,6 +246,11 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
 
         if (!CashReg.isCashValid(price)) {
             Utils.showShortToast(this, "金额格式不合法");
+            return;
+        }
+
+        if (!TextUtils.isEmpty(totalCost) && Double.parseDouble(totalCost) - Double.parseDouble(price) < 0) {
+            Utils.showShortToast(this, "预付金额不能超过订单总和");
             return;
         }
 
@@ -495,7 +504,7 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
     }
 
 
-    public static void goToActivity(Context ctx, String orderId) {
+    public static void goToActivity(Context ctx, String orderId, String totalCost) {
 
         if (ctx == null) {
             ctx = App.getInstance();
@@ -504,6 +513,7 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
         Intent intent = new Intent();
         intent.setClass(ctx, OrderPriceActivity.class);
         intent.putExtra("order_id", orderId);
+        intent.putExtra("total_cost", totalCost);
         ctx.startActivity(intent);
     }
 

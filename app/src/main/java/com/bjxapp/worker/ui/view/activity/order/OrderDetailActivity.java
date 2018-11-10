@@ -100,6 +100,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @BindView(R.id.cancel_bill)
     TextView mCancelBillTv;
 
+
     /* 待预约 */
     @BindView(R.id.last_hour)
     XTextView mHourLastTv;
@@ -151,7 +152,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @BindView(R.id.order_receive_detail_images_text)
     XTextView mLookImageTv;
     @BindView(R.id.order_receive_detail_images)
-    LinearLayout mOrderImagesLinear;
+    RelativeLayout mOrderImagesLinear;
+
+    @BindView(R.id.custom_img_size_tv)
+    TextView mImgSizetTv;
 
     ArrayList<String> mIDImageUrls = new ArrayList<>();
 
@@ -219,7 +223,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         super.onCreate(savedInstanceState);
     }
 
-    @OnClick(R.id.order_receive_detail_images_text)
+    @OnClick(R.id.order_receive_detail_images)
     void clickLookImage() {
         showUserImages();
     }
@@ -272,12 +276,18 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     @OnClick(R.id.add_image_content)
     void addIssueImage() {
-        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD);
+        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImageList);
     }
 
     @OnClick(R.id.order_bill_btn)
     void editPreBill() {
-        OrderPriceActivity.goToActivity(this, mDetailInfo != null ? mDetailInfo.getOrderDes().getOrderId() : String.valueOf(-1));
+        if (TextUtils.isEmpty(mIssuePriceTv.getText().toString()) ||
+                Double.parseDouble(mIssuePriceTv.getText().toString()) == 0) {
+            Utils.showShortToast(this, "请先填写维修项信息");
+        } else {
+            OrderPriceActivity.goToActivity(this, mDetailInfo != null ? mDetailInfo.getOrderDes().getOrderId() : String.valueOf(-1),
+                    mIssuePriceTv.getText().toString());
+        }
     }
 
     String orderId = "";
@@ -589,6 +599,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
 
         int processStatus = mDetailInfo.getOrderDes().getProcessStatus();
+        int status = mDetailInfo.getOrderDes().getStatus();
 
         if (processStatus == 3) {
             mStatusTv.setText("待上门");
@@ -613,6 +624,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mSaveButton.setVisibility(View.GONE);
         }
 
+        if (status == 4) {
+            mStatusTv.setText("异常");
+            preBillBtn.setVisibility(View.GONE);
+            mServiceEditBtn.setVisibility(View.GONE);
+            mSaveButton.setVisibility(View.GONE);
+        }
+
         MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
 
         if (maintainInfo.getPrePaid()) {
@@ -626,17 +644,17 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mStrategyContentTv.setText("null".equals(maintainInfo.getPlan()) ? "" : maintainInfo.getPlan());
         mIssuePriceTv.setText(maintainInfo.getTotalCost());
 
-        mTotalPriceTv.setText(maintainInfo.getTotalCost()); // 总报价
+        mTotalPriceTv.setText("+ " + maintainInfo.getTotalCost()); // 总报价
 
         BigDecimal totalCost = new BigDecimal(Double.parseDouble(maintainInfo.getTotalCost()));
         BigDecimal serviceCost = new BigDecimal(mDetailInfo.getOrderDes().getServiceVisitCost());
         BigDecimal preCost = new BigDecimal(Double.parseDouble(maintainInfo.getPreCost()));
 
-        mTotalTv.setText(String.valueOf(totalCost.add(serviceCost).doubleValue())); //总计
-        mPrePayPriceTv.setText(maintainInfo.getPreCost());
+        mTotalTv.setText(String.valueOf(totalCost.add(serviceCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())); //总计
+        mPrePayPriceTv.setText("- " + maintainInfo.getPreCost());
 
         // double payAmount = Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost()) - Double.parseDouble(maintainInfo.getPreCost());
-        double payAmount = totalCost.add(serviceCost).subtract(preCost).doubleValue();
+        double payAmount = totalCost.add(serviceCost).subtract(preCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         payAmount = payAmount > 0 ? payAmount : 0.00;
         maintainInfo.setPayAmount(String.valueOf(payAmount));
         mFuKuanContentTv.setText(String.valueOf(payAmount));
@@ -761,6 +779,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mIDImageUrls.clear();
             mIDImageUrls.addAll(imgList);
             mOrderImagesLinear.setVisibility(View.VISIBLE);
+            mImgSizetTv.setText(imgList.size() + "张");
         } else {
             mOrderImagesLinear.setVisibility(View.GONE);
         }
@@ -1008,7 +1027,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
      */
     private void toWaitStatus() {
 
-        mStatusTv.setText("待预约");
+        mStatusTv.setText("待联系");
         mHourLastTv.setVisibility(View.VISIBLE);
         mPreBillLy.setVisibility(View.GONE);
         mFinalMoneyLy.setVisibility(View.GONE);
@@ -1598,18 +1617,17 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mIssueReasonTv.setText(maintainInfo.getFault());
         mIssuePriceTv.setText(maintainInfo.getTotalCost());
         mStrategyContentTv.setText(maintainInfo.getPlan());
-        mTotalPriceTv.setText(maintainInfo.getTotalCost());
+        mTotalPriceTv.setText("+ " + maintainInfo.getTotalCost());
 
         BigDecimal totalCost = new BigDecimal(Double.parseDouble(maintainInfo.getTotalCost()));
         BigDecimal serviceCost = new BigDecimal(mDetailInfo.getOrderDes().getServiceVisitCost());
         BigDecimal preCost = new BigDecimal(Double.parseDouble(maintainInfo.getPreCost()));
 
-        mTotalTv.setText(String.valueOf(totalCost.add(serviceCost).doubleValue())); //总计
-        maintainInfo.setTotalAmount(String.valueOf(totalCost.add(serviceCost).doubleValue()));
+        maintainInfo.setTotalAmount(String.valueOf(totalCost.add(serviceCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()));
         mTotalTv.setText(maintainInfo.getTotalAmount());
-        mPrePayPriceTv.setText(maintainInfo.getPreCost());
+        mPrePayPriceTv.setText("- " + maintainInfo.getPreCost());
 
-        double payAmount = totalCost.add(serviceCost).subtract(preCost).doubleValue();
+        double payAmount = totalCost.add(serviceCost).subtract(preCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         payAmount = payAmount > 0 ? payAmount : 0.00;
         maintainInfo.setPayAmount(String.valueOf(payAmount));
         mFuKuanContentTv.setText(maintainInfo.getPayAmount());

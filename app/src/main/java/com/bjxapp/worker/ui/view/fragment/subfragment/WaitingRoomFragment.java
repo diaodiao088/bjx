@@ -39,6 +39,6 @@ public class WaitingRoomFragment extends BillBaseFragment {
             }
         }
 
-        return orderList;
+        return sortArray(orderList);
     }
 }

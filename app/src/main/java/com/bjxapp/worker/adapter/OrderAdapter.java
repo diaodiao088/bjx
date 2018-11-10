@@ -66,38 +66,48 @@ public class OrderAdapter extends BaseAdapter {
 
         String statusString = "";
         String feeInfo = "";
-        switch (aInfo.get(position).getProcessStatus()) {
-            case 5:
-                statusString = "待支付";
-                feeInfo = "费用：";
-                break;
-            case 1:
-                statusString = "待接单";
-                feeInfo = "费用预估：";
-                break;
-            case 2:
-                statusString = "待联系";
-                feeInfo = "费用：";
-                break;
-            case 3:
-                statusString = "待上门";
-                feeInfo = "费用：";
-                break;
-            case 4:
-                statusString = "已上门";
-                feeInfo = "费用：";
-                break;
-            case 6:
-                statusString = "待评价";
-                feeInfo = "费用：";
-                break;
-            case 7:
-                statusString = "已评价";
-                feeInfo = "费用：";
-                break;
-            default:
-                break;
+
+        int status = aInfo.get(position).getStatus();
+
+        if (status == 4) {
+            statusString = "异常";
+            feeInfo = "费用";
+        } else {
+            switch (aInfo.get(position).getProcessStatus()) {
+                case 5:
+                    statusString = "待支付";
+                    feeInfo = "费用：";
+                    break;
+                case 1:
+                    statusString = "待接单";
+                    feeInfo = "费用预估：";
+                    break;
+                case 2:
+                    statusString = "待联系";
+                    feeInfo = "费用：";
+                    break;
+                case 3:
+                    statusString = "待上门";
+                    feeInfo = "费用：";
+                    break;
+                case 4:
+                    statusString = "已上门";
+                    feeInfo = "费用：";
+                    break;
+                case 6:
+                    statusString = "待评价";
+                    feeInfo = "费用：";
+                    break;
+                case 7:
+                    statusString = "已评价";
+                    feeInfo = "费用：";
+                    break;
+                default:
+                    break;
+            }
         }
+
+
         holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
         holder.textViewStatus.setText(statusString);
 

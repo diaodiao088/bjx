@@ -45,6 +45,7 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
     public static final String STRATEGY = "strategy";
     public static final String DETAIL = "detail";
     public static final String PRICE = "price";
+    public static final String PRE_PRICE = "pre_price";
 
     public static final int SERVICE_BILL_CODE = 0x03;
 
@@ -55,6 +56,8 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
 
     @BindView(R.id.title_text_tv)
     XTextView mTitleTv;
+
+    String prePrice;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,8 +74,12 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
             mReasonTv.setText(TextUtils.isEmpty(reason) ? "" : reason);
             String strategy = getIntent().getStringExtra(STRATEGY);
             mDoTv.setText(TextUtils.isEmpty(strategy) ? "" : strategy);
-            String detail = getIntent().getStringExtra(STRATEGY);
+            String detail = getIntent().getStringExtra(DETAIL);
             mPriceTv.setText(TextUtils.isEmpty(detail) ? "" : detail);
+            String price = getIntent().getStringExtra(PRICE);
+            mTotalPriceTv.setText(TextUtils.isEmpty(price) ? "" : price);
+
+            prePrice = getIntent().getStringExtra(PRE_PRICE);
         }
     }
 
@@ -110,7 +117,7 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
             });
             dialog.setContent("请填写完整的信息");
             dialog.show();
-        } else if(!CashReg.isCashValid(mTotalPriceTv.getText().toString())){
+        } else if (!CashReg.isCashValid(mTotalPriceTv.getText().toString())) {
             final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
             dialog.setOnNegativeListener(new View.OnClickListener() {
                 @Override
@@ -122,7 +129,20 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
             });
             dialog.setContent("金额格式不正确");
             dialog.show();
-        }else {
+        } else if (!TextUtils.isEmpty(prePrice) &&
+                Double.parseDouble(mTotalPriceTv.getText().toString()) < Double.parseDouble(prePrice)) {
+            final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
+            dialog.setOnNegativeListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            dialog.setContent("总订单额度不能小于预付额度");
+            dialog.show();
+        } else {
             commitReal();
         }
     }
@@ -146,6 +166,8 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
         intent.putExtra(REASON, maintainInfo.getFault());
         intent.putExtra(STRATEGY, maintainInfo.getPlan());
         intent.putExtra(DETAIL, maintainInfo.getCostDetail());
+        intent.putExtra(PRICE, maintainInfo.getTotalCost());
+        intent.putExtra(PRE_PRICE, maintainInfo.getPreCost());
         context.startActivityForResult(intent, code);
     }
 }

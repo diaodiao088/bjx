@@ -172,22 +172,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.profile_user_balance_money_get_button:
-                showWithdraw();
-                break;
-            case R.id.profile_user_info:
-                Utils.startActivityForResult(mActivity, Fragment_Main_Fourth.this, ApplyActivity.class, Constant.ACTIVITY_APPLY_RESULT_CODE);
-                break;
-
-            case R.id.profile_service_call:
-                callService();
-                break;
-            case R.id.profile_check_update:
-                checkUpdate();
-                break;
-            case R.id.profile_logout:
-                logOut();
-                break;
             default:
                 break;
         }

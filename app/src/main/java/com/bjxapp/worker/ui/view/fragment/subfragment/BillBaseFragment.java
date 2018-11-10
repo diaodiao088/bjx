@@ -34,12 +34,15 @@ import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
+import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -64,8 +67,21 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
     private XWaitingDialog mWaitingDialog;
     private RelativeLayout mLoadAgainLayout;
 
-    private AsyncTask<Void, Void, FirstPageResult> mFirstLoadTask;
-    private AsyncTask<Void, Void, FirstPageResult> mRefreshTask;
+    protected Comparator<OrderDes> comparator = new Comparator<OrderDes>() {
+        @Override
+        public int compare(OrderDes o1, OrderDes o2) {
+
+            if (o1.getStatus() == 4 && o2.getStatus() == 4) {
+                return 0;
+            } else if (o1.getStatus() == 4 && o2.getStatus() != 4) {
+                return 1;
+            } else if (o1.getStatus() != 4 && o2.getStatus() == 4) {
+                return 1;
+            }
+
+            return 0;
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -411,8 +427,17 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
     protected abstract int getLayoutRes();
 
     protected ArrayList<OrderDes> getOrderArray() {
-        return mOrdersArray;
+
+        for (int i = 0; i < mOrdersArray.size(); i++) {
+            LogUtils.log(mOrdersArray.get(i).getStatus() + "");
+        }
+
+
+        return sortArray(mOrdersArray);
     }
 
-    ;
+    protected ArrayList<OrderDes> sortArray(ArrayList<OrderDes> mList){
+        Collections.sort(mList ,comparator);
+        return mList;
+    }
 }

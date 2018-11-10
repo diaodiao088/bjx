@@ -279,7 +279,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
                     int value = object.get("value").getAsInt();
-                    mPeriodDay = value > 0 ? value : 14;
+                    mPeriodDay = value >= 0 ? value : 14;
                 }
             }
 
@@ -384,7 +384,7 @@ public class BalanceBankWithdrawActivity extends BaseActivity {
     }
 
     private String getQuestion(int day) {
-        return "为了保证维修的质量，需要质押维修金" + day + "个工作日，" + day + "个工作日后，方能将维修金提现。";
+        return "为了保证维修的质量，需要质押维修金" + day + "个自然日，" + day + "个自然日后，方能将维修金提现。";
     }
 
 

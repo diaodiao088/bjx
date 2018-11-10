@@ -31,6 +31,7 @@ public class AlreadyRoomFragment extends BillBaseFragment {
     protected ArrayList<OrderDes> getOrderArray() {
 
         ArrayList<OrderDes> orderList = new ArrayList<>();
+
         for (int i = 0; i < mOrdersArray.size(); i++) {
             OrderDes item = mOrdersArray.get(i);
             if (item.getProcessStatus() == PageSlipingCtrl.ALREADY_ROOM){
@@ -38,6 +39,7 @@ public class AlreadyRoomFragment extends BillBaseFragment {
             }
         }
 
-        return orderList;
+
+        return sortArray(orderList);
     }
 }
