@@ -45,6 +45,7 @@ import com.bjxapp.worker.ui.titlemenu.TitlePopup.OnItemOnClickListener;
 import com.bjxapp.worker.ui.view.activity.JoinUsActivity;
 import com.bjxapp.worker.ui.view.activity.PushDetailActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
+import com.bjxapp.worker.ui.view.activity.user.LoginActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseFragmentActivity;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
@@ -593,7 +594,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
-                    int code = jsonObject.get("code").getAsInt();
+                    final int code = jsonObject.get("code").getAsInt();
                     final String msg = jsonObject.get("msg").getAsString();
                     if (code == 0) {
                         int status = jsonObject.get("status").getAsInt();
@@ -610,11 +611,13 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                             }
                         });
 
+                    } else if (code == 20001) {
+                        showStatusDialog(msg, code);
                     } else {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                showStatusDialog(msg);
+                                showStatusDialog(msg, code);
                             }
                         });
                     }
@@ -647,7 +650,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         });
     }
 
-    private void showStatusDialog(String msg) {
+    private void showStatusDialog(String msg, int status) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setIcon(android.R.drawable.ic_dialog_info);
         builder.setTitle("师傅注册通知");
@@ -660,13 +663,27 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             }
         });
 
-        builder.setNeutralButton("电话询问", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                callService();
-                ActivitiesManager.getInstance().finishAllActivities();
-            }
-        });
+        if (status == 20001) {
+            builder.setNeutralButton("重新登录", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // callService();
+                    // ActivitiesManager.getInstance().finishAllActivities();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.putExtra("from", 0x01);
+                    MainActivity.this.startActivity(intent);
+                    finish();
+                }
+            });
+        } else {
+            builder.setNeutralButton("电话询问", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    callService();
+                    ActivitiesManager.getInstance().finishAllActivities();
+                }
+            });
+        }
 
         builder.create().show();
     }

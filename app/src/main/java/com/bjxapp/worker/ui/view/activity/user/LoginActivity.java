@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bjx.master.R;;
+import com.bjxapp.worker.MainActivity;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
@@ -79,11 +80,22 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private XWaitingDialog mWaitingDialog;
     private String mLoginKey = "";
 
+    private int mFrom = 0x00;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_user_login_new);
         ButterKnife.bind(this);
+        handleIntent();
         super.onCreate(savedInstanceState);
+    }
+
+    private void handleIntent() {
+
+        if (getIntent() != null) {
+            mFrom = getIntent().getIntExtra("from", 0x00);
+        }
+
     }
 
     @Override
@@ -368,8 +380,18 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                                 if (!TextUtils.isEmpty(token)) {
                                     ConfigManager.getInstance(context).setUserCode(userCode);
                                     ConfigManager.getInstance(context).setUserSession(token);
-                                    setResult(RESULT_OK);
-                                    Utils.finishWithoutAnim(LoginActivity.this);
+
+                                    if (mFrom == 0x01){
+
+                                        Intent intent = new Intent();
+                                        intent.setClass(LoginActivity.this , MainActivity.class);
+                                        LoginActivity.this.startActivity(intent);
+                                        Utils.finishWithoutAnim(LoginActivity.this);
+
+                                    }else{
+                                        setResult(RESULT_OK);
+                                        Utils.finishWithoutAnim(LoginActivity.this);
+                                    }
                                 }
                             } else {
                                 mHandler.post(new Runnable() {
