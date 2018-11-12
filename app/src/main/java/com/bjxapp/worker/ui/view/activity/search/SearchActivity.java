@@ -16,7 +16,7 @@ import com.bjxapp.worker.model.CommonConsult;
 import com.bjxapp.worker.ui.view.activity.search.SearchSideBar.OnTouchingLetterChangedListener;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

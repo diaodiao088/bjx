@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.ui.view.base.BaseActivity;

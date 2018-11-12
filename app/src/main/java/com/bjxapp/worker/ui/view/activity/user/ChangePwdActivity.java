@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;

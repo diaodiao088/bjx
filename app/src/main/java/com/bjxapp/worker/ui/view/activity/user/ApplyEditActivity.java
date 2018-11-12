@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.TextView;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.ProfileApi;
@@ -27,6 +27,7 @@ import com.bjxapp.worker.ui.view.activity.map.MapActivityNew;
 import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
@@ -230,8 +231,21 @@ public class ApplyEditActivity extends Activity {
                             String regionName = info.get("regionName").getAsString();
                             int workYear = info.get("workingYear").getAsInt();
 
+                            JsonArray jsonArray = info.get("serviceList").getAsJsonArray();
+
+                            ArrayList<String> serviceList = new ArrayList<>();
+
+                            if (jsonArray.size() > 0){
+                                for (int i = 0; i < jsonArray.size(); i++) {
+                                    JsonObject item = (JsonObject) jsonArray.get(i);
+                                    serviceList.add(item.get("name").getAsString());
+                                }
+                            }
+
                             final UserInfoA userInfoA = new UserInfoA(mImageAddress, identityCardBehindImgUrl, identityCardFrontImgUrl,
                                     identityCardNo, latitued, longitude, locationAddress, name, regionId, regionName, workYear);
+
+                            userInfoA.setmServiceList(serviceList);
 
                             mHandler.post(new Runnable() {
                                 @Override
@@ -285,6 +299,21 @@ public class ApplyEditActivity extends Activity {
 
             mMapTv.setText(locationInfo.getAddress());
             mMapTv.setTag(locationInfo);
+
+            if (userInfoA.getmServiceList() != null && userInfoA.getmServiceList().size() > 0){
+                StringBuilder builder = new StringBuilder();
+
+                ArrayList<String> list = userInfoA.getmServiceList();
+
+                for (int i = 0 ; i<list.size() ;  i++) {
+                    builder.append(list.get(i));
+                    if (i != list.size() - 1){
+                        builder.append(",");
+                    }
+                }
+
+                mServiceTv.setText(builder.toString());
+            }
 
             mPwd = userInfoA.getPwd();
         } catch (Exception e) {

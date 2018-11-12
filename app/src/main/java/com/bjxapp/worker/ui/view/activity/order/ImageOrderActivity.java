@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bumptech.glide.Glide;
 
 import butterknife.BindView;

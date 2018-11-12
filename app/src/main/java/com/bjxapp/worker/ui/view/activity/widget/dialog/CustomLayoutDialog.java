@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 /**
  * Created by zi on 15/6/8.

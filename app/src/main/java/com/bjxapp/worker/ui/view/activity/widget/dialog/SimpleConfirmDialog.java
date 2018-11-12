@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 /**
  * Created by zhangdan on 2018/11/7.

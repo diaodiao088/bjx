@@ -16,7 +16,7 @@ import com.bjxapp.worker.SplashActivity;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.logic.INotificationLogic;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 public class NotificationLogicImpl implements INotificationLogic {
     private static INotificationLogic instance;

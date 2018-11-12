@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.bjxapp.worker.App;
 import com.bjxapp.worker.MainActivity;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;

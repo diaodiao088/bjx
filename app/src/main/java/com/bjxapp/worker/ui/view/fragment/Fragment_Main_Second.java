@@ -42,7 +42,7 @@ import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.utils.Logger;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -75,7 +75,6 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
     @Override
     protected void initView() {
-        registerUpdateUIBroadcast();
         initViews();
         setOnListener();
         onFirstLoadData(false);
@@ -653,7 +652,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
         switch (status) {
             case TYPE_TOTAL:
                 return mOrdersArray;
-            case TYPE_UNSAFE:
+            case TYPE_SAFE:
                 for (int i = 0; i < mOrdersArray.size(); i++) {
                     OrderDes item = mOrdersArray.get(i);
                     if (item.isInGuaranteePeriod()) {
@@ -662,7 +661,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                 }
 
                 return list;
-            case TYPE_SAFE:
+            case TYPE_UNSAFE:
                 for (int i = 0; i < mOrdersArray.size(); i++) {
                     OrderDes item = mOrdersArray.get(i);
                     if (!item.isInGuaranteePeriod()) {

@@ -19,7 +19,7 @@ import com.bjxapp.worker.utils.diskcache.DiskCacheManager;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.image.BitmapManager;
 import com.bjxapp.worker.utils.image.ImageCache;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 public class ImagesAdapter extends BaseAdapter{
 

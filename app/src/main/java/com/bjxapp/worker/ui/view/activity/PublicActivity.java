@@ -8,7 +8,7 @@ import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 public class PublicActivity extends BaseActivity implements OnClickListener {
 	protected static final String TAG = "公共界面";

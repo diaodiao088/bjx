@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
@@ -418,7 +418,6 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
             int pushType = intent.getIntExtra("push_type", 0);
             String message = intent.getStringExtra("message");
             String extra = intent.getStringExtra("extra");
-            Utils.showLongToast(mActivity, message);
             // onFirstLoadData(false);
 
             if (pushType == Constant.PUSH_TYPE_ORDER_PAY) {

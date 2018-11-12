@@ -13,7 +13,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
@@ -25,9 +25,7 @@ import com.bjxapp.worker.dataupload.ReportEvent;
 import com.bjxapp.worker.dataupload.Uploader;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
-import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.Account;
-import com.bjxapp.worker.model.XResult;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
@@ -225,11 +223,6 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
             return;
         }
 
-        if (mCounter == null) {
-            mCounter = new MyCount(60000, 1000);
-        }
-        mCounter.start();
-
         LoginApi httpService = KHttpWorker.ins().createHttpService(LoginApi.URL, LoginApi.class);
 
         Map params = new HashMap();
@@ -253,6 +246,31 @@ public class ForgetPwdActivity extends BaseActivity implements OnClickListener {
                             mSendAuthButton.setText("获取验证码");
                         }
                     });
+                }else {
+
+                    JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mCounter == null) {
+                                    mCounter = new MyCount(60000, 1000);
+                                }
+                                mCounter.start();
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(ForgetPwdActivity.this, msg + "");
+                            }
+                        });
+                    }
                 }
             }
 

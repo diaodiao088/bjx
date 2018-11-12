@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 /**
  * Created by zhangdan on 2018/9/25.

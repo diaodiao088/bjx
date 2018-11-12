@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.model.OrderDes;
 
 import java.util.ArrayList;

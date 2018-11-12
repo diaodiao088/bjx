@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

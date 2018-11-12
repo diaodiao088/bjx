@@ -20,7 +20,7 @@ import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 //浏览器
 public class WebViewActivity extends BaseActivity {

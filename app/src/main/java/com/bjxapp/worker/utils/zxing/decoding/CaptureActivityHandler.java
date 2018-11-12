@@ -15,7 +15,7 @@ import com.bjxapp.worker.utils.zxing.CaptureActivity;
 import com.bjxapp.worker.utils.zxing.camera.CameraManager;
 import com.bjxapp.worker.utils.zxing.view.ViewfinderResultPointCallback;
 import com.google.zxing.BarcodeFormat;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 /**
  * This class handles all the messaging which comprises the state machine for

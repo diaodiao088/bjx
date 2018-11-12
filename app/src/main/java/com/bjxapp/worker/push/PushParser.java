@@ -5,7 +5,7 @@ import android.media.MediaPlayer;
 import android.text.TextUtils;
 
 import com.bjxapp.worker.App;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.db.BjxInfo;
 import com.bjxapp.worker.db.DBManager;
 import com.bjxapp.worker.global.Constant;

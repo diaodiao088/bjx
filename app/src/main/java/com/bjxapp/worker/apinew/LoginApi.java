@@ -1,9 +1,9 @@
 package com.bjxapp.worker.apinew;
 
-import com.bjxapp.worker.BuildConfig;
 import com.google.gson.JsonObject;
 
 import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -17,10 +17,11 @@ import retrofit2.http.POST;
 
 public interface LoginApi {
 
-    String TEST_URL = "http://master-test.100jiaxiu.com";
-    String FORMAL_URL = "http://master-test.100jiaxiu.com";
+    //http://master-test.100jiaxiu.com
+    String TEST_URL = "http://master.100jiaxiu.com";
+    String FORMAL_URL = "http://master.100jiaxiu.com";
 
-    String URL = BuildConfig.DEBUG ? TEST_URL : FORMAL_URL;
+    String URL = com.bjx.master.BuildConfig.DEBUG ? TEST_URL : FORMAL_URL;
 
     @POST("/login/key")
     Call<JsonObject> getLoginKey();

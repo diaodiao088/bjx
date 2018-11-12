@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.utils.Utils;

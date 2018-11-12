@@ -19,7 +19,7 @@ import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.baidu.mapapi.search.sug.SuggestionSearchOption;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.ui.view.activity.map.adapter.MapSearchAdapter;
 
 import java.util.Iterator;

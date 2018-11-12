@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bjxapp.worker"
+    package="com.bjx.master"
     android:versionCode="4"
     android:versionName="3.1">
 
@@ -50,6 +50,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
     <!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+
     <!-- 访问网络，网络定位需要上网-->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- SD卡读取权限，用户写入离线定位数据-->
@@ -82,7 +85,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="Tbq7T1k2m361R7aGHUOhoG7HDTSm7X1u" />
+            android:value="NmRQXqiX1jCs4ICsQWyMfZN22LmcvXQP" />
 
         <!-- baidu location end -->
 
@@ -155,59 +158,60 @@
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme" />
 
-        <activity android:name=".ui.view.activity.PushDetailActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".ui.view.activity.user.ApplyEditActivity"
-            android:screenOrientation="portrait"
-            />
-
         <activity
-            android:name=".ui.view.activity.order.AddImageActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.PushDetailActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.view.activity.JoinUsActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.user.ApplyEditActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.order.AddImageActivity"
+            android:screenOrientation="portrait">
+
+
+        </activity>
+
+
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.JoinUsActivity"
             android:screenOrientation="portrait" />
 
 
         <activity
-            android:name=".ui.view.activity.order.ImageOrderActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.view.activity.order.OrderPriceActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.order.OrderPriceActivity"
             android:screenOrientation="portrait">
 
         </activity>
 
         <activity
-            android:name=".ui.view.activity.ImageDetailActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.ImageDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme" />
-
-        <activity android:name=".TestActivity">
-
-        </activity>
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.user.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme" />
         <activity
-            android:name=".ui.view.activity.ChangeCityActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.ChangeCityActivity"
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme" />
         <activity
-            android:name=".ui.view.activity.user.LoginPwdActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.user.LoginPwdActivity"
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme" />
         <activity
-            android:name=".ui.view.activity.user.ForgetPwdActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.user.ForgetPwdActivity"
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme" />
         <activity
-            android:name=".ui.view.activity.user.ChangePwdActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.user.ChangePwdActivity"
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme"></activity>
         <activity
@@ -230,11 +234,11 @@
             android:screenOrientation="portrait"></activity>
 
         <activity
-            android:name=".ui.view.activity.map.MapActivityNew"
+            android:name="com.bjxapp.worker.ui.view.activity.map.MapActivityNew"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.view.activity.map.MapSearchActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.map.MapSearchActivity"
             android:screenOrientation="portrait" />
 
 
@@ -269,22 +273,22 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.view.activity.order.CancelBillActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.order.CancelBillActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.view.activity.order.ServiceBillActivity"
+            android:name="com.bjxapp.worker.ui.view.activity.order.ServiceBillActivity"
             android:screenOrientation="portrait" />
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.OrderDetailAdditionActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.OrderPayQRCodeActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.user.BalanceBankWithdrawActivity"
             android:screenOrientation="portrait"></activity>
@@ -302,12 +306,12 @@
         <service android:name="com.bjxapp.worker.service.XAppService"></service>
 
         <service
-            android:name=".push.BJXPushService"
+            android:name="com.bjxapp.worker.push.BJXPushService"
             android:exported="true"
             android:label="PushService"
             android:process=":pushservice"></service>
 
-        <service android:name=".push.PushIntentService" />
+        <service android:name="com.bjxapp.worker.push.PushIntentService" />
 
 
         <!-- push应用定义消息receiver声明 -->

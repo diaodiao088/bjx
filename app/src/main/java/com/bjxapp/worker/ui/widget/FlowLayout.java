@@ -8,7 +8,7 @@ import android.util.LayoutDirection;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 import java.util.ArrayList;
 import java.util.Collections;

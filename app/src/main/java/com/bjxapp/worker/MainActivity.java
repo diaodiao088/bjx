@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.LocationClient;
+import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
@@ -448,7 +449,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mRightImageView = (XImageView) findViewById(R.id.title_image_right);
         mTitleTv.setText("首页");
-        mTitleRightTv.setText("加入我们");
+        mTitleRightTv.setText("邀请关注");
     }
 
     private void initViews() {

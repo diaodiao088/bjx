@@ -11,7 +11,7 @@ import android.widget.CheckBox;
 
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.model.CCheckBox;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 public class CommonCheckBoxAdapter extends BaseAdapter{
 

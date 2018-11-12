@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.adapter.PushAdapter;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.listview.XListView;

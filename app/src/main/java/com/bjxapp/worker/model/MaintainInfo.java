@@ -35,6 +35,8 @@ public class MaintainInfo {
 
     private String totalCost;  // 总报价
 
+    private String orderTime;
+
     public MaintainInfo() {
 
     }
@@ -53,6 +55,14 @@ public class MaintainInfo {
         this.prePayService = prePayService;
         this.totalAmount = totalAmount;
         this.totalCost = totalCost;
+    }
+
+    public String getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(String orderTime) {
+        this.orderTime = orderTime;
     }
 
     public String getCostDetail() {

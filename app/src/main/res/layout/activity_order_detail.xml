@@ -197,6 +197,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp">
 
@@ -293,10 +294,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@drawable/layout_textview_radius"
-                        android:paddingBottom="2dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="2dp"
+                        android:paddingBottom="3dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingTop="3dp"
                         android:text="编辑"
                         android:textColor="#ffffff"
                         android:textSize="14sp" />
@@ -397,40 +398,45 @@
                         android:textSize="14sp" />
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/issue_add_image_ly"
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/issue_add_image_ly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:visibility="gone"
+                android:background="@drawable/layout_radius">
+
+                <com.bjxapp.worker.controls.XTextView
+                    android:id="@+id/add_image"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="center_vertical"
+                    android:text="添加照片："
+                    android:layout_margin="5dp"
+                    android:textColor="#545454"
+                    android:textSize="14sp" />
+
+                <com.bjxapp.worker.controls.XTextView
+                    android:id="@+id/add_image_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="15dp">
-
-                    <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/add_image"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:gravity="center_vertical"
-                        android:text="添加照片："
-                        android:textColor="#545454"
-                        android:textSize="14sp" />
-
-                    <com.bjxapp.worker.controls.XTextView
-                        android:id="@+id/add_image_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/add_image"
-                        android:drawablePadding="8dp"
-                        android:drawableRight="@drawable/right"
-                        android:gravity="center_vertical"
-                        android:text="请添加维修前，维修中，维修后的照片"
-                        android:textColor="#999999"
-                        android:textSize="12sp" />
-                </RelativeLayout>
-
-
-            </LinearLayout>
+                    android:layout_toRightOf="@+id/add_image"
+                    android:drawablePadding="8dp"
+                    android:layout_centerVertical="true"
+                    android:drawableRight="@drawable/right"
+                    android:gravity="center_vertical"
+                    android:paddingRight="8dp"
+                    android:text="请添加维修前，维修中，维修后的照片"
+                    android:textColor="#999999"
+                    android:textSize="12sp" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/order_bill_ly"
@@ -439,7 +445,6 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="vertical"
                 android:visibility="gone">
@@ -488,10 +493,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@drawable/layout_textview_radius"
-                        android:paddingBottom="2dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="2dp"
+                        android:paddingBottom="3dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingTop="3dp"
                         android:text="编辑"
                         android:textColor="#ffffff"
                         android:textSize="14sp" />
@@ -574,10 +579,9 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="match_parent"

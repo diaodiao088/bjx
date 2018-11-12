@@ -20,7 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.ProfileApi;
@@ -433,10 +433,15 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
     private void uploadHeadImage(String filename) {
         mWaitingDialog.show("正在上传头像，请稍候...", false);
-        post_file(LoginApi.URL + "/image/upload", null, new File(filename));
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        post_file(LoginApi.URL + "/image/upload", map, new File(filename));
     }
 
-    public void post_file(final String url, final Map<String, Object> map, File file) {
+    public void post_file(final String url, final Map<String, String> map, File file) {
         OkHttpClient client = new OkHttpClient();
         MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
         if (file != null) {
@@ -661,6 +666,11 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
         //verify id card
         String idCard = mUserIDEdit.getText().toString().trim();
+
+        if (idCard.length() != 18) {
+            Utils.showShortToast(context, "身份证必须是18位");
+            return;
+        }
         /*String resultIDCard = IDCardValidate.verify(idCard);
         if (!resultIDCard.equalsIgnoreCase(idCard)) {
             Utils.showShortToast(context, resultIDCard);

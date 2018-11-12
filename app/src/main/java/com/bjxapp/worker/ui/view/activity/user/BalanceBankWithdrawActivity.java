@@ -30,7 +30,7 @@ import com.bjxapp.worker.model.BankInfo;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 

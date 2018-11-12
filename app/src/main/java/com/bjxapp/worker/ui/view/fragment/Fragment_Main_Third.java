@@ -41,7 +41,7 @@ import com.bjxapp.worker.ui.view.activity.MessageDetailActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.utils.Logger;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 

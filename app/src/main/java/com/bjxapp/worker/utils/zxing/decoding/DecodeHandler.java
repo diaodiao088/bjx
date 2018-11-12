@@ -17,7 +17,7 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 final class DecodeHandler extends Handler {
 

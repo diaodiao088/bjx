@@ -25,7 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bjxapp.worker.App;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
@@ -67,6 +67,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.internal.Util;
+
+import static java.lang.String.valueOf;
 
 /**
  * Created by zhangdan on 2018/10/14.
@@ -291,6 +293,16 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
             if (compressFile.exists()) {
                 RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
                 requestBody.addFormDataPart("files", compressFile.getName(), body);
+            }
+        }
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        if (map != null) {
+            for (Map.Entry entry : map.entrySet()) {
+                requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
             }
         }
 

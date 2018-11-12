@@ -3,6 +3,7 @@ package com.bjxapp.worker.ui.view.activity;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +38,7 @@ import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.controls.listview.XListView;
+import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.ImageInfo;
@@ -48,7 +50,7 @@ import com.bjxapp.worker.utils.ImagePathUtils;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -376,12 +378,16 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
         }
         mWaitingDialog.show(getString(R.string.images_upload_waiting_message), false);
 
-        post_file(LoginApi.URL + "/image/upload", null);
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        post_file(LoginApi.URL + "/image/upload", map);
     }
 
     private ArrayList<String> mImageUrl = new ArrayList<>();
 
-    public void post_file(final String url, final Map<String, Object> map) {
+    public void post_file(final String url, final Map<String, String> map) {
 
         if (mImagesArray == null || mImagesArray.size() == 0) {
             return;

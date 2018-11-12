@@ -2,7 +2,7 @@ package com.bjxapp.worker.ui.view.fragment.subfragment;
 
 import android.os.Bundle;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.ui.view.fragment.ctrl.PageSlipingCtrl;
 

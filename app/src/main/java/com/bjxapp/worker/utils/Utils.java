@@ -54,7 +54,7 @@ import com.bjxapp.worker.ui.view.activity.search.SearchActivity;
 import com.bjxapp.worker.ui.view.activity.search.SearchActivityNew;
 import com.bjxapp.worker.ui.view.activity.search.SearchSingleActivity;
 import com.bjxapp.worker.ui.view.activity.user.UserClipPictureActivity;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 public class Utils {
 	

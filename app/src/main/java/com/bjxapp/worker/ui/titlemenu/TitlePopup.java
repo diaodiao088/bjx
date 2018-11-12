@@ -20,7 +20,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bjxapp.worker.utils.ViewHolder;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 /**
  * 功能描述：标题按钮上的弹窗（继承自PopupWindow）

@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.ui.view.activity.widget.RoundImageView;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bumptech.glide.Glide;

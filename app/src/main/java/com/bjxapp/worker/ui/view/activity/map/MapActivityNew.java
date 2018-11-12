@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.baidu.mapapi.map.MapView;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 

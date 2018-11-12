@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.db.BjxInfo;
 import com.bjxapp.worker.model.Message;

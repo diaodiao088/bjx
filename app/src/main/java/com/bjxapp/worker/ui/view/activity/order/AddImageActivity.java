@@ -2,14 +2,15 @@ package com.bjxapp.worker.ui.view.activity.order;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -18,22 +19,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bjxapp.worker.App;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XWaitingDialog;
-import com.bjxapp.worker.model.ImageInfo;
-import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
+import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
+import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
@@ -45,10 +44,12 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
@@ -60,6 +61,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
 import static java.lang.String.valueOf;
 
 /**
@@ -116,24 +118,24 @@ public class AddImageActivity extends Activity {
         mAdapter.notifyDataSetChanged();
     }
 
-    private void handleIntent(){
+    private void handleIntent() {
 
         Intent intent = getIntent();
 
-        try{
+        try {
             ArrayList<String> mlist = intent.getStringArrayListExtra("img_list");
 
-            if (mlist != null && mlist.size() > 0){
-               // mList.addAll(0 , mlist);
+            if (mlist != null && mlist.size() > 0) {
+                // mList.addAll(0 , mlist);
                 ArrayList<ImageBean> temList = new ArrayList<>();
                 for (int i = 0; i < mlist.size(); i++) {
-                    ImageBean item = new ImageBean(ImageBean.TYPE_ADD , mlist.get(i));
+                    ImageBean item = new ImageBean(ImageBean.TYPE_ADD, mlist.get(i));
                     temList.add(item);
                 }
-                mList.addAll(0 ,temList);
+                mList.addAll(0, temList);
                 mAdapter.notifyDataSetChanged();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -333,6 +335,47 @@ public class AddImageActivity extends Activity {
                     }
                 }
             }
+        } else if (requestCode == REQUEST_CODE_CLOCK_TAKE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+
+                try {
+                    String filePath = PATH + "/" + name;
+                    Bitmap bitmap = UploadFile.createImageThumbnail(filePath, getScreenShotWidth(), true);
+                    if (bitmap != null) {
+                        insertImg(bitmap, filePath, true);
+                    }
+                } catch (Exception e) {
+
+                }
+
+
+               /* Uri imageURI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                String photoPath = Utils.getPhotoUrl(AddImageActivity.this, imageURI, data);
+
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = null;
+                try {
+                  //  cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                  //  if (cursor != null) {
+                   //     cursor.moveToFirst();
+                   //     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                   //     final String imagePath = cursor.getString(columnIndex);
+                        //根据手机屏幕设置图片宽度
+                        Bitmap bitmap = UploadFile.createImageThumbnail(photoPath, getScreenShotWidth(), true);
+                        if (bitmap != null) {
+                            insertImg(bitmap, photoPath, true);
+                        }
+                  //  }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //KLog.error(KLog.KLogFeature.toulan,"load image failed, msg:"+e.getMessage());
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }*/
+            }
         }
     }
 
@@ -352,24 +395,71 @@ public class AddImageActivity extends Activity {
         return screenWidth / 4;
     }
 
+    private static final String PATH = Environment
+            .getExternalStorageDirectory() + "/DCIM";
+
     protected void loadImages() {
-        Uri imageURI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        if (imageURI != null) {
-            try {
-                if (ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
-                    startActivityForResult(intent, FEEDBACK_LOAD_IMAGES_RESULT);
-                }
-            } catch (Exception e) {
-                Log.w("FeedbackPresenter", "loadImages: " + e.getMessage());
-            }
-        }
+
+        final CharSequence[] items = getResources().getStringArray(R.array.user_select_image_items);
+        AlertDialog dlg = new AlertDialog.Builder(this)
+                .setTitle("选取照片")
+                .setNegativeButton("取消", null)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        try {
+                            if (!SDCardUtils.exist()) {
+                                Utils.showShortToast(AddImageActivity.this, "SD卡被占用或不存在");
+                            } else {
+                                if (item == 0) {
+                                    Uri imageURI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                                    if (imageURI != null) {
+                                        try {
+                                            if (ContextCompat.checkSelfPermission(AddImageActivity.this,
+                                                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                                                    != PackageManager.PERMISSION_GRANTED) {
+                                                ActivityCompat.requestPermissions(AddImageActivity.this,
+                                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+                                            } else {
+                                                Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
+                                                startActivityForResult(intent, FEEDBACK_LOAD_IMAGES_RESULT);
+                                            }
+                                        } catch (Exception e) {
+                                            Log.w("FeedbackPresenter", "loadImages: " + e.getMessage());
+                                        }
+                                    }
+                                } else {
+                                    if (ContextCompat.checkSelfPermission(AddImageActivity.this,
+                                            Manifest.permission.READ_EXTERNAL_STORAGE)
+                                            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(AddImageActivity.this,
+                                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                            != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(AddImageActivity.this,
+                                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                                    } else {
+                                        //  Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
+                                        //   startActivityForResult(intent, FEEDBACK_LOAD_IMAGES_RESULT);
+                                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 调用系统相机
+                                        name = android.text.format.DateFormat.format("yyyyMMdd_hhmmss",
+                                                Calendar.getInstance(Locale.CHINA))
+                                                + ".jpg";//以当前时间作为文件名
+                                        Uri imageUri = Uri.fromFile(new File(PATH, name));
+
+                                        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+                                        startActivityForResult(intent, REQUEST_CODE_CLOCK_TAKE_PHOTO);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            Utils.showShortToast(AddImageActivity.this, "SD卡被占用或不存在");
+                        }
+                    }
+                }).create();
+        dlg.show();
+
     }
+
+    String name;
 
     public interface OnOperationListener {
 
@@ -388,7 +478,7 @@ public class AddImageActivity extends Activity {
 
         Intent intent = new Intent();
         intent.setClass(ctx, AddImageActivity.class);
-        intent.putStringArrayListExtra("img_list" , mImgList);
+        intent.putStringArrayListExtra("img_list", mImgList);
         //ctx.startactivityfor(intent);
         ctx.startActivityForResult(intent, code);
     }
@@ -411,11 +501,9 @@ public class AddImageActivity extends Activity {
         mWaitingDialog.show("正在上传图片..", false);
 
         post_file();
-
     }
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
-
 
     public void post_file() {
 
@@ -425,6 +513,10 @@ public class AddImageActivity extends Activity {
 
         OkHttpClient client = new OkHttpClient();
         MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
 
         for (int i = 0; i < mList.size(); i++) {
 
@@ -448,6 +540,10 @@ public class AddImageActivity extends Activity {
                     requestBody.addFormDataPart("files", compressFile.getName(), body);
                 }
             }
+        }
+
+        for (Map.Entry entry : map.entrySet()) {
+            requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
         }
 
         Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(AddImageActivity.this).build();

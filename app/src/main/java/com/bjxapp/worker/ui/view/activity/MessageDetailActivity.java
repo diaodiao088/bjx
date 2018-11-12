@@ -17,7 +17,7 @@ import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.Message;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

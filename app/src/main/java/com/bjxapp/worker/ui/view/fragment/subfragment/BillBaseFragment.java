@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.adapter.OrderAdapter;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
@@ -358,6 +358,8 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
                             DataManagerCtrl.getIns().setPageResult(list);
 
+                        }else{
+                            DataManagerCtrl.getIns().setPageResult(new ArrayList<OrderDes>());
                         }
                     }
                 } else {

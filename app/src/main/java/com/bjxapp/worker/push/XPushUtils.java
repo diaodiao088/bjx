@@ -14,7 +14,7 @@ import com.bjxapp.worker.ui.view.activity.MessageDetailActivity;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
 import com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 import android.content.Context;
 import android.content.Intent;

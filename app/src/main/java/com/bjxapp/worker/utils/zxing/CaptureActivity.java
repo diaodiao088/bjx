@@ -33,7 +33,7 @@ import com.bjxapp.worker.utils.zxing.decoding.CaptureActivityHandler;
 import com.bjxapp.worker.utils.zxing.decoding.InactivityTimer;
 import com.bjxapp.worker.utils.zxing.view.ViewfinderView;
 import com.google.zxing.BarcodeFormat;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 /**
  * @ClassName: CaptureActivity

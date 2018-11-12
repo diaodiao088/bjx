@@ -6,7 +6,7 @@
  */
 package com.bjxapp.worker.controls.listview;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;

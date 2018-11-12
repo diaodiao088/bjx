@@ -37,7 +37,7 @@ import com.bjxapp.worker.global.OurContext;
 import com.bjxapp.worker.utils.BitmapUtils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 public class ClipView extends RelativeLayout implements OnTouchListener {
 

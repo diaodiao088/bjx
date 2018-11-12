@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.bjxapp.worker.App;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 
 import java.util.ArrayList;

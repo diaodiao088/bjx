@@ -10,14 +10,13 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
@@ -29,15 +28,10 @@ import com.bjxapp.worker.dataupload.Uploader;
 import com.bjxapp.worker.global.ActivitiesManager;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
-import com.bjxapp.worker.http.keyboard.commonutils.Constants;
-import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.Account;
-import com.bjxapp.worker.model.XResult;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +53,6 @@ import retrofit2.Response;
 public class LoginActivity extends BaseActivity implements OnClickListener {
     protected static final String TAG = "登陆界面";
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @BindView(R.id.login_image_verify_code)
     XImageView mVerifyCodeImageView;
@@ -219,6 +212,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private MyCount mCounter;
     private AsyncTask<Void, Void, Integer> mSendAuthCode;
 
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
     private void sendAuthCode() {
 
         final String mobile = mMobileEditText.getText().toString();
@@ -231,11 +226,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             Utils.showLongToast(context, "请输入图形验证码！");
             return;
         }
-
-        if (mCounter == null) {
-            mCounter = new MyCount(60000, 1000);
-        }
-        mCounter.start();
 
         LoginApi httpService = KHttpWorker.ins().createHttpService(LoginApi.URL, LoginApi.class);
 
@@ -260,6 +250,31 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                             mSendAuthButton.setText("获取验证码");
                         }
                     });
+                } else {
+
+                    JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mCounter == null) {
+                                    mCounter = new MyCount(60000, 1000);
+                                }
+                                mCounter.start();
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(LoginActivity.this, msg + "");
+                            }
+                        });
+                    }
                 }
             }
 
@@ -334,7 +349,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (mWaitingDialog != null){
+                            if (mWaitingDialog != null) {
                                 mWaitingDialog.dismiss();
                             }
                         }
@@ -356,11 +371,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                                     setResult(RESULT_OK);
                                     Utils.finishWithoutAnim(LoginActivity.this);
                                 }
-                            }else{
+                            } else {
                                 mHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (mWaitingDialog != null){
+                                        if (mWaitingDialog != null) {
                                             mWaitingDialog.dismiss();
                                         }
                                         Utils.showLongToast(LoginActivity.this, msg + " : " + code);
@@ -391,7 +406,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (mWaitingDialog != null){
+                            if (mWaitingDialog != null) {
                                 mWaitingDialog.dismiss();
                             }
                         }

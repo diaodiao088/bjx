@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.model.WithdrawInfo;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 public class WithdrawAdapter extends BaseAdapter {
 

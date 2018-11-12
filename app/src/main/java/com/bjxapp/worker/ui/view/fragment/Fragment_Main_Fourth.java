@@ -44,7 +44,7 @@ import com.bjxapp.worker.ui.widget.FlowLayout;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.image.BitmapManager;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;

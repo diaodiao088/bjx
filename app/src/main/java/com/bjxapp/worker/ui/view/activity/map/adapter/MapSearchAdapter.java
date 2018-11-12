@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.baidu.mapapi.search.sug.SuggestionResult;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 import java.util.ArrayList;
 import java.util.List;

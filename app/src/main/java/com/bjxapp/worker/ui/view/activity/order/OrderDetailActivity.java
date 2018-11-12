@@ -18,7 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bjxapp.worker.MainActivity;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
@@ -124,6 +124,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     XButton mServiceEditBtn;  // 维修编辑
     @BindView(R.id.add_image_content)
     XTextView mIssueImgTv;  // 添加维修照片
+    @BindView(R.id.issue_add_image_ly)
+    RelativeLayout mIssueImgLy;
 
     /* 预付项 */
     @BindView(R.id.order_bill_btn)
@@ -490,7 +492,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     protected void setListener() {
         mBackImageView.setOnClickListener(this);
         mSaveButton.setOnClickListener(this);
-        findViewById(R.id.order_receive_detail_images).setOnClickListener(this);
     }
 
     @Override
@@ -611,6 +612,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mSaveButton.setVisibility(View.VISIBLE);
         mCancelBillTv.setVisibility(View.GONE);
         mSaveLy.setVisibility(View.VISIBLE);
+        mIssueImgLy.setVisibility(View.VISIBLE);
 
         modifyLy.setVisibility(View.VISIBLE);
         mFinalMoneyLy.setVisibility(View.VISIBLE);
@@ -672,6 +674,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         BigDecimal serviceCost = new BigDecimal(mDetailInfo.getOrderDes().getServiceVisitCost());
         BigDecimal preCost = new BigDecimal(Double.parseDouble(maintainInfo.getPreCost()));
 
+        maintainInfo.setTotalAmount(String.valueOf(totalCost.add(serviceCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()));
         mTotalTv.setText(String.valueOf(totalCost.add(serviceCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())); //总计
         mPrePayPriceTv.setText("- " + maintainInfo.getPreCost());
 
@@ -679,6 +682,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         double payAmount = totalCost.add(serviceCost).subtract(preCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         payAmount = payAmount > 0 ? payAmount : 0.00;
         maintainInfo.setPayAmount(String.valueOf(payAmount));
+
+
+
         mFuKuanContentTv.setText(String.valueOf(payAmount));
 
     }
@@ -855,6 +861,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String prePayService = detailItem.getString("prepayService");
             String totalAmount = detailItem.getString("totalAmount");
             String totalCost = detailItem.getString("totalCost");
+            String  orderTime = detailItem.getString("receiveOrderTime");
 
             JSONArray urlArray = detailItem.getJSONArray("masterImgUrls");
 
@@ -878,6 +885,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             MaintainInfo maintainInfo = new MaintainInfo(costDetail, fault, paid, payAmount,
                     plan, prePaid, preCost, prePayService, totalAmount, totalCost);
+
+            maintainInfo.setOrderTime(orderTime);
 
             if (!TextUtils.isEmpty(costDetailTemp)) {
                 maintainInfo.setCostDetail(costDetailTemp);
@@ -932,6 +941,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String lontitude = detailItem.getString("longitude");
 
             JSONArray urlArray = detailItem.getJSONArray("customerImgUrls");
+
+
 
             ArrayList<String> customImgUrls = new ArrayList<>();
 
@@ -1040,6 +1051,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mFinalMoneyLy.setVisibility(View.GONE);
         mHourLastTv.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.GONE);
+        mIssueImgLy.setVisibility(View.GONE);
+
         mSaveLy.setVisibility(View.VISIBLE);
         mCurrentStatus = OrderStatusCtrl.TYPE_NEW_BILL;
 
@@ -1068,12 +1081,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mFinalMoneyLy.setVisibility(View.GONE);
         mSaveLy.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.VISIBLE);
+        mIssueImgLy.setVisibility(View.GONE);
 
-        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null || mDetailInfo.getMaintainInfo() == null
+                || mDetailInfo.getMaintainInfo().getOrderTime() == null) {
             return;
         }
 
-        long selectMasterTime = Long.parseLong(mDetailInfo.getOrderDes().getmSelectTime());
+        long selectMasterTime = Long.parseLong(mDetailInfo.getMaintainInfo().getOrderTime());
 
         Log.d("slog_zd", "selectmaster time : " + selectMasterTime);
 
@@ -1504,8 +1519,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                order.setProcessStatus(2);
-                                toWaitStatus();
+                                //order.setProcessStatus(2);
+                                //toWaitStatus();
+                                 loadData(false);
                             }
                         });
                     } else {

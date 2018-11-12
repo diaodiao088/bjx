@@ -19,7 +19,7 @@ import com.bjxapp.worker.global.OurContext;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.DeviceUtils;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 /**
  * 用户裁剪头像

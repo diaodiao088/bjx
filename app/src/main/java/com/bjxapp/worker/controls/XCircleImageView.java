@@ -1,6 +1,6 @@
 package com.bjxapp.worker.controls;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 import android.content.Context;
 import android.content.res.TypedArray;

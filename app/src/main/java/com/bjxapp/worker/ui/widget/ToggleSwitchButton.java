@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 public class ToggleSwitchButton extends LinearLayout implements View.OnClickListener {
 

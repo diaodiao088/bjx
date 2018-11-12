@@ -3,7 +3,7 @@ package com.bjxapp.worker.ui.view.activity.search;
 import java.util.List;
 
 import com.bjxapp.worker.controls.XTextView;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 
 import android.content.Context;
 import android.view.LayoutInflater;

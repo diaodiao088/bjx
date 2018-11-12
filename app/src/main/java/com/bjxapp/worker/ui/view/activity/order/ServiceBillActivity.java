@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bjxapp.worker.App;
-import com.bjxapp.worker.R;
+import com.bjx.master.R;;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
@@ -131,6 +131,18 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
                 }
             });
             dialog.setContent("金额格式不正确");
+            dialog.show();
+        } else if(Double.parseDouble(mTotalPriceTv.getText().toString()) > 9999){
+            final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
+            dialog.setOnNegativeListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            dialog.setContent("订单总额度不能大于9999");
             dialog.show();
         } else if (!TextUtils.isEmpty(prePrice) &&
                 Double.parseDouble(mTotalPriceTv.getText().toString()) < Double.parseDouble(prePrice)) {

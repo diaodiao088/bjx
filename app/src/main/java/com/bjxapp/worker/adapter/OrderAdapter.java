@@ -1,17 +1,18 @@
 package com.bjxapp.worker.adapter;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.bjx.master.R;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.model.OrderDes;
-import com.bjxapp.worker.model.ReceiveOrder;
-import com.bjxapp.worker.R;
+
+import java.util.ArrayList;
+
+;
 
 public class OrderAdapter extends BaseAdapter {
 
