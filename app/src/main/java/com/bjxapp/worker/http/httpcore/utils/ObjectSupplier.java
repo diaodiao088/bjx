@@ -8,6 +8,7 @@ import com.bjxapp.worker.http.httpcore.converter.KResultModelConverterFactory;
 import com.bjxapp.worker.http.httpcore.dispatcher.OkHttpExecutorService;
 import com.bjxapp.worker.http.httpcore.interceptor.ExtraInterceptor;
 import com.bjxapp.worker.http.httpcore.interceptor.LoggerInterceptor;
+import com.bjxapp.worker.http.httpcore.interceptor.LoginExpiredInterceptor;
 import com.bjxapp.worker.http.httpcore.interceptor.OffLineInterceptor;
 import com.bjxapp.worker.http.httpcore.interceptor.OnLineInterceptor;
 import com.bjxapp.worker.http.httpcore.supplier.Supplier;
@@ -46,9 +47,12 @@ public class ObjectSupplier {
             builder.connectTimeout(HttpConfig.MAX_CONNECTION_TIMEOUT, HttpConfig.TIME_UNIT);
             builder.cache(new Cache(KSystemUtils.getCacheDirForNetwork(CommonUtils.getGlobalContext()), HttpConfig.DEFAULT_MAX_DISK_CACHE_SIZE));
             builder.addInterceptor(new OffLineInterceptor());
+
             builder.addNetworkInterceptor(new OnLineInterceptor());
             builder.addNetworkInterceptor(new ExtraInterceptor());
             builder.addNetworkInterceptor(new LoggerInterceptor());
+            builder.addNetworkInterceptor(new LoginExpiredInterceptor());
+
             builder.dispatcher(new Dispatcher(new OkHttpExecutorService(HttpThreadUtils.getInstance().getExecutor())));
             try {
                 X509TrustManager manager = HttpUtils.createX509TrustManager();

@@ -2,8 +2,11 @@ package com.bjxapp.worker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,6 +47,7 @@ import com.bjxapp.worker.ui.titlemenu.TitlePopup;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup.OnItemOnClickListener;
 import com.bjxapp.worker.ui.view.activity.JoinUsActivity;
 import com.bjxapp.worker.ui.view.activity.PushDetailActivity;
+import com.bjxapp.worker.ui.view.activity.order.OrderPayQRCodeActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.user.LoginActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
@@ -439,6 +443,39 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
         //检查ring红点
         checkRingRedot();
+
+        registerRec();
+    }
+
+    UserExpiredBroadCastReceiver mExpiredReceiver;
+
+    private void registerRec() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constant.ACTION_USER_EXPIRED);
+        mExpiredReceiver = new UserExpiredBroadCastReceiver();
+        registerReceiver(mExpiredReceiver, filter);
+    }
+
+    private void unRegisterRec() {
+        try {
+            unregisterReceiver(mExpiredReceiver);
+        } catch (Exception e) {
+        }
+    }
+
+    private class UserExpiredBroadCastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showExpiredDialog();
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unRegisterRec();
     }
 
     @Override
@@ -611,13 +648,14 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                             }
                         });
 
-                    } else if (code == 20001) {
-                        showStatusDialog(msg, code);
                     } else {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                showStatusDialog(msg, code);
+
+                                if (code != 20001 && code != 20000) {
+                                    showStatusDialog(msg, code);
+                                }
                             }
                         });
                     }
@@ -648,6 +686,43 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 showStatusDialog(code);
             }
         });
+    }
+
+    AlertDialog mExpiredDialog;
+
+    private void showExpiredDialog() {
+
+        // 如果正在展示 ： 那么什么都不做
+        if (mExpiredDialog != null && mExpiredDialog.isShowing()) {
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        builder.setTitle("师傅注册通知");
+        builder.setMessage("登录已过期，请重新登录");
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ActivitiesManager.getInstance().finishAllActivities();
+            }
+        });
+
+        builder.setNeutralButton("重新登录", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // callService();
+                // ActivitiesManager.getInstance().finishAllActivities();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.putExtra("from", 0x01);
+                MainActivity.this.startActivity(intent);
+                finish();
+            }
+        });
+        mExpiredDialog = null;
+        mExpiredDialog = builder.create();
+        mExpiredDialog.show();
     }
 
     private void showStatusDialog(String msg, int status) {
@@ -729,38 +804,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         if (!Utils.isNotEmpty(message)) {
             message = "您的账户出现异常！\n" + "咨询电话:" + getString(R.string.service_telephone_display);
         }
-
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setIcon(android.R.drawable.ic_dialog_info);
-        builder.setTitle("工人注册通知");
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ActivitiesManager.getInstance().finishAllActivities();
-            }
-        });
-
-        if (status == 4) {
-            builder.setNeutralButton("完善注册信息", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Utils.startActivityForResult(MainActivity.this, ApplyActivity.class, Constant.ACTIVITY_APPLY_RESULT_CODE);
-                }
-            });
-        } else {
-            builder.setNeutralButton("电话询问", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    callService();
-                    ActivitiesManager.getInstance().finishAllActivities();
-                }
-            });
-        }
-
-        builder.create().show();*/
-
 
         final SimpleConfirmDialog dialog = new SimpleConfirmDialog(this);
 

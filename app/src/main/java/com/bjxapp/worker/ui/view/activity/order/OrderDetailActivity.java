@@ -284,8 +284,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     @OnClick(R.id.order_bill_btn)
     void editPreBill() {
-        if (TextUtils.isEmpty(mIssuePriceTv.getText().toString()) ||
-                Double.parseDouble(mIssuePriceTv.getText().toString()) == 0) {
+        if (TextUtils.isEmpty(mIssuePriceTv.getText().toString())) {
             Utils.showShortToast(this, "请先填写维修项信息");
         } else {
             OrderPriceActivity.goToActivity(this, mDetailInfo != null ? mDetailInfo.getOrderDes().getOrderId() : String.valueOf(-1),

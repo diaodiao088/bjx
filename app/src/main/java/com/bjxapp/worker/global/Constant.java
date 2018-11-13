@@ -79,6 +79,8 @@ public class Constant {
 	
 	public static final String PUSH_ACTION_ORDER_MODIFIED = "com.bjxapp.worker.action.ORDER_MODIFIED";
 	public static final String PUSH_ACTION_MESSAGE_MODIFIED = "com.bjxapp.worker.action.MESSAGE_MODIFIED";
+
+	public static final String ACTION_USER_EXPIRED = "action_user_expired";
 	
 	//consult type define
 	public static final int CONSULT_TYPE_YEARS = 100;

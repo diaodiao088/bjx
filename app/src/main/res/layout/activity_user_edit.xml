@@ -31,7 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
-        android:text="张三丰"
         android:textColor="#545454"
         android:textSize="12sp" />
 
@@ -41,7 +40,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="6dp"
-        android:text="15650785283"
         android:textColor="#545454"
         android:textSize="12sp" />
 
