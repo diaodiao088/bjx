@@ -25,12 +25,6 @@ public class TimerTaskFactory {
             @Override
             void run() 
             {
-            	//检查是否apk有更新
-            	LogicFactory.getUpdateLogic(context).checkNeedUpdate();
-            	if(LogicFactory.getUpdateLogic(context).isNeedUpdate(context,true))
-            	{
-            		LogicFactory.getNotificationLogic(context).showUpdateNotification();
-            	}
             }
         };
         

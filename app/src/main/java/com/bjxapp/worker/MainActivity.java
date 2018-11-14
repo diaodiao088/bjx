@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,11 +23,12 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.location.LocationClient;
+import com.bjx.master.BuildConfig;
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.UpdateApi;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
@@ -40,14 +42,12 @@ import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.RedDot;
 import com.bjxapp.worker.push.BJXPushService;
 import com.bjxapp.worker.push.PushIntentService;
-import com.bjxapp.worker.push.PushParser;
 import com.bjxapp.worker.push.XPushManager;
 import com.bjxapp.worker.ui.titlemenu.ActionItem;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup.OnItemOnClickListener;
 import com.bjxapp.worker.ui.view.activity.JoinUsActivity;
 import com.bjxapp.worker.ui.view.activity.PushDetailActivity;
-import com.bjxapp.worker.ui.view.activity.order.OrderPayQRCodeActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.user.LoginActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
@@ -56,7 +56,9 @@ import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Fourth;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Second;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Third;
+import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.Utils;
+import com.bjxapp.worker.utils.VersionUtils;
 import com.bjxapp.worker.utils.zxing.CaptureActivity;
 import com.google.gson.JsonObject;
 import com.igexin.sdk.PushManager;
@@ -239,9 +241,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     public void onStart() {
         super.onStart();
 
-        //检查是否有软件更新
-        checkUpdateInfo();
-
         //检查是否有红点显示
         setRedDotState();
 
@@ -266,13 +265,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 break;
             default:
                 break;
-        }
-    }
-
-    //检查更新
-    private void checkUpdateInfo() {
-        if (LogicFactory.getUpdateLogic(MainActivity.this).isNeedUpdate(MainActivity.this, true)) {
-            LogicFactory.getUpdateLogic(MainActivity.this).showUpdateDialog(MainActivity.this);
         }
     }
 
@@ -581,23 +573,44 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         }
     }
 
-    private AsyncTask<Void, Void, Integer> mCheckNewVersionTask;
 
     private void checkNewVersion() {
-        mCheckNewVersionTask = new AsyncTask<Void, Void, Integer>() {
+
+        UpdateApi updateApi = KHttpWorker.ins().createHttpService(LoginApi.URL, UpdateApi.class);
+
+        Call<JsonObject> call = updateApi.checkUpdate();
+
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            protected Integer doInBackground(Void... params) {
-                LogicFactory.getUpdateLogic(MainActivity.this).checkNeedUpdate();
-                return 1;
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject jsonObject = response.body();
+
+                    LogUtils.log("check update : " + jsonObject.toString());
+
+                    int remoteVersion = jsonObject.get("version").getAsInt();
+                    String url = jsonObject.get("url").getAsString();
+                    int localVersion = VersionUtils.getLocalVersion();
+
+                    if (remoteVersion > localVersion) {
+                        ConfigManager.getInstance(MainActivity.this).setNeedUpdate(true);
+                        ConfigManager.getInstance(MainActivity.this).setUpdateURL(url);
+                        ConfigManager.getInstance(MainActivity.this).setUpdateVersion(String.valueOf(remoteVersion));
+                    } else {
+                        ConfigManager.getInstance(MainActivity.this).setNeedUpdate(false);
+                        ConfigManager.getInstance(MainActivity.this).setUpdateURL("");
+                        ConfigManager.getInstance(MainActivity.this).setUpdateVersion("");
+                    }
+                }
             }
 
             @Override
-            protected void onPostExecute(Integer result) {
+            public void onFailure(Call<JsonObject> call, Throwable t) {
 
             }
-        };
-
-        mCheckNewVersionTask.execute();
+        });
     }
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
@@ -889,9 +902,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 mDisplayRedDotTask.cancel(true);
             }
 
-            if (mCheckNewVersionTask != null) {
-                mCheckNewVersionTask.cancel(true);
-            }
         } catch (Exception e) {
         }
 

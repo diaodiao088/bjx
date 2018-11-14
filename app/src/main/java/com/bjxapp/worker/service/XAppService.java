@@ -40,7 +40,6 @@ public class XAppService extends Service {
     private void startAmPolling() {
     	mPollingManager = TimerTaskManager.getInstance(this);
         //mPollingManager.registerTask(TimerTaskFactory.getFourHoursPollingTask(this));
-        mPollingManager.registerTask(TimerTaskFactory.getOneDayPollingTask(this));
         mPollingManager.registerTask(TimerTaskFactory.getOneHourPollingTask(this));
     }
     
