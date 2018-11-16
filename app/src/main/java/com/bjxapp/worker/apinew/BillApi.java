@@ -67,6 +67,10 @@ public interface BillApi {
 
     @FormUrlEncoded
     @POST("/order/complete")
-    Call<JsonObject> completePay(@FieldMap Map<String , String> params);
+    Call<JsonObject> completePay(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/order/saveMaintain")
+    Call<JsonObject> saveMaintain(@FieldMap Map<String, String> params);
 
 }

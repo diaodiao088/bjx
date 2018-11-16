@@ -136,31 +136,8 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
         mOkBtn.setOnClickListener(this);
         mBackBtn.setOnClickListener(this);
 
-        initDatas();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    }
-
-    private void initDatas() {
-       /* mDatas.add(new Node("1", "-1", "文件管理系统"));
-
-        mDatas.add(new Node(2 + "", 1 + "", "游戏"));
-        mDatas.add(new Node(3 + "", 1 + "", "文档"));
-        mDatas.add(new Node(4 + "", 1 + "", "程序"));
-        mDatas.add(new Node(5 + "", 2 + "", "war3"));
-        mDatas.add(new Node(6 + "", 2 + "", "刀塔传奇"));
-
-        mDatas.add(new Node(7 + "", 4 + "", "面向对象"));
-        mDatas.add(new Node(8 + "", 4 + "", "非面向对象"));
-
-        mDatas.add(new Node(9 + "", 7 + "", "C++"));
-        mDatas.add(new Node(10 + "", 7 + "", "JAVA"));
-        mDatas.add(new Node(11 + "", 7 + "", "Javascript"));
-        mDatas.add(new Node(12 + "", 8 + "", "C"));
-        mDatas.add(new Node(13 + "", 12 + "", "C"));
-        mDatas.add(new Node(14 + "", 13 + "", "C"));
-        mDatas.add(new Node(15 + "", 14 + "", "C"));
-        mDatas.add(new Node(16 + "", 15 + "", "C"));*/
     }
 
     @Override
@@ -209,7 +186,7 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
         for (int i = 0; i < allNodes.size(); i++) {
 
             Node node = allNodes.get(i);
-            if (allNodes.get(i).isChecked()) {
+            if (allNodes.get(i).isChecked() && allNodes.get(i).getChildren().size() == 0) {
                 // sb.append(allNodes.get(i).getName()+",");
                 ids = ids + node.getId() + ",";
                 names = names + node.getName() + "、";
@@ -230,35 +207,5 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
         setResult(RESULT_OK, intent);
         Utils.finishActivity(this);
     }
-
-    /*private void save(){
-        if(mSourceDataList == null || mSourceDataList.size() == 0){
-            Utils.showShortToast(context, "请至少选择一个项目！");
-            return;
-        }
-
-        String ids = "";
-        String names = "";
-        for (SearchModel model : mSourceDataList) {
-            if(model.getCheck() == 1){
-                ids = ids + model.getCode() + ",";
-                names = names + model.getName() + "、";
-            }
-        }
-
-        if(ids.length() == 0){
-            Utils.showShortToast(context, "请至少选择一个项目！");
-            return;
-        }
-
-        ids = ids.substring(0, ids.length()-1);
-        names = names.substring(0, names.length()-1);
-
-        Intent intent = new Intent();
-        intent.putExtra("code", ids);
-        intent.putExtra("name", names);
-        setResult(RESULT_OK, intent);
-        Utils.finishActivity(this);
-    }*/
 
 }

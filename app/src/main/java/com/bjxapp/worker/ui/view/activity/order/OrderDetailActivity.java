@@ -268,13 +268,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @OnClick(R.id.issue_edit_btn)
     void editIssueDetail() {
 
-        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null) {
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null
+                || mDetailInfo.getOrderDes() == null) {
             return;
         }
 
         MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
 
-        ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo);
+
+        ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo , mDetailInfo.getOrderDes().getOrderId());
     }
 
     @OnClick(R.id.add_image_content)
@@ -1322,10 +1324,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
         params.put("orderId", id);
         // params.put("masterImgUrls" , mImageList)
-        params.put("fault", maintainInfo.getFault());
+        /*params.put("fault", maintainInfo.getFault());
         params.put("plan", maintainInfo.getPlan());
         params.put("costDetail", maintainInfo.getCostDetail());
-        params.put("totalCost", maintainInfo.getTotalCost());
+        params.put("totalCost", maintainInfo.getTotalCost());*/
         params.put("totalAmount", maintainInfo.getTotalAmount());
         params.put("payAmount", maintainInfo.getPayAmount());
 

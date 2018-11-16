@@ -636,8 +636,16 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
             return;
         }
 
-        if (TextUtils.isEmpty(mUserWorkYearsEdit.getText().toString())) {
+        String workYear = mUserWorkYearsEdit.getText().toString();
+
+        if (TextUtils.isEmpty(workYear)) {
             Utils.showShortToast(context, "请输入工作年限！");
+            return;
+        }
+
+        if (!Utils.isNumber(workYear) ||
+                Integer.parseInt(workYear) >= 50 || Integer.parseInt(workYear) < 0) {
+            Utils.showShortToast(context, "请输入正确的工作年限！");
             return;
         }
 
