@@ -11,7 +11,7 @@ import retrofit2.http.POST;
 
 /**
  * Created by zhangdan on 2018/11/1.
- * <p>
+ * <p>n
  * comments:
  */
 
@@ -19,8 +19,8 @@ public interface LoginApi {
 
     //http://master-test.100jiaxiu.com
     //http://master.100jiaxiu.com
-    String TEST_URL = "http://master-test.100jiaxiu.com";
-    String FORMAL_URL = "http://master-test.100jiaxiu.com";
+    String TEST_URL = "http://master.100jiaxiu.com";
+    String FORMAL_URL = "http://master.100jiaxiu.com";
 
     String URL = com.bjx.master.BuildConfig.DEBUG ? TEST_URL : FORMAL_URL;
 

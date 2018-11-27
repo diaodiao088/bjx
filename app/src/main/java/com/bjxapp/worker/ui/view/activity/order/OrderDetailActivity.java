@@ -276,7 +276,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
 
 
-        ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo , mDetailInfo.getOrderDes().getOrderId());
+        ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
     }
 
     @OnClick(R.id.add_image_content)
@@ -685,7 +685,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         maintainInfo.setPayAmount(String.valueOf(payAmount));
 
 
-
         mFuKuanContentTv.setText(String.valueOf(payAmount));
 
     }
@@ -862,7 +861,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String prePayService = detailItem.getString("prepayService");
             String totalAmount = detailItem.getString("totalAmount");
             String totalCost = detailItem.getString("totalCost");
-            String  orderTime = detailItem.getString("receiveOrderTime");
+            String orderTime = detailItem.getString("receiveOrderTime");
 
             JSONArray urlArray = detailItem.getJSONArray("masterImgUrls");
 
@@ -944,7 +943,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             JSONArray urlArray = detailItem.getJSONArray("customerImgUrls");
 
 
-
             ArrayList<String> customImgUrls = new ArrayList<>();
 
             if (urlArray != null && urlArray.length() > 0) {
@@ -973,77 +971,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         return null;
     }
 
-
-    private void changeStatus(OrderDetail result) {
-
-        if (result == null) {
-            return;
-        }
-
-        mOrderCode = result.getOrderID();
-
-        mDateTv.setText(result.getOrderDate() + " " + result.getOrderTime());
-        mAdressTv.setText(result.getAddress() + result.getHouseNumber());
-
-        mPhoneTv.setText(result.getContacts() + " / " + result.getTelephone());
-        mPhoneTv.setTag(result.getTelephone());
-
-        mServiceNameTv.setText(result.getServiceSubName());
-        mRemarkTv.setText(result.getRemark());
-
-        changeStatusUI(result);
-    }
-
-    private void changeStatusUI(OrderDetail result) {
-        String statusString = "";
-
-        switch (result.getOrderStatus()) {
-            case OrderStatusCtrl.TYPE_NEW_BILL:
-                toNewBillStatus();
-                break;
-            case 1:
-                statusString = "已接单";
-                mSaveButton.setText("完成");
-                mSaveButton.setEnabled(true);
-                mServiceEditBtn.setEnabled(true);
-                break;
-            case 2:
-                statusString = "待支付";
-                mSaveButton.setText("支付");
-                mSaveButton.setEnabled(true);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            case 3:
-                statusString = "已结算";
-                mSaveButton.setText("查看支付情况");
-                mSaveButton.setEnabled(true);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            case 4:
-                statusString = "已结算";
-                mSaveButton.setVisibility(View.GONE);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            case 98:
-                statusString = "已取消";
-                mSaveButton.setVisibility(View.GONE);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            case 99:
-                statusString = "异常";
-                mSaveButton.setVisibility(View.GONE);
-                mServiceEditBtn.setVisibility(View.GONE);
-                break;
-            default:
-                break;
-        }
-        mSaveButton.setTag(result.getOrderStatus());
-    }
-
     /**
      * 新订单状态
      */
     private void toNewBillStatus() {
+
         mSaveButton.setText("接单");
         mSaveButton.setEnabled(true);
         mStatusTv.setText("新订单");
@@ -1522,7 +1454,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                             public void run() {
                                 //order.setProcessStatus(2);
                                 //toWaitStatus();
-                                 loadData(false);
+                                loadData(false);
                             }
                         });
                     } else {

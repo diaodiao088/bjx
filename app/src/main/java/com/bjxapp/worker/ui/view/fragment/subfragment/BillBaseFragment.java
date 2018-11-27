@@ -250,11 +250,14 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                             }
 
                             DataManagerCtrl.getIns().setPageResult(list);
-                        }else{
+                        } else {
                             DataManagerCtrl.getIns().setPageResult(new ArrayList<OrderDes>());
                         }
+                    } else {
+                        DataManagerCtrl.getIns().setPageResult(new ArrayList<OrderDes>());
                     }
                 } else {
+
                 }
             }
 
@@ -360,7 +363,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
                             DataManagerCtrl.getIns().setPageResult(list);
 
-                        }else{
+                        } else {
                             DataManagerCtrl.getIns().setPageResult(new ArrayList<OrderDes>());
                         }
                     }
