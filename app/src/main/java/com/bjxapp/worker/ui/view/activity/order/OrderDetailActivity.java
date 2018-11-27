@@ -213,6 +213,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private CountDownTimer mCountDownTimer;
 
+    private CountDownTimer mNewBillTimer;
+
     private XWaitingDialog mWaitingDialog;
 
     private OrderDetailInfo mDetailInfo;
@@ -1000,7 +1002,37 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mSaveButton.setVisibility(View.GONE);
         }
 
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
 
+        OrderDes orderDes = mDetailInfo.getOrderDes();
+        long selectMasterTime = Long.parseLong(orderDes.getmSelectTime());
+
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - selectMasterTime <= 30 * 60 * 1000) {
+            mNewBillTimer = new CountDownTimer(30 * 60 * 1000 - (currentTime - selectMasterTime), 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                    int minute = (int) (millisUntilFinished / (60 * 1000));
+                    int second = (int) (millisUntilFinished % (60 * 1000));
+                    mHourLastTv.setText(minute + ":" + (second / 1000));
+                }
+
+                @Override
+                public void onFinish() {
+                    mHourLastTv.setText("已超时");
+                    mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+                }
+            };
+
+            mNewBillTimer.start();
+        } else {
+            mHourLastTv.setText("已超时");
+            mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+        }
     }
 
     /**
@@ -1641,6 +1673,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
+        }
+
+        if (mNewBillTimer != null){
+            mNewBillTimer.cancel();
         }
 
         super.onDestroy();

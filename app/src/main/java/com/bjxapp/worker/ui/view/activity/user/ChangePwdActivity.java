@@ -21,6 +21,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
+import com.bjxapp.worker.utils.MD5Util;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
 
@@ -52,7 +53,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
     @BindView(R.id.title_text_tv)
     XTextView mTitleTv;
 
-    String pattern = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$";
+    String pattern = "^-?[1-9]d*$";
 
     public static final int FROM_FORGET_PWD = 0x01;
     public static final int FROM_REGISTER_PWD = 0x02;
@@ -167,7 +168,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 
         if (mFrom == FROM_REGISTER_PWD) {
             Intent intent = new Intent();
-            intent.putExtra(KEY_TYPE, mPwdSureTv.getText().toString());
+            intent.putExtra(KEY_TYPE, MD5Util.getStringMD5(mPwdSureTv.getText().toString()));
             setResult(RESULT_OK, intent);
             finish();
         } else if (mFrom == FROM_FORGET_PWD || mFrom == FROM_EDIT_APPLY) {
@@ -183,7 +184,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
         Map<String, String> params = new HashMap<>();
         params.put("userCode", ConfigManager.getInstance(ChangePwdActivity.this).getUserCode());
         params.put("token", ConfigManager.getInstance(ChangePwdActivity.this).getUserSession());
-        params.put("password", mPwdTv.getText().toString());
+        params.put("password", MD5Util.getStringMD5(mPwdTv.getText().toString()));
 
         Call<JsonObject> request = httpService.changePwd(params);
 

@@ -64,11 +64,29 @@ public class PushParser {
                 case 21:
                     withDrawFailed(21, contentStr, title, "", createTime);
                     break;
+                case 1:
+                    newBillTimeout();
+                    break;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void newBillTimeout(){
+        MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.new_bill_timeout);
+
+        try {
+            mediaPlayer.prepare();
+        } catch (IllegalStateException e) {
+
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.start();
     }
 
     private static void getMoneySuccess(int type, String contentStr, String title, String remark, String createTime) {
