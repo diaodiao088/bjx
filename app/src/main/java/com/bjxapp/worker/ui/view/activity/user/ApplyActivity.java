@@ -13,12 +13,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
@@ -39,7 +42,10 @@ import com.bjxapp.worker.model.UserInfoA;
 import com.bjxapp.worker.ui.view.activity.ChangeCityActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
+import com.bjxapp.worker.ui.view.activity.bean.WorkYearDataBean;
 import com.bjxapp.worker.ui.view.activity.map.MapActivityNew;
+import com.bjxapp.worker.ui.view.activity.user.adapter.WorkYearAdapter;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.BitmapUtils;
 import com.bjxapp.worker.utils.SDCardUtils;
@@ -64,6 +70,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -95,12 +102,72 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
     @BindView(R.id.user_id_edit)
     XEditText mUserIDEdit;
 
+    @BindView(R.id.user_apply_work_years_edit)
+    TextView mUserWorkYearsEdit;
+
+    @OnClick(R.id.user_apply_work_years_edit)
+    void onClickWorkEdit() {
+
+        final SimpleConfirmDialog dialog = new SimpleConfirmDialog(this);
+
+        final WorkYearAdapter workYearAdapter = new WorkYearAdapter(this);
+
+        dialog.setOnNegativeListener("取消", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        dialog.setOnPositiveListener("确认", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+
+                if (workYearAdapter.getCheckedFeedBackBean() != null){
+                    String workYear = workYearAdapter.getCheckedFeedBackBean().getmContextTv();
+                    mUserWorkYearsEdit.setText(workYear);
+                }
+            }
+        });
+
+        dialog.setTitle("请选择工作年限");
+
+        View pv = LayoutInflater.from(this).inflate(R.layout.feedback_dialog_header_layout, null);
+        ListView mListView = (ListView) pv.findViewById(R.id.feedback_header_listview);
+
+        ArrayList<WorkYearDataBean> list = generateWorkYearList();
+
+        workYearAdapter.setFeedBackDataList(list);
+
+        mListView.setAdapter(workYearAdapter);
+
+        dialog.addMessageLayout(pv, true, true);
+        dialog.show();
+    }
+
+    private ArrayList<WorkYearDataBean> generateWorkYearList(){
+
+        ArrayList<WorkYearDataBean> list = new ArrayList<>();
+
+        for (int i = 1; i <= 50; i++) {
+            list.add(new WorkYearDataBean(false , String.valueOf(i)));
+        }
+
+        return list;
+    }
+
+
     private XTextView mUserOrderAreaEdit, mUserWorkTypesEdit;
     private XTextView mCityEditTv;
-    private EditText mUserWorkYearsEdit;
     private XButton mUserSaveButton;
     private ArrayList<String> mIDImageUrls;
-    private LinearLayout mHeadImageLayout;
 
     private CheckBox mProtocolCheckBox;
     private XTextView mProtocalTextView;
@@ -133,7 +200,6 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         mTitleTextView.setText("师傅注册");
 
         mUserOrderAreaEdit = (XTextView) findViewById(R.id.user_apply_location_edit);
-        mUserWorkYearsEdit = (EditText) findViewById(R.id.user_apply_work_years_edit);
         mUserWorkTypesEdit = (XTextView) findViewById(R.id.user_apply_work_sort_edit);
         mUserSaveButton = (XButton) findViewById(R.id.user_apply_button_save);
         mUploadImageLy = findViewById(R.id.user_apply_indetity_ly);

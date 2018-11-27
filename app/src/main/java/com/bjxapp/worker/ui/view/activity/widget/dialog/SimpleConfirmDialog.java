@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bjx.master.R;;
+import com.bjx.master.R;
+import com.bjxapp.worker.ui.widget.DimenUtils;;
 
 /**
  * Created by zhangdan on 2018/11/7.
@@ -48,8 +50,9 @@ public class SimpleConfirmDialog {
     public void addMessageLayout(View view, boolean removeTopMargin, boolean removeBottomMargin) {
 
         if (mMessageLayout != null) {
-            mMessageLayout.addView(view);
+            mMessageLayout.addView(view , new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , DimenUtils.dp2px(200 , mMessageLayout.getContext())));
             mMessageLayout.setVisibility(View.VISIBLE);
+            mContentTv.setVisibility(View.GONE);
         }
 
         /*ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mMessageLayout.getLayoutParams();
