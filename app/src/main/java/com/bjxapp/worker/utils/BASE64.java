@@ -84,7 +84,7 @@ public class BASE64 {
 	 * array holding the decoded data is returned.
 	 */
 
-	public byte[] decode(String s) {
+	public static byte[] decode(String s) {
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {

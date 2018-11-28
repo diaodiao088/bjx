@@ -3,8 +3,8 @@
     <string name="app_name">百家修师傅</string>
     <string name="service_telephone">010-53170256</string>
     <string name="service_telephone_display">010-53170256</string>
-    <string name="service_about_url">http://app.100jiaxiu.com/profile/about.html</string>
-    <string name="service_protocol_url">http://u.100jiaxiu.com/receive_order.html</string>
+    <string name="service_about_url">http://app.100jiaxiu.com/profile/about_an.html</string>
+    <string name="service_protocol_url">http://app.100jiaxiu.com/receive_order.html</string>
     <string name="notify_push_title">推送显示的标题</string>
     <string name="notify_push_content">推送显示的内容</string>
     <string name="common_time_hour">时</string>

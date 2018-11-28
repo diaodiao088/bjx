@@ -169,15 +169,12 @@
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.AddImageActivity"
             android:screenOrientation="portrait">
-
-
         </activity>
 
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.JoinUsActivity"
             android:screenOrientation="portrait" />
-
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity"

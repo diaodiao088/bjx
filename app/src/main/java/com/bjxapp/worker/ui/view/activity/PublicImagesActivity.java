@@ -58,6 +58,7 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -90,6 +91,16 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
     private String mTitle = "";
     private int mCount = 2;
     private int mType = 1;
+
+    @OnClick(R.id.dummy_iv_1)
+    void onClickDummyIv1() {
+        showSelectImageDialog();
+    }
+
+    @OnClick(R.id.dummy_iv_2)
+    void onClickDummyIv2() {
+        showSelectImageDialog();
+    }
 
     private XWaitingDialog mWaitingDialog;
 
@@ -276,9 +287,9 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
     public void onBackPressed() {
         //super.onBackPressed();
 
-        if (mOperationFlag == 2){
+        if (mOperationFlag == 2) {
             super.onBackPressed();
-        }else{
+        } else {
             if (mImagesArray.size() < mCount) {
                 Utils.showShortToast(context, "请至少上传两张照片！");
             } else {

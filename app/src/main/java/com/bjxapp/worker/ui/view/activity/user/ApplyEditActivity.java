@@ -23,6 +23,7 @@ import com.bjxapp.worker.model.LocationInfo;
 import com.bjxapp.worker.model.UserInfoA;
 import com.bjxapp.worker.ui.view.activity.ChangeCityActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
+import com.bjxapp.worker.ui.view.activity.WebViewActivity;
 import com.bjxapp.worker.ui.view.activity.map.MapActivityNew;
 import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.Utils;
@@ -30,6 +31,8 @@ import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+
+import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +76,13 @@ public class ApplyEditActivity extends Activity {
     TextView mMapTv;
 
     private String mPwd;
+
+    @OnClick(R.id.user_apply_protocol_text)
+    void onClickProtocel() {
+        Utils.startActivity(this, WebViewActivity.class,
+                new BasicNameValuePair("title", "接单须知"),
+                new BasicNameValuePair("url", getString(R.string.service_protocol_url)));
+    }
 
     @OnClick(R.id.pwd_ly)
     void clickPwd() {
