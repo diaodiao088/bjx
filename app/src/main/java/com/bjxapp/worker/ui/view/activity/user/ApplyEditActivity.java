@@ -86,7 +86,8 @@ public class ApplyEditActivity extends Activity {
 
     @OnClick(R.id.service_ly)
     void onClickService() {
-        Utils.startConsultActivity(this, Constant.CONSULT_WORK_SORTS, null, "");
+        String code = mServiceTv.getTag() == null ? "" : mServiceTv.getTag().toString();
+        Utils.startConsultActivity(this, Constant.CONSULT_WORK_SORTS, null, code);
     }
 
     @OnClick(R.id.title_image_back)
@@ -235,7 +236,7 @@ public class ApplyEditActivity extends Activity {
 
                             ArrayList<String> serviceList = new ArrayList<>();
 
-                            if (jsonArray.size() > 0){
+                            if (jsonArray.size() > 0) {
                                 for (int i = 0; i < jsonArray.size(); i++) {
                                     JsonObject item = (JsonObject) jsonArray.get(i);
                                     serviceList.add(item.get("name").getAsString());
@@ -300,14 +301,14 @@ public class ApplyEditActivity extends Activity {
             mMapTv.setText(locationInfo.getAddress());
             mMapTv.setTag(locationInfo);
 
-            if (userInfoA.getmServiceList() != null && userInfoA.getmServiceList().size() > 0){
+            if (userInfoA.getmServiceList() != null && userInfoA.getmServiceList().size() > 0) {
                 StringBuilder builder = new StringBuilder();
 
                 ArrayList<String> list = userInfoA.getmServiceList();
 
-                for (int i = 0 ; i<list.size() ;  i++) {
+                for (int i = 0; i < list.size(); i++) {
                     builder.append(list.get(i));
-                    if (i != list.size() - 1){
+                    if (i != list.size() - 1) {
                         builder.append(",");
                     }
                 }

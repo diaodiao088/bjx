@@ -219,7 +219,7 @@ public class Utils {
 		intent.setClass(activity, SearchActivityNew.class);
 		
 		intent.putExtra("type", type);
-		intent.putExtra("code", code);
+		intent.putExtra(SearchActivityNew.SELECT_LIST, code);
 		
 		if (params != null){
 			Iterator<String> iter = params.keySet().iterator();  

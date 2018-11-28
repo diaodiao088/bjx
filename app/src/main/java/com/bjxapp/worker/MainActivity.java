@@ -405,17 +405,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     protected void onResume() {
         super.onResume();
 
-        /*mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                long time = System.currentTimeMillis();
-
-                String content = "{'content':'您有新的工单，请注意接单','createTime':" + time + ",'isVoice':true,'title':'新订单','type':0}";
-                PushParser.onMessageArrived(content);
-            }
-        }, 10000);*/
-
         switch (mCurrentTabIndex) {
             case 0:
                 showFragment(R.id.main_tab_first, 0);

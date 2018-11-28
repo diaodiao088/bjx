@@ -238,7 +238,7 @@ public abstract class TreeRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
      * @param node
      * @param checked
      */
-    protected void setChecked(final Node node, boolean checked) {
+    public void setChecked(final Node node, boolean checked) {
         node.setChecked(checked);
         setChildChecked(node, checked);
         if(node.getParent()!=null)

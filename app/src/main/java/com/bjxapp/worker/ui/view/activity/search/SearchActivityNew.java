@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.UserManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
-import com.bjx.master.R;;
+import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.RegisterApi;
@@ -18,7 +18,6 @@ import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
-import com.bjxapp.worker.model.CityInfo;
 import com.bjxapp.worker.ui.view.activity.widget.treeview.Node;
 import com.bjxapp.worker.ui.view.activity.widget.treeview.SimpleTreeRecyclerAdapter;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
@@ -28,6 +27,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,6 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.internal.operators.maybe.MaybeDefer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,8 +65,13 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
         onBackPressed();
     }
 
+    Call<JsonObject> getProjectRequest;
+
     protected List<Node> mDatas = new ArrayList<Node>();
-    private List<Node> mSelectedList = new ArrayList<>();
+
+    private List<String> mSelectedList = new ArrayList<>();
+
+    public static final String SELECT_LIST = "code";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +79,23 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         mTitleTv.setText("选择维修领域");
+        handleIntent();
     }
 
-    Call<JsonObject> getProjectRequest;
+    private void handleIntent() {
+
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            String selectIds = intent.getStringExtra(SELECT_LIST);
+            if (!TextUtils.isEmpty(selectIds)) {
+                String[] ids = selectIds.split(",");
+                if (ids.length > 0) {
+                    Collections.addAll(mSelectedList, ids);
+                }
+            }
+        }
+    }
 
     @Override
     protected void initControl() {
@@ -106,13 +124,15 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
                         mDatas.add(node);
                     }
 
-                    /*for (Map.Entry<String, JsonElement> entry : projectList.entrySet()) {
-
-                    }*/
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             mAdapter = new SimpleTreeRecyclerAdapter(mRecyclerView, SearchActivityNew.this, mDatas, 1, R.drawable.xiala, R.drawable.sohuqi);
+                            for (int i = 0; i < mDatas.size(); i++) {
+                                if (isChecked(mDatas.get(i))) {
+                                    mAdapter.setChecked(mDatas.get(i), true);
+                                }
+                            }
                             mRecyclerView.setAdapter(mAdapter);
                         }
                     });
@@ -125,6 +145,25 @@ public class SearchActivityNew extends BaseActivity implements View.OnClickListe
             }
         });
     }
+
+
+    private boolean isChecked(Node node) {
+
+        if (mSelectedList == null || mSelectedList.size() <= 0) {
+            return false;
+        }
+
+        String id = (String) node.getId();
+
+        for (int i = 0; i < mSelectedList.size(); i++) {
+            if (id.equals(mSelectedList.get(i))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     @Override
     protected void initView() {

@@ -17,13 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bjx.master.R;;
+import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.ProfileApi;
@@ -81,6 +79,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static java.lang.String.valueOf;
+
+;
 
 public class ApplyActivity extends BaseActivity implements OnClickListener {
     protected static final String TAG = "注册界面";

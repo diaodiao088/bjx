@@ -18,6 +18,8 @@ import butterknife.OnClick;
 
 public class JoinUsActivity extends Activity {
 
+
+
     @OnClick(R.id.join_us_back)
     void onBack() {
         finish();
