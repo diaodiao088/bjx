@@ -37,6 +37,17 @@
 
         </LinearLayout>
 
+        <com.bjxapp.worker.controls.listview.XListView
+            android:id="@+id/images_upload_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/images_button_upload"
+            android:layout_below="@+id/tips"
+            android:choiceMode="singleChoice"
+            android:divider="@color/separator_color"
+            android:dividerHeight="0dp"
+            android:listSelector="@android:color/transparent" />
+
         <LinearLayout
             android:id="@+id/tip_bg"
             android:layout_width="match_parent"
@@ -66,17 +77,6 @@
                 android:src="@drawable/beimianzhao" />
 
         </LinearLayout>
-
-        <com.bjxapp.worker.controls.listview.XListView
-            android:id="@+id/images_upload_listview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/images_button_upload"
-            android:layout_below="@+id/tips"
-            android:choiceMode="singleChoice"
-            android:divider="@color/separator_color"
-            android:dividerHeight="0dp"
-            android:listSelector="@android:color/transparent" />
 
         <com.bjxapp.worker.controls.XButton
             android:id="@+id/images_button_upload"

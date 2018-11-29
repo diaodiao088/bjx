@@ -150,7 +150,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         }
 
         //获取用户注册状态
-        getUserStatus();
+         getUserStatus();
 
         //显示红点
         displayRedDot();

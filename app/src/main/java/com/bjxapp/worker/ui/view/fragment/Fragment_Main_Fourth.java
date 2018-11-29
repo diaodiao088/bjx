@@ -269,26 +269,6 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
     private AsyncTask<String, Void, UserApplyInfo> mLoadDataTask;
 
     private void loadData() {
-        /*mLoadDataTask = new AsyncTask<String, Void, UserApplyInfo>() {
-            @Override
-            protected UserApplyInfo doInBackground(String... params) {
-                return LogicFactory.getAccountLogic(mActivity).getRegisterInfo();
-            }
-
-            @Override
-            protected void onPostExecute(UserApplyInfo result) {
-                if (result == null) {
-                    return;
-                }
-
-                mUserName.setText(result.getPersonName());
-                mYearsTv.setText(result.getWorkYear() + "年经验");
-
-                ConfigManager.getInstance(mActivity).setUserHeadImageUrl(result.getHeadImageUrl());
-                displayHeadImage();
-            }
-        };
-        mLoadDataTask.execute();*/
 
         ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
         Map<String, String> params = new HashMap<>();

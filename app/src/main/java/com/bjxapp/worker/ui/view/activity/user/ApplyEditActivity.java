@@ -245,11 +245,13 @@ public class ApplyEditActivity extends Activity {
                             JsonArray jsonArray = info.get("serviceList").getAsJsonArray();
 
                             ArrayList<String> serviceList = new ArrayList<>();
+                            ArrayList<String> serviceIdList = new ArrayList<>();
 
                             if (jsonArray.size() > 0) {
                                 for (int i = 0; i < jsonArray.size(); i++) {
                                     JsonObject item = (JsonObject) jsonArray.get(i);
                                     serviceList.add(item.get("name").getAsString());
+                                    serviceIdList.add(item.get("serviceId").getAsString());
                                 }
                             }
 
@@ -257,6 +259,7 @@ public class ApplyEditActivity extends Activity {
                                     identityCardNo, latitued, longitude, locationAddress, name, regionId, regionName, workYear);
 
                             userInfoA.setmServiceList(serviceList);
+                            userInfoA.setmServiceIdList(serviceIdList);
 
                             mHandler.post(new Runnable() {
                                 @Override
@@ -313,17 +316,22 @@ public class ApplyEditActivity extends Activity {
 
             if (userInfoA.getmServiceList() != null && userInfoA.getmServiceList().size() > 0) {
                 StringBuilder builder = new StringBuilder();
+                StringBuilder builderId = new StringBuilder();
 
                 ArrayList<String> list = userInfoA.getmServiceList();
+                ArrayList<String> listId = userInfoA.getmServiceIdList();
 
                 for (int i = 0; i < list.size(); i++) {
                     builder.append(list.get(i));
+                    builderId.append(listId.get(i));
                     if (i != list.size() - 1) {
                         builder.append(",");
+                        builderId.append(",");
                     }
                 }
 
                 mServiceTv.setText(builder.toString());
+                mServiceTv.setTag(builderId.toString());
             }
 
             mPwd = userInfoA.getPwd();

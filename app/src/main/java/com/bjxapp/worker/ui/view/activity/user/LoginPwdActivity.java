@@ -18,6 +18,7 @@ import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
+import com.bjxapp.worker.utils.MD5Util;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
 
@@ -141,7 +142,7 @@ public class LoginPwdActivity extends BaseActivity implements View.OnClickListen
         Map params = new HashMap();
 
         params.put("userCode", phoneNumber);
-        params.put("password", pwd);
+        params.put("password", MD5Util.getStringMD5(pwd));
 
         Call<JsonObject> loginRequest = httpService.pwdLogin(params);
 

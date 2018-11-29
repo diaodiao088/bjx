@@ -201,7 +201,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     + "&dname=" + mDetailInfo.getOrderDes().getLocationAddress() + "&dev=0&m=1&t=1");
 
             startActivity(intent);
-            Log.e(TAG, "高德地图客户端已经安装");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1009,6 +1008,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         long currentTime = System.currentTimeMillis();
 
+        if (mNewBillTimer != null){
+            mNewBillTimer.cancel();
+        }
+
+        if (mCountDownTimer != null){
+            mCountDownTimer.cancel();
+        }
+
         if (currentTime - selectMasterTime <= 30 * 60 * 1000) {
             mNewBillTimer = new CountDownTimer(30 * 60 * 1000 - (currentTime - selectMasterTime), 1000) {
                 @Override
@@ -1056,6 +1063,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         Log.d("slog_zd", "selectmaster time : " + selectMasterTime);
 
         long currentTime = System.currentTimeMillis();
+
+        if (mNewBillTimer != null){
+            mNewBillTimer.cancel();
+        }
+
+        if (mCountDownTimer != null){
+            mCountDownTimer.cancel();
+        }
 
         if (currentTime - selectMasterTime <= 30 * 60 * 1000) {
             mCountDownTimer = new CountDownTimer(30 * 60 * 1000 - (currentTime - selectMasterTime), 1000) {
