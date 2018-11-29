@@ -48,8 +48,9 @@ public class JoinUsActivity extends Activity {
     @BindView(R.id.title_image_right)
     XImageView mTitleRightIv;
 
+    // "https://app.100jiaxiu.com/profile/invite_an.html
     public static final String URL = BuildConfig.DEBUG ? "http://app-test.100jiaxiu.com/profile/invite_an.html" :
-            "https://app.100jiaxiu.com/profile/invite_an.html";
+            "http://app-test.100jiaxiu.com/profile/invite_an.html";
 
     public static final String PRIVATE_KEY = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAINPaTf8qLJV" +
             "9ICgVZNlEGWiW9O3iRbamqcolv/5k6fxngXMXY1BDOFe7kpOjZai+M+rfRcCxDN5TWs0qDTFiBFe4Kek7Dt+bzpr6lDPyS" +

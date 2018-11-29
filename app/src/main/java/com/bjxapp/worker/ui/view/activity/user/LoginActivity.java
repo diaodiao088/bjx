@@ -54,7 +54,6 @@ import retrofit2.Response;
 public class LoginActivity extends BaseActivity implements OnClickListener {
     protected static final String TAG = "登陆界面";
 
-
     @BindView(R.id.login_image_verify_code)
     XImageView mVerifyCodeImageView;
 
@@ -257,7 +256,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                         @Override
                         public void run() {
                             Utils.showLongToast(context, "获取验证码失败，请检查图形码是否正确！");
-                            mCounter.cancel();
+                            if (mCounter != null){
+                                mCounter.cancel();
+                            }
                             mSendAuthButton.setEnabled(true);
                             mSendAuthButton.setText("获取验证码");
                         }
@@ -297,35 +298,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     @Override
                     public void run() {
                         Utils.showLongToast(context, "获取验证码失败，请检查图形码是否正确！");
-                        mCounter.cancel();
+
+                        if (mCounter != null){
+                            mCounter.cancel();
+                        }
+
                         mSendAuthButton.setEnabled(true);
                         mSendAuthButton.setText("获取验证码");
                     }
                 });
             }
         });
-
-        /*mSendAuthCode = new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                String mobile = mMobileEditText.getText().toString();
-                return LogicFactory.getAccountLogic(context).sendAuth(mobile, mLoginKey, verifyCode);
-            }
-
-            @Override
-            protected void onPostExecute(Integer result) {
-                if (result == APIConstants.RESULT_CODE_SUCCESS) {
-
-                } else {
-                    Utils.showLongToast(context, "获取验证码失败，请检查图形码是否正确！");
-                    mCounter.cancel();
-                    mSendAuthButton.setEnabled(true);
-                    mSendAuthButton.setText("获取验证码");
-                }
-            }
-        };
-
-        mSendAuthCode.execute();*/
     }
 
 
