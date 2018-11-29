@@ -53,14 +53,13 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
     @BindView(R.id.title_text_tv)
     XTextView mTitleTv;
 
-    String pattern = "^-?[1-9]d*$";
+    String pattern = "^[0-9]{6,10}$";
 
     public static final int FROM_FORGET_PWD = 0x01;
     public static final int FROM_REGISTER_PWD = 0x02;
     public static final int FROM_EDIT_APPLY = 0x03;
 
     public static final String FROM_TYPE = "from_type";
-
     public static final String KEY_TYPE = "key_type";
 
     private int mFrom;

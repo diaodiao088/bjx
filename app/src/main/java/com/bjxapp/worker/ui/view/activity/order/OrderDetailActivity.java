@@ -401,8 +401,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     }
                 });
 
-                Log.d("slog_zd", "change time : " + response.body().toString());
-
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
                     JsonObject jsonObject = response.body();
@@ -984,7 +982,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         modifyLy.setVisibility(View.GONE);
         mPreBillLy.setVisibility(View.GONE);
         mFinalMoneyLy.setVisibility(View.GONE);
-        mHourLastTv.setVisibility(View.GONE);
+        mHourLastTv.setVisibility(View.VISIBLE);
         mOrderWaitLy.setVisibility(View.GONE);
         mIssueImgLy.setVisibility(View.GONE);
 
