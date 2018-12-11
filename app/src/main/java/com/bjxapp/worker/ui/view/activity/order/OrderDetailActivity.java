@@ -791,7 +791,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         OrderDes order = mDetailInfo.getOrderDes();
 
-        mServiceNameTv.setText(order.getServiceName());
+        mServiceNameTv.setText(order.getOrderId());
         mPhoneTv.setText(order.getPersonName() + "/" + order.getContactPhone());
         mDateTv.setText(order.getAppointmentDay() + " " + order.getAppointmentStartTime() + " - " + order.getAppointmentEndTime());
         mAdressTv.setText(order.getLocationAddress());

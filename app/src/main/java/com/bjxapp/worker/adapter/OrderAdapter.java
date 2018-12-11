@@ -80,7 +80,7 @@ public class OrderAdapter extends BaseAdapter {
                     feeInfo = "费用：";
                     break;
                 case 1:
-                    statusString = "待接单";
+                    statusString = "新订单";
                     feeInfo = "费用预估：";
                     break;
                 case 2:

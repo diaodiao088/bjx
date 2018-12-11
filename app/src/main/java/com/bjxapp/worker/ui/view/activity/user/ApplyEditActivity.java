@@ -132,7 +132,7 @@ public class ApplyEditActivity extends Activity {
             params.put("serviceIds", mServiceTv.getTag().toString());
         }
 
-        retrofit2.Call<JsonObject> call = profileApi.getRegisterInfo(params);
+        retrofit2.Call<JsonObject> call = profileApi.modifyRegisterInfo(params);
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
