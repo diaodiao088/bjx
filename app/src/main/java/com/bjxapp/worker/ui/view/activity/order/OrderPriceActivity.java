@@ -516,7 +516,6 @@ public class OrderPriceActivity extends Activity implements View.OnClickListener
                 });
             }
         });
-
     }
 
 

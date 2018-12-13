@@ -61,7 +61,6 @@
                         android:paddingLeft="4dp"
                         android:paddingRight="4dp"
                         android:paddingTop="2dp"
-                        android:text="新订单"
                         android:textColor="#ffffff"
                         android:textSize="14sp" />
 
@@ -81,9 +80,9 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="#f5f5f5"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"/>
+                    android:layout_marginRight="10dp"
+                    android:background="#f5f5f5" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -172,7 +171,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_receive_textview_contact"
@@ -197,9 +197,9 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="horizontal"
-                android:visibility="gone"
                 android:paddingBottom="5dp"
-                android:paddingTop="5dp">
+                android:paddingTop="5dp"
+                android:visibility="gone">
 
                 <com.bjxapp.worker.controls.XTextView
                     android:id="@+id/order_receive_detail_images_text"
@@ -407,19 +407,19 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:paddingTop="5dp"
+                android:background="@drawable/layout_radius"
                 android:paddingBottom="5dp"
-                android:visibility="gone"
-                android:background="@drawable/layout_radius">
+                android:paddingTop="5dp"
+                android:visibility="gone">
 
                 <com.bjxapp.worker.controls.XTextView
                     android:id="@+id/add_image"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:layout_margin="5dp"
                     android:gravity="center_vertical"
                     android:text="添加照片："
-                    android:layout_margin="5dp"
                     android:textColor="#545454"
                     android:textSize="14sp" />
 
@@ -427,9 +427,9 @@
                     android:id="@+id/add_image_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/add_image"
                     android:drawablePadding="8dp"
-                    android:layout_centerVertical="true"
                     android:drawableRight="@drawable/right"
                     android:gravity="center_vertical"
                     android:paddingRight="8dp"
@@ -507,9 +507,8 @@
                     android:layout_height="1dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#f5f5f5"
                     android:layout_marginTop="5dp"
-                    />
+                    android:background="#f5f5f5" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -628,9 +627,8 @@
                     android:layout_height="1dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#f5f5f5"
                     android:layout_marginTop="5dp"
-                    />
+                    android:background="#f5f5f5" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -695,9 +693,8 @@
                     android:layout_height="1dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#f5f5f5"
                     android:layout_marginTop="5dp"
-                    />
+                    android:background="#f5f5f5" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -762,9 +759,8 @@
                     android:layout_height="1dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#f5f5f5"
                     android:layout_marginTop="5dp"
-                    />
+                    android:background="#f5f5f5" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -856,7 +852,7 @@
                             android:layout_height="40dp"
                             android:layout_marginRight="30dp"
                             android:layout_weight="1"
-                            android:background="@drawable/change_date_bg"
+                            android:background="@drawable/button_background_white"
                             android:gravity="center"
                             android:text="改约"
                             android:textColor="#999999"

@@ -47,6 +47,10 @@ public class OrderDes {
 
     private String orderTime;
 
+    private String orderNum = "";
+
+    private String detailAddress = "";
+
     public OrderDes(String orderId, int processStatus, int status, String serviceName,
                     String appointmentDay, String appointmentEndTime,
                     String appointmentStartTime, String locationAddress,
@@ -60,6 +64,14 @@ public class OrderDes {
         this.appointmentStartTime = appointmentStartTime;
         this.locationAddress = locationAddress;
         this.serviceVisitCost = serviceVisitCost;
+    }
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
     }
 
     public String getOrderTime() {
@@ -212,5 +224,13 @@ public class OrderDes {
 
     public void setmLongtitude(String mLongtitude) {
         this.mLongtitude = mLongtitude;
+    }
+
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
     }
 }

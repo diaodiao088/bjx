@@ -27,6 +27,7 @@ import android.widget.ImageView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
@@ -50,6 +51,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
@@ -85,6 +87,8 @@ public class AddImageActivity extends Activity {
 
     private XWaitingDialog mWaitingDialog;
 
+    private boolean isFinishedBill;
+
     @OnClick(R.id.title_image_back)
     void onClickBack() {
         onBackPressed();
@@ -94,6 +98,9 @@ public class AddImageActivity extends Activity {
     void onClickConfirm() {
         startConfirmReal();
     }
+
+    @BindView(R.id.add_confirm_btn)
+    XButton mConfirmBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,13 +114,18 @@ public class AddImageActivity extends Activity {
         mAdapter = new MyAdapter();
         mRecyclerView.setAdapter(mAdapter);
         mWaitingDialog = new XWaitingDialog(this);
-        initData();
         handleIntent();
+        initData();
     }
 
     private void initData() {
-        ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
-        mList.add(bean);
+        if (!isFinishedBill){
+            ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
+            mList.add(bean);
+        }else{
+            mConfirmBtn.setVisibility(View.GONE);
+        }
+
         mAdapter.setList(mList);
         mAdapter.notifyDataSetChanged();
     }
@@ -124,6 +136,7 @@ public class AddImageActivity extends Activity {
 
         try {
             ArrayList<String> mlist = intent.getStringArrayListExtra("img_list");
+            isFinishedBill = intent.getBooleanExtra("isHistoryBill", false);
 
             if (mlist != null && mlist.size() > 0) {
                 // mList.addAll(0 , mlist);
@@ -474,11 +487,12 @@ public class AddImageActivity extends Activity {
     }
 
 
-    public static void goToActivity(Activity ctx, int code, ArrayList<String> mImgList) {
+    public static void goToActivity(Activity ctx, int code, ArrayList<String> mImgList , boolean isHistoryBill) {
 
         Intent intent = new Intent();
         intent.setClass(ctx, AddImageActivity.class);
         intent.putStringArrayListExtra("img_list", mImgList);
+        intent.putExtra("isHistoryBill",isHistoryBill);
         //ctx.startactivityfor(intent);
         ctx.startActivityForResult(intent, code);
     }

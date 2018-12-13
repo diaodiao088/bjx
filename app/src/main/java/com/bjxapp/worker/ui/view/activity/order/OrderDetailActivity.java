@@ -168,6 +168,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @BindView(R.id.order_receiver_ly)
     LinearLayout mOrderWaitLy;
 
+    @BindView(R.id.tele_contacts_ly)
+    RelativeLayout mContactLy;
 
     @OnClick(R.id.order_receive_textview_address)
     void onAddressClick() {
@@ -282,12 +284,24 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     @OnClick(R.id.add_image_content)
     void addIssueImage() {
-        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImageList);
+
+        boolean isBillFinished = false;
+        if (mDetailInfo != null) {
+            OrderDes orderDes = mDetailInfo.getOrderDes();
+            if (orderDes != null) {
+                int status = orderDes.getProcessStatus();
+                if (status > 5) {
+                    isBillFinished = true;
+                }
+            }
+        }
+
+        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImageList, isBillFinished);
     }
 
     @OnClick(R.id.order_bill_btn)
     void editPreBill() {
-        if (TextUtils.isEmpty(mIssuePriceTv.getText().toString())) {
+        if (TextUtils.isEmpty(mIssuePriceTv.getText().toString()) || TextUtils.isEmpty(mStrategyContentTv.getText().toString())) {
             Utils.showShortToast(this, "请先填写维修项信息");
         } else {
             OrderPriceActivity.goToActivity(this, mDetailInfo != null ? mDetailInfo.getOrderDes().getOrderId() : String.valueOf(-1),
@@ -603,7 +617,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mCountDownTimer.cancel();
         }
 
+        mContactLy.setVisibility(View.VISIBLE);
         mStatusTv.setText("待上门");
+        mStatusTv.setBackgroundResource(R.drawable.layout_textview_radius);
         mSaveButton.setText("完成");
         mSaveButton.setEnabled(true);
         mServiceEditBtn.setEnabled(true);
@@ -791,10 +807,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         OrderDes order = mDetailInfo.getOrderDes();
 
-        mServiceNameTv.setText(order.getOrderId());
+        mServiceNameTv.setText(order.getOrderNum());
         mPhoneTv.setText(order.getPersonName() + "/" + order.getContactPhone());
         mDateTv.setText(order.getAppointmentDay() + " " + order.getAppointmentStartTime() + " - " + order.getAppointmentEndTime());
-        mAdressTv.setText(order.getLocationAddress());
+        mAdressTv.setText(order.getLocationAddress() + " - " + order.getDetailAddress());
         mPriceTv.setText(order.getServiceVisitCost());
         mRemarkTv.setText(order.getmRemarkDes());
 
@@ -904,6 +920,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             }
 
             maintainInfo.setMasterImgUrls(customImgUrls);
+
+            if (customImgUrls.size() > 0) {
+                mImageList.addAll(customImgUrls);
+            }
+
             maintainInfo.setPrepayImgUrls(prePayImgUrls);
 
             return maintainInfo;
@@ -921,6 +942,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String orderId = (String) detailJson.getString("orderId");
             int processStatus = (int) detailJson.getInt("processStatus");
             int status = (int) detailJson.getInt("status");
+            String orderNum = detailJson.getString("orderNo");
 
             JSONObject detailItem = detailJson.getJSONObject("appointmentDetail");
 
@@ -929,6 +951,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String appointmentEndTime = detailItem.getString("appointmentEndTime");
             String appointmentStartTime = detailItem.getString("appointmentStartTime");
             String locationAddress = detailItem.getString("locationAddress");
+            String detailAddress = detailItem.getString("detailAddress");
             String serviceVisitCost = detailItem.getString("serviceVisitCost");
 
             String phoneNum = detailItem.getString("contactPhone");
@@ -940,8 +963,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String lontitude = detailItem.getString("longitude");
 
             JSONArray urlArray = detailItem.getJSONArray("customerImgUrls");
-
-
             ArrayList<String> customImgUrls = new ArrayList<>();
 
             if (urlArray != null && urlArray.length() > 0) {
@@ -962,6 +983,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             orderItem.setPersonName(personName);
             orderItem.setmLatitude(latitude);
             orderItem.setmLongtitude(lontitude);
+            orderItem.setOrderNum(orderNum);
+            orderItem.setDetailAddress(detailAddress);
+
             return orderItem;
 
         } catch (Exception e) {
@@ -978,12 +1002,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mSaveButton.setText("接单");
         mSaveButton.setEnabled(true);
         mStatusTv.setText("新订单");
+        mStatusTv.setBackgroundResource(R.drawable.layout_textview_radius);
         modifyLy.setVisibility(View.GONE);
         mPreBillLy.setVisibility(View.GONE);
         mFinalMoneyLy.setVisibility(View.GONE);
         mHourLastTv.setVisibility(View.VISIBLE);
         mOrderWaitLy.setVisibility(View.GONE);
         mIssueImgLy.setVisibility(View.GONE);
+        mContactLy.setVisibility(View.GONE);
 
         mSaveLy.setVisibility(View.VISIBLE);
         mCurrentStatus = OrderStatusCtrl.TYPE_NEW_BILL;
@@ -1008,11 +1034,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         long currentTime = System.currentTimeMillis();
 
-        if (mNewBillTimer != null){
+        if (mNewBillTimer != null) {
             mNewBillTimer.cancel();
         }
 
-        if (mCountDownTimer != null){
+        if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
 
@@ -1030,6 +1056,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 public void onFinish() {
                     mHourLastTv.setText("已超时");
                     mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+                    mHourLastTv.setVisibility(View.GONE);
+                    mStatusTv.setText("已超时");
+                    mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
                 }
             };
 
@@ -1037,6 +1066,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         } else {
             mHourLastTv.setText("已超时");
             mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+            mHourLastTv.setVisibility(View.GONE);
+            mStatusTv.setText("已超时");
+            mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
         }
     }
 
@@ -1046,12 +1078,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     private void toWaitStatus() {
 
         mStatusTv.setText("待联系");
+        mStatusTv.setBackgroundResource(R.drawable.layout_textview_radius);
         mHourLastTv.setVisibility(View.VISIBLE);
         mPreBillLy.setVisibility(View.GONE);
         mFinalMoneyLy.setVisibility(View.GONE);
         mSaveLy.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.VISIBLE);
         mIssueImgLy.setVisibility(View.GONE);
+        mContactLy.setVisibility(View.VISIBLE);
 
         if (mDetailInfo == null || mDetailInfo.getOrderDes() == null || mDetailInfo.getMaintainInfo() == null
                 || mDetailInfo.getMaintainInfo().getOrderTime() == null) {
@@ -1060,15 +1094,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         long selectMasterTime = Long.parseLong(mDetailInfo.getMaintainInfo().getOrderTime());
 
-        Log.d("slog_zd", "selectmaster time : " + selectMasterTime);
-
         long currentTime = System.currentTimeMillis();
 
-        if (mNewBillTimer != null){
+        if (mNewBillTimer != null) {
             mNewBillTimer.cancel();
         }
 
-        if (mCountDownTimer != null){
+        if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
 
@@ -1088,15 +1120,20 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 public void onFinish() {
                     mHourLastTv.setText("已超时");
                     mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+                    mHourLastTv.setVisibility(View.GONE);
+                    mStatusTv.setText("已超时");
+                    mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
                 }
             };
 
             mCountDownTimer.start();
         } else {
-            mHourLastTv.setText("已超时");
+            mHourLastTv.setVisibility(View.GONE);
             mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+            mHourLastTv.setText("已超时");
+            mStatusTv.setText("已超时");
+            mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
         }
-
 
         mSendMsgTv.setText(Html.fromHtml(getResources().getString(R.string.send_msg)));
         HandleUrlLinkMovementMethod instance = HandleUrlLinkMovementMethod.getInstance();
@@ -1448,9 +1485,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 });
             }
         });
-
     }
-
 
     private void acceptOperation() {
 
@@ -1553,26 +1588,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     }
 
     private ArrayList<String> mImageList = new ArrayList<>();
-
-    private void createPayQRCode(String url) {
-        if (!Utils.isNotEmpty(url)) {
-            Utils.showLongToast(context, "支付链接错误，请联系客服人员！");
-            return;
-        }
-        Intent intent = new Intent();
-        intent.setClass(context, OrderPayQRCodeActivity.class);
-        intent.putExtra("url", url);
-        context.startActivity(intent);
-        context.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }
-
-    private void showPaySuccessActivity() {
-        Intent intent = new Intent();
-        intent.setClass(context, OrderPaySuccessActivity.class);
-        intent.putExtra("order_id", String.valueOf(mOrderCode));
-        context.startActivity(intent);
-        context.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }
 
     private void startAdditionActivity() {
         Intent intent = new Intent();
@@ -1688,7 +1703,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mCountDownTimer.cancel();
         }
 
-        if (mNewBillTimer != null){
+        if (mNewBillTimer != null) {
             mNewBillTimer.cancel();
         }
 

@@ -150,7 +150,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         }
 
         //获取用户注册状态
-         getUserStatus();
+        getUserStatus();
 
         //显示红点
         displayRedDot();
@@ -630,7 +630,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
                 JsonObject jsonObject = response.body();
 
-
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
                     final int code = jsonObject.get("code").getAsInt();
@@ -728,24 +727,21 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     }
 
     private void showStatusDialog(String msg, int status) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setIcon(android.R.drawable.ic_dialog_info);
-        builder.setTitle("师傅注册通知");
-        builder.setMessage(msg);
-        builder.setCancelable(false);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        final SimpleConfirmDialog dialog = new SimpleConfirmDialog(this);
+        dialog.setTitle("师傅注册通知");
+        dialog.setContent(msg);
+        dialog.setCancelable(false);
+        dialog.setOnPositiveListener("确定", new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 ActivitiesManager.getInstance().finishAllActivities();
             }
         });
 
         if (status == 20001) {
-            builder.setNeutralButton("重新登录", new DialogInterface.OnClickListener() {
+            dialog.setOnNegativeListener("重新登录", new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // callService();
-                    // ActivitiesManager.getInstance().finishAllActivities();
+                public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     intent.putExtra("from", 0x01);
                     MainActivity.this.startActivity(intent);
@@ -753,16 +749,17 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 }
             });
         } else {
-            builder.setNeutralButton("电话询问", new DialogInterface.OnClickListener() {
+
+            dialog.setOnNegativeListener("电话询问", new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClick(View v) {
                     callService();
                     ActivitiesManager.getInstance().finishAllActivities();
                 }
             });
         }
 
-        builder.create().show();
+        dialog.show();
     }
 
 

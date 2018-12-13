@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center_horizontal"
+    android:background="#f5f5f5"
     android:orientation="vertical">
 
     <include layout="@layout/layout_title" />
@@ -21,139 +22,149 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginTop="6dp"
-                android:gravity="center">
+                android:background="@color/white"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="银行卡号"
-                    android:textColor="#545454"
-                    android:textSize="14sp"/>
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center">
 
-                <EditText
-                    android:id="@+id/balance_bank_card_edit"
-                    android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="银行卡号"
+                        android:textColor="#545454"
+                        android:textSize="14sp"/>
+
+                    <EditText
+                        android:id="@+id/balance_bank_card_edit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="4dp"
+                        android:hint="输入您的银行卡号"
+                        android:paddingLeft="4dp"
+                        android:textSize="14sp"
+                        android:textColor="#545454"
+                        android:background="@drawable/chang_pwd_bg"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textColorHint="#DDDDDD"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="4dp"
-                    android:hint="输入您的银行卡号"
-                    android:paddingLeft="4dp"
-                    android:textSize="14sp"
-                    android:textColor="#545454"
-                    android:background="@drawable/chang_pwd_bg"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:textColorHint="#DDDDDD"
-                    />
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="开户银行"
+                        android:textColor="#545454"
+                        android:textSize="14sp"/>
+
+                    <EditText
+                        android:id="@+id/balance_bank_name_edit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="4dp"
+                        android:hint="输入您的开户银行名称"
+                        android:paddingLeft="4dp"
+                        android:textSize="14sp"
+                        android:textColor="#545454"
+                        android:background="@drawable/chang_pwd_bg"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textColorHint="#DDDDDD"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="开 户 人  "
+                        android:textColor="#545454"
+                        android:textSize="14sp"/>
+
+                    <EditText
+                        android:id="@+id/balance_bank_person_edit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="4dp"
+                        android:hint="输入您的开户人姓名"
+                        android:paddingLeft="4dp"
+                        android:textSize="14sp"
+                        android:textColor="#545454"
+                        android:background="@drawable/chang_pwd_bg"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textColorHint="#DDDDDD"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="手 机 号  "
+                        android:textColor="#545454"
+                        android:textSize="14sp"/>
+
+                    <EditText
+                        android:id="@+id/balance_bank_mobile_edit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="4dp"
+                        android:hint="输入您的开户预留手机号"
+                        android:paddingLeft="4dp"
+                        android:textSize="14sp"
+                        android:textColor="#545454"
+                        android:background="@drawable/chang_pwd_bg"
+                        android:paddingTop="10dp"
+                        android:inputType="phone"
+                        android:paddingBottom="10dp"
+                        android:textColorHint="#DDDDDD"
+                        />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginTop="6dp"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="开户银行"
-                    android:textColor="#545454"
-                    android:textSize="14sp"/>
-
-                <EditText
-                    android:id="@+id/balance_bank_name_edit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="4dp"
-                    android:hint="输入您的开户银行名称"
-                    android:paddingLeft="4dp"
-                    android:textSize="14sp"
-                    android:textColor="#545454"
-                    android:background="@drawable/chang_pwd_bg"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:textColorHint="#DDDDDD"
-                    />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginTop="6dp"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="开 户 人  "
-                    android:textColor="#545454"
-                    android:textSize="14sp"/>
-
-                <EditText
-                    android:id="@+id/balance_bank_person_edit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="4dp"
-                    android:hint="输入您的开户人姓名"
-                    android:paddingLeft="4dp"
-                    android:textSize="14sp"
-                    android:textColor="#545454"
-                    android:background="@drawable/chang_pwd_bg"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:textColorHint="#DDDDDD"
-                    />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginTop="6dp"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="手 机 号  "
-                    android:textColor="#545454"
-                    android:textSize="14sp"/>
-
-                <EditText
-                    android:id="@+id/balance_bank_mobile_edit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="4dp"
-                    android:hint="输入您的开户预留手机号"
-                    android:paddingLeft="4dp"
-                    android:textSize="14sp"
-                    android:textColor="#545454"
-                    android:background="@drawable/chang_pwd_bg"
-                    android:paddingTop="10dp"
-                    android:inputType="phone"
-                    android:paddingBottom="10dp"
-                    android:textColorHint="#DDDDDD"
-                    />
-
-            </LinearLayout>
 
             <com.bjxapp.worker.controls.XButton
                 android:id="@+id/balance_bank_button_save"

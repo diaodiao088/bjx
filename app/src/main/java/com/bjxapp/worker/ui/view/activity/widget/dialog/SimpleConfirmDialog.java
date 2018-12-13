@@ -113,6 +113,10 @@ public class SimpleConfirmDialog {
         return this;
     }
 
+    public SimpleConfirmDialog setCancelable(boolean cancelable){
+        mDialog.setCancelable(cancelable);
+        return this;
+    }
 
     public SimpleConfirmDialog setTitle(int resId) {
 

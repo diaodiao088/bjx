@@ -11,6 +11,7 @@ import com.bjxapp.worker.http.httpcore.interceptor.LoggerInterceptor;
 import com.bjxapp.worker.http.httpcore.interceptor.LoginExpiredInterceptor;
 import com.bjxapp.worker.http.httpcore.interceptor.OffLineInterceptor;
 import com.bjxapp.worker.http.httpcore.interceptor.OnLineInterceptor;
+import com.bjxapp.worker.http.httpcore.interceptor.VersionControlIntercept;
 import com.bjxapp.worker.http.httpcore.supplier.Supplier;
 import com.bjxapp.worker.http.httpcore.supplier.Suppliers;
 import com.bjxapp.worker.http.keyboard.CommonUtils;
@@ -46,6 +47,7 @@ public class ObjectSupplier {
             builder.writeTimeout(HttpConfig.MAX_WRITE_TIMEOUT, HttpConfig.TIME_UNIT);
             builder.connectTimeout(HttpConfig.MAX_CONNECTION_TIMEOUT, HttpConfig.TIME_UNIT);
             builder.cache(new Cache(KSystemUtils.getCacheDirForNetwork(CommonUtils.getGlobalContext()), HttpConfig.DEFAULT_MAX_DISK_CACHE_SIZE));
+            builder.addInterceptor(new VersionControlIntercept());
             builder.addInterceptor(new OffLineInterceptor());
 
             builder.addNetworkInterceptor(new OnLineInterceptor());
