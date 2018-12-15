@@ -298,6 +298,9 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
 
                                 JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
+                                String orderTime = maintainObject.get("receiveOrderTime").getAsString();
+
+                                String selectTime = detailItem.get("selectMasterTime").getAsString();
 
                                 boolean isGuarnt = maintainObject.get("inGuaranteePeriod").getAsBoolean();
 
@@ -306,6 +309,8 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                         locationAddress, serviceVisitCost);
 
                                 orderItem.setInGuaranteePeriod(isGuarnt);
+                                orderItem.setSelectMasterTime(orderTime);
+                                orderItem.setmSelectTime(selectTime);
 
                                 list.add(orderItem);
                             }
@@ -430,12 +435,17 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
 
                                 JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
+                                String selectTime = detailItem.get("selectMasterTime").getAsString();
+                                String orderTime = maintainObject.get("receiveOrderTime").getAsString();
 
                                 boolean isGuarnt = maintainObject.get("inGuaranteePeriod").getAsBoolean();
 
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setSelectMasterTime(orderTime);
+                                orderItem.setmSelectTime(selectTime);
 
                                 orderItem.setInGuaranteePeriod(isGuarnt);
 
@@ -525,8 +535,10 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
                                 String locationAddress = detailItem.get("locationAddress").getAsString();
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
+                                String selectTime = detailItem.get("selectMasterTime").getAsString();
 
                                 JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
+                                String orderTime = maintainObject.get("receiveOrderTime").getAsString();
 
                                 boolean isGuarnt = maintainObject.get("inGuaranteePeriod").getAsBoolean();
 
@@ -535,6 +547,8 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                         locationAddress, serviceVisitCost);
 
                                 orderItem.setInGuaranteePeriod(isGuarnt);
+                                orderItem.setSelectMasterTime(orderTime);
+                                orderItem.setmSelectTime(selectTime);
 
                                 list.add(orderItem);
                             }

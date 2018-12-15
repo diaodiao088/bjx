@@ -239,10 +239,17 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                                 String locationAddress = detailItem.get("locationAddress").getAsString();
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
                                 String serviceEsCost = detailItem.get("serviceVisitCost").getAsString();
+                                String selectTime = detailItem.get("selectMasterTime").getAsString();
 
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setmSelectTime(selectTime);
+
+                                JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
+                                String orderTime = maintainItem.get("receiveOrderTime").getAsString();
+                                orderItem.setSelectMasterTime(orderTime);
 
                                 orderItem.setEsCost(serviceEsCost);
 
@@ -354,9 +361,16 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                                 String locationAddress = detailItem.get("locationAddress").getAsString();
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
 
+                                JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
+                                String orderTime = maintainItem.get("receiveOrderTime").getAsString();
+                                String selectTime = detailItem.get("selectMasterTime").getAsString();
+
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setSelectMasterTime(orderTime);
+                                orderItem.setmSelectTime(selectTime);
 
                                 list.add(orderItem);
                             }

@@ -81,10 +81,33 @@ public class OrderAdapter extends BaseAdapter {
                     break;
                 case 1:
                     statusString = "新订单";
+                    String selectMasterTime = aInfo.get(position).getmSelectTime();
+
+                    try {
+                        double time = Double.parseDouble(selectMasterTime);
+                        if (System.currentTimeMillis() - time > 30 * 60 * 1000) {
+                            statusString = "已超时";
+                        }
+                    } catch (Exception e) {
+
+                    }
+
                     feeInfo = "费用预估：";
                     break;
                 case 2:
                     statusString = "待联系";
+
+                    String orderTime = aInfo.get(position).getSelectMasterTime();
+
+                    try {
+                        double time = Double.parseDouble(orderTime);
+                        if (System.currentTimeMillis() - time > 30 * 60 * 1000) {
+                            statusString = "已超时";
+                        }
+                    } catch (Exception e) {
+
+                    }
+
                     feeInfo = "费用：";
                     break;
                 case 3:

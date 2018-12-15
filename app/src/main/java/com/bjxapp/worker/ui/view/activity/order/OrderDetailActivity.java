@@ -512,16 +512,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.title_image_back:
-                /*Bundle bundle = getIntent().getExtras();
-                if (bundle != null && bundle.getString(Constant.EXTRA_RETURN_KEY_CLASS_NAME) != null) {
-                    String returnClassName = bundle.getString(Constant.EXTRA_RETURN_KEY_CLASS_NAME);
-                    Intent it = new Intent();
-                    it.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    String packageName = context.getPackageName();
-                    it.setClassName(packageName == null ? Constant.APP_PACKAGE_NAME : packageName, returnClassName);
-                    startActivity(it);
-                }
-                Utils.finishActivity(OrderDetailActivity.this);*/
                 onBackPressed();
                 break;
             case R.id.order_receive_textview_contact:
