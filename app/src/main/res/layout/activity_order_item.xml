@@ -25,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:paddingLeft="0dp"
-                android:text="下水管道维修"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp" />
 
@@ -36,7 +35,6 @@
                 android:layout_alignParentRight="true"
                 android:background="@drawable/layout_textview_radius"
                 android:padding="4dp"
-                android:text="新订单"
                 android:textColor="#ffffff"
                 android:textSize="14sp" />
 
@@ -109,4 +107,15 @@
                 android:textSize="14sp" />
         </RelativeLayout>
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="90dp"
+        android:paddingTop="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/out_time"
+        />
+
 </RelativeLayout>

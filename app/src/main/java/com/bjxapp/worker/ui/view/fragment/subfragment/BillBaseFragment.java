@@ -26,6 +26,7 @@ import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.http.httpcore.annotation.ExtraConfig;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.FirstPageResult;
 import com.bjxapp.worker.model.OrderDes;
@@ -248,7 +249,14 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                                 orderItem.setmSelectTime(selectTime);
 
                                 JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
-                                String orderTime = maintainItem.get("receiveOrderTime").getAsString();
+                                String orderTime = "";
+                                try{
+                                    if (maintainItem.get("receiveOrderTime") != null){
+                                        orderTime = maintainItem.get("receiveOrderTime").getAsString();
+                                    }
+                                }catch (Exception e){
+
+                                }
                                 orderItem.setSelectMasterTime(orderTime);
 
                                 orderItem.setEsCost(serviceEsCost);
@@ -362,7 +370,15 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
 
                                 JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
-                                String orderTime = maintainItem.get("receiveOrderTime").getAsString();
+                                String orderTime = "";
+                                try{
+                                    if (maintainItem.get("receiveOrderTime") != null){
+                                        orderTime = maintainItem.get("receiveOrderTime").getAsString();
+                                    }
+                                }catch (Exception e){
+
+                                }
+
                                 String selectTime = detailItem.get("selectMasterTime").getAsString();
 
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,

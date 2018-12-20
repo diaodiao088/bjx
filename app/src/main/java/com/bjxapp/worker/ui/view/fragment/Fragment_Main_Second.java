@@ -298,7 +298,15 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
 
                                 JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
-                                String orderTime = maintainObject.get("receiveOrderTime").getAsString();
+
+                                String orderTime = "";
+                                try{
+                                    if (maintainObject.get("receiveOrderTime") != null){
+                                        orderTime = maintainObject.get("receiveOrderTime").getAsString();
+                                    }
+                                }catch (Exception e){
+
+                                }
 
                                 String selectTime = detailItem.get("selectMasterTime").getAsString();
 
@@ -436,7 +444,15 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
                                 JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
                                 String selectTime = detailItem.get("selectMasterTime").getAsString();
-                                String orderTime = maintainObject.get("receiveOrderTime").getAsString();
+
+                                String orderTime = "";
+                                try{
+                                    if (maintainObject.get("receiveOrderTime") != null){
+                                        orderTime = maintainObject.get("receiveOrderTime").getAsString();
+                                    }
+                                }catch (Exception e){
+
+                                }
 
                                 boolean isGuarnt = maintainObject.get("inGuaranteePeriod").getAsBoolean();
 
@@ -538,7 +554,14 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String selectTime = detailItem.get("selectMasterTime").getAsString();
 
                                 JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
-                                String orderTime = maintainObject.get("receiveOrderTime").getAsString();
+                                String orderTime = "";
+                                try{
+                                    if (maintainObject.get("receiveOrderTime") != null){
+                                        orderTime = maintainObject.get("receiveOrderTime").getAsString();
+                                    }
+                                }catch (Exception e){
+
+                                }
 
                                 boolean isGuarnt = maintainObject.get("inGuaranteePeriod").getAsBoolean();
 

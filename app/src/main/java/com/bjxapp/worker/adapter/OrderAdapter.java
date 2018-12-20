@@ -68,6 +68,8 @@ public class OrderAdapter extends BaseAdapter {
         String statusString = "";
         String feeInfo = "";
 
+        boolean isOutTime = false;
+
         int status = aInfo.get(position).getStatus();
 
         if (status == 4) {
@@ -86,7 +88,7 @@ public class OrderAdapter extends BaseAdapter {
                     try {
                         double time = Double.parseDouble(selectMasterTime);
                         if (System.currentTimeMillis() - time > 30 * 60 * 1000) {
-                            statusString = "已超时";
+                            isOutTime = true;
                         }
                     } catch (Exception e) {
 
@@ -102,7 +104,7 @@ public class OrderAdapter extends BaseAdapter {
                     try {
                         double time = Double.parseDouble(orderTime);
                         if (System.currentTimeMillis() - time > 30 * 60 * 1000) {
-                            statusString = "已超时";
+                            isOutTime = true;
                         }
                     } catch (Exception e) {
 
@@ -131,9 +133,13 @@ public class OrderAdapter extends BaseAdapter {
             }
         }
 
-
         holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
+        holder.textViewStatus.setBackgroundResource(R.drawable.layout_textview_radius);
         holder.textViewStatus.setText(statusString);
+
+        if (isOutTime){
+
+        }
 
         return convertView;
     }

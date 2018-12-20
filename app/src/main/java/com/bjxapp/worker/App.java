@@ -2,6 +2,7 @@ package com.bjxapp.worker;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.bjxapp.worker.dataupload.Uploader;
+import com.bjxapp.worker.exception.MyCrashHandler;
 import com.bjxapp.worker.http.keyboard.commonutils.CommonUtilsEnv;
 
 import android.app.Application;
@@ -10,6 +11,12 @@ import android.content.Context;
 public class App extends Application {
 
     private static Context _context;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MyCrashHandler.getInstance().register(this);
+    }
 
     @Override
     public void onCreate() {

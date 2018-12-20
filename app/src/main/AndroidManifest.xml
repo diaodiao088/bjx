@@ -322,6 +322,10 @@
             </intent-filter>
         </receiver>
 
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
+
         <!-- push必须的receviver和service声明 -->
         <receiver
             android:name="com.baidu.android.pushservice.PushServiceReceiver"
