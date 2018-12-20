@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.controls.XTextView;
@@ -56,6 +57,7 @@ public class OrderAdapter extends BaseAdapter {
             holder.textViewOrderDate = (XTextView) convertView.findViewById(R.id.order_receive_textview_orderdate);
             holder.textViewAddress = (XTextView) convertView.findViewById(R.id.order_receive_textview_address);
             holder.textViewMoney = (XTextView) convertView.findViewById(R.id.order_receive_textview_money);
+            holder.mOutTimeIv = convertView.findViewById(R.id.out_time_iv);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -138,7 +140,9 @@ public class OrderAdapter extends BaseAdapter {
         holder.textViewStatus.setText(statusString);
 
         if (isOutTime){
-
+            holder.mOutTimeIv.setVisibility(View.VISIBLE);
+        }else{
+            holder.mOutTimeIv.setVisibility(View.GONE);
         }
 
         return convertView;
@@ -150,5 +154,6 @@ public class OrderAdapter extends BaseAdapter {
         XTextView textViewOrderDate;
         XTextView textViewAddress;
         XTextView textViewMoney;
+        ImageView mOutTimeIv;
     }
 }

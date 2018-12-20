@@ -109,6 +109,7 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/out_time_iv"
         android:layout_width="70dp"
         android:layout_height="90dp"
         android:paddingTop="20dp"
@@ -116,6 +117,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:src="@drawable/out_time"
+        android:visibility="gone"
         />
 
 </RelativeLayout>
