@@ -250,10 +250,14 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
                                 JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
                                 String orderTime = "";
+
                                 try{
                                     if (maintainItem.get("receiveOrderTime") != null){
                                         orderTime = maintainItem.get("receiveOrderTime").getAsString();
                                     }
+
+                                    savePayAmount(orderItem, maintainItem);
+
                                 }catch (Exception e){
 
                                 }
@@ -282,6 +286,15 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
         });
 
 
+    }
+
+    private void savePayAmount(OrderDes orderItem, JsonObject maintainItem) {
+        String payAmount = "";
+        if (maintainItem.get("payAmount") != null){
+            payAmount = maintainItem.get("payAmount").getAsString();
+        }
+
+        orderItem.setPayAmount(payAmount);
     }
 
     private void startOrderDetailActivity(OrderDes order) {
@@ -375,6 +388,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                                     if (maintainItem.get("receiveOrderTime") != null){
                                         orderTime = maintainItem.get("receiveOrderTime").getAsString();
                                     }
+
                                 }catch (Exception e){
 
                                 }
@@ -384,6 +398,10 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+                                try{
+                                    savePayAmount(orderItem , maintainItem);
+                                }catch (Exception e){}
+
 
                                 orderItem.setSelectMasterTime(orderTime);
                                 orderItem.setmSelectTime(selectTime);

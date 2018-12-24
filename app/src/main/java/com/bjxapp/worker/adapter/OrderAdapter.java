@@ -1,6 +1,7 @@
 package com.bjxapp.worker.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,6 @@ import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.model.OrderDes;
 
 import java.util.ArrayList;
-
-;
 
 public class OrderAdapter extends BaseAdapter {
 
@@ -96,7 +95,7 @@ public class OrderAdapter extends BaseAdapter {
 
                     }
 
-                    feeInfo = "费用预估：";
+                    feeInfo = "费用：";
                     break;
                 case 2:
                     statusString = "待联系";
@@ -135,13 +134,24 @@ public class OrderAdapter extends BaseAdapter {
             }
         }
 
-        holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
+        if ("待支付".equals(statusString) || "待评价".equals(statusString) || "已评价".equals(statusString)) {
+            String money = aInfo.get(position).getPayAmount();
+            if (TextUtils.isEmpty(money)) {
+                holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
+            } else {
+                holder.textViewMoney.setText(feeInfo + aInfo.get(position).getPayAmount() + "元");
+            }
+
+        } else {
+            holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
+        }
+
         holder.textViewStatus.setBackgroundResource(R.drawable.layout_textview_radius);
         holder.textViewStatus.setText(statusString);
 
-        if (isOutTime){
+        if (isOutTime) {
             holder.mOutTimeIv.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             holder.mOutTimeIv.setVisibility(View.GONE);
         }
 

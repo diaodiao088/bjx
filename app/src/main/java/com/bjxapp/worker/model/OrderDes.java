@@ -53,6 +53,8 @@ public class OrderDes {
 
     private String selectMasterTime = "";
 
+    private String payAmount;
+
     public OrderDes(String orderId, int processStatus, int status, String serviceName,
                     String appointmentDay, String appointmentEndTime,
                     String appointmentStartTime, String locationAddress,
@@ -66,6 +68,14 @@ public class OrderDes {
         this.appointmentStartTime = appointmentStartTime;
         this.locationAddress = locationAddress;
         this.serviceVisitCost = serviceVisitCost;
+    }
+
+    public String getPayAmount() {
+        return payAmount;
+    }
+
+    public void setPayAmount(String payAmount) {
+        this.payAmount = payAmount;
     }
 
     public String getDetailAddress() {

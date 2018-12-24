@@ -320,6 +320,8 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 orderItem.setSelectMasterTime(orderTime);
                                 orderItem.setmSelectTime(selectTime);
 
+                                savePayAmount(orderItem , maintainObject);
+
                                 list.add(orderItem);
                             }
                         }
@@ -368,6 +370,18 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     }
 
     private String mCreateTime;
+
+    private void savePayAmount(OrderDes orderItem, JsonObject maintainItem) {
+        try{
+            String payAmount = "";
+            if (maintainItem.get("payAmount") != null){
+                payAmount = maintainItem.get("payAmount").getAsString();
+            }
+
+            orderItem.setPayAmount(payAmount);
+        }catch (Exception e){}
+
+    }
 
     private String getFormatedTime() {
 
@@ -462,6 +476,8 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
                                 orderItem.setSelectMasterTime(orderTime);
                                 orderItem.setmSelectTime(selectTime);
+
+                                savePayAmount(orderItem , maintainObject);
 
                                 orderItem.setInGuaranteePeriod(isGuarnt);
 
@@ -572,6 +588,8 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 orderItem.setInGuaranteePeriod(isGuarnt);
                                 orderItem.setSelectMasterTime(orderTime);
                                 orderItem.setmSelectTime(selectTime);
+
+                                savePayAmount(orderItem , maintainObject);
 
                                 list.add(orderItem);
                             }

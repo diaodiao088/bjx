@@ -801,7 +801,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mPhoneTv.setText(order.getPersonName() + "/" + order.getContactPhone());
         mDateTv.setText(order.getAppointmentDay() + " " + order.getAppointmentStartTime() + " - " + order.getAppointmentEndTime());
         mAdressTv.setText(order.getLocationAddress() + " - " + order.getDetailAddress());
-        mPriceTv.setText(order.getServiceVisitCost());
+        mPriceTv.setText("费用 : " + order.getServiceVisitCost());
         mRemarkTv.setText(order.getmRemarkDes());
 
         mEnterRoomPrice.setText(order.getServiceVisitCost());
