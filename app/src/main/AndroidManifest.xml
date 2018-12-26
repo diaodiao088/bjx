@@ -324,7 +324,7 @@
 
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.1" />
+            android:value="2.3" />
 
         <!-- push必须的receviver和service声明 -->
         <receiver

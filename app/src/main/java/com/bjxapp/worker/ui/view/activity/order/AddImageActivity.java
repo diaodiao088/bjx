@@ -216,7 +216,7 @@ public class AddImageActivity extends Activity {
                 ((VH_IMAGE_ITEM) holder).mDeleteIv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mListener != null) {
+                        if (mListener != null && !isFinishedBill) {
                             mListener.deleteImage(position);
                         }
                     }
@@ -485,6 +485,7 @@ public class AddImageActivity extends Activity {
         void goToImageDetail(ImageBean bean);
 
     }
+
 
 
     public static void goToActivity(Activity ctx, int code, ArrayList<String> mImgList , boolean isHistoryBill) {
