@@ -383,25 +383,6 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
     }
 
-    private String getFormatedTime() {
-
-        if (TextUtils.isEmpty(mCreateTime)) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            mCreateTime = format.format(new Date());
-        }
-
-        return mCreateTime;
-    }
-
-    private String updateFormatedTime() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        mCreateTime = format.format(new Date());
-        return mCreateTime;
-    }
-
-
-    private AsyncTask<Void, Void, List<ReceiveOrder>> mRefreshTask;
-
     @Override
     public void onRefresh() {
 
@@ -661,9 +642,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     @Override
     public void onDestroy() {
         try {
-            if (mRefreshTask != null) {
-                mRefreshTask.cancel(true);
-            }
+
             if (mLoadMoreTask != null) {
                 mLoadMoreTask.cancel(true);
             }

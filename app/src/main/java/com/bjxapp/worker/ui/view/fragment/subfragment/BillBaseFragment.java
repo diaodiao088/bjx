@@ -3,20 +3,18 @@ package com.bjxapp.worker.ui.view.fragment.subfragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 
-import com.bjx.master.R;;
+import com.bjx.master.R;
 import com.bjxapp.worker.adapter.OrderAdapter;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
@@ -26,11 +24,7 @@ import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
-import com.bjxapp.worker.http.httpcore.annotation.ExtraConfig;
-import com.bjxapp.worker.logic.LogicFactory;
-import com.bjxapp.worker.model.FirstPageResult;
 import com.bjxapp.worker.model.OrderDes;
-import com.bjxapp.worker.model.ReceiveOrder;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
@@ -42,16 +36,16 @@ import com.google.gson.JsonObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+;
 
 /**
  * Created by zhangdan on 2018/9/20.
@@ -99,17 +93,6 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
             loadData(false);
         }
 
-        /*FirstPageResult pageResult = DataManagerCtrl.getIns().getPageResult();
-
-        if (pageResult == null || pageResult.getOrderObject() == null) {
-            loadData(false);
-        } else {
-            mLoadAgainLayout.setVisibility(View.GONE);
-            mOrdersArray.clear();
-            mOrdersArray.addAll((List<ReceiveOrder>) pageResult.getOrderObject());
-            mOrderAdapter.setReceiverInfo(mOrdersArray);
-            mOrderAdapter.notifyDataSetChanged();
-        }*/
     }
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
@@ -206,91 +189,80 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
         orderRequest.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
-                Log.d("slog_zd", "refresh list : " + response.body().toString());
-
-                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
-
-                    JsonObject object = response.body();
-                    String msg = object.get("msg").getAsString();
-                    int code = object.get("code").getAsInt();
-
-                    if (code == 0) {
-
-                        JsonArray listArray = object.getAsJsonArray("list");
-
-                        if (listArray != null && listArray.size() > 0) {
-
-                            ArrayList<OrderDes> list = new ArrayList<>();
-
-                            for (int i = 0; i < listArray.size(); i++) {
-
-                                JsonObject item = (JsonObject) listArray.get(i);
-
-                                String orderId = item.get("orderId").getAsString();
-                                int processStatus = item.get("processStatus").getAsInt();
-                                int status = item.get("status").getAsInt();
-
-                                JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
-
-                                String serviceName = detailItem.get("serviceName").getAsString();
-                                String appointmentDay = detailItem.get("appointmentDay").getAsString();
-                                String appointmentEndTime = detailItem.get("appointmentEndTime").getAsString();
-                                String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
-                                String locationAddress = detailItem.get("locationAddress").getAsString();
-                                String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
-                                String serviceEsCost = detailItem.get("serviceVisitCost").getAsString();
-                                String selectTime = detailItem.get("selectMasterTime").getAsString();
-
-                                OrderDes orderItem = new OrderDes(orderId, processStatus, status,
-                                        serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
-                                        locationAddress, serviceVisitCost);
-
-                                orderItem.setmSelectTime(selectTime);
-
-                                JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
-                                String orderTime = "";
-
-                                try{
-                                    if (maintainItem.get("receiveOrderTime") != null){
-                                        orderTime = maintainItem.get("receiveOrderTime").getAsString();
-                                    }
-
-                                    savePayAmount(orderItem, maintainItem);
-
-                                }catch (Exception e){
-
-                                }
-                                orderItem.setSelectMasterTime(orderTime);
-
-                                orderItem.setEsCost(serviceEsCost);
-
-                                list.add(orderItem);
-                            }
-
-                            DataManagerCtrl.getIns().setPageResult(list);
-                        } else {
-                            DataManagerCtrl.getIns().setPageResult(new ArrayList<OrderDes>());
-                        }
-                    } else {
-                        DataManagerCtrl.getIns().setPageResult(new ArrayList<OrderDes>());
-                    }
-                } else {
-
-                }
+                parseResponse(response);
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
             }
         });
+    }
 
+    private void parseResponse(Response<JsonObject> response) {
+        if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 
+            JsonObject object = response.body();
+            int code = object.get("code").getAsInt();
+
+            if (code == 0) {
+                JsonArray listArray = object.getAsJsonArray("list");
+                if (listArray != null && listArray.size() > 0) {
+
+                    ArrayList<OrderDes> list = new ArrayList<>();
+                    for (int i = 0; i < listArray.size(); i++) {
+                        JsonObject item = (JsonObject) listArray.get(i);
+                        String orderId = item.get("orderId").getAsString();
+                        int processStatus = item.get("processStatus").getAsInt();
+                        int status = item.get("status").getAsInt();
+                        JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
+                        String serviceName = detailItem.get("serviceName").getAsString();
+                        String appointmentDay = detailItem.get("appointmentDay").getAsString();
+                        String appointmentEndTime = detailItem.get("appointmentEndTime").getAsString();
+                        String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
+                        String locationAddress = detailItem.get("locationAddress").getAsString();
+                        String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
+                        String serviceEsCost = detailItem.get("serviceVisitCost").getAsString();
+                        String selectTime = detailItem.get("selectMasterTime").getAsString();
+
+                        OrderDes orderItem = new OrderDes(orderId, processStatus, status,
+                                serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
+                                locationAddress, serviceVisitCost);
+
+                        orderItem.setmSelectTime(selectTime);
+
+                        JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
+                        String orderTime = "";
+
+                        try {
+                            if (maintainItem.get("receiveOrderTime") != null) {
+                                orderTime = maintainItem.get("receiveOrderTime").getAsString();
+                            }
+
+                            savePayAmount(orderItem, maintainItem);
+
+                        } catch (Exception e) {
+
+                        }
+                        orderItem.setSelectMasterTime(orderTime);
+
+                        orderItem.setEsCost(serviceEsCost);
+
+                        list.add(orderItem);
+                    }
+
+                    DataManagerCtrl.getIns().setPageResult(list);
+                } else {
+                    DataManagerCtrl.getIns().setPageResult(new ArrayList<OrderDes>());
+                }
+            } else {
+                DataManagerCtrl.getIns().setPageResult(new ArrayList<OrderDes>());
+            }
+        }
     }
 
     private void savePayAmount(OrderDes orderItem, JsonObject maintainItem) {
         String payAmount = "";
-        if (maintainItem.get("payAmount") != null){
+        if (maintainItem.get("payAmount") != null) {
             payAmount = maintainItem.get("payAmount").getAsString();
         }
 
@@ -351,80 +323,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                     }
                 });
 
-                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
-
-                    JsonObject object = response.body();
-                    String msg = object.get("msg").getAsString();
-                    int code = object.get("code").getAsInt();
-
-                    if (code == 0) {
-
-                        JsonArray listArray = object.getAsJsonArray("list");
-
-                        if (listArray != null && listArray.size() > 0) {
-
-                            ArrayList<OrderDes> list = new ArrayList<>();
-
-                            for (int i = 0; i < listArray.size(); i++) {
-
-                                JsonObject item = (JsonObject) listArray.get(i);
-
-                                String orderId = item.get("orderId").getAsString();
-                                int processStatus = item.get("processStatus").getAsInt();
-                                int status = item.get("status").getAsInt();
-
-                                JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
-
-                                String serviceName = detailItem.get("serviceName").getAsString();
-                                String appointmentDay = detailItem.get("appointmentDay").getAsString();
-                                String appointmentEndTime = detailItem.get("appointmentEndTime").getAsString();
-                                String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
-                                String locationAddress = detailItem.get("locationAddress").getAsString();
-                                String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
-
-                                JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
-                                String orderTime = "";
-                                try{
-                                    if (maintainItem.get("receiveOrderTime") != null){
-                                        orderTime = maintainItem.get("receiveOrderTime").getAsString();
-                                    }
-
-                                }catch (Exception e){
-
-                                }
-
-                                String selectTime = detailItem.get("selectMasterTime").getAsString();
-
-                                OrderDes orderItem = new OrderDes(orderId, processStatus, status,
-                                        serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
-                                        locationAddress, serviceVisitCost);
-                                try{
-                                    savePayAmount(orderItem , maintainItem);
-                                }catch (Exception e){}
-
-
-                                orderItem.setSelectMasterTime(orderTime);
-                                orderItem.setmSelectTime(selectTime);
-
-                                list.add(orderItem);
-                            }
-
-                            DataManagerCtrl.getIns().setPageResult(list);
-
-                        } else {
-                            DataManagerCtrl.getIns().setPageResult(new ArrayList<OrderDes>());
-                        }
-                    }
-                } else {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (loading && mWaitingDialog != null) {
-                                mWaitingDialog.dismiss();
-                            }
-                        }
-                    });
-                }
+                parseResponse(response);
             }
 
             @Override
