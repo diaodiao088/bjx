@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 public class OrderDes {
 
+    public static final int BILL_TYPE_NORMAL = 0x00;
+    public static final int BILL_TYPE_EMERGENCY = 0X01;
+
     private String orderId;
 
     private int processStatus;
@@ -55,6 +58,8 @@ public class OrderDes {
 
     private String payAmount;
 
+    private int billType;
+
     public OrderDes(String orderId, int processStatus, int status, String serviceName,
                     String appointmentDay, String appointmentEndTime,
                     String appointmentStartTime, String locationAddress,
@@ -68,6 +73,14 @@ public class OrderDes {
         this.appointmentStartTime = appointmentStartTime;
         this.locationAddress = locationAddress;
         this.serviceVisitCost = serviceVisitCost;
+    }
+
+    public int getBillType() {
+        return billType;
+    }
+
+    public void setBillType(int billType) {
+        this.billType = billType;
     }
 
     public String getPayAmount() {

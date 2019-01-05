@@ -38,6 +38,20 @@
                 android:textColor="#ffffff"
                 android:textSize="14sp" />
 
+            <TextView
+                android:id="@+id/emergency_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/order_receive_textview_status"
+                android:padding="4dp"
+                android:background="@drawable/layout_textview_red_radius"
+                android:layout_marginRight="5dp"
+                android:text="紧急订单"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                />
+
+
         </RelativeLayout>
 
         <View
@@ -61,7 +75,6 @@
                 android:drawableLeft="@drawable/order_time"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
-                android:text="2015-10-01 上午"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp" />
         </RelativeLayout>
@@ -81,7 +94,6 @@
                 android:drawableLeft="@drawable/order_address"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
-                android:text="北京市海淀区知本时代22-2-222"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp" />
         </RelativeLayout>
@@ -101,7 +113,6 @@
                 android:drawableLeft="@drawable/order_money"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
-                android:text="费用预估：300元"
                 android:textColor="@color/main_text_color"
                 android:layout_marginBottom="7dp"
                 android:textSize="14sp" />

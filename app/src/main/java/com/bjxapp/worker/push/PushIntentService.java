@@ -33,7 +33,7 @@ public class PushIntentService extends GTIntentService {
         String pkg = msg.getPkgName();
         String cid = msg.getClientId();
 
-        if(payload != null){
+        if (payload != null) {
             String content = new String(payload);
             PushParser.onMessageArrived(content);
         }

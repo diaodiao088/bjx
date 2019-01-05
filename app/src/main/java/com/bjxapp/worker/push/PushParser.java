@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.text.TextUtils;
 
+import com.bjx.master.R;
 import com.bjxapp.worker.App;
-import com.bjx.master.R;;
 import com.bjxapp.worker.db.BjxInfo;
 import com.bjxapp.worker.db.DBManager;
 import com.bjxapp.worker.global.Constant;
@@ -13,6 +13,8 @@ import com.bjxapp.worker.global.Constant;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+;
 
 /**
  * Created by zhangdan on 2018/11/8.
@@ -67,6 +69,9 @@ public class PushParser {
                 case 1:
                     newBillTimeout();
                     break;
+                case 3:
+                    onEmergencyBillCome();
+                    break;
             }
 
         } catch (Exception e) {
@@ -74,7 +79,22 @@ public class PushParser {
         }
     }
 
-    private static void newBillTimeout(){
+    private static void onEmergencyBillCome() {
+        MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.new_bill_emergency);
+
+        try {
+            mediaPlayer.prepare();
+        } catch (IllegalStateException e) {
+
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.start();
+    }
+
+    private static void newBillTimeout() {
         MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.new_bill_timeout);
 
         try {

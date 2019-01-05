@@ -148,7 +148,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     private void updateAccountInfo(AccountInfo accountInfo) {
         mHistoryTotalTv.setText("累计订单：" + accountInfo.getOrderQuantity() + "单");
         mHistorySafeTv.setText("累计金额" + accountInfo.getTotalOrderAmount() + "元");
-        mHistoryUnsafeTv.setText("累计收入" + accountInfo.getWithdrawnAmount() + "元");
+        mHistoryUnsafeTv.setText("累计收入" + accountInfo.getTotalIncome() + "元");
     }
 
     private void initViews() {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.controls.XTextView;
@@ -57,6 +58,7 @@ public class OrderAdapter extends BaseAdapter {
             holder.textViewAddress = (XTextView) convertView.findViewById(R.id.order_receive_textview_address);
             holder.textViewMoney = (XTextView) convertView.findViewById(R.id.order_receive_textview_money);
             holder.mOutTimeIv = convertView.findViewById(R.id.out_time_iv);
+            holder.emergencyTv = convertView.findViewById(R.id.emergency_tv);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -72,6 +74,8 @@ public class OrderAdapter extends BaseAdapter {
         boolean isOutTime = false;
 
         int status = aInfo.get(position).getStatus();
+
+        int type = aInfo.get(position).getBillType();
 
         if (status == 4) {
             statusString = "异常";
@@ -146,11 +150,18 @@ public class OrderAdapter extends BaseAdapter {
             holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
         }
 
+        if (type == 1) {
+            holder.emergencyTv.setVisibility(View.VISIBLE);
+        } else {
+            holder.emergencyTv.setVisibility(View.GONE);
+        }
+
         holder.textViewStatus.setBackgroundResource(R.drawable.layout_textview_radius);
         holder.textViewStatus.setText(statusString);
 
         if (isOutTime) {
             holder.mOutTimeIv.setVisibility(View.VISIBLE);
+            holder.mOutTimeIv.setImageResource(R.drawable.out_time);
         } else {
             holder.mOutTimeIv.setVisibility(View.GONE);
         }
@@ -165,5 +176,6 @@ public class OrderAdapter extends BaseAdapter {
         XTextView textViewAddress;
         XTextView textViewMoney;
         ImageView mOutTimeIv;
+        TextView emergencyTv;
     }
 }

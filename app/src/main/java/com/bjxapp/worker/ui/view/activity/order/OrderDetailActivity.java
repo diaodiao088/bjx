@@ -17,8 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bjx.master.R;
 import com.bjxapp.worker.MainActivity;
-import com.bjx.master.R;;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
@@ -67,6 +67,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+;
+
 public class OrderDetailActivity extends BaseActivity implements OnClickListener {
 
     protected static final String TAG = OrderDetailActivity.class.getSimpleName();
@@ -100,6 +102,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     XTextView mPhoneTv;
     @BindView(R.id.cancel_bill)
     TextView mCancelBillTv;
+
+    @BindView(R.id.wait_contact_change_btn)
+    TextView mChangeDateTv;
 
 
     /* 待预约 */
@@ -323,7 +328,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
     }
 
-    @OnClick(R.id.wait_contact_change_btn)
     void changeDate() {
         final ArrayList<String> firstData = new ArrayList<>();
         firstData.add(DateUtils.addDay(0));
@@ -430,7 +434,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                                 orderDes.setAppointmentStartTime(time.split("--")[0]);
                                 orderDes.setAppointmentEndTime(time.split("--")[1]);
 
-                                mDateTv.setText(day + " " + time.split("--")[0] + " - " + time.split("--")[1]);
+                                if (orderDes.getBillType() == OrderDes.BILL_TYPE_EMERGENCY) {
+                                    mDateTv.setText("立即上门");
+                                } else {
+                                    mDateTv.setText(day + " " + time.split("--")[0] + " - " + time.split("--")[1]);
+                                }
                             }
                         });
                     } else {
@@ -506,6 +514,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     protected void setListener() {
         mBackImageView.setOnClickListener(this);
         mSaveButton.setOnClickListener(this);
+        mChangeDateTv.setOnClickListener(this);
     }
 
     @Override
@@ -522,6 +531,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 break;
             case R.id.order_receive_detail_save:
                 SaveOperation();
+                break;
+            case R.id.wait_contact_change_btn:
+                changeDate();
                 break;
             default:
                 break;
@@ -799,7 +811,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         mServiceNameTv.setText(order.getOrderNum());
         mPhoneTv.setText(order.getPersonName() + "/" + order.getContactPhone());
-        mDateTv.setText(order.getAppointmentDay() + " " + order.getAppointmentStartTime() + " - " + order.getAppointmentEndTime());
+
+        if (order.getBillType() == OrderDes.BILL_TYPE_EMERGENCY) {
+            mDateTv.setText("立即上门");
+        } else {
+            mDateTv.setText(order.getAppointmentDay() + " " + order.getAppointmentStartTime() + " - " + order.getAppointmentEndTime());
+        }
+
         mAdressTv.setText(order.getLocationAddress() + " - " + order.getDetailAddress());
         mPriceTv.setText("费用 : " + order.getServiceVisitCost());
         mRemarkTv.setText(order.getmRemarkDes());
@@ -1086,6 +1104,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         long currentTime = System.currentTimeMillis();
 
+        int billType = mDetailInfo.getOrderDes().getBillType();
+
         if (mNewBillTimer != null) {
             mNewBillTimer.cancel();
         }
@@ -1123,6 +1143,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mHourLastTv.setText("已超时");
             mStatusTv.setText("已超时");
             mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
+        }
+
+        if (billType == OrderDes.BILL_TYPE_EMERGENCY){
+            mChangeDateTv.setClickable(false);
+            mChangeDateTv.setOnClickListener(null);
         }
 
         mSendMsgTv.setText(Html.fromHtml(getResources().getString(R.string.send_msg)));

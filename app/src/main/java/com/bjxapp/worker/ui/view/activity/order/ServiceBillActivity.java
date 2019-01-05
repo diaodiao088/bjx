@@ -165,7 +165,7 @@ public class ServiceBillActivity extends Activity implements View.OnClickListene
             dialog.setContent("订单总额度不能大于9999");
             dialog.show();
         } else if (!TextUtils.isEmpty(prePrice) &&
-                Double.parseDouble(mTotalPriceTv.getText().toString()) <= Double.parseDouble(prePrice)) {
+                Double.parseDouble(mTotalPriceTv.getText().toString()) < Double.parseDouble(prePrice)) {
             final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
             dialog.setOnNegativeListener(new View.OnClickListener() {
                 @Override
