@@ -70,7 +70,7 @@ public class PushParser {
                     newBillTimeout();
                     break;
                 case 3:
-                    onEmergencyBillCome();
+                    onEmergencyBillCome(0, contentStr, title, "", createTime);
                     break;
             }
 
@@ -79,7 +79,7 @@ public class PushParser {
         }
     }
 
-    private static void onEmergencyBillCome() {
+    private static void onEmergencyBillCome(int type, String contentStr, String title, String remark, String createTime) {
         MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.new_bill_emergency);
 
         try {
@@ -92,6 +92,10 @@ public class PushParser {
         }
 
         mediaPlayer.start();
+
+        BjxInfo info = new BjxInfo(type, contentStr, title, remark, createTime);
+
+        mDbManager.add(info);
     }
 
     private static void newBillTimeout() {

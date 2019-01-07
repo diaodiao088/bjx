@@ -65,7 +65,7 @@ public class OrderAdapter extends BaseAdapter {
         }
 
         holder.textViewService.setText(aInfo.get(position).getServiceName());
-        holder.textViewOrderDate.setText(aInfo.get(position).getAppointmentDay() + " " + aInfo.get(position).getAppointmentEndTime());
+
         holder.textViewAddress.setText(aInfo.get(position).getLocationAddress());
 
         String statusString = "";
@@ -148,6 +148,12 @@ public class OrderAdapter extends BaseAdapter {
 
         } else {
             holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
+        }
+
+        if (type == 1){
+            holder.textViewOrderDate.setText("紧急上门");
+        }else{
+            holder.textViewOrderDate.setText(aInfo.get(position).getAppointmentDay() + " " + aInfo.get(position).getAppointmentEndTime());
         }
 
         if (type == 1) {

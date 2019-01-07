@@ -435,7 +435,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                                 orderDes.setAppointmentEndTime(time.split("--")[1]);
 
                                 if (orderDes.getBillType() == OrderDes.BILL_TYPE_EMERGENCY) {
-                                    mDateTv.setText("立即上门");
+                                    mDateTv.setText("紧急上门");
                                 } else {
                                     mDateTv.setText(day + " " + time.split("--")[0] + " - " + time.split("--")[1]);
                                 }
@@ -813,7 +813,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mPhoneTv.setText(order.getPersonName() + "/" + order.getContactPhone());
 
         if (order.getBillType() == OrderDes.BILL_TYPE_EMERGENCY) {
-            mDateTv.setText("立即上门");
+            mDateTv.setText("紧急上门");
         } else {
             mDateTv.setText(order.getAppointmentDay() + " " + order.getAppointmentStartTime() + " - " + order.getAppointmentEndTime());
         }
@@ -966,6 +966,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String selectTime = detailItem.getString("selectMasterTime");
             String remark = detailItem.getString("customerRemark");
             String personName = detailItem.getString("contactPerson");
+            String billType = detailItem.getString("type");
 
             String latitude = detailItem.getString("latitude");
             String lontitude = detailItem.getString("longitude");
@@ -993,6 +994,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             orderItem.setmLongtitude(lontitude);
             orderItem.setOrderNum(orderNum);
             orderItem.setDetailAddress(detailAddress);
+            orderItem.setBillType(Integer.parseInt(billType));
 
             return orderItem;
 
