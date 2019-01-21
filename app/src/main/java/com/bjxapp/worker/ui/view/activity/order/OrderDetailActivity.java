@@ -1235,7 +1235,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     }
                 });
 
-                Log.d("slog_zd", "send msg : " + response.body().toString());
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
 

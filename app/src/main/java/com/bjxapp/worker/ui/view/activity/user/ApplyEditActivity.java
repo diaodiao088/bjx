@@ -8,9 +8,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.bjx.master.R;;
+import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.ProfileApi;
@@ -25,6 +27,7 @@ import com.bjxapp.worker.ui.view.activity.ChangeCityActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
 import com.bjxapp.worker.ui.view.activity.map.MapActivityNew;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
@@ -44,6 +47,8 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+;
 
 /**
  * Created by zhangdan on 2018/10/23.
@@ -76,6 +81,9 @@ public class ApplyEditActivity extends Activity {
     TextView mMapTv;
 
     private String mPwd;
+
+    @BindView(R.id.user_apply_protocol_check)
+    public CheckBox mCheckBox;
 
     @OnClick(R.id.user_apply_protocol_text)
     void onClickProtocel() {
@@ -113,11 +121,21 @@ public class ApplyEditActivity extends Activity {
             return;
         }
 
+
+        if (!isChecked()){
+            showAlertDialog();
+            return;
+        }
+
         ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
 
         Map<String, String> params = new HashMap<>();
         params.put("token", ConfigManager.getInstance(this).getUserSession());
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+
+        if (mCityTv.getTag() != null) {
+            params.put("regionId", String.valueOf(mCityTv.getTag()));
+        }
 
         if (mMapTv.getTag() != null) {
             LocationInfo info = (LocationInfo) mMapTv.getTag();
@@ -201,6 +219,25 @@ public class ApplyEditActivity extends Activity {
         initView();
         loadData();
     }
+
+    private boolean isChecked() {
+        return mCheckBox.isChecked();
+    }
+
+    private void showAlertDialog() {
+        final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
+        dialog.setOnNegativeListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.setContent("请确保已经勾选《用户协议》");
+        dialog.show();
+    }
+
 
     private void loadData() {
 
