@@ -739,8 +739,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             @Override
             public void onFailure(Call call, IOException e) {
 
-                Log.d("slog_zd", "detail error : " + e.getLocalizedMessage());
-
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {

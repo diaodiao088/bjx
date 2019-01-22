@@ -19,6 +19,33 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/ready_ly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="12dp">
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/circle_bg" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:textColor="#ED612B"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:id="@+id/order_receive_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,9 +73,9 @@
                             android:id="@+id/bill_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textIsSelectable="true"
                             android:paddingLeft="0dp"
                             android:textColor="#545454"
+                            android:textIsSelectable="true"
                             android:textSize="14sp" />
                     </RelativeLayout>
 

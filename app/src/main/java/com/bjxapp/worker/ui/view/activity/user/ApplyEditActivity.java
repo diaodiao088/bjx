@@ -80,7 +80,9 @@ public class ApplyEditActivity extends Activity {
     @BindView(R.id.map_edit_tv)
     TextView mMapTv;
 
-    private String mPwd;
+    private String mInitCityName;
+
+    private String mInitAddress;
 
     @BindView(R.id.user_apply_protocol_check)
     public CheckBox mCheckBox;
@@ -122,9 +124,22 @@ public class ApplyEditActivity extends Activity {
         }
 
 
-        if (!isChecked()){
-            showAlertDialog();
+        if (!isChecked()) {
+            showAlertDialog("请确保已经勾选《用户协议》");
             return;
+        }
+
+        if (mCityTv.getTag() != null) {
+
+            String newCityName = mCityTv.getText().toString();
+            String newAddress = mMapTv.getText().toString();
+
+            if (!TextUtils.isEmpty(newCityName) && !TextUtils.isEmpty(newAddress)) {
+                if (!newCityName.equals(mInitCityName) && newAddress.equals(mInitAddress)) {
+                    showAlertDialog("修改城市的同时请修改定位信息");
+                    return;
+                }
+            }
         }
 
         ProfileApi profileApi = KHttpWorker.ins().createHttpService(LoginApi.URL, ProfileApi.class);
@@ -224,7 +239,7 @@ public class ApplyEditActivity extends Activity {
         return mCheckBox.isChecked();
     }
 
-    private void showAlertDialog() {
+    private void showAlertDialog(String content) {
         final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
         dialog.setOnNegativeListener(new View.OnClickListener() {
             @Override
@@ -234,7 +249,7 @@ public class ApplyEditActivity extends Activity {
                 }
             }
         });
-        dialog.setContent("请确保已经勾选《用户协议》");
+        dialog.setContent(content);
         dialog.show();
     }
 
@@ -337,6 +352,8 @@ public class ApplyEditActivity extends Activity {
             mCityTv.setText(userInfoA.getRegionName());
             mCityTv.setTag(userInfoA.getRegionId());
 
+            mInitCityName = userInfoA.getRegionName();
+
             mWorkYearTv.setText(String.valueOf(userInfoA.getWorkingYear()) + "年");
 
             mIDImageUrls = new ArrayList<>();
@@ -347,6 +364,8 @@ public class ApplyEditActivity extends Activity {
             locationInfo.setAddress(userInfoA.getLocationAddress());
             locationInfo.setLatitude(Double.parseDouble(userInfoA.getLatitude()));
             locationInfo.setLongitude(Double.parseDouble(userInfoA.getLongitude()));
+
+            mInitAddress = userInfoA.getLocationAddress();
 
             mMapTv.setText(locationInfo.getAddress());
             mMapTv.setTag(locationInfo);
@@ -371,7 +390,6 @@ public class ApplyEditActivity extends Activity {
                 mServiceTv.setTag(builderId.toString());
             }
 
-            mPwd = userInfoA.getPwd();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -425,7 +443,6 @@ public class ApplyEditActivity extends Activity {
                 case Constant.CONSULT_SETTING_PWD:
                     if (resultCode == RESULT_OK && data != null) {
                         String pwd = data.getStringExtra(ChangePwdActivity.KEY_TYPE);
-                        mPwd = pwd;
                     }
                     break;
             }
