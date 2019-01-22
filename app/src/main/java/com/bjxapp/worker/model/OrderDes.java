@@ -60,6 +60,8 @@ public class OrderDes {
 
     private int billType;
 
+    private int originType;
+
     public OrderDes(String orderId, int processStatus, int status, String serviceName,
                     String appointmentDay, String appointmentEndTime,
                     String appointmentStartTime, String locationAddress,
@@ -113,6 +115,14 @@ public class OrderDes {
 
     public void setSelectMasterTime(String selectMasterTime) {
         this.selectMasterTime = selectMasterTime;
+    }
+
+    public int getOriginType() {
+        return originType;
+    }
+
+    public void setOriginType(int originType) {
+        this.originType = originType;
     }
 
     public String getEsCost() {

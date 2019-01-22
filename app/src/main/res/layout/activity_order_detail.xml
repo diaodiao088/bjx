@@ -26,7 +26,8 @@
                 android:paddingBottom="12dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:paddingTop="12dp">
+                android:paddingTop="12dp"
+                android:visibility="gone">
 
                 <View
                     android:layout_width="8dp"
@@ -35,10 +36,12 @@
                     android:background="@drawable/circle_bg" />
 
                 <TextView
+                    android:id="@+id/ready_tips_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"
+                    android:text="@string/ready_tips"
                     android:textColor="#ED612B"
                     android:textSize="14sp" />
 

@@ -176,6 +176,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @BindView(R.id.tele_contacts_ly)
     RelativeLayout mContactLy;
 
+    @BindView(R.id.ready_ly)
+    LinearLayout mReadyLy;
+
+    @BindView(R.id.ready_tips_tv)
+    TextView mReadyTv;
+
     @OnClick(R.id.order_receive_textview_address)
     void onAddressClick() {
 
@@ -838,11 +844,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     private void toDiffStatus() {
 
-        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null || mDetailInfo.getMaintainInfo() == null) {
             return;
         }
 
         int processStatus = mDetailInfo.getOrderDes().getProcessStatus();
+
+        updateCommonUI(mDetailInfo.getOrderDes().getOriginType(), mDetailInfo.getMaintainInfo().getPreCost());
 
         switch (processStatus) {
 
@@ -859,6 +867,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case 7:
                 toDetailUi();
                 break;
+        }
+    }
+
+    private void updateCommonUI(int originType, String preCost) {
+        if (originType == 2) {
+            mReadyLy.setVisibility(View.VISIBLE);
+            String tipContent = getResources().getString(R.string.ready_tips);
+            String tipsReal = String.format(tipContent, preCost);
+            mReadyTv.setText(tipsReal);
         }
     }
 
@@ -948,6 +965,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String orderId = (String) detailJson.getString("orderId");
             int processStatus = (int) detailJson.getInt("processStatus");
             int status = (int) detailJson.getInt("status");
+            int origin = detailJson.getInt("origin");
             String orderNum = detailJson.getString("orderNo");
 
             JSONObject detailItem = detailJson.getJSONObject("appointmentDetail");
@@ -993,6 +1011,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             orderItem.setOrderNum(orderNum);
             orderItem.setDetailAddress(detailAddress);
             orderItem.setBillType(Integer.parseInt(billType));
+            orderItem.setOriginType(origin);
 
             return orderItem;
 
@@ -1145,7 +1164,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
         }
 
-        if (billType == OrderDes.BILL_TYPE_EMERGENCY){
+        if (billType == OrderDes.BILL_TYPE_EMERGENCY) {
             mChangeDateTv.setClickable(false);
             mChangeDateTv.setOnClickListener(null);
         }
