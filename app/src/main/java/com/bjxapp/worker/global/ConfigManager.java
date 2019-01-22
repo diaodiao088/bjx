@@ -1,12 +1,11 @@
 package com.bjxapp.worker.global;
 
-import com.bjxapp.worker.ui.view.activity.widget.treeview.SimpleTreeRecyclerAdapter;
-import com.bjxapp.worker.utils.Env;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+
+import com.bjxapp.worker.utils.Env;
 
 public final class ConfigManager {
 

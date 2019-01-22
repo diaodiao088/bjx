@@ -10,10 +10,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.widget.Toast;
 
-import com.bjxapp.worker.api.APIFactory;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.logic.IUpdateLogic;
-import com.bjxapp.worker.model.UpdateInfo;
 import com.bjxapp.worker.update.UpdateManager;
 import com.bjxapp.worker.utils.Utils;
 

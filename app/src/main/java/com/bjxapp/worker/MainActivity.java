@@ -587,6 +587,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                         ConfigManager.getInstance(MainActivity.this).setNeedUpdate(true);
                         ConfigManager.getInstance(MainActivity.this).setUpdateURL(url);
                         ConfigManager.getInstance(MainActivity.this).setUpdateVersion(String.valueOf(remoteVersion));
+
                     } else {
                         ConfigManager.getInstance(MainActivity.this).setNeedUpdate(false);
                         ConfigManager.getInstance(MainActivity.this).setUpdateURL("");
