@@ -1,5 +1,6 @@
 package com.bjxapp.worker.ui.view.activity.order;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -34,12 +35,12 @@ import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
-import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
 
@@ -1280,7 +1281,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             @Override
             public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
-
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1291,7 +1291,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 });
             }
         });
-
     }
 
 
@@ -1313,10 +1312,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 break;
             case 4:
             case 3:
-                toWaitPay();
+                toWaitPay(orderDes.getOriginType() == 2);
                 break;
             case 5:
-                toThirdStep(true);
+                toThirdStep(true, orderDes.getOriginType() == 2);
                 break;
         }
 
@@ -1346,8 +1345,20 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }*/
     }
 
-    private void toWaitPay() {
+    private void toWaitPay(boolean isNeedShowDialog) {
+        if (!isNeedShowDialog) {
+            toWaitPayReal();
+        } else {
+            showReadyAlertDialog(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveCompleteInfoOnly();
+                }
+            });
+        }
+    }
 
+    private void saveCompleteInfoOnly() {
         if (mDetailInfo == null || mDetailInfo.getOrderDes() == null || mDetailInfo.getMaintainInfo() == null) {
             return;
         }
@@ -1359,22 +1370,17 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
 
         if ("null".equals(maintainInfo.getFault()) || maintainInfo.getFault().length() == 0) {
-            Utils.showShortToast(this, "请填写维修项完整信息");
+            Utils.showShortToast(OrderDetailActivity.this, "请填写维修项完整信息");
             return;
         }
 
-        mWaitingDialog.show("正在生成支付二维码，请稍后", false);
+        mWaitingDialog.show("正在提交，请稍后..", false);
 
         BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
         Map<String, String> params = new HashMap<>();
-        params.put("token", ConfigManager.getInstance(this).getUserSession());
-        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("token", ConfigManager.getInstance(OrderDetailActivity.this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(OrderDetailActivity.this).getUserCode());
         params.put("orderId", id);
-        // params.put("masterImgUrls" , mImageList)
-        /*params.put("fault", maintainInfo.getFault());
-        params.put("plan", maintainInfo.getPlan());
-        params.put("costDetail", maintainInfo.getCostDetail());
-        params.put("totalCost", maintainInfo.getTotalCost());*/
         params.put("totalAmount", maintainInfo.getTotalAmount());
         params.put("payAmount", maintainInfo.getPayAmount());
 
@@ -1396,14 +1402,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             @Override
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
 
-                LogUtils.log("pay complete : " + response.body().toString());
-
                 JsonObject object = response.body();
                 final String msg = object.get("msg").getAsString();
                 final int code = object.get("code").getAsInt();
 
                 if (code == 0) {
-                    toThirdStep(false);
+                    finish();
                 } else {
                     mHandler.post(new Runnable() {
                         @Override
@@ -1416,7 +1420,87 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                         }
                     });
                 }
+            }
 
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Utils.showShortToast(OrderDetailActivity.this, "提交订单失败..");
+                    }
+                });
+            }
+        });
+    }
+
+    private void toWaitPayReal() {
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null || mDetailInfo.getMaintainInfo() == null) {
+            return;
+        }
+
+        final OrderDes order = mDetailInfo.getOrderDes();
+        String id = order.getOrderId();
+
+
+        MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+
+        if ("null".equals(maintainInfo.getFault()) || maintainInfo.getFault().length() == 0) {
+            Utils.showShortToast(OrderDetailActivity.this, "请填写维修项完整信息");
+            return;
+        }
+
+        mWaitingDialog.show("正在生成支付二维码，请稍后", false);
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(OrderDetailActivity.this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(OrderDetailActivity.this).getUserCode());
+        params.put("orderId", id);
+        params.put("totalAmount", maintainInfo.getTotalAmount());
+        params.put("payAmount", maintainInfo.getPayAmount());
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < mImageList.size(); i++) {
+            builder.append(mImageList.get(i));
+            if (i != mImageList.size() - 1) {
+                builder.append(",");
+            }
+        }
+
+        if (mImageList.size() > 0) {
+            params.put("masterImgUrls", builder.toString());
+        }
+
+        retrofit2.Call<JsonObject> request = billApi.completePay(params);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                JsonObject object = response.body();
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
+
+                if (code == 0) {
+                    toThirdStep(false, mDetailInfo.getOrderDes().getOriginType() == 2);
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                            Utils.showShortToast(OrderDetailActivity.this, msg + ": " + code);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -1436,7 +1520,46 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         });
     }
 
-    private void toThirdStep(boolean showDialog) {
+    private void showReadyAlertDialog(final OnClickListener listener) {
+        final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
+        dialog.setOnNegativeListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+
+                if (listener != null) {
+                    listener.onClick(v);
+                }
+            }
+        });
+
+        dialog.setOncancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (listener != null) {
+                    listener.onClick(null);
+                }
+            }
+        });
+
+        dialog.setContent("如有增项费用，请督促客户在到位平台进行补差价！");
+        dialog.show();
+    }
+
+    private void toThirdStep(final boolean showDialog, boolean isNeedShowAlertDialog) {
+
+        if (isNeedShowAlertDialog) {
+            showReadyAlertDialog(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            return;
+        }
+
 
         if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null) {
             return;
@@ -1452,8 +1575,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
         Map<String, String> params = new HashMap<>();
-        params.put("token", ConfigManager.getInstance(this).getUserSession());
-        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("token", ConfigManager.getInstance(OrderDetailActivity.this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(OrderDetailActivity.this).getUserCode());
         params.put("orderId", orderId);
         params.put("payType", String.valueOf(1));
 
@@ -1462,8 +1585,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         request.enqueue(new retrofit2.Callback<JsonObject>() {
             @Override
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-
-                LogUtils.log("pay url : " + response.body().toString());
 
                 JsonObject object = response.body();
                 final String msg = object.get("msg").getAsString();
@@ -1518,6 +1639,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 });
             }
         });
+
     }
 
     private void acceptOperation() {

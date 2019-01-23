@@ -184,7 +184,7 @@ public class ApplyEditActivity extends Activity {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                Utils.showShortToast(ApplyEditActivity.this, "信息保存成功.");
+                                finish();
                             }
                         });
                     } else {

@@ -1,6 +1,7 @@
 package com.bjxapp.worker.ui.view.activity.widget.dialog;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,6 +61,12 @@ public class ICFunSimpleAlertDialog {
 
     public ICFunSimpleAlertDialog setOnNegativeListener(View.OnClickListener listener){
         mCancelTv.setOnClickListener(listener);
+        return this;
+    }
+
+    public ICFunSimpleAlertDialog setOncancelListener(DialogInterface.OnCancelListener onCancelListener){
+        mDialog.setCancelable(true);
+        mDialog.setOnCancelListener(onCancelListener);
         return this;
     }
 
