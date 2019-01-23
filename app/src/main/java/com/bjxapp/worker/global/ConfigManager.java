@@ -25,6 +25,8 @@ public final class ConfigManager {
     private static final String PREF_KEY_UPDATE_URL = "pref_key_update_url";
     private static final String PREF_KEY_UPDATE_DESCRIPTION = "pref_key_update_description";
     private static final String PREF_KEY_UPDATE_VERSION = "pref_key_update_version";
+    private static final String PREF_KEY_UPDATE_VERSION_NAME = "pref_key_update_version_name";
+    public static final String PREF_KEY_UPDATE_FORCE = "pref_key_update_force";
     
     //desktop red dot 
     private static final String PREF_KEY_DESKTOP_MESSAGES_DOT = "pref_key_desktop_messages_dot";
@@ -176,10 +178,33 @@ public final class ConfigManager {
     	e.putString(PREF_KEY_UPDATE_VERSION, updateVersion);
     	e.commit();
     }
-    
-    public String getUpdateVersion(){
-    	return sp.getString(PREF_KEY_UPDATE_VERSION, "");
+
+    public String getUpdateVersion() {
+        return sp.getString(PREF_KEY_UPDATE_VERSION, "");
     }
+
+    public void setUpdateVersionName(String updateVersion) {
+        Editor e = sp.edit();
+        e.putString(PREF_KEY_UPDATE_VERSION_NAME, updateVersion);
+        e.commit();
+    }
+
+    public String getUpdateVersionName(){
+        return sp.getString(PREF_KEY_UPDATE_VERSION_NAME, "");
+    }
+
+
+    public boolean isForceShowUpdateDialog() {
+        return sp.getBoolean(PREF_KEY_UPDATE_FORCE, false);
+    }
+
+    public void setForceShowUpdateDialog(boolean isForce) {
+        Editor e = sp.edit();
+        e.putBoolean(PREF_KEY_UPDATE_FORCE, isForce);
+        e.commit();
+    }
+
+
     
     public void setDesktopMessagesDot(long value){
     	Editor e = sp.edit();

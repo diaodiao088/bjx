@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -577,17 +578,23 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
                     JsonObject jsonObject = response.body();
 
-                    LogUtils.log("check update : " + jsonObject.toString());
-
                     int remoteVersion = jsonObject.get("version").getAsInt();
                     String url = jsonObject.get("url").getAsString();
                     int localVersion = VersionUtils.getLocalVersion();
+                    boolean isForce = jsonObject.get("forced").getAsBoolean();
+                    String content = jsonObject.get("desc").getAsString();
+                    String remoteVersionName = jsonObject.get("versionName").getAsString();
+
+                    ConfigManager.getInstance(MainActivity.this).setForceShowUpdateDialog(isForce);
+                    ConfigManager.getInstance(MainActivity.this).setUpdateDescription(content);
+                    ConfigManager.getInstance(MainActivity.this).setUpdateVersionName(remoteVersionName);
 
                     if (remoteVersion > localVersion) {
                         ConfigManager.getInstance(MainActivity.this).setNeedUpdate(true);
                         ConfigManager.getInstance(MainActivity.this).setUpdateURL(url);
                         ConfigManager.getInstance(MainActivity.this).setUpdateVersion(String.valueOf(remoteVersion));
 
+                        LogicFactory.getUpdateLogic(MainActivity.this).showUpdateDialog(MainActivity.this);
                     } else {
                         ConfigManager.getInstance(MainActivity.this).setNeedUpdate(false);
                         ConfigManager.getInstance(MainActivity.this).setUpdateURL("");

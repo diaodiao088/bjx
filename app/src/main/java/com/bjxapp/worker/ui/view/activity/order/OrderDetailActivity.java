@@ -1407,6 +1407,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 final int code = object.get("code").getAsInt();
 
                 if (code == 0) {
+                    if (mWaitingDialog != null) {
+                        mWaitingDialog.dismiss();
+                    }
                     finish();
                 } else {
                     mHandler.post(new Runnable() {

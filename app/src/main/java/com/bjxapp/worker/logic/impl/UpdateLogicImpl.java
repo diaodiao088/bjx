@@ -57,10 +57,12 @@ public class UpdateLogicImpl implements IUpdateLogic {
     public void showUpdateDialog(final Context context) {
         String version = ConfigManager.getInstance(mContext).getUpdateVersion();
         String description = ConfigManager.getInstance(mContext).getUpdateDescription();
+        String versionName = ConfigManager.getInstance(mContext).getUpdateVersionName();
+        boolean isForce = ConfigManager.getInstance(mContext).isForceShowUpdateDialog();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setIcon(android.R.drawable.ic_dialog_info);
-        builder.setTitle("新版本" + version + "更新提醒");
+        builder.setTitle("新版本" + versionName + "更新提醒");
         builder.setMessage(description);
         builder.setCancelable(false);
         builder.setPositiveButton("升级", new DialogInterface.OnClickListener() {
@@ -73,11 +75,13 @@ public class UpdateLogicImpl implements IUpdateLogic {
                 }
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
+        if (!isForce){
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+        }
         builder.create().show();
     }
 
