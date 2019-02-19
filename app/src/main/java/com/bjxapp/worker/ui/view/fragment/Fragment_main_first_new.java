@@ -1,26 +1,22 @@
 package com.bjxapp.worker.ui.view.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.bjx.master.R;;
+import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XWaitingDialog;
-import com.bjxapp.worker.controls.listview.XListView.IXListViewListener;
+import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
@@ -39,7 +35,6 @@ import com.bjxapp.worker.ui.view.fragment.subfragment.WaitingContactFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.WaitingPayFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.WaitingRoomFragment;
 import com.bjxapp.worker.ui.widget.ToggleSwitchButton;
-import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -51,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Fragment_Main_First extends BaseFragment implements OnClickListener, IXListViewListener {
+public class Fragment_main_first_new extends BaseFragment implements View.OnClickListener, XListView.IXListViewListener {
 
     protected static final String TAG = "首页";
 
@@ -162,9 +157,6 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
         }
     }
 
-    /**
-     * @param shouldReceiveBill
-     */
     private void changeStatusReal(boolean shouldReceiveBill) {
 
         BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
@@ -376,7 +368,7 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
      *
      * @author Jason
      */
-    private UpdateUIBroadcastReceiver broadcastReceiver;
+    private Fragment_Main_First.UpdateUIBroadcastReceiver broadcastReceiver;
 
     private class UpdateUIBroadcastReceiver extends BroadcastReceiver {
 
@@ -400,7 +392,7 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
     private void registerUpdateUIBroadcast() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constant.PUSH_ACTION_ORDER_MODIFIED);
-        broadcastReceiver = new UpdateUIBroadcastReceiver();
+        broadcastReceiver = new Fragment_Main_First.UpdateUIBroadcastReceiver();
         mActivity.registerReceiver(broadcastReceiver, filter);
     }
 
@@ -452,5 +444,6 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
 
         super.onDestroy();
     }
+
 
 }
