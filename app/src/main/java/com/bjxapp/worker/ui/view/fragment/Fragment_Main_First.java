@@ -316,38 +316,6 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
         }
     }
 
-    private void updateReceiveButtonOperation(final XButton button) {
-        if (!Utils.isNetworkAvailable(mActivity)) {
-            Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
-            return;
-        }
-
-        if (button.getTag() == null) return;
-        ReceiveButton receiveButton = (ReceiveButton) button.getTag();
-        if (receiveButton.getFlag() == 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-            builder.setIcon(android.R.drawable.ic_dialog_info);
-            builder.setTitle("百家修");
-            builder.setMessage("您将不会再收到订单，确认此操作吗？");
-            builder.setCancelable(false);
-            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    updateReceiveState(button);
-                }
-            });
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-            builder.create().show();
-        } else {
-            updateReceiveState(button);
-        }
-    }
-
     private AsyncTask<Void, Void, Integer> mUpdateReceiveStateTask;
 
     private void updateReceiveState(final XButton button) {
