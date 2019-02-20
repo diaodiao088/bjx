@@ -53,7 +53,7 @@ import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.user.LoginActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseFragmentActivity;
-import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
+import com.bjxapp.worker.ui.view.fragment.Fragment_main_first_new;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Fourth;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Second;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Third;
@@ -86,7 +86,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private XImageView mRightImageView;
     private TitlePopup mTitlePopup;
     private Fragment[] mFragments;
-    public Fragment_Main_First mMainFirstFragment;
+    public Fragment_main_first_new mMainFirstFragment;
     private Fragment_Main_Second mMainSecondFragment;
     private Fragment_Main_Third mMainThirdFragment;
     private Fragment_Main_Fourth mMainFourthFragment;
@@ -270,7 +270,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     }
 
     private void initTabView() {
-        mMainFirstFragment = new Fragment_Main_First();
+        mMainFirstFragment = new Fragment_main_first_new();
         mMainSecondFragment = new Fragment_Main_Second();
         mMainThirdFragment = new Fragment_Main_Third();
         mMainFourthFragment = new Fragment_Main_Fourth();
@@ -648,14 +648,14 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
                         final int serviceStat = jsonObject.get("serviceState").getAsInt();
 
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mMainFirstFragment != null) {
-                                    mMainFirstFragment.changeServiceStatusReal(serviceStat == 1);
-                                }
-                            }
-                        });
+//                        mHandler.post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (mMainFirstFragment != null) {
+//                                    mMainFirstFragment.changeServiceStatusReal(serviceStat == 1);
+//                                }
+//                            }
+//                        });
 
                     } else {
                         mHandler.post(new Runnable() {

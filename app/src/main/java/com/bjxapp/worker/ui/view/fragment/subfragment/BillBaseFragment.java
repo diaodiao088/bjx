@@ -25,6 +25,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.OrderDes;
+import com.bjxapp.worker.ui.view.activity.RepairActivity;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
@@ -374,8 +375,12 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
     }
 
     private void refreshRedot(ArrayList<OrderDes> orderArray) {
-        if (getParentFragment() != null && getParentFragment() instanceof Fragment_Main_First) {
-            ((Fragment_Main_First) getParentFragment()).refreshRedot(orderArray);
+//        if (getParentFragment() != null && getParentFragment() instanceof Fragment_Main_First) {
+//            ((Fragment_Main_First) getParentFragment()).refreshRedot(orderArray);
+//        }
+
+        if (getActivity() instanceof RepairActivity && !getActivity().isFinishing()){
+            ((RepairActivity) getActivity()).refreshRedot(orderArray);
         }
     }
 

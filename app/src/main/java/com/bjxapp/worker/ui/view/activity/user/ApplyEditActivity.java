@@ -48,8 +48,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-;
-
 /**
  * Created by zhangdan on 2018/10/23.
  * <p>
