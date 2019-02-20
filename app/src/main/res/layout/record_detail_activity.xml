@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/layout_title" />
+
+    <LinearLayout
+        android:id="@+id/tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:background="@drawable/ready_bg"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/record_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:text="门店：北京科技大学百货大楼"
+            android:textColor="#ed612b"
+            android:drawableLeft="@drawable/room"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/record_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp"
+            android:text="地址：北京科技大学百货大楼海淀区学院路"
+            android:drawableLeft="@drawable/address"
+            android:textColor="#ed612b"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+
+    <com.bjxapp.worker.controls.XButton
+        android:id="@+id/add_confirm_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/button_background_green"
+        android:text="提交"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/record_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/add_confirm_btn"
+        android:background="#f5f5f5"
+        android:layout_below="@+id/tips" />
+
+
+</RelativeLayout>

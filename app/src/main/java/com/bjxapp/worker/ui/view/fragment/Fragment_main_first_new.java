@@ -9,6 +9,7 @@ import com.bjx.master.R;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.model.DateTime;
 import com.bjxapp.worker.model.ReceiveButton;
+import com.bjxapp.worker.ui.view.activity.RecordActivity;
 import com.bjxapp.worker.ui.view.activity.RepairActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 
@@ -67,6 +68,7 @@ public class Fragment_main_first_new extends BaseFragment implements View.OnClic
                 RepairActivity.gotoActivity(getActivity());
                 break;
             case R.id.record_entrance_ly:
+                RecordActivity.gotoActivity(getActivity());
                 break;
 
             default:

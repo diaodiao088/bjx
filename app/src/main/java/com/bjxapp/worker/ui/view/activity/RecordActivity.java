@@ -23,9 +23,16 @@ public class RecordActivity extends Activity {
     @BindView(R.id.title_text_tv)
     XTextView mTitleTextView;
 
+
+    @OnClick(R.id.add_confirm_btn)
+    void onClickConfirm(){
+        RecordDetailActivity.gotoActivity(this);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.record_activity);
         ButterKnife.bind(this);
         initView();
     }

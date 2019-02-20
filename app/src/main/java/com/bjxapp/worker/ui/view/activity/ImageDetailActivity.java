@@ -11,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bjx.master.R;;
+import com.bjx.master.R;
 import com.bjxapp.worker.ui.view.activity.widget.RoundImageView;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bumptech.glide.Glide;
+
+;
 
 /**
  * Created by zhangdan on 2018/9/29.
@@ -62,7 +64,7 @@ public class ImageDetailActivity extends Activity {
         mAdapter.setItems(mUrlList);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(DimenUtils.dp2px(12 , this)));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(DimenUtils.dp2px(12, this)));
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -108,7 +110,7 @@ public class ImageDetailActivity extends Activity {
             mImg = itemView.findViewById(R.id.round_img);
             mImg.setMode(RoundImageView.MODE_DEFAULT);
             mImg.setType(RoundImageView.TYPE_ROUND_ALL);
-            mImg.setBorderRadius(DimenUtils.dp2px(4 , mImg.getContext()));
+            mImg.setBorderRadius(DimenUtils.dp2px(4, mImg.getContext()));
         }
 
     }

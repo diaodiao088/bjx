@@ -159,6 +159,18 @@
             android:theme="@style/XAppTheme" />
 
         <activity
+            android:name="com.bjxapp.worker.ui.view.activity.RecordDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme" />
+
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.RecordActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme" />
+
+        <activity
             android:name="com.bjxapp.worker.ui.view.activity.RepairActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
