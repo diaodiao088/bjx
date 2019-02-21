@@ -11,7 +11,17 @@ public class RecordBean {
 
     private String typeName;
 
+    private String typeId;
+
     private int status;
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
 
     public ArrayList<RecordItemBean> getmItemList() {
         return mItemList;

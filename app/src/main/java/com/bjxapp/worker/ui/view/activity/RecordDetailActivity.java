@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.qqtheme.framework.picker.OptionPicker;
+import cn.qqtheme.framework.widget.WheelView;
 
 public class RecordDetailActivity extends Activity {
 
@@ -123,6 +126,20 @@ public class RecordDetailActivity extends Activity {
             notifyDataSetChanged();
         }
 
+        public void addSpecItem(RecordBean.RecordItemBean bean, String typeId) {
+
+            for (RecordBean item : mList) {
+                if (item.getTypeName().equals(typeId)) {
+                    ArrayList<RecordBean.RecordItemBean> itemList = item.getmItemList();
+                    itemList.add(bean);
+                    break;
+                }
+            }
+
+            notifyDataSetChanged();
+        }
+
+
         @Override
         public int getItemCount() {
             return mList.size();
@@ -133,14 +150,16 @@ public class RecordDetailActivity extends Activity {
 
         private TextView mRecordTypeTv;
         private LinearLayout mRecordItemContainer;
+        private ImageView mPlusIv;
 
         public RecordBaseHolder(View itemView) {
             super(itemView);
             mRecordTypeTv = itemView.findViewById(R.id.type_name_tv);
             mRecordItemContainer = itemView.findViewById(R.id.record_item_container);
+            mPlusIv = itemView.findViewById(R.id.plus);
         }
 
-        public void bindData(RecordBean recordBean) {
+        public void bindData(final RecordBean recordBean) {
 
             if (!TextUtils.isEmpty(recordBean.getTypeName())) {
                 mRecordTypeTv.setText(recordBean.getTypeName());
@@ -156,6 +175,13 @@ public class RecordDetailActivity extends Activity {
             } else {
                 mRecordItemContainer.setVisibility(View.GONE);
             }
+
+            mPlusIv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onConstellationPicker(recordBean);
+                }
+            });
 
         }
 
@@ -187,6 +213,49 @@ public class RecordDetailActivity extends Activity {
         public SpaceItemDecoration(int space) {
             this.mSpace = space;
         }
+    }
+
+
+    /**
+     * select service name .
+     */
+    public void onConstellationPicker(final RecordBean recordBean) {
+        OptionPicker picker = new OptionPicker(this,
+                new String[]{
+                        "洗碗机", "玻璃机", "和面机", "录音机", "路由器", "巨蟹座",
+                        "狮子座", "处女座", "天秤座", "天蝎座", "射手座", "摩羯座"});
+        picker.setCycleDisable(false);//不禁用循环
+        picker.setTopBackgroundColor(0xFFffffff);
+        picker.setTopHeight(30);
+        picker.setTopLineColor(0xdfdfdf);
+        picker.setTopLineHeight(1);
+        picker.setTitleText("服务名称");
+        picker.setTitleTextColor(0xFF545454);
+        picker.setTitleTextSize(14);
+        picker.setCancelTextColor(0xFF545454);
+        picker.setCancelTextSize(12);
+        picker.setSubmitTextColor(0xFF00a551);
+        picker.setSubmitTextSize(12);
+        picker.setTextColor(0xFF545454, 0x99545454);
+        WheelView.DividerConfig config = new WheelView.DividerConfig();
+        config.setColor(0xFff5f5f5);//线颜色
+        config.setAlpha(250);//线透明度
+        config.setRatio((float) (1.0 / 8.0));//线比率
+        picker.setDividerConfig(config);
+        picker.setBackgroundColor(0xFFffffff);
+        picker.setSelectedIndex(5);
+        picker.setCanceledOnTouchOutside(true);
+        picker.setOnOptionPickListener(new OptionPicker.OnOptionPickListener() {
+            @Override
+            public void onOptionPicked(int index, String item) {
+                RecordBean.RecordItemBean itemBean = recordBean.new RecordItemBean();
+                itemBean.setName(item);
+                itemBean.setStatus(0);
+                recordBean.getmItemList().add(itemBean);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+        picker.show();
     }
 
 }
