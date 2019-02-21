@@ -58,6 +58,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/record_device_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -96,6 +97,7 @@
                     android:textSize="14sp" />
 
                 <EditText
+                    android:id="@+id/record_brand_name_ev"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -132,17 +134,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="品牌名称"
+                    android:text="规格型号"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
                 <EditText
+                    android:id="@+id/record_type_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="请输入品牌名称"
+                    android:hint="请输入规格型号"
                     android:textColor="#a6a6a6"
                     android:textColorHint="#e3e0e0"
                     android:textSize="14sp" />
@@ -173,17 +176,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="品牌名称"
+                    android:text="生产日期"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
-                <EditText
+                <TextView
+                    android:id="@+id/record_time_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="请输入品牌名称"
+                    android:hint="请输入生产日期"
                     android:textColor="#a6a6a6"
                     android:textColorHint="#e3e0e0"
                     android:textSize="14sp" />
@@ -219,6 +223,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/record_status_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"

@@ -1,5 +1,6 @@
 package com.bjxapp.worker.ui.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -9,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.ui.view.activity.RecordAddActivity;
 import com.bjxapp.worker.ui.view.activity.bean.RecordBean;
 
 public class RecordItemLayout extends LinearLayout {
@@ -46,6 +48,14 @@ public class RecordItemLayout extends LinearLayout {
         this.itemBean = itemBean;
         mSubNameTv.setText(itemBean.getName());
         mSubStatusTv.setText(itemBean.getStatus() == 1 ? "已录入" : "待录入");
+
+        mSubStatusTv.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecordAddActivity.gotoActivity((Activity) getContext(), RecordAddActivity.REQUEST_CODE_RECORD_ADD);
+            }
+        });
+
     }
 
 

@@ -228,7 +228,7 @@ public class RecordDetailActivity extends Activity {
         picker.setTopBackgroundColor(0xFFffffff);
         picker.setTopHeight(30);
         picker.setTopLineColor(0xdfdfdf);
-        picker.setTopLineHeight(1);
+        picker.setTopLineHeight(3);
         picker.setTitleText("服务名称");
         picker.setTitleTextColor(0xFF545454);
         picker.setTitleTextSize(14);
@@ -258,4 +258,12 @@ public class RecordDetailActivity extends Activity {
         picker.show();
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK){
+
+        }
+    }
 }
