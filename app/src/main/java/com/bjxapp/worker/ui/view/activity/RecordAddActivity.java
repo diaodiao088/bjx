@@ -105,6 +105,11 @@ public class RecordAddActivity extends Activity {
     @BindView(R.id.title_text_tv)
     XTextView mTitleTextView;
 
+    @OnClick(R.id.frag_layout)
+    void onClickFrag(){
+        FragileActivity.gotoActivity(this);
+    }
+
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
 
 

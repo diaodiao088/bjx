@@ -17,12 +17,14 @@ public class FragileAdapter extends RecyclerView.Adapter<FragileHolder> {
     @Override
     public FragileHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragile_item_layout, parent, false);
+        FragileHolder holder = new FragileHolder(view);
+
         return new FragileHolder(view);
     }
 
     @Override
     public void onBindViewHolder(FragileHolder holder, int position) {
-        holder.setData(mItemList.get(position));
+        holder.setData(mItemList.get(position) , position);
     }
 
     @Override
@@ -35,9 +37,19 @@ public class FragileAdapter extends RecyclerView.Adapter<FragileHolder> {
         notifyDataSetChanged();
     }
 
+    public interface OnItemClickListener{
 
+        void onItemDelete(int position);
 
+        void addImage(int position);
 
+    }
+
+    public OnItemClickListener mClickListener;
+
+    public void setListener(OnItemClickListener listener){
+        this.mClickListener = listener;
+    }
 
 
 

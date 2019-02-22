@@ -1,8 +1,12 @@
 package com.bjxapp.worker.ui.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,6 +20,7 @@ import com.bjxapp.worker.ui.view.activity.bean.FragileBean;
 import java.util.ArrayList;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class FragileActivity extends Activity {
@@ -51,6 +56,7 @@ public class FragileActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragle_add_activity);
+        ButterKnife.bind(this);
         initView();
         initData();
         handleIntent();
@@ -69,7 +75,20 @@ public class FragileActivity extends Activity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new FragileAdapter();
         mAdapter.setItems(mList);
+        mAdapter.setListener(new FragileAdapter.OnItemClickListener() {
+            @Override
+            public void onItemDelete(int position) {
+                mList.remove(position);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void addImage(int position) {
+
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(6));
 
     }
 
@@ -79,5 +98,25 @@ public class FragileActivity extends Activity {
 
     }
 
+    public static class SpaceItemDecoration extends RecyclerView.ItemDecoration {
+
+        int mSpace;
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+            outRect.bottom = mSpace;
+        }
+
+        public SpaceItemDecoration(int space) {
+            this.mSpace = space;
+        }
+    }
+
+    public static void gotoActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setClass(context, FragileActivity.class);
+        context.startActivity(intent);
+    }
 
 }
