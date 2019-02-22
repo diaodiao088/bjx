@@ -126,9 +126,9 @@ public class FragileHolder extends RecyclerView.ViewHolder {
                 ((VH_DELETE_ITEM) holder).mDeleteIv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        if (mListener != null) {
-//                            mListener.addImage();
-//                        }
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.addImage(position);
+                        }
                     }
                 });
             }
