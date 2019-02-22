@@ -72,6 +72,14 @@ public class RecordAddActivity extends Activity {
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.title_right_small_tv)
+    TextView mTitleRightTv;
+
+    @OnClick(R.id.title_right_small_tv)
+    void onClickSmallTv() {
+
+    }
+
     private GridLayoutManager mGridLayoutManager;
     private MyAdapter mAdapter;
 
@@ -115,6 +123,8 @@ public class RecordAddActivity extends Activity {
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, true));
         mAdapter = new MyAdapter();
         mRecyclerView.setAdapter(mAdapter);
+        mTitleRightTv.setVisibility(View.VISIBLE);
+        mTitleRightTv.setText("删除");
     }
 
     private void initData() {
