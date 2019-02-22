@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -31,6 +30,8 @@ public class FragileActivity extends Activity {
     @OnClick(R.id.title_right_small_tv)
     void onClickSmallTv() {
         FragileBean fragileBean = new FragileBean();
+        FragileBean.ImageBean bean = fragileBean.new ImageBean(FragileBean.ImageBean.TYPE_IMAGE, "");
+        fragileBean.getImageList().add(bean);
         mList.add(fragileBean);
         mAdapter.notifyDataSetChanged();
     }
@@ -88,7 +89,7 @@ public class FragileActivity extends Activity {
             }
         });
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(6));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(15));
 
     }
 

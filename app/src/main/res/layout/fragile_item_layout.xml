@@ -25,7 +25,7 @@
             android:layout_marginLeft="8dp"
             android:text="设备名称"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <EditText
             android:id="@+id/frag_name_tv"
@@ -43,11 +43,12 @@
             android:id="@+id/delete_fragile_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:text="删除"
-            android:background="@drawable/frag_btn_shape"
             android:layout_marginRight="8dp"
-            android:padding="4dp"/>
+            android:background="@drawable/frag_btn_shape"
+            android:padding="4dp"
+            android:text="删除"
+            android:textColor="#545454"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

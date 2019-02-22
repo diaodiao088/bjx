@@ -53,11 +53,13 @@ public class FragileHolder extends RecyclerView.ViewHolder {
         mDeleteTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mOnItemClickListener != null){
+                if (mOnItemClickListener != null) {
                     mOnItemClickListener.onItemDelete(position);
                 }
             }
         });
+
+        myAdapter.setList(fragileBean.getImageList());
 
     }
 
