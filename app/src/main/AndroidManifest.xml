@@ -159,6 +159,12 @@
             android:theme="@style/XAppTheme" />
 
         <activity
+            android:name="com.bjxapp.worker.ui.view.activity.CheckChangeTimeActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme" />
+
+        <activity
             android:name="com.bjxapp.worker.ui.view.activity.FragileActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
