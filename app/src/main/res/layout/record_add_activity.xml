@@ -284,9 +284,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/login_button_confirm"
-                    android:layout_below="@+id/add_title" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
