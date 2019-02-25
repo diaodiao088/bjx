@@ -60,10 +60,10 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation 'com.jakewharton:butterknife:8.8.1'
-
-//    api 'com.haibin:calendarview:3.5.4'
+    //    api 'com.haibin:calendarview:3.5.4'
     annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
     compile files('libs/BaiduLBS_Android.jar')
     compile 'com.getui:sdk:2.12.5.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation project(':calendarview1')
 }
