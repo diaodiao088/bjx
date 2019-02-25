@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.View;
 
 import com.haibin.calendarview.Calendar;
@@ -21,7 +22,7 @@ public class SimpleMonthView extends MonthView {
     public SimpleMonthView(Context context) {
         super(context);
         //兼容硬件加速无效的代码
-        setLayerType(View.LAYER_TYPE_SOFTWARE,mSelectedPaint);
+        setLayerType(View.LAYER_TYPE_SOFTWARE, mSelectedPaint);
         //4.0以上硬件加速会导致无效
         mSelectedPaint.setMaskFilter(new BlurMaskFilter(25, BlurMaskFilter.Blur.SOLID));
     }
@@ -41,7 +42,8 @@ public class SimpleMonthView extends MonthView {
     protected boolean onDrawSelected(Canvas canvas, Calendar calendar, int x, int y, boolean hasScheme) {
         int cx = x + mItemWidth / 2;
         int cy = y + mItemHeight / 2;
-        canvas.drawCircle(cx, cy, mRadius, mSelectedPaint);
+        // canvas.drawCircle(cx, cy, mRadius, mSelectedPaint);
+        canvas.drawRect(new Rect(x, y, x + mItemWidth, y + mItemHeight), mSelectedPaint);
         return false;
     }
 
@@ -49,7 +51,8 @@ public class SimpleMonthView extends MonthView {
     protected void onDrawScheme(Canvas canvas, Calendar calendar, int x, int y) {
         int cx = x + mItemWidth / 2;
         int cy = y + mItemHeight / 2;
-        canvas.drawCircle(cx, cy, mRadius, mSchemePaint);
+       // canvas.drawCircle(cx, cy, mRadius, mSchemePaint);
+        canvas.drawRect(new Rect(x, y, x + mItemWidth, y + mItemHeight), mSelectedPaint);
     }
 
     @Override
