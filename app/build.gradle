@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.bjx.master"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 21
         versionCode 4006
         versionName "4.1.6"
@@ -60,6 +60,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation 'com.jakewharton:butterknife:8.8.1'
+
+//    api 'com.haibin:calendarview:3.5.4'
     annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
     compile files('libs/BaiduLBS_Android.jar')
     compile 'com.getui:sdk:2.12.5.0'

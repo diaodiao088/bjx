@@ -170,7 +170,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme" />
 
-        <activity android:name="com.bjxapp.worker.ui.view.activity.RecordAddActivity"
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.RecordAddActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme" />
@@ -203,8 +204,7 @@
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.AddImageActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
 
         <activity

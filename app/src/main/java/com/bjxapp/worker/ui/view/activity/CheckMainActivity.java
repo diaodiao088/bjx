@@ -4,11 +4,21 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-public class DeviceInfoActivity extends Activity {
+import com.bjx.master.R;
+
+public class CheckMainActivity extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.check_main_activity);
     }
+
+
+
+
+
+
+
 
 }
