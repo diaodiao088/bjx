@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordBean;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RecordItemLayout;
@@ -40,6 +41,12 @@ public class RecordDetailActivity extends Activity {
     @BindView(R.id.title_text_tv)
     XTextView mTitleTextView;
 
+    @BindView(R.id.record_name)
+    TextView mRecordNameTv;
+
+    @BindView(R.id.record_address)
+    TextView mRecordAddrTv;
+
     @BindView(R.id.record_recycler_view)
     RecyclerView mRecyclerView;
 
@@ -47,6 +54,9 @@ public class RecordDetailActivity extends Activity {
 
     private RecordAdapter mAdapter;
 
+    public static final String SHOP_INFO = "shop_info";
+
+    private ShopInfoBean shopInfoBean;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,32 +64,58 @@ public class RecordDetailActivity extends Activity {
         setContentView(R.layout.record_detail_activity);
         ButterKnife.bind(this);
         initView();
+        handleIntent();
         bindData();
+    }
+
+    private void handleIntent() {
+
+        Intent intent = getIntent();
+
+        ShopInfoBean shopInfoBean = intent.getParcelableExtra(SHOP_INFO);
+
+        this.shopInfoBean = shopInfoBean;
+
     }
 
     private void bindData() {
 
-        ArrayList<RecordBean> list = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++) {
-            RecordBean recordBean = new RecordBean();
-            recordBean.setTypeName("录入详情：" + i);
-
-            ArrayList<RecordBean.RecordItemBean> list1 = new ArrayList<>();
-
-            for (int j = 0; j < 3; j++) {
-                RecordBean.RecordItemBean bean = recordBean.new RecordItemBean();
-                bean.setName("消毒柜：" + j);
-                list1.add(bean);
-            }
-
-            recordBean.setmItemList(list1);
-
-
-            list.add(recordBean);
+        if (shopInfoBean == null) {
+            finish();
         }
 
-        mAdapter.setItems(list);
+        mRecordNameTv.setText("门店：" + shopInfoBean.getName());
+        mRecordAddrTv.setText("地址：" + shopInfoBean.getDetailAddress());
+
+        requestRecordInfo();
+
+
+//        ArrayList<RecordBean> list = new ArrayList<>();
+//
+//        for (int i = 0; i < 10; i++) {
+//            RecordBean recordBean = new RecordBean();
+//            recordBean.setTypeName("录入详情：" + i);
+//
+//            ArrayList<RecordBean.RecordItemBean> list1 = new ArrayList<>();
+//
+//            for (int j = 0; j < 3; j++) {
+//                RecordBean.RecordItemBean bean = recordBean.new RecordItemBean();
+//                bean.setName("消毒柜：" + j);
+//                list1.add(bean);
+//            }
+//
+//            recordBean.setmItemList(list1);
+//
+//
+//            list.add(recordBean);
+//        }
+//
+//        mAdapter.setItems(list);
+    }
+
+    private void requestRecordInfo() {
+
+
 
     }
 
@@ -94,9 +130,10 @@ public class RecordDetailActivity extends Activity {
 
     }
 
-    public static void gotoActivity(Context context) {
+    public static void gotoActivity(Context context, ShopInfoBean shopInfoBean) {
         Intent intent = new Intent();
         intent.setClass(context, RecordDetailActivity.class);
+        intent.putExtra(SHOP_INFO, shopInfoBean);
         context.startActivity(intent);
     }
 
@@ -262,7 +299,7 @@ public class RecordDetailActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
 
         }
     }
