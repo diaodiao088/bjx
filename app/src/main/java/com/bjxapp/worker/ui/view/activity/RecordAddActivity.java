@@ -30,13 +30,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.App;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.RecordApi;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
+import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
@@ -47,12 +50,18 @@ import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,11 +69,17 @@ import butterknife.OnClick;
 import cn.qqtheme.framework.picker.DatePicker;
 import cn.qqtheme.framework.picker.OptionPicker;
 import cn.qqtheme.framework.widget.WheelView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
+import static java.lang.String.valueOf;
 
 public class RecordAddActivity extends Activity {
 
@@ -114,6 +129,8 @@ public class RecordAddActivity extends Activity {
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
+    private XWaitingDialog mWaitingDialog;
+
     @OnClick(R.id.record_status_tv)
     void onClickStatus() {
         showStatusPicker();
@@ -132,7 +149,7 @@ public class RecordAddActivity extends Activity {
 
     @OnClick(R.id.add_confirm_btn)
     void confirm() {
-        if (mIsAdd){
+        if (mIsAdd) {
             addConfirm();
         }
     }
@@ -166,6 +183,7 @@ public class RecordAddActivity extends Activity {
         mRecyclerView.setAdapter(mAdapter);
         mTitleRightTv.setVisibility(View.VISIBLE);
         mTitleRightTv.setText("删除");
+        mWaitingDialog = new XWaitingDialog(this);
 
     }
 
@@ -174,24 +192,99 @@ public class RecordAddActivity extends Activity {
         mRecordDeviceNameTv.setText(mName);
 
         // 如果是新增
-        if (mIsAdd == true) {
+        if (mIsAdd) {
 
             mTitleRightTv.setVisibility(View.GONE);
 
+            ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
+            mImageList.add(bean);
+            mAdapter.setList(mImageList);
+            mAdapter.notifyDataSetChanged();
+
         } else {
-
             mTitleRightTv.setVisibility(View.VISIBLE);
+            loadDetails();
+        }
+    }
 
-            if (!TextUtils.isEmpty(mRecordItemBean.getBrandName())) {
-                mRecordBrandNameTv.setText(mRecordItemBean.getBrandName());
-            }
+    private void loadDetails() {
 
+        if (mRecordItemBean == null) {
+            return;
         }
 
-        ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
-        mImageList.add(bean);
-        mAdapter.setList(mImageList);
-        mAdapter.notifyDataSetChanged();
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(App.getInstance()).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(App.getInstance()).getUserCode());
+
+        Call<JsonObject> call = recordApi.getDeviceInfo(mRecordItemBean.getId(), params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        parseRecordData(object);
+                    }
+                }else{
+                    updateUi();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                updateUi();
+
+            }
+        });
+
+
+    }
+
+    private void parseRecordData(JsonObject mainObject) {
+
+        JsonObject object = mainObject.get("equipment").getAsJsonObject();
+
+        RecordItemBean recordItemBean = new RecordItemBean();
+
+        recordItemBean.setBrandName(object.get("brandName").getAsString());
+        recordItemBean.setParentId(object.get("parentCategoryId").getAsString());
+        recordItemBean.setId(object.get("id").getAsString());
+        recordItemBean.setCategoryId(object.get("categoryId").getAsString());
+        recordItemBean.setEquipmentNo(object.get("equipmentNo").getAsString());
+        recordItemBean.setModel(object.get("model").getAsString());
+
+        recordItemBean.setName(object.get("name").getAsString());
+        recordItemBean.setProductTime(object.get("productionTime").getAsString());
+        recordItemBean.setRecordStatus(object.get("recordState").getAsInt());
+        recordItemBean.setRemark(object.get("remark").getAsString());
+        recordItemBean.setShopId(object.get("shopId").getAsString());
+        recordItemBean.setEnableStatus(object.get("status").getAsInt());
+        recordItemBean.setEnterId(object.get("enterpriseId").getAsString());
+
+        mRecordItemBean = recordItemBean;
+
+        updateUi();
+    }
+
+    private void updateUi(){
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRecordDeviceNameTv.setText(mRecordItemBean.getName());
+                mRecordBrandNameTv.setText(mRecordItemBean.getBrandName());
+                mRecordTypeTv.setText(mRecordItemBean.getModel());
+
+            }
+        });
     }
 
     public static void gotoActivity(Activity context, int requestCode) {
@@ -718,6 +811,114 @@ public class RecordAddActivity extends Activity {
 
         }
 
+        commitImage();
+    }
+
+    private void commitImage() {
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        for (int i = 0; i < mImageList.size(); i++) {
+
+            ImageBean item = mImageList.get(i);
+
+            if (item.type == ImageBean.TYPE_ADD) {
+                File file = new File(item.getUrl());
+
+                if (!file.exists()) {
+                    break;
+                }
+
+                String targetPath = getCacheDir() + file.getName();
+
+                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
+
+                final File compressFile = new File(compressImage);
+
+                if (compressFile.exists()) {
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
+                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                }
+            }
+        }
+
+        for (Map.Entry entry : map.entrySet()) {
+            requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+        }
+
+        Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(RecordAddActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000 * 100, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, final IOException e) {
+
+                RecordAddActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(RecordAddActivity.this, "图片上传失败！:" + e.getLocalizedMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+
+                    final ArrayList<String> list = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(str);
+                        JSONArray accessAddress = object.getJSONArray("list");
+
+                        for (int i = 0; i < accessAddress.length(); i++) {
+                            list.add(accessAddress.get(i).toString());
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            realStartCommit(list);
+                        }
+                    });
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(RecordAddActivity.this, "图片上传失败！");
+                            Utils.finishWithoutAnim(RecordAddActivity.this);
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    private void realStartCommit(ArrayList<String> imageList) {
 
         RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
 
@@ -733,8 +934,17 @@ public class RecordAddActivity extends Activity {
         params.put("model", mRecordTypeTv.getText().toString());
         params.put("productionTime", mRecordTimeTv.getText().toString());
         params.put("remark", mMistakeReasonTv.getText().toString());
-        // TODO: 2019/2/27
-        params.put("imgUrls", "www.baidu.com");
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < imageList.size(); i++) {
+            if (i < imageList.size() - 1) {
+                builder.append(imageList.get(i) + ",");
+            } else {
+                builder.append(imageList.get(i));
+            }
+        }
+
+        params.put("imgUrls", builder.toString());
 
         boolean isDisable = mRecordStatusTv.getText().toString().equals("禁用");
 
@@ -780,7 +990,6 @@ public class RecordAddActivity extends Activity {
                 });
             }
         });
-
     }
 
 

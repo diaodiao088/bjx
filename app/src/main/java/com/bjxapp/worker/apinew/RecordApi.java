@@ -40,7 +40,13 @@ public interface RecordApi {
     @POST("/equipment/save")
     Call<JsonObject> addDevice(@FieldMap Map<String, String> params);
 
-    
 
+    @FormUrlEncoded
+    @POST("/equipment/submit")
+    Call<JsonObject> submitDevice(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/equipment/info/{deviceId}")
+    Call<JsonObject> getDeviceInfo(@Path("deviceId") String deviceId, @FieldMap Map<String, String> params);
 
 }

@@ -44,16 +44,23 @@ public class RecordItemLayout extends LinearLayout {
         mSubStatusTv = findViewById(R.id.sub_status);
     }
 
-    public void bindData(final RecordItemBean itemBean , final String shopId) {
+    public void bindData(final RecordItemBean itemBean, final String shopId) {
         this.itemBean = itemBean;
         mSubNameTv.setText(itemBean.getName());
-        mSubStatusTv.setText(itemBean.getStatus() == 1 ? "已录入" : "待录入");
+
+        if (itemBean.getStatus() == 1) {
+            mSubStatusTv.setText("已保存");
+        } else if (itemBean.getStatus() == 2) {
+            mSubStatusTv.setText("已录入");
+        } else {
+            mSubStatusTv.setText("待录入");
+        }
 
         mSubStatusTv.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 // RecordAddActivity.gotoActivity((Activity) getContext(), RecordAddActivity.REQUEST_CODE_RECORD_ADD);
-                RecordAddActivity.goToActivity((Activity) getContext(), itemBean , shopId);
+                RecordAddActivity.goToActivity((Activity) getContext(), itemBean, shopId);
             }
         });
 
