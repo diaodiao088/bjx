@@ -115,11 +115,16 @@ public class CategoryDataManager {
 
             RecordBean recordBean = new RecordBean();
 
+            RecordBean recordBean1 = new RecordBean();
+
             mList.add(recordBean);
-            mListWithOutItem.add(recordBean);
+            mListWithOutItem.add(recordBean1);
 
             recordBean.setTypeName(categoryObject.get("name").getAsString());
             recordBean.setTypeId(categoryObject.get("id").getAsString());
+
+            recordBean1.setTypeName(categoryObject.get("name").getAsString());
+            recordBean1.setTypeId(categoryObject.get("id").getAsString());
 
             JsonArray itemArray = categoryObject.getAsJsonArray("subList");
 
@@ -147,6 +152,36 @@ public class CategoryDataManager {
     public ArrayList<RecordBean> getCategoryList() {
 
         return mList;
+    }
+
+
+    public ArrayList<RecordItemBean> getSpecItemBean(RecordBean recordBean) {
+
+        RecordBean realBean = null;
+
+        for (int i = 0; i < mList.size(); i++) {
+            if (recordBean.getTypeId().equals(mList.get(i).getTypeId())) {
+                realBean = mList.get(i);
+            }
+        }
+
+        if (realBean != null) {
+            return new ArrayList<>(realBean.getmItemList());
+        }
+
+        return null;
+
+    }
+
+    public String[] getTypeString(ArrayList<RecordItemBean> recordItemBeans){
+
+        String[] result = new String[recordItemBeans.size()];
+
+        for (int i = 0; i < recordItemBeans.size(); i++) {
+            result[i] = recordItemBeans.get(i).getName();
+        }
+
+        return result;
     }
 
 

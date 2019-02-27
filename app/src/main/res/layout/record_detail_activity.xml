@@ -46,7 +46,7 @@
     <com.bjxapp.worker.controls.XButton
         android:id="@+id/add_confirm_btn"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="30dp"

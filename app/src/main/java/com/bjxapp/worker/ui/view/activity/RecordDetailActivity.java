@@ -239,6 +239,7 @@ public class RecordDetailActivity extends Activity {
             recordItemBean.setRemark(object.get("remark").getAsString());
             recordItemBean.setShopId(object.get("shopId").getAsString());
             recordItemBean.setEnableStatus(object.get("status").getAsInt());
+            recordItemBean.setEnterId(object.get("enterpriseId").getAsString());
             addToSpecifiedParent(recordItemBean);
         }
         mAdapter.notifyDataSetChanged();
@@ -366,7 +367,7 @@ public class RecordDetailActivity extends Activity {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     DimenUtils.dp2px(45, mRecordItemContainer.getContext()));
 
-            itemLayout.bindData(itemBean);
+            itemLayout.bindData(itemBean , shopInfoBean.getId());
 
             mRecordItemContainer.addView(itemLayout, layoutParams);
         }
@@ -393,11 +394,16 @@ public class RecordDetailActivity extends Activity {
      * select service name .
      */
     public void onConstellationPicker(final RecordBean recordBean) {
+
+        final ArrayList<RecordItemBean> itemList = CategoryDataManager.getIns().getSpecItemBean(recordBean);
+
+
+        if (itemList.size() <= 0) {
+            return;
+        }
+
         OptionPicker picker = new OptionPicker(this,
-                new String[]{
-                        "洗碗机", "玻璃机", "和面机", "录音机", "路由器", "巨蟹座",
-                        "狮子座", "处女座", "天秤座", "天蝎座", "射手座", "摩羯座"});
-        picker.setCycleDisable(false);//不禁用循环
+                CategoryDataManager.getIns().getTypeString(itemList));
         picker.setTopBackgroundColor(0xFFffffff);
         picker.setTopHeight(30);
         picker.setTopLineColor(0xdfdfdf);
@@ -416,16 +422,19 @@ public class RecordDetailActivity extends Activity {
         config.setRatio((float) (1.0 / 8.0));//线比率
         picker.setDividerConfig(config);
         picker.setBackgroundColor(0xFFffffff);
-        picker.setSelectedIndex(5);
         picker.setCanceledOnTouchOutside(true);
         picker.setOnOptionPickListener(new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
-                RecordItemBean itemBean = new RecordItemBean();
-                itemBean.setName(item);
-                itemBean.setStatus(0);
-                recordBean.getmItemList().add(itemBean);
-                mAdapter.notifyDataSetChanged();
+//                RecordItemBean itemBean = new RecordItemBean();
+//                itemBean.setName(item);
+//                itemBean.setStatus(0);
+//                recordBean.getmItemList().add(itemBean);
+//                mAdapter.notifyDataSetChanged();
+
+                RecordAddActivity.goToActivityForResult(RecordDetailActivity.this, item, recordBean.getTypeId(),
+                        shopInfoBean.getEnterpriseId(), shopInfoBean.getId(), itemList.get(index).getCategoryId());
+
             }
         });
         picker.show();

@@ -32,8 +32,15 @@ public interface RecordApi {
     @POST("/equipmentCategory/list")
     Call<JsonObject> getCategoryList(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/equipment/delete")
+    Call<JsonObject> deleteDevice(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/equipment/save")
+    Call<JsonObject> addDevice(@FieldMap Map<String, String> params);
 
+    
 
 
 }

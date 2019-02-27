@@ -11,12 +11,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +27,16 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.RecordApi;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
@@ -35,11 +45,14 @@ import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +60,9 @@ import butterknife.OnClick;
 import cn.qqtheme.framework.picker.DatePicker;
 import cn.qqtheme.framework.picker.OptionPicker;
 import cn.qqtheme.framework.widget.WheelView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
 
@@ -75,16 +91,28 @@ public class RecordAddActivity extends Activity {
     @BindView(R.id.title_right_small_tv)
     TextView mTitleRightTv;
 
+    @BindView(R.id.mistake_reason_tv)
+    EditText mMistakeReasonTv;
+
+    @OnClick(R.id.title_right_small_tv)
+    void onClickDelete() {
+        deleteDevice();
+    }
+
     @OnClick(R.id.title_right_small_tv)
     void onClickSmallTv() {
 
     }
+
+    private RecordItemBean mRecordItemBean;
 
     private GridLayoutManager mGridLayoutManager;
     private MyAdapter mAdapter;
 
     private static final int MAX_PIC_COUNT = 20;
     private static final int FEEDBACK_LOAD_IMAGES_RESULT = 1;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @OnClick(R.id.record_status_tv)
     void onClickStatus() {
@@ -102,11 +130,18 @@ public class RecordAddActivity extends Activity {
         finish();
     }
 
+    @OnClick(R.id.add_confirm_btn)
+    void confirm() {
+        if (mIsAdd){
+            addConfirm();
+        }
+    }
+
     @BindView(R.id.title_text_tv)
     XTextView mTitleTextView;
 
     @OnClick(R.id.frag_layout)
-    void onClickFrag(){
+    void onClickFrag() {
         FragileActivity.gotoActivity(this);
     }
 
@@ -119,6 +154,7 @@ public class RecordAddActivity extends Activity {
         setContentView(R.layout.record_add_activity);
         ButterKnife.bind(this);
         initView();
+        handleIntent();
         initData();
     }
 
@@ -130,9 +166,28 @@ public class RecordAddActivity extends Activity {
         mRecyclerView.setAdapter(mAdapter);
         mTitleRightTv.setVisibility(View.VISIBLE);
         mTitleRightTv.setText("删除");
+
     }
 
     private void initData() {
+
+        mRecordDeviceNameTv.setText(mName);
+
+        // 如果是新增
+        if (mIsAdd == true) {
+
+            mTitleRightTv.setVisibility(View.GONE);
+
+        } else {
+
+            mTitleRightTv.setVisibility(View.VISIBLE);
+
+            if (!TextUtils.isEmpty(mRecordItemBean.getBrandName())) {
+                mRecordBrandNameTv.setText(mRecordItemBean.getBrandName());
+            }
+
+        }
+
         ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
         mImageList.add(bean);
         mAdapter.setList(mImageList);
@@ -168,11 +223,10 @@ public class RecordAddActivity extends Activity {
         mPicker.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
             @Override
             public void onDatePicked(String year, String month, String day) {
-
+                mRecordTimeTv.setText(year + "-" + month + "-" + day + "  00:00:00");
             }
         });
         mPicker.show();
-
     }
 
 
@@ -512,9 +566,220 @@ public class RecordAddActivity extends Activity {
         mAdapter.notifyDataSetChanged();
     }
 
+    private String mName;
+    private String mParentId;
+    private String mEnterId;
+    private String mShopId;
+    private String mCategoryId;
+    private boolean mIsAdd;
 
-    public void confirm() {
+    public static final String TYPE_NAME = "type_name";
+    public static final String TYPE_PARENT_ID = "parent_id";
+    public static final String TYPE_ENTER_ID = "enter_id";
+    public static final String TYPE_SHOP_ID = "shop_id";
+    public static final String TYPE_CATEGORY_ID = "category_id";
+    public static final String TYPE_IS_ADD = "is_add";
 
+    public static final String TYPE_BEAN = "type_bean";
+
+    public static final int REQUEST_CODE_ADD_DEVICE = 0x02;
+
+
+    private void handleIntent() {
+
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            mName = intent.getStringExtra(TYPE_NAME);
+            mParentId = intent.getStringExtra(TYPE_PARENT_ID);
+            mEnterId = intent.getStringExtra(TYPE_ENTER_ID);
+            mShopId = intent.getStringExtra(TYPE_SHOP_ID);
+            mCategoryId = intent.getStringExtra(TYPE_CATEGORY_ID);
+            mIsAdd = intent.getBooleanExtra(TYPE_IS_ADD, false);
+            mRecordItemBean = intent.getParcelableExtra(TYPE_BEAN);
+        }
+
+    }
+
+    public static void goToActivityForResult(Activity context, String name, String parentId, String enterId,
+                                             String shopId, String categoryId) {
+
+        Intent intent = new Intent();
+
+        intent.setClass(context, RecordAddActivity.class);
+
+        intent.putExtra(TYPE_NAME, name);
+        intent.putExtra(TYPE_SHOP_ID, shopId);
+        intent.putExtra(TYPE_CATEGORY_ID, categoryId);
+        intent.putExtra(TYPE_PARENT_ID, parentId);
+        intent.putExtra(TYPE_ENTER_ID, enterId);
+        intent.putExtra(TYPE_IS_ADD, true);
+
+        context.startActivityForResult(intent, REQUEST_CODE_ADD_DEVICE);
+    }
+
+    public static void goToActivity(Activity context, RecordItemBean recordItemBean, String shopId) {
+        Intent intent = new Intent();
+        intent.setClass(context, RecordAddActivity.class);
+        intent.putExtra(TYPE_BEAN, recordItemBean);
+        intent.putExtra(TYPE_SHOP_ID, shopId);
+        context.startActivity(intent);
+    }
+
+
+    private void deleteDevice() {
+
+        if (mRecordItemBean == null) {
+            return;
+        }
+
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("id", mRecordItemBean.getId());
+
+        Call<JsonObject> objectCall = recordApi.deleteDevice(params);
+        objectCall.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(RecordAddActivity.this, msg + ":" + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(RecordAddActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+    }
+
+    public void addConfirm() {
+
+        if (TextUtils.isEmpty(mRecordDeviceNameTv.getText().toString())) {
+            Utils.showShortToast(RecordAddActivity.this, "请填写名称.");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mRecordBrandNameTv.getText().toString())) {
+            Utils.showShortToast(RecordAddActivity.this, "请输入品牌名称.");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mRecordTypeTv.getText().toString())) {
+            Utils.showShortToast(RecordAddActivity.this, "请填写规格型号.");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mRecordTimeTv.getText().toString())) {
+            Utils.showShortToast(RecordAddActivity.this, "请选择时间.");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mRecordStatusTv.getText().toString())) {
+            Utils.showShortToast(RecordAddActivity.this, "请选择设备状态.");
+            return;
+        }
+
+        if (mImageList.size() <= 1) {
+            Utils.showShortToast(RecordAddActivity.this, "请添加照片.");
+            return;
+        }
+
+        // TODO: 2019/2/27
+        if (TextUtils.isEmpty(mMistakeReasonTv.getText().toString())) {
+
+        }
+
+
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("enterpriseId", mEnterId);
+        params.put("shopId", mShopId);
+        params.put("parentCategoryId", mParentId);
+        params.put("categoryId", mCategoryId);
+        params.put("name", mRecordDeviceNameTv.getText().toString());
+        params.put("brandName", mRecordBrandNameTv.getText().toString());
+        params.put("model", mRecordTypeTv.getText().toString());
+        params.put("productionTime", mRecordTimeTv.getText().toString());
+        params.put("remark", mMistakeReasonTv.getText().toString());
+        // TODO: 2019/2/27
+        params.put("imgUrls", "www.baidu.com");
+
+        boolean isDisable = mRecordStatusTv.getText().toString().equals("禁用");
+
+        params.put("status", isDisable ? "0" : "1");
+
+        Call<JsonObject> call = recordApi.addDevice(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(RecordAddActivity.this, "添加成功");
+                                finish();
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(RecordAddActivity.this, msg + ":" + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(RecordAddActivity.this, "添加失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
 
     }
 

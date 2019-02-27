@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.ui.view.activity.RecordAddActivity;
-import com.bjxapp.worker.ui.view.activity.bean.RecordBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 
 public class RecordItemLayout extends LinearLayout {
@@ -45,7 +44,7 @@ public class RecordItemLayout extends LinearLayout {
         mSubStatusTv = findViewById(R.id.sub_status);
     }
 
-    public void bindData(RecordItemBean itemBean) {
+    public void bindData(final RecordItemBean itemBean , final String shopId) {
         this.itemBean = itemBean;
         mSubNameTv.setText(itemBean.getName());
         mSubStatusTv.setText(itemBean.getStatus() == 1 ? "已录入" : "待录入");
@@ -53,7 +52,8 @@ public class RecordItemLayout extends LinearLayout {
         mSubStatusTv.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                RecordAddActivity.gotoActivity((Activity) getContext(), RecordAddActivity.REQUEST_CODE_RECORD_ADD);
+                // RecordAddActivity.gotoActivity((Activity) getContext(), RecordAddActivity.REQUEST_CODE_RECORD_ADD);
+                RecordAddActivity.goToActivity((Activity) getContext(), itemBean , shopId);
             }
         });
 

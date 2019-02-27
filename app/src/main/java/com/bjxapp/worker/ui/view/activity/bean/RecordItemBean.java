@@ -1,8 +1,11 @@
 package com.bjxapp.worker.ui.view.activity.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class RecordItemBean {
+public class RecordItemBean implements Parcelable {
 
     private int status;  // 设备状态
 
@@ -31,6 +34,72 @@ public class RecordItemBean {
     private String shopId;
 
     private int enableStatus;
+
+    private String enterId;
+
+    public RecordItemBean(){}
+
+    protected RecordItemBean(Parcel in) {
+        status = in.readInt();
+        name = in.readString();
+        parentId = in.readString();
+        id = in.readString();
+        categoryId = in.readString();
+        brandName = in.readString();
+        equipmentNo = in.readString();
+        mImgUrls = in.createStringArrayList();
+        model = in.readString();
+        productTime = in.readString();
+        recordStatus = in.readInt();
+        remark = in.readString();
+        shopId = in.readString();
+        enableStatus = in.readInt();
+        enterId = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(status);
+        dest.writeString(name);
+        dest.writeString(parentId);
+        dest.writeString(id);
+        dest.writeString(categoryId);
+        dest.writeString(brandName);
+        dest.writeString(equipmentNo);
+        dest.writeStringList(mImgUrls);
+        dest.writeString(model);
+        dest.writeString(productTime);
+        dest.writeInt(recordStatus);
+        dest.writeString(remark);
+        dest.writeString(shopId);
+        dest.writeInt(enableStatus);
+        dest.writeString(enterId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<RecordItemBean> CREATOR = new Creator<RecordItemBean>() {
+        @Override
+        public RecordItemBean createFromParcel(Parcel in) {
+            return new RecordItemBean(in);
+        }
+
+        @Override
+        public RecordItemBean[] newArray(int size) {
+            return new RecordItemBean[size];
+        }
+    };
+
+    public String getEnterId() {
+        return enterId;
+    }
+
+    public void setEnterId(String enterId) {
+        this.enterId = enterId;
+    }
 
     public String getBrandName() {
         return brandName;
