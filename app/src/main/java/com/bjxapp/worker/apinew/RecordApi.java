@@ -23,5 +23,17 @@ public interface RecordApi {
     Call<JsonObject> getRecordInfo(@Path("shopNo") String shopNum,
                                    @FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/equipment/list")
+    Call<JsonObject> getRecordTypeInfo(@FieldMap Map<String, String> params);
+
+
+    @FormUrlEncoded
+    @POST("/equipmentCategory/list")
+    Call<JsonObject> getCategoryList(@FieldMap Map<String, String> params);
+
+
+
+
 
 }

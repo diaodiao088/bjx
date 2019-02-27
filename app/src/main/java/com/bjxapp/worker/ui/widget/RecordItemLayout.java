@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bjx.master.R;
 import com.bjxapp.worker.ui.view.activity.RecordAddActivity;
 import com.bjxapp.worker.ui.view.activity.bean.RecordBean;
+import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 
 public class RecordItemLayout extends LinearLayout {
 
@@ -19,7 +20,7 @@ public class RecordItemLayout extends LinearLayout {
 
     private View mRootView;
 
-    private RecordBean.RecordItemBean itemBean;
+    private RecordItemBean itemBean;
 
     public RecordItemLayout(Context context) {
         super(context);
@@ -44,7 +45,7 @@ public class RecordItemLayout extends LinearLayout {
         mSubStatusTv = findViewById(R.id.sub_status);
     }
 
-    public void bindData(RecordBean.RecordItemBean itemBean) {
+    public void bindData(RecordItemBean itemBean) {
         this.itemBean = itemBean;
         mSubNameTv.setText(itemBean.getName());
         mSubStatusTv.setText(itemBean.getStatus() == 1 ? "已录入" : "待录入");

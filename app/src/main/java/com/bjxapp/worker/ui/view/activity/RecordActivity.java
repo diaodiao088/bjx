@@ -53,6 +53,7 @@ public class RecordActivity extends Activity {
 
         if (TextUtils.isEmpty(mRecordTv.getText().toString())) {
             Toast.makeText(this, "请填写编号", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         requestRecordInfo();

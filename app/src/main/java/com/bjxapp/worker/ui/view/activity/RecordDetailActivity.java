@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,19 +19,34 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.RecordApi;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordBean;
+import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
+import com.bjxapp.worker.ui.view.activity.category.CategoryDataManager;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RecordItemLayout;
+import com.bjxapp.worker.utils.Utils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.qqtheme.framework.picker.OptionPicker;
 import cn.qqtheme.framework.widget.WheelView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RecordDetailActivity extends Activity {
 
@@ -57,6 +74,10 @@ public class RecordDetailActivity extends Activity {
     public static final String SHOP_INFO = "shop_info";
 
     private ShopInfoBean shopInfoBean;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private ArrayList<RecordBean> mRecordList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +108,7 @@ public class RecordDetailActivity extends Activity {
         mRecordNameTv.setText("门店：" + shopInfoBean.getName());
         mRecordAddrTv.setText("地址：" + shopInfoBean.getDetailAddress());
 
-        requestRecordInfo();
+        requestCategoryListIfNeed();
 
 
 //        ArrayList<RecordBean> list = new ArrayList<>();
@@ -96,10 +117,10 @@ public class RecordDetailActivity extends Activity {
 //            RecordBean recordBean = new RecordBean();
 //            recordBean.setTypeName("录入详情：" + i);
 //
-//            ArrayList<RecordBean.RecordItemBean> list1 = new ArrayList<>();
+//            ArrayList<RecordItemBean> list1 = new ArrayList<>();
 //
 //            for (int j = 0; j < 3; j++) {
-//                RecordBean.RecordItemBean bean = recordBean.new RecordItemBean();
+//                RecordItemBean bean = recordBean.new RecordItemBean();
 //                bean.setName("消毒柜：" + j);
 //                list1.add(bean);
 //            }
@@ -113,11 +134,125 @@ public class RecordDetailActivity extends Activity {
 //        mAdapter.setItems(list);
     }
 
+
+    private void requestCategoryListIfNeed() {
+
+        CategoryDataManager.getIns().loadDataIfNeed(new CategoryDataManager.OnCategoryLoadListener() {
+            @Override
+            public void onDataLoadSuccess() {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateCategoryListUi();
+                        requestRecordInfo();
+                    }
+                });
+            }
+
+            @Override
+            public void onDataLoadFail() {
+
+            }
+        });
+    }
+
+    private void updateCategoryListUi() {
+
+        mRecordList = CategoryDataManager.getIns().getCategoryListWithOutList();
+        clearItemData();
+        mAdapter.setItems(mRecordList);
+    }
+
+
+    private void clearItemData() {
+        for (int i = 0; i < mRecordList.size(); i++) {
+            ArrayList<RecordItemBean> itemList = mRecordList.get(i).getmItemList();
+            itemList.clear();
+        }
+    }
+
+
     private void requestRecordInfo() {
 
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
 
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("shopId", shopInfoBean.getId());
 
+        Call<JsonObject> call = recordApi.getRecordTypeInfo(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                parseRecordData(object);
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(RecordDetailActivity.this, msg + ":" + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
     }
+
+    private void parseRecordData(JsonObject mainObject) {
+
+        JsonArray categoryArray = mainObject.getAsJsonArray("list");
+
+        for (int i = 0; i < categoryArray.size(); i++) {
+            JsonObject object = categoryArray.get(i).getAsJsonObject();
+
+            RecordItemBean recordItemBean = new RecordItemBean();
+
+            recordItemBean.setBrandName(object.get("brandName").getAsString());
+            recordItemBean.setParentId(object.get("parentCategoryId").getAsString());
+            recordItemBean.setId(object.get("id").getAsString());
+            recordItemBean.setCategoryId(object.get("categoryId").getAsString());
+            recordItemBean.setEquipmentNo(object.get("equipmentNo").getAsString());
+            recordItemBean.setModel(object.get("model").getAsString());
+
+            recordItemBean.setName(object.get("name").getAsString());
+            recordItemBean.setProductTime(object.get("productionTime").getAsString());
+            recordItemBean.setRecordStatus(object.get("recordState").getAsInt());
+            recordItemBean.setRemark(object.get("remark").getAsString());
+            recordItemBean.setShopId(object.get("shopId").getAsString());
+            recordItemBean.setEnableStatus(object.get("status").getAsInt());
+            addToSpecifiedParent(recordItemBean);
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+    private void addToSpecifiedParent(RecordItemBean recordItemBean) {
+        for (int i = 0; i < mRecordList.size(); i++) {
+            if (recordItemBean.getParentId().equals(mRecordList.get(i).getTypeId())) {
+                mRecordList.get(i).getmItemList().add(recordItemBean);
+            }
+        }
+    }
+
 
     private void initView() {
         mTitleTextView.setText("录入详情");
@@ -163,11 +298,11 @@ public class RecordDetailActivity extends Activity {
             notifyDataSetChanged();
         }
 
-        public void addSpecItem(RecordBean.RecordItemBean bean, String typeId) {
+        public void addSpecItem(RecordItemBean bean, String typeId) {
 
             for (RecordBean item : mList) {
                 if (item.getTypeName().equals(typeId)) {
-                    ArrayList<RecordBean.RecordItemBean> itemList = item.getmItemList();
+                    ArrayList<RecordItemBean> itemList = item.getmItemList();
                     itemList.add(bean);
                     break;
                 }
@@ -202,10 +337,11 @@ public class RecordDetailActivity extends Activity {
                 mRecordTypeTv.setText(recordBean.getTypeName());
             }
 
-            ArrayList<RecordBean.RecordItemBean> itemList = recordBean.getmItemList();
+            ArrayList<RecordItemBean> itemList = recordBean.getmItemList();
 
             if (itemList.size() > 0) {
                 mRecordItemContainer.removeAllViews();
+                mRecordItemContainer.setVisibility(View.VISIBLE);
                 for (int i = 0; i < itemList.size(); i++) {
                     generateItemLayout(itemList.get(i));
                 }
@@ -222,7 +358,7 @@ public class RecordDetailActivity extends Activity {
 
         }
 
-        public void generateItemLayout(RecordBean.RecordItemBean itemBean) {
+        public void generateItemLayout(RecordItemBean itemBean) {
 
 
             RecordItemLayout itemLayout = new RecordItemLayout(mRecordItemContainer.getContext());
@@ -285,7 +421,7 @@ public class RecordDetailActivity extends Activity {
         picker.setOnOptionPickListener(new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
-                RecordBean.RecordItemBean itemBean = recordBean.new RecordItemBean();
+                RecordItemBean itemBean = new RecordItemBean();
                 itemBean.setName(item);
                 itemBean.setStatus(0);
                 recordBean.getmItemList().add(itemBean);
