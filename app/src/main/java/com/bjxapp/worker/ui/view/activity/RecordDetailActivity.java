@@ -416,7 +416,7 @@ public class RecordDetailActivity extends Activity {
         picker.setTopHeight(30);
         picker.setTopLineColor(0xdfdfdf);
         picker.setTopLineHeight(3);
-        picker.setTitleText("服务名称");
+        picker.setTitleText("设备分类");
         picker.setTitleTextColor(0xFF545454);
         picker.setTitleTextSize(14);
         picker.setCancelTextColor(0xFF545454);

@@ -297,6 +297,8 @@ public class RecordAddActivity extends Activity {
         recordItemBean.setEnterId(object.get("enterpriseId").getAsString());
 
         JsonArray urlArray = object.get("imgUrls").getAsJsonArray();
+
+
         ArrayList<String> customImgUrls = new ArrayList<>();
 
         if (urlArray != null && urlArray.size() > 0) {
@@ -304,6 +306,26 @@ public class RecordAddActivity extends Activity {
                 String itemUrl = urlArray.get(i).getAsString();
                 customImgUrls.add(itemUrl);
             }
+        }
+
+        JsonArray parlist = object.get("partList").getAsJsonArray();
+
+        for (int i = 0; i < parlist.size(); i++) {
+            JsonObject parObject = parlist.get(i).getAsJsonObject();
+            FragileBean fragileBean = new FragileBean();
+            fragileBean.setFragileName(parObject.get("name").getAsString());
+
+            JsonArray fragUrlArray = parObject.get("imgUrls").getAsJsonArray();
+
+            if (fragUrlArray != null && fragUrlArray.size() > 0) {
+                for (int j = 0; j < fragUrlArray.size(); j++) {
+                    String itemUrl = fragUrlArray.get(j).getAsString();
+                    FragileBean.ImageBean imageBean = fragileBean.new ImageBean(FragileBean.ImageBean.TYPE_ADD, itemUrl);
+                    fragileBean.getImageList().add(imageBean);
+                }
+            }
+
+            mFragList.add(fragileBean);
         }
 
         recordItemBean.setmImgUrls(customImgUrls);
@@ -721,7 +743,7 @@ public class RecordAddActivity extends Activity {
 
                 }
             }
-        } else if (requestCode == FragileActivity.REQUEST_CODE_RESULT) {
+        } else if (requestCode == FragileActivity.REQUEST_CODE_RESULT && resultCode == RESULT_OK) {
 
             mFragList = data.getParcelableArrayListExtra(FragileActivity.TYPE_LIST);
 
@@ -1084,6 +1106,8 @@ public class RecordAddActivity extends Activity {
 
         params.put("imgUrls", builder.toString());
 
+        putPartial(params);
+
         boolean isDisable = mRecordStatusTv.getText().toString().equals("禁用");
 
         params.put("status", isDisable ? "0" : "1");
@@ -1160,6 +1184,8 @@ public class RecordAddActivity extends Activity {
 
         params.put("imgUrls", builder.toString());
 
+        putPartial(params);
+
         boolean isDisable = mRecordStatusTv.getText().toString().equals("禁用");
 
         params.put("status", isDisable ? "0" : "1");
@@ -1204,6 +1230,41 @@ public class RecordAddActivity extends Activity {
                 });
             }
         });
+    }
+
+    private void putPartial(Map<String, String> params) {
+
+        if (mFragList == null || mFragList.size() <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < mFragList.size(); i++) {
+
+            String namekey = "partList[" + i + "].name";
+            String urlkey = "partList[" + i + "].imgUrls";
+
+            String nameValue = mFragList.get(i).getFragileName();
+
+            params.put(namekey, nameValue);
+
+            ArrayList<String> urls = mFragList.get(i).getUrls();
+
+            StringBuilder urlValue = new StringBuilder();
+
+            for (int j = 0; j < urls.size(); j++) {
+                if (j < urls.size() - 1) {
+                    urlValue.append(urls.get(j) + ",");
+                } else {
+                    urlValue.append(urls.get(j));
+                }
+            }
+
+            params.put(urlkey, urlValue.toString());
+
+
+        }
+
+
     }
 
 

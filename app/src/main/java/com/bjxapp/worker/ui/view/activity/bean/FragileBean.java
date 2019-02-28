@@ -7,7 +7,7 @@ import android.support.annotation.Keep;
 import java.util.ArrayList;
 
 @Keep
-public class FragileBean implements Parcelable {
+public class FragileBean implements Parcelable{
 
     private String fragileName = "";
 
@@ -22,6 +22,18 @@ public class FragileBean implements Parcelable {
     protected FragileBean(Parcel in) {
         fragileName = in.readString();
         urls = in.createStringArrayList();
+    }
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(fragileName);
+        dest.writeStringList(urls);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FragileBean> CREATOR = new Creator<FragileBean>() {
@@ -48,19 +60,16 @@ public class FragileBean implements Parcelable {
         return imageList;
     }
 
+    public ArrayList<String> getUrls() {
+        return urls;
+    }
+
+    public void setUrls(ArrayList<String> urls) {
+        this.urls = urls;
+    }
+
     public void setImageList(ArrayList<ImageBean> imageList) {
         this.imageList = imageList;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(fragileName);
-        dest.writeStringList(urls);
     }
 
     public class ImageBean {

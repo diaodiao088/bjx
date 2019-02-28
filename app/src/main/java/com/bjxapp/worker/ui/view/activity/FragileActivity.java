@@ -336,15 +336,28 @@ public class FragileActivity extends Activity {
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
+    private void saveUrls() {
+        for (int i = 0; i < mList.size(); i++) {
+            FragileBean fragileBean = mList.get(i);
+
+            for (int j = 0; j < fragileBean.getImageList().size(); j++) {
+                FragileBean.ImageBean imageBean = fragileBean.getImageList().get(j);
+                if (imageBean.getType() == FragileBean.ImageBean.TYPE_ADD) {
+                    fragileBean.getUrls().add(imageBean.getUrl());
+                }
+            }
+        }
+    }
+
     private void savePicReal(final int index) {
 
         if (index > mList.size() - 1) {
             Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent();
-            intent.putParcelableArrayListExtra(TYPE_LIST , mList);
-            intent.putExtra("hh","hhhh");
-            setResult(RESULT_OK , intent);
+            saveUrls();
+            intent.putParcelableArrayListExtra(TYPE_LIST, mList);
+            setResult(RESULT_OK, intent);
 
             finish();
             return;
