@@ -2,7 +2,9 @@ package com.bjxapp.worker.ui.view.activity.adapter;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,9 +50,30 @@ public class FragileHolder extends RecyclerView.ViewHolder {
 
     public void setData(FragileBean fragileBean, final int position) {
         this.mFragBean = fragileBean;
-        if (TextUtils.isEmpty(fragileBean.getFragileName())) {
+        if (!TextUtils.isEmpty(fragileBean.getFragileName())) {
             mEditText.setText(fragileBean.getFragileName());
+        }else{
+            mEditText.setText("");
         }
+
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() != 0){
+                    mFragBean.setFragileName(s.toString());
+                }
+            }
+        });
 
         this.currentPos = position;
 

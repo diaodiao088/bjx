@@ -3,7 +3,6 @@ package com.bjxapp.worker.ui.view.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,35 +12,57 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.ui.view.activity.adapter.FragileAdapter;
 import com.bjxapp.worker.ui.view.activity.bean.FragileBean;
+import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
+import static java.lang.String.valueOf;
 
 public class FragileActivity extends Activity {
 
@@ -68,7 +89,19 @@ public class FragileActivity extends Activity {
     @BindView(R.id.fragile_recycler_view)
     RecyclerView mRecyclerView;
 
+
+    @OnClick(R.id.add_confirm_btn)
+    void onClickConfirm() {
+        savePic();
+    }
+
+    public static final int REQUEST_CODE_RESULT = 0x04;
+
+    public static final String TYPE_LIST = "type_list";
+
     private LinearLayoutManager mLayoutManager;
+
+    private XWaitingDialog waitingDialog;
 
     private FragileAdapter mAdapter;
 
@@ -83,38 +116,34 @@ public class FragileActivity extends Activity {
         setContentView(R.layout.fragle_add_activity);
         ButterKnife.bind(this);
         initView();
-        initData();
         handleIntent();
+        initData();
+
     }
 
     private void handleIntent() {
 
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            // mList = intent.getParcelableArrayListExtra(TYPE_LIST);
+        }
+
+        if (mList == null) {
+            mList = new ArrayList<>();
+        }
+
     }
 
     private void initView() {
-        mTitleTextView.setText("易碎品");
+        mTitleTextView.setText("易损件");
         mTitleRightTv.setVisibility(View.VISIBLE);
         mTitleRightTv.setText("添加");
 
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new FragileAdapter();
-        mAdapter.setItems(mList);
-        mAdapter.setListener(new FragileAdapter.OnItemClickListener() {
-            @Override
-            public void onItemDelete(int position) {
-                mList.remove(position);
-                mAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void addImage(int position) {
-                currentPos = position;
-                loadImages();
-            }
-        });
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(15));
+        waitingDialog = new XWaitingDialog(this);
 
     }
 
@@ -249,7 +278,23 @@ public class FragileActivity extends Activity {
 
     private void initData() {
 
-        FragileBean fragileBean = new FragileBean();
+        mAdapter = new FragileAdapter();
+        mAdapter.setItems(mList);
+        mAdapter.setListener(new FragileAdapter.OnItemClickListener() {
+            @Override
+            public void onItemDelete(int position) {
+                mList.remove(position);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void addImage(int position) {
+                currentPos = position;
+                loadImages();
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(15));
 
     }
 
@@ -268,10 +313,168 @@ public class FragileActivity extends Activity {
         }
     }
 
-    public static void gotoActivity(Context context) {
+    public static void gotoActivity(Activity context) {
         Intent intent = new Intent();
         intent.setClass(context, FragileActivity.class);
-        context.startActivity(intent);
+
+        context.startActivityForResult(intent, REQUEST_CODE_RESULT);
     }
+
+    private void savePic() {
+        if (mList.size() <= 0) {
+            Toast.makeText(this, "请添加易损件", Toast.LENGTH_SHORT).show();
+        }
+
+        for (int i = 0; i < mList.size(); i++) {
+            if (TextUtils.isEmpty(mList.get(i).getFragileName())) {
+                Toast.makeText(this, "请输入易损件名称", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        savePicReal(0);
+    }
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private void savePicReal(final int index) {
+
+        if (index > mList.size() - 1) {
+            Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent();
+            intent.putParcelableArrayListExtra(TYPE_LIST , mList);
+            intent.putExtra("hh","hhhh");
+            setResult(RESULT_OK , intent);
+
+            finish();
+            return;
+        }
+
+        ArrayList<FragileBean.ImageBean> mImageList = mList.get(index).getImageList();
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        boolean isFileValid = false;
+
+        for (int i = 0; i < mImageList.size(); i++) {
+
+            FragileBean.ImageBean item = mImageList.get(i);
+
+            if (item.type == FragileBean.ImageBean.TYPE_ADD) {
+                File file = new File(item.getUrl());
+
+                if (!file.exists()) {
+                    break;
+                }
+
+                String targetPath = getCacheDir() + file.getName();
+
+                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
+
+                final File compressFile = new File(compressImage);
+
+                if (compressFile.exists()) {
+                    isFileValid = true;
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
+                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                }
+            }
+        }
+
+        if (!isFileValid) {
+            savePicReal(index + 1);
+            return;
+        }
+
+        for (Map.Entry entry : map.entrySet()) {
+            requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+        }
+
+        Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(FragileActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000 * 100, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, final IOException e) {
+
+                FragileActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (waitingDialog != null) {
+                            waitingDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(FragileActivity.this, "图片上传失败！:" + e.getLocalizedMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (waitingDialog != null) {
+                            waitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+
+                    final ArrayList<String> list = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(str);
+                        JSONArray accessAddress = object.getJSONArray("list");
+
+                        FragileBean fragileBean = mList.get(index);
+
+                        for (int i = 0; i < accessAddress.length(); i++) {
+                            list.add(accessAddress.get(i).toString());
+
+                            for (int j = 0; j < fragileBean.getImageList().size(); j++) {
+                                if (!fragileBean.getImageList().get(j).getUrl().startsWith("http") && fragileBean.getImageList().get(j).getType() != FragileBean.ImageBean.TYPE_IMAGE) {
+                                    fragileBean.getImageList().get(j).setUrl(accessAddress.get(i).toString());
+                                    break;
+                                }
+                            }
+
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    savePicReal(index + 1);
+                                }
+                            });
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                        }
+                    });
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(FragileActivity.this, "图片上传失败！");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
 
 }

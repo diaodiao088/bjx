@@ -34,10 +34,12 @@ import com.bjxapp.worker.App;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.RecordApi;
+import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.ui.view.activity.bean.FragileBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
@@ -157,6 +159,9 @@ public class RecordAddActivity extends Activity {
         }
     }
 
+    @BindView(R.id.add_confirm_btn)
+    XButton mBtn;
+
     @BindView(R.id.title_text_tv)
     XTextView mTitleTextView;
 
@@ -166,6 +171,8 @@ public class RecordAddActivity extends Activity {
     }
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
+
+    private ArrayList<FragileBean> mFragList = new ArrayList<>();
 
 
     @Override
@@ -186,6 +193,7 @@ public class RecordAddActivity extends Activity {
         mRecyclerView.setAdapter(mAdapter);
         mTitleRightTv.setVisibility(View.VISIBLE);
         mTitleRightTv.setText("删除");
+        mTitleTextView.setText("设备录入详情");
         mWaitingDialog = new XWaitingDialog(this);
 
     }
@@ -205,11 +213,24 @@ public class RecordAddActivity extends Activity {
             mAdapter.notifyDataSetChanged();
 
         } else {
-            mAdapter.setList(mImageList);
+
             mTitleRightTv.setVisibility(View.VISIBLE);
+
+            if (mRecordItemBean != null) {
+                if (mRecordItemBean.getRecordStatus() == 2) {
+                    mTitleRightTv.setVisibility(View.GONE);
+                    isFinished = true;
+                    mBtn.setVisibility(View.GONE);
+                }
+            }
+
+            mAdapter.setList(mImageList);
+
             loadDetails();
         }
     }
+
+    private boolean isFinished;
 
     private void loadDetails() {
 
@@ -279,7 +300,7 @@ public class RecordAddActivity extends Activity {
 
         if (urlArray != null && urlArray.size() > 0) {
             for (int i = 0; i < urlArray.size(); i++) {
-                String itemUrl = urlArray.get(i).toString();
+                String itemUrl = urlArray.get(i).getAsString();
                 customImgUrls.add(itemUrl);
             }
         }
@@ -359,11 +380,15 @@ public class RecordAddActivity extends Activity {
         mPicker.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
             @Override
             public void onDatePicked(String year, String month, String day) {
-                mRecordTimeTv.setText(year + "-" + month + "-" + day + "  00:00:00");
+
+                realTime = year + "-" + month + "-" + day + "  00:00:00";
+                mRecordTimeTv.setText(year + "-" + month + "-" + day);
             }
         });
         mPicker.show();
     }
+
+    String realTime = "";
 
 
     /**
@@ -439,6 +464,10 @@ public class RecordAddActivity extends Activity {
             if (holder instanceof VH_IMAGE_ITEM) {
 
                 Glide.with(RecordAddActivity.this).load(bean.getUrl()).into(((VH_IMAGE_ITEM) holder).mIv);
+
+                if (isFinished) {
+                    ((VH_IMAGE_ITEM) holder).mDeleteIv.setVisibility(View.GONE);
+                }
 
                 ((VH_IMAGE_ITEM) holder).mDeleteIv.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -691,6 +720,10 @@ public class RecordAddActivity extends Activity {
 
                 }
             }
+        } else if (requestCode == FragileActivity.REQUEST_CODE_RESULT) {
+
+            mFragList = data.getParcelableArrayListExtra(FragileActivity.TYPE_LIST);
+
         }
     }
 
@@ -896,6 +929,8 @@ public class RecordAddActivity extends Activity {
         map.put("userCode", ConfigManager.getInstance(this).getUserCode());
         map.put("token", ConfigManager.getInstance(this).getUserSession());
 
+        boolean isFileValid = false;
+
         for (int i = 0; i < mImageList.size(); i++) {
 
             ImageBean item = mImageList.get(i);
@@ -914,9 +949,18 @@ public class RecordAddActivity extends Activity {
                 final File compressFile = new File(compressImage);
 
                 if (compressFile.exists()) {
+                    isFileValid = true;
                     RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
                     requestBody.addFormDataPart("files", compressFile.getName(), body);
                 }
+            }
+        }
+
+        if (!isFileValid) {
+            if (isUpdate) {
+                realStartUpdate(new ArrayList<String>());
+            } else {
+                realStartCommit(new ArrayList<String>());
             }
         }
 
@@ -995,15 +1039,15 @@ public class RecordAddActivity extends Activity {
         });
     }
 
-    private void updateImageList(ArrayList<String> imageList){
+    private void updateImageList(ArrayList<String> imageList) {
 
-        if (mImageList.size() <= 0){
+        if (mImageList.size() <= 0) {
             return;
         }
 
         for (int i = 0; i < mImageList.size(); i++) {
             String item = mImageList.get(i).getUrl();
-            if (item.startsWith("http")){
+            if (item.startsWith("http")) {
                 imageList.add(item);
             }
         }
@@ -1021,7 +1065,7 @@ public class RecordAddActivity extends Activity {
         params.put("name", mRecordDeviceNameTv.getText().toString());
         params.put("brandName", mRecordBrandNameTv.getText().toString());
         params.put("model", mRecordTypeTv.getText().toString());
-        params.put("productionTime", mRecordTimeTv.getText().toString());
+        params.put("productionTime", realTime);
         params.put("remark", mMistakeReasonTv.getText().toString());
 
         StringBuilder builder = new StringBuilder();
@@ -1099,7 +1143,7 @@ public class RecordAddActivity extends Activity {
         params.put("name", mRecordDeviceNameTv.getText().toString());
         params.put("brandName", mRecordBrandNameTv.getText().toString());
         params.put("model", mRecordTypeTv.getText().toString());
-        params.put("productionTime", mRecordTimeTv.getText().toString());
+        params.put("productionTime", realTime);
         params.put("remark", mMistakeReasonTv.getText().toString());
 
         StringBuilder builder = new StringBuilder();
