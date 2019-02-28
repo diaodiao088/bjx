@@ -289,6 +289,7 @@ public class RecordAddActivity extends Activity {
 
         recordItemBean.setName(object.get("name").getAsString());
         recordItemBean.setProductTime(object.get("productionTime").getAsString());
+        realTime = recordItemBean.getProductTime();
         recordItemBean.setRecordStatus(object.get("recordState").getAsInt());
         recordItemBean.setRemark(object.get("remark").getAsString());
         recordItemBean.setShopId(object.get("shopId").getAsString());
@@ -962,6 +963,7 @@ public class RecordAddActivity extends Activity {
             } else {
                 realStartCommit(new ArrayList<String>());
             }
+            return;
         }
 
         for (Map.Entry entry : map.entrySet()) {
@@ -1068,6 +1070,8 @@ public class RecordAddActivity extends Activity {
         params.put("productionTime", realTime);
         params.put("remark", mMistakeReasonTv.getText().toString());
 
+        updateImageList(imageList);
+
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < imageList.size(); i++) {
             if (i < imageList.size() - 1) {
@@ -1077,7 +1081,6 @@ public class RecordAddActivity extends Activity {
             }
         }
 
-        updateImageList(imageList);
 
         params.put("imgUrls", builder.toString());
 

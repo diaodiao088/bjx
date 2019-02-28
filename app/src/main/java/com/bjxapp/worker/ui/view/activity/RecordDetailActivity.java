@@ -111,7 +111,7 @@ public class RecordDetailActivity extends Activity {
             finish();
         }
 
-        mRecordNameTv.setText("门店：" + shopInfoBean.getName());
+        mRecordNameTv.setText("门店：" + shopInfoBean.getEnterpriseName() + shopInfoBean.getName());
         mRecordAddrTv.setText("地址：" + shopInfoBean.getDetailAddress());
 
 //        ArrayList<RecordBean> list = new ArrayList<>();
@@ -475,6 +475,7 @@ public class RecordDetailActivity extends Activity {
                             @Override
                             public void run() {
                                 Utils.showShortToast(RecordDetailActivity.this, "操作成功");
+                                requestCategoryListIfNeed();
                             }
                         });
                     } else {

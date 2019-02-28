@@ -35,6 +35,7 @@ import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
+import com.bjxapp.worker.ui.view.activity.RepairActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
@@ -1871,7 +1872,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, RepairActivity.class);
 
         startActivity(intent);
 

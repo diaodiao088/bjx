@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.global.Constant;
@@ -60,8 +61,8 @@ public class Fragment_main_first_new extends BaseFragment implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.maintain_entrance_ly:
-
+            case R.id.check_entrance_ly:
+                Toast.makeText(getActivity(), "巡检保养业务即将上线，敬请期待~", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.service_entrance_ly:
