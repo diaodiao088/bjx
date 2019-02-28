@@ -32,6 +32,8 @@ public class FragileHolder extends RecyclerView.ViewHolder {
 
     private FragileAdapter.OnItemClickListener mOnItemClickListener;
 
+    private int currentPos;
+
     public FragileHolder(View itemView) {
         super(itemView);
         mEditText = itemView.findViewById(R.id.frag_name_tv);
@@ -49,6 +51,8 @@ public class FragileHolder extends RecyclerView.ViewHolder {
         if (TextUtils.isEmpty(fragileBean.getFragileName())) {
             mEditText.setText(fragileBean.getFragileName());
         }
+
+        this.currentPos = position;
 
         mDeleteTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +78,7 @@ public class FragileHolder extends RecyclerView.ViewHolder {
 
         public void setList(ArrayList<FragileBean.ImageBean> imageBean) {
             this.mList = imageBean;
+            notifyDataSetChanged();
         }
 
         @Override
@@ -117,7 +122,7 @@ public class FragileHolder extends RecyclerView.ViewHolder {
 
             } else if (holder instanceof VH_DELETE_ITEM) {
 
-                if (mList.size() >= 5) {
+                if (mList.size() > 5) {
                     holder.itemView.setVisibility(View.GONE);
                 } else {
                     holder.itemView.setVisibility(View.VISIBLE);
@@ -127,7 +132,7 @@ public class FragileHolder extends RecyclerView.ViewHolder {
                     @Override
                     public void onClick(View v) {
                         if (mOnItemClickListener != null) {
-                            mOnItemClickListener.addImage(position);
+                            mOnItemClickListener.addImage(currentPos);
                         }
                     }
                 });

@@ -38,6 +38,10 @@ public class FragileAdapter extends RecyclerView.Adapter<FragileHolder> {
         notifyDataSetChanged();
     }
 
+    public FragileBean getSpecFragBean(int position){
+        return mItemList.get(position);
+    }
+
     public interface OnItemClickListener {
 
         void onItemDelete(int position);

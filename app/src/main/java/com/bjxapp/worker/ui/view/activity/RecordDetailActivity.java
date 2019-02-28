@@ -114,9 +114,6 @@ public class RecordDetailActivity extends Activity {
         mRecordNameTv.setText("门店：" + shopInfoBean.getName());
         mRecordAddrTv.setText("地址：" + shopInfoBean.getDetailAddress());
 
-        requestCategoryListIfNeed();
-
-
 //        ArrayList<RecordBean> list = new ArrayList<>();
 //
 //        for (int i = 0; i < 10; i++) {
@@ -140,6 +137,11 @@ public class RecordDetailActivity extends Activity {
 //        mAdapter.setItems(list);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        requestCategoryListIfNeed();
+    }
 
     private void requestCategoryListIfNeed() {
 
