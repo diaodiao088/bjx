@@ -49,4 +49,8 @@ public interface RecordApi {
     @POST("/equipment/info/{deviceId}")
     Call<JsonObject> getDeviceInfo(@Path("deviceId") String deviceId, @FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/equipment/update")
+    Call<JsonObject> updateInfo(@FieldMap Map<String, String> params);
+
 }

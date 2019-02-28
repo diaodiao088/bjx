@@ -48,9 +48,9 @@ public class RecordItemLayout extends LinearLayout {
         this.itemBean = itemBean;
         mSubNameTv.setText(itemBean.getName());
 
-        if (itemBean.getStatus() == 1) {
+        if (itemBean.getRecordStatus() == 1) {
             mSubStatusTv.setText("已保存");
-        } else if (itemBean.getStatus() == 2) {
+        } else if (itemBean.getRecordStatus() == 2) {
             mSubStatusTv.setText("已录入");
         } else {
             mSubStatusTv.setText("待录入");

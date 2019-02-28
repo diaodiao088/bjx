@@ -68,6 +68,11 @@ public class RecordDetailActivity extends Activity {
     @BindView(R.id.record_recycler_view)
     RecyclerView mRecyclerView;
 
+    @OnClick(R.id.add_confirm_btn)
+    void onClickConfirm() {
+        submitRecordDetail();
+    }
+
     private LinearLayoutManager mLayoutManager;
 
     private RecordAdapter mAdapter;
