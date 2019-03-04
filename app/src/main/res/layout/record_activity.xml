@@ -16,7 +16,6 @@
         android:background="@drawable/record_edit_bg"
         android:gravity="center_vertical"
         android:hint="请输入门店编号"
-        android:text="1100002019020005"
         android:paddingLeft="10dp"
         android:textColor="#333333"
         android:textColorHint="#ababab"

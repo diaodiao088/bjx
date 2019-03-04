@@ -167,7 +167,7 @@ public class RecordAddActivity extends Activity {
 
     @OnClick(R.id.frag_layout)
     void onClickFrag() {
-        FragileActivity.gotoActivity(this);
+        FragileActivity.gotoActivity(this , mFragList);
     }
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
@@ -322,6 +322,7 @@ public class RecordAddActivity extends Activity {
                     String itemUrl = fragUrlArray.get(j).getAsString();
                     FragileBean.ImageBean imageBean = fragileBean.new ImageBean(FragileBean.ImageBean.TYPE_ADD, itemUrl);
                     fragileBean.getImageList().add(imageBean);
+                    fragileBean.getUrls().add(itemUrl);
                 }
             }
 
@@ -342,7 +343,14 @@ public class RecordAddActivity extends Activity {
                 mRecordDeviceNameTv.setText(mRecordItemBean.getName());
                 mRecordBrandNameTv.setText(mRecordItemBean.getBrandName());
                 mRecordTypeTv.setText(mRecordItemBean.getModel());
-                mRecordTimeTv.setText(mRecordItemBean.getProductTime());
+
+                String time = mRecordItemBean.getProductTime();
+
+                if (!TextUtils.isEmpty(time) && time.length() > 10){
+                    time = time.substring(0 , 10);
+                }
+
+                mRecordTimeTv.setText(time);
                 if (mRecordItemBean.getEnableStatus() == 1) {
                     mRecordStatusTv.setText("在用");
                 } else {
@@ -512,7 +520,7 @@ public class RecordAddActivity extends Activity {
 
             } else if (holder instanceof VH_DELETE_ITEM) {
 
-                if (mList.size() >= MAX_PIC_COUNT) {
+                if (mList.size() >= MAX_PIC_COUNT || isFinished) {
                     holder.itemView.setVisibility(View.GONE);
                 } else {
                     holder.itemView.setVisibility(View.VISIBLE);

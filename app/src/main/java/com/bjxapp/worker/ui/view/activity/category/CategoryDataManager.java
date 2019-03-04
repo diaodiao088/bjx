@@ -129,7 +129,7 @@ public class CategoryDataManager {
             JsonArray itemArray = categoryObject.getAsJsonArray("subList");
 
             for (int j = 0; j < itemArray.size(); j++) {
-                JsonObject itemObject = itemArray.get(i).getAsJsonObject();
+                JsonObject itemObject = itemArray.get(j).getAsJsonObject();
                 RecordItemBean recordItemBean = new RecordItemBean();
                 recordBean.getmItemList().add(recordItemBean);
                 recordItemBean.setParentId(itemObject.get("parentId").getAsString());

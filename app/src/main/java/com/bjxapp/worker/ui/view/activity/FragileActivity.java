@@ -126,11 +126,35 @@ public class FragileActivity extends Activity {
         Intent intent = getIntent();
 
         if (intent != null) {
-            // mList = intent.getParcelableArrayListExtra(TYPE_LIST);
+             mList = intent.getParcelableArrayListExtra(TYPE_LIST);
         }
 
-        if (mList == null) {
+        if (mList == null || mList.size() <= 0) {
             mList = new ArrayList<>();
+
+        }
+
+        refineList();
+    }
+
+
+    private void refineList(){
+
+
+        for (int i = 0; i < mList.size(); i++) {
+
+            FragileBean fragileBean = mList.get(i);
+
+            fragileBean.getImageList().clear();
+
+            for (int j = 0; j < fragileBean.getUrls().size(); j++) {
+
+                FragileBean.ImageBean imageBean = fragileBean.new ImageBean(FragileBean.ImageBean.TYPE_ADD, fragileBean.getUrls().get(j));
+
+                fragileBean.getImageList().add(imageBean);
+
+            }
+
         }
 
     }
@@ -313,10 +337,10 @@ public class FragileActivity extends Activity {
         }
     }
 
-    public static void gotoActivity(Activity context) {
+    public static void gotoActivity(Activity context , ArrayList<FragileBean> list) {
         Intent intent = new Intent();
         intent.setClass(context, FragileActivity.class);
-
+        intent.putParcelableArrayListExtra(TYPE_LIST , list);
         context.startActivityForResult(intent, REQUEST_CODE_RESULT);
     }
 
@@ -337,8 +361,11 @@ public class FragileActivity extends Activity {
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private void saveUrls() {
+
         for (int i = 0; i < mList.size(); i++) {
             FragileBean fragileBean = mList.get(i);
+
+            fragileBean.getUrls().clear();
 
             for (int j = 0; j < fragileBean.getImageList().size(); j++) {
                 FragileBean.ImageBean imageBean = fragileBean.getImageList().get(j);

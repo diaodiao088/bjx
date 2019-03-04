@@ -13,9 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:background="@drawable/ready_bg"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/cancel_bill_bg"
         android:orientation="vertical"
         android:padding="10dp">
+
 
         <TextView
             android:id="@+id/record_name"
@@ -23,9 +28,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:text="门店：北京科技大学百货大楼"
-            android:textColor="#ed612b"
             android:drawableLeft="@drawable/room"
+            android:text="门店：北京科技大学百货大楼"
+            android:textColor="@color/main_text_color"
             android:textSize="12sp" />
 
         <TextView
@@ -33,11 +38,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="15dp"
-            android:text="地址：北京科技大学百货大楼海淀区学院路"
             android:drawableLeft="@drawable/address"
-            android:textColor="#ed612b"
+            android:text="地址：北京科技大学百货大楼海淀区学院路"
+            android:textColor="@color/main_text_color"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/record_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="15dp"
+            android:drawableLeft="@drawable/address"
+            android:textColor="@color/main_text_color"
             android:textSize="12sp" />
 
     </LinearLayout>
@@ -62,8 +78,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/add_confirm_btn"
-        android:background="#f5f5f5"
-        android:layout_below="@+id/tips" />
+        android:layout_below="@+id/tips"
+        android:background="#f5f5f5" />
 
 
 </RelativeLayout>

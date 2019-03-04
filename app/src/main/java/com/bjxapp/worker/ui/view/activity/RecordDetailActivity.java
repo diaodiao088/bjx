@@ -62,6 +62,9 @@ public class RecordDetailActivity extends Activity {
     @BindView(R.id.record_name)
     TextView mRecordNameTv;
 
+    @BindView(R.id.record_phone)
+    TextView mRecordPhoneTv;
+
     @BindView(R.id.record_address)
     TextView mRecordAddrTv;
 
