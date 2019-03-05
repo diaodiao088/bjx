@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,7 +15,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +24,7 @@ import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.RecordApi;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ShopInfoBean;
@@ -64,6 +65,22 @@ public class RecordDetailActivity extends Activity {
 
     @BindView(R.id.record_phone)
     TextView mRecordPhoneTv;
+
+    private XWaitingDialog mWaitingDialog;
+
+    @OnClick(R.id.record_phone)
+    void onClickPhone() {
+
+        if (shopInfoBean == null || TextUtils.isEmpty(shopInfoBean.getContactNumber())) {
+            return;
+        }
+
+        String mobile = shopInfoBean.getContactNumber();
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + mobile));
+        startActivity(intent);
+    }
 
     @BindView(R.id.record_address)
     TextView mRecordAddrTv;
@@ -115,29 +132,8 @@ public class RecordDetailActivity extends Activity {
         }
 
         mRecordNameTv.setText("门店：" + shopInfoBean.getEnterpriseName() + shopInfoBean.getName());
-        mRecordAddrTv.setText("地址：" + shopInfoBean.getDetailAddress());
-
-//        ArrayList<RecordBean> list = new ArrayList<>();
-//
-//        for (int i = 0; i < 10; i++) {
-//            RecordBean recordBean = new RecordBean();
-//            recordBean.setTypeName("录入详情：" + i);
-//
-//            ArrayList<RecordItemBean> list1 = new ArrayList<>();
-//
-//            for (int j = 0; j < 3; j++) {
-//                RecordItemBean bean = recordBean.new RecordItemBean();
-//                bean.setName("消毒柜：" + j);
-//                list1.add(bean);
-//            }
-//
-//            recordBean.setmItemList(list1);
-//
-//
-//            list.add(recordBean);
-//        }
-//
-//        mAdapter.setItems(list);
+        mRecordAddrTv.setText("地址：" + shopInfoBean.getLocationAddress() + shopInfoBean.getDetailAddress());
+        mRecordPhoneTv.setText(shopInfoBean.getContactPerson() + "/" + shopInfoBean.getContactNumber());
     }
 
     @Override
@@ -275,6 +271,8 @@ public class RecordDetailActivity extends Activity {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(DimenUtils.dp2px(15, this)));
 
+        mWaitingDialog = new XWaitingDialog(this);
+
     }
 
     public static void gotoActivity(Context context, ShopInfoBean shopInfoBean) {
@@ -334,7 +332,7 @@ public class RecordDetailActivity extends Activity {
 
         private TextView mRecordTypeTv;
         private LinearLayout mRecordItemContainer;
-        private ImageView mPlusIv;
+        private TextView mPlusIv;
 
         public RecordBaseHolder(View itemView) {
             super(itemView);
@@ -461,11 +459,24 @@ public class RecordDetailActivity extends Activity {
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
         params.put("shopId", shopInfoBean.getId());
 
+        if (mWaitingDialog != null) {
+            mWaitingDialog.show("正在提交中", false);
+        }
+
         Call<JsonObject> call = recordApi.submitDevice(params);
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
                     final JsonObject object = response.body();
@@ -498,6 +509,9 @@ public class RecordDetailActivity extends Activity {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
                         Toast.makeText(RecordDetailActivity.this, "提交失败", Toast.LENGTH_SHORT).show();
                     }
                 });

@@ -167,13 +167,12 @@ public class RecordAddActivity extends Activity {
 
     @OnClick(R.id.frag_layout)
     void onClickFrag() {
-        FragileActivity.gotoActivity(this , mFragList);
+        FragileActivity.gotoActivity(this, mFragList);
     }
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
 
     private ArrayList<FragileBean> mFragList = new ArrayList<>();
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -346,8 +345,8 @@ public class RecordAddActivity extends Activity {
 
                 String time = mRecordItemBean.getProductTime();
 
-                if (!TextUtils.isEmpty(time) && time.length() > 10){
-                    time = time.substring(0 , 10);
+                if (!TextUtils.isEmpty(time) && time.length() > 10) {
+                    time = time.substring(0, 10);
                 }
 
                 mRecordTimeTv.setText(time);
@@ -886,16 +885,6 @@ public class RecordAddActivity extends Activity {
             return;
         }
 
-        if (TextUtils.isEmpty(mRecordBrandNameTv.getText().toString())) {
-            Utils.showShortToast(RecordAddActivity.this, "请输入品牌名称.");
-            return;
-        }
-
-        if (TextUtils.isEmpty(mRecordTypeTv.getText().toString())) {
-            Utils.showShortToast(RecordAddActivity.this, "请填写规格型号.");
-            return;
-        }
-
         if (TextUtils.isEmpty(mRecordTimeTv.getText().toString())) {
             Utils.showShortToast(RecordAddActivity.this, "请选择时间.");
             return;
@@ -923,16 +912,6 @@ public class RecordAddActivity extends Activity {
             return;
         }
 
-        if (TextUtils.isEmpty(mRecordBrandNameTv.getText().toString())) {
-            Utils.showShortToast(RecordAddActivity.this, "请输入品牌名称.");
-            return;
-        }
-
-        if (TextUtils.isEmpty(mRecordTypeTv.getText().toString())) {
-            Utils.showShortToast(RecordAddActivity.this, "请填写规格型号.");
-            return;
-        }
-
         if (TextUtils.isEmpty(mRecordTimeTv.getText().toString())) {
             Utils.showShortToast(RecordAddActivity.this, "请选择时间.");
             return;
@@ -952,6 +931,10 @@ public class RecordAddActivity extends Activity {
     }
 
     private void commitImage(final boolean isUpdate) {
+
+        if (mWaitingDialog != null){
+            mWaitingDialog.show("正在提交...", false);
+        }
 
         OkHttpClient client = new OkHttpClient();
         MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -1022,14 +1005,6 @@ public class RecordAddActivity extends Activity {
             @Override
             public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
 
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mWaitingDialog != null) {
-                            mWaitingDialog.dismiss();
-                        }
-                    }
-                });
 
                 if (response.isSuccessful()) {
                     String str = response.body().string();
@@ -1125,11 +1100,17 @@ public class RecordAddActivity extends Activity {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
                     final JsonObject object = response.body();
 
                     final String msg = object.get("msg").getAsString();
                     final int code = object.get("code").getAsInt();
+
 
                     if (code == 0) {
                         mHandler.post(new Runnable() {
@@ -1152,9 +1133,14 @@ public class RecordAddActivity extends Activity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+
+
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
                         Toast.makeText(RecordAddActivity.this, "添加失败", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -1203,6 +1189,11 @@ public class RecordAddActivity extends Activity {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
                     final JsonObject object = response.body();
 
@@ -1230,6 +1221,12 @@ public class RecordAddActivity extends Activity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {

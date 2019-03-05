@@ -94,8 +94,14 @@ public class RecordActivity extends Activity {
                         String shopNum = shopInfo.get("shopNo").getAsString();
                         String locationAddress = shopInfo.get("locationAddress").getAsString();
 
+                        String contactPerson = shopInfo.get("contactPerson").getAsString();
+                        String contactNumber = shopInfo.get("contactPhone").getAsString();
+
                         ShopInfoBean shopInfoBean = new ShopInfoBean(detailAddress, enterpriseId, enterpriseName,
                                 id, latitude, longitude, name, shopNum, locationAddress);
+
+                        shopInfoBean.setContactNumber(contactNumber);
+                        shopInfoBean.setContactPerson(contactPerson);
 
                         RecordDetailActivity.gotoActivity(RecordActivity.this, shopInfoBean);
 
@@ -129,7 +135,6 @@ public class RecordActivity extends Activity {
                 });
             }
         });
-
 
     }
 

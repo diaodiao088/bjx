@@ -26,6 +26,7 @@
             android:layout_centerVertical="true"
             android:drawableLeft="@drawable/type_icon"
             android:drawablePadding="3dp"
+            android:textStyle="bold"
             android:text="消毒柜"
             android:textSize="12sp" />
 

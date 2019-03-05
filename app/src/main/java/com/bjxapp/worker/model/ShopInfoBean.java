@@ -23,6 +23,10 @@ public class ShopInfoBean implements Parcelable {
 
     private String locationAddress;
 
+    private String contactNumber;
+
+    private String contactPerson;
+
     public ShopInfoBean() {
 
     }
@@ -38,6 +42,22 @@ public class ShopInfoBean implements Parcelable {
         this.name = name;
         this.shopNum = shopNum;
         this.locationAddress = locationAddress;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getContactPerson() {
+        return contactPerson;
+    }
+
+    public void setContactPerson(String contactPerson) {
+        this.contactPerson = contactPerson;
     }
 
     public String getDetailAddress() {
@@ -122,6 +142,8 @@ public class ShopInfoBean implements Parcelable {
         name = in.readString();
         shopNum = in.readString();
         locationAddress = in.readString();
+        contactNumber = in.readString();
+        contactPerson = in.readString();
     }
 
 
@@ -153,5 +175,7 @@ public class ShopInfoBean implements Parcelable {
         dest.writeString(name);
         dest.writeString(shopNum);
         dest.writeString(locationAddress);
+        dest.writeString(contactNumber);
+        dest.writeString(contactPerson);
     }
 }

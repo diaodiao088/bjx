@@ -295,10 +295,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
     }
 
+    boolean isBillFinished = false;
+
     @OnClick(R.id.add_image_content)
     void addIssueImage() {
 
-        boolean isBillFinished = false;
         if (mDetailInfo != null) {
             OrderDes orderDes = mDetailInfo.getOrderDes();
             if (orderDes != null) {
@@ -1872,10 +1873,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(this, RepairActivity.class);
+        super.onBackPressed();
 
-        startActivity(intent);
-
-        Utils.finishActivity(this);
+//        Intent intent = new Intent(this, RepairActivity.class);
+//
+//        startActivity(intent);
+//
+//        Utils.finishActivity(this);
     }
 }
