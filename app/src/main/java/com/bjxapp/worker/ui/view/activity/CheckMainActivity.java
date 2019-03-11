@@ -77,7 +77,9 @@ public class CheckMainActivity extends Activity implements
         ButterKnife.bind(this);
         initView();
         initData(mCalendarView.getCurYear(), mCalendarView.getCurMonth(), mCalendarView.getCurDay());
+        initCalendar();
     }
+
 
     private void initView() {
 
@@ -193,24 +195,6 @@ public class CheckMainActivity extends Activity implements
             }
         });
 
-
-//        int year = mCalendarView.getCurYear();
-//        int month = mCalendarView.getCurMonth();
-//        int day = mCalendarView.getCurDay();
-//
-//        Map<String, Calendar> map = new HashMap<>();
-//        map.put(getSchemeCalendar(year, month, 3, 0xFF40db25, "假").toString(),
-//                getSchemeCalendar(year, month, 3, 0xFF40db25, "假"));
-//        map.put(getSchemeCalendar(year, month, 6, 0xFFe69138, "事").toString(),
-//                getSchemeCalendar(year, month, 6, 0xFFe69138, "事"));
-//        map.put(getSchemeCalendar(year, month, 9, 0xFFdf1356, "议").toString(),
-//                getSchemeCalendar(year, month, 9, 0xFFdf1356, "议"));
-//        map.put(getSchemeCalendar(year, month, 13, 0xFFedc56d, "记").toString(),
-//                getSchemeCalendar(year, month, 13, 0xFFedc56d, "记"));
-//        map.put(getSchemeCalendar(year, month, day, 0xff00a551, "记").toString(),
-//                getSchemeCalendar(year, month, day, 0xff00a551, "记"));
-//        //此方法在巨大的数据量上不影响遍历性能，推荐使用
-//        mCalendarView.setSchemeDate(map);
     }
 
     private String getFormatMonth(int year, int month) {
@@ -254,6 +238,7 @@ public class CheckMainActivity extends Activity implements
 
     }
 
+
     private void onDataChanged(int year, int month, int day) {
 
         mAdapterList.clear();
@@ -269,6 +254,75 @@ public class CheckMainActivity extends Activity implements
         }
 
         mAdapter.notifyDataSetChanged();
+
+        changeCalendar(year, month, day);
+    }
+
+    Map<String, Calendar> map = new HashMap<>();
+
+
+    private void changeCalendar(int yearReal, int monthReal, int dayReal) {
+
+        ArrayList<CheckBean> hasBillList = getBillList();
+
+        for (int i = 0; i < hasBillList.size(); i++) {
+
+            CheckBean checkBean = hasBillList.get(i);
+
+            map.put(getSchemeCalendar(checkBean.getYear(), checkBean.getMonth(), checkBean.getDays(), 0xffccf4d8, "记").toString(),
+                    getSchemeCalendar(checkBean.getYear(), checkBean.getMonth(), checkBean.getDays(), 0xffccf4d8, "记"));
+
+        }
+
+        ArrayList<CheckBean> uncertList = getUncertList();
+
+        for (int i = 0; i < uncertList.size(); i++) {
+
+            CheckBean checkBean = uncertList.get(i);
+
+            map.put(getSchemeCalendar(checkBean.getYear(), checkBean.getMonth(), checkBean.getDays(), 0xff564978, "记").toString(),
+                    getSchemeCalendar(checkBean.getYear(), checkBean.getMonth(), checkBean.getDays(), 0xff564978, "记"));
+
+        }
+
+
+        initCalendar();
+
+    }
+
+    private ArrayList getUncertList() {
+        ArrayList<CheckBean> tempList = new ArrayList<>();
+
+        for (int i = 0; i < mDataList.size(); i++) {
+            if (mDataList.get(i).getProcessStatus() == 6) {
+                tempList.add(mDataList.get(i));
+            }
+        }
+
+        return tempList;
+    }
+
+    private ArrayList getBillList() {
+
+        ArrayList<CheckBean> tempList = new ArrayList<>();
+
+        for (int i = 0; i < mDataList.size(); i++) {
+            if (mDataList.get(i).getProcessStatus() != 6) {
+                tempList.add(mDataList.get(i));
+            }
+        }
+
+        return tempList;
+    }
+
+    private void initCalendar() {
+        int year = mCalendarView.getCurYear();
+        int month = mCalendarView.getCurMonth();
+        int day = mCalendarView.getCurDay();
+
+        map.put(getSchemeCalendar(year, month, day, 0xff00a551, "记").toString(),
+                getSchemeCalendar(year, month, day, 0xff00a551, "记"));
+        mCalendarView.setSchemeDate(map);
     }
 
 

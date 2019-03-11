@@ -81,4 +81,16 @@ public class CheckBean {
         return formatedTime.equals(this.day);
     }
 
+    public int getYear(){
+        return Integer.parseInt(this.day.substring(0,4));
+    }
+
+    public int getMonth(){
+        return Integer.parseInt(this.day.substring(5 , 7));
+    }
+
+    public int getDays(){
+        return Integer.parseInt(this.day.substring(8 , 10));
+    }
+
 }
