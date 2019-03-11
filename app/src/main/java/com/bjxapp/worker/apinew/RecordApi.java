@@ -58,4 +58,9 @@ public interface RecordApi {
     @POST("/enterpriseOrder/list")
     Call<JsonObject> getCheckList(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/enterpriseOrder/info/{checkId}")
+    Call<JsonObject> getCheckInfo(@Path("checkId") String checkId,
+                                  @FieldMap Map<String, String> params);
+
 }

@@ -404,9 +404,10 @@ public class CheckMainActivity extends Activity implements
             mAddressTv = itemView.findViewById(R.id.address);
             mShopTv = itemView.findViewById(R.id.shop);
             mStatusTv = itemView.findViewById(R.id.status);
+            mRootView = itemView;
         }
 
-        public void setData(CheckBean checkBean) {
+        public void setData(final CheckBean checkBean) {
 
             if (checkBean.getType() != CheckBean.TYPE_TITLE) {
 
@@ -426,6 +427,12 @@ public class CheckMainActivity extends Activity implements
                     mStatusTv.setText("已完成");
                 }
 
+                mRootView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CheckOrderDetailActivity.goToActivity(CheckMainActivity.this , checkBean.getOrderId());
+                    }
+                });
             }
         }
 
