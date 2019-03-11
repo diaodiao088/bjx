@@ -381,12 +381,6 @@ public class RecordAddActivity extends Activity {
         });
     }
 
-    public static void gotoActivity(Activity context, int requestCode) {
-        Intent intent = new Intent();
-        intent.setClass(context, RecordAddActivity.class);
-        context.startActivityForResult(intent, requestCode);
-    }
-
 
     public void showTimerPicker() {
 
@@ -426,7 +420,7 @@ public class RecordAddActivity extends Activity {
      */
     public void showStatusPicker() {
         OptionPicker picker = new OptionPicker(this,
-                new String[]{"在用", "停用"});
+                new String[]{"在用", "禁用"});
         picker.setCycleDisable(true);//不禁用循环
         picker.setTopBackgroundColor(0xFFffffff);
         picker.setTopHeight(30);
@@ -932,7 +926,7 @@ public class RecordAddActivity extends Activity {
 
     private void commitImage(final boolean isUpdate) {
 
-        if (mWaitingDialog != null){
+        if (mWaitingDialog != null) {
             mWaitingDialog.show("正在提交...", false);
         }
 
@@ -1091,7 +1085,7 @@ public class RecordAddActivity extends Activity {
 
         putPartial(params);
 
-        boolean isDisable = mRecordStatusTv.getText().toString().equals("停用");
+        boolean isDisable = mRecordStatusTv.getText().toString().equals("禁用");
 
         params.put("status", isDisable ? "0" : "1");
 

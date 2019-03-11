@@ -31,7 +31,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/record_status_tv"
+            android:id="@+id/change_year_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"

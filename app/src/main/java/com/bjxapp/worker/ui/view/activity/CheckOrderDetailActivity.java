@@ -29,7 +29,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
-import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
+import com.bjxapp.worker.ui.widget.CheckOrderItemLayout;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
@@ -83,7 +83,12 @@ public class CheckOrderDetailActivity extends Activity {
 
     @OnClick(R.id.change_time_tv)
     void onChangeTime() {
+        CheckChangeTimeActivity.startActivity(this, checkDetailBean.getTime(), checkDetailBean.getActualTime(), checkDetailBean.getId());
+    }
 
+    @OnClick(R.id.add_confirm_btn)
+    void onConfirm() {
+        startConfirm();
     }
 
     private LinearLayoutManager mLayoutManager;
@@ -284,7 +289,7 @@ public class CheckOrderDetailActivity extends Activity {
         @Override
         public RecordBaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.record_item_layout, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.check_order_item_layout, parent, false);
 
             return new RecordBaseHolder(view);
         }
@@ -313,53 +318,44 @@ public class CheckOrderDetailActivity extends Activity {
 
         private TextView mRecordTypeTv;
         private LinearLayout mRecordItemContainer;
-        private TextView mPlusIv;
 
         public RecordBaseHolder(View itemView) {
             super(itemView);
             mRecordTypeTv = itemView.findViewById(R.id.type_name_tv);
             mRecordItemContainer = itemView.findViewById(R.id.record_item_container);
-            mPlusIv = itemView.findViewById(R.id.plus);
         }
 
         public void bindData(final CheckDetailBean.CategoryBean checkBean) {
 
-//            if (!TextUtils.isEmpty(checkBean.getTypeName())) {
-//                mRecordTypeTv.setText(checkBean.getTypeName());
-//            }
-//
-//            ArrayList<RecordItemBean> itemList = checkBean.getmItemList();
-//
-//            if (itemList.size() > 0) {
-//                mRecordItemContainer.removeAllViews();
-//                mRecordItemContainer.setVisibility(View.VISIBLE);
-//                for (int i = 0; i < itemList.size(); i++) {
-//                    generateItemLayout(itemList.get(i));
-//                }
-//            } else {
-//                mRecordItemContainer.setVisibility(View.GONE);
-//            }
-//
-//            mPlusIv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                }
-//            });
+            if (!TextUtils.isEmpty(checkBean.getName())) {
+                mRecordTypeTv.setText(checkBean.getName());
+            }
+
+            ArrayList<CheckDetailBean.DeviceBean> itemList = checkBean.getDeviceList();
+
+            if (itemList.size() > 0) {
+                mRecordItemContainer.removeAllViews();
+                mRecordItemContainer.setVisibility(View.VISIBLE);
+                for (int i = 0; i < itemList.size(); i++) {
+                    generateItemLayout(itemList.get(i));
+                }
+            } else {
+                mRecordItemContainer.setVisibility(View.GONE);
+            }
 
         }
 
-        public void generateItemLayout(RecordItemBean itemBean) {
+        public void generateItemLayout(CheckDetailBean.DeviceBean itemBean) {
 
 
-//            RecordItemLayout itemLayout = new RecordItemLayout(mRecordItemContainer.getContext());
-//
-//            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                    DimenUtils.dp2px(45, mRecordItemContainer.getContext()));
-//
-//            itemLayout.bindData(itemBean, shopInfoBean.getId());
-//
-//            mRecordItemContainer.addView(itemLayout, layoutParams);
+            CheckOrderItemLayout itemLayout = new CheckOrderItemLayout(mRecordItemContainer.getContext());
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    DimenUtils.dp2px(45, mRecordItemContainer.getContext()));
+
+            itemLayout.bindData(itemBean, itemBean.getId());
+
+            mRecordItemContainer.addView(itemLayout, layoutParams);
         }
 
     }
@@ -377,6 +373,92 @@ public class CheckOrderDetailActivity extends Activity {
         public SpaceItemDecoration(int space) {
             this.mSpace = space;
         }
+    }
+
+    private void startConfirm() {
+
+        if (checkDetailBean == null) {
+            return;
+        }
+
+        for (int i = 0; i < checkDetailBean.getCategoryList().size(); i++) {
+
+            CheckDetailBean.CategoryBean categoryBean = checkDetailBean.getCategoryList().get(i);
+
+            for (int j = 0; j < categoryBean.getDeviceList().size(); j++) {
+
+                CheckDetailBean.DeviceBean deviceBean = categoryBean.getDeviceList().get(j);
+
+                if (deviceBean.getStatus() == 0) {
+
+                    Toast.makeText(this, "请先提交设备信息.", Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+
+            }
+
+        }
+
+        if (mWaitingDialog != null) {
+            mWaitingDialog.show("提交成功.", false);
+        }
+
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("id", checkDetailBean.getId());
+
+        Call<JsonObject> call = recordApi.submitOrder(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        Utils.showShortToast(CheckOrderDetailActivity.this, "提交成功");
+                        finish();
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(CheckOrderDetailActivity.this, msg + ":" + code);
+                            }
+                        });
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Toast.makeText(CheckOrderDetailActivity.this, "修改失败..", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
+
     }
 
 }

@@ -167,6 +167,14 @@
         </activity>
 
         <activity
+            android:name="com.bjxapp.worker.ui.view.activity.DeviceInfoActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme">
+
+        </activity>
+
+        <activity
             android:name="com.bjxapp.worker.ui.view.activity.CheckOrderDetailActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
