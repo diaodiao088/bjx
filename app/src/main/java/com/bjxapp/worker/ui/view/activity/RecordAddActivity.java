@@ -1091,7 +1091,7 @@ public class RecordAddActivity extends Activity {
 
         putPartial(params);
 
-        boolean isDisable = mRecordStatusTv.getText().toString().equals("禁用");
+        boolean isDisable = mRecordStatusTv.getText().toString().equals("停用");
 
         params.put("status", isDisable ? "0" : "1");
 

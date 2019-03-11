@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="20dp">
+
+    <TextView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="#00a551" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="当前日期"
+        android:textColor="#747474"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginLeft="20dp"
+        android:background="#ccf4d8" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="有订单状态"
+        android:textColor="#747474"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#fcdedd" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="报告未确认"
+        android:textColor="#747474"
+        android:textSize="14sp" />
+
+
+</LinearLayout>

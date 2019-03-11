@@ -347,11 +347,13 @@ public class FragileActivity extends Activity {
     private void savePic() {
         if (mList.size() <= 0) {
             Toast.makeText(this, "请添加易损件", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         for (int i = 0; i < mList.size(); i++) {
             if (TextUtils.isEmpty(mList.get(i).getFragileName())) {
                 Toast.makeText(this, "请输入易损件名称", Toast.LENGTH_SHORT).show();
+                return;
             }
         }
 

@@ -10,6 +10,7 @@ import com.bjx.master.R;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.model.DateTime;
 import com.bjxapp.worker.model.ReceiveButton;
+import com.bjxapp.worker.ui.view.activity.CheckMainActivity;
 import com.bjxapp.worker.ui.view.activity.RecordActivity;
 import com.bjxapp.worker.ui.view.activity.RepairActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
@@ -62,6 +63,7 @@ public class Fragment_main_first_new extends BaseFragment implements View.OnClic
         switch (v.getId()) {
 
             case R.id.check_entrance_ly:
+                CheckMainActivity.goToActivity(getActivity());
             case R.id.maintain_entrance_ly:
                 Toast.makeText(getActivity(), "巡检/保养业务即将上线，敬请期待~", Toast.LENGTH_SHORT).show();
                 break;

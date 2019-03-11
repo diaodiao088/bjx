@@ -440,9 +440,9 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         super.onDestroy();
     }
 
-    public static void gotoActivity(Context context){
+    public static void gotoActivity(Context context) {
         Intent intent = new Intent();
-        intent.setClass(context , RepairActivity.class);
+        intent.setClass(context, RepairActivity.class);
         context.startActivity(intent);
     }
 

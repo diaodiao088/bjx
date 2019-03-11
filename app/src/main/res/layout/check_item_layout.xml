@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="130dp"
     android:background="@drawable/check_item_bg"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
     android:orientation="horizontal">
 
     <TextView
@@ -55,6 +57,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
@@ -86,6 +89,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/shop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
@@ -112,11 +116,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="14dp"
-                android:text="门店："
+                android:text="地址："
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
@@ -128,10 +133,23 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="30dp"
-        android:layout_height="match_parent"
-        android:background="@color/main_text_green" />
 
+    <LinearLayout
+        android:layout_width="35dp"
+        android:layout_height="match_parent"
+        android:background="@color/main_text_green"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:ems="1"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:textColor="@color/white" />
+
+
+    </LinearLayout>
 
 </LinearLayout>
