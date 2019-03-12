@@ -63,7 +63,7 @@ public class ServiceItemLayout extends LinearLayout {
     }
 
 
-    public void bindData(int index, final DeviceInfoActivity.ServiceItem serviceItem) {
+    public void bindData(int index, final DeviceInfoActivity.ServiceItem serviceItem, boolean isNeedMod) {
 
         this.serviceItem = serviceItem;
 
@@ -74,9 +74,18 @@ public class ServiceItemLayout extends LinearLayout {
 
         mServiceNameTv.setText(serviceItem.getProcessName());
 
-//        if (!TextUtils.isEmpty(serviceItem.getActualScore())) {
-//            mScoreTv.setText(serviceItem.getActualScore());
-//        }
+        if (!TextUtils.isEmpty(serviceItem.getActualScore())) {
+
+            if ("0".equals(serviceItem.getActualScore())) {
+                mScoreTv.setText("不正常");
+            } else {
+                mScoreTv.setText("正常");
+            }
+        }
+
+        if (!isNeedMod){
+            mScoreBtn.setVisibility(GONE);
+        }
 
         mScoreBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -89,7 +98,7 @@ public class ServiceItemLayout extends LinearLayout {
 
     private void showTimePicker(final int maxScore) {
         OptionPicker picker = new OptionPicker((Activity) getContext(),
-                new String[]{"正常","不正常"});
+                new String[]{"正常", "不正常"});
         picker.setCycleDisable(true);//不禁用循环
         picker.setTopBackgroundColor(0xFFffffff);
         picker.setTopHeight(30);
@@ -115,9 +124,9 @@ public class ServiceItemLayout extends LinearLayout {
             @Override
             public void onOptionPicked(int index, String item) {
                 mScoreTv.setText(item);
-                if ("正常".equals(item)){
+                if ("正常".equals(item)) {
                     serviceItem.setActualScore(String.valueOf(maxScore));
-                }else{
+                } else {
                     serviceItem.setActualScore(String.valueOf(0));
                 }
 

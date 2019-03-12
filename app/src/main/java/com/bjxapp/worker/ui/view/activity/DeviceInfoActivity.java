@@ -22,6 +22,7 @@ import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.RecordApi;
+import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
@@ -66,6 +67,9 @@ public class DeviceInfoActivity extends Activity {
         RecordAddActivity.goToActivity(this, recordItemBean, "");
     }
 
+    @BindView(R.id.add_confirm_btn)
+    XButton mBtn;
+
     @OnClick(R.id.add_confirm_btn)
     void onConfirm() {
         startCommit();
@@ -73,7 +77,7 @@ public class DeviceInfoActivity extends Activity {
 
     @OnClick(R.id.add_img_ly)
     void onAddImage() {
-        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImgList, false);
+        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImgList, !isNeedMod);
     }
 
     private String id;
@@ -95,6 +99,7 @@ public class DeviceInfoActivity extends Activity {
     ArrayList<String> mImgList = new ArrayList<>();
 
     public static final String TYPE_ID = "type_id";
+    public static final String IS_NEED_MOD = "is_need_Mod";
 
     @BindView(R.id.change_reason_tv)
     EditText mReasonTv;
@@ -115,12 +120,15 @@ public class DeviceInfoActivity extends Activity {
 
     private XWaitingDialog mWaitingDialog;
 
+    private boolean isNeedMod = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_detail_activity);
         ButterKnife.bind(this);
         id = getIntent().getStringExtra(TYPE_ID);
+        isNeedMod = getIntent().getBooleanExtra(IS_NEED_MOD ,true);
         initView();
         initData();
     }
@@ -184,9 +192,16 @@ public class DeviceInfoActivity extends Activity {
                         situation = 0;
                         break;
                 }
-
             }
         });
+
+        if (!isNeedMod){
+            mBtn.setVisibility(View.GONE);
+            mRadioGroup.setClickable(false);
+            mRadioGroup.setEnabled(false);
+            mDeviceRadioGroup.setEnabled(false);
+            mDeviceRadioGroup.setClickable(false);
+        }
 
     }
 
@@ -320,7 +335,7 @@ public class DeviceInfoActivity extends Activity {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     DimenUtils.dp2px(45, this));
 
-            serviceItemLayout.bindData(i, serviceItem);
+            serviceItemLayout.bindData(i, serviceItem , isNeedMod);
 
             mServiceLy.addView(serviceItemLayout, layoutParams);
 
@@ -328,10 +343,11 @@ public class DeviceInfoActivity extends Activity {
     }
 
 
-    public static void goToActivity(Context context, String deviceId) {
+    public static void goToActivity(Context context, String deviceId, boolean flag) {
         Intent intent = new Intent();
         intent.setClass(context, DeviceInfoActivity.class);
         intent.putExtra(TYPE_ID, deviceId);
+        intent.putExtra(IS_NEED_MOD ,flag);
 
         context.startActivity(intent);
     }
@@ -411,7 +427,7 @@ public class DeviceInfoActivity extends Activity {
         }
 
         if (!isAllChecked()) {
-            Toast.makeText(this, "请先进行评分", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "请先进行选择评分", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -428,7 +444,7 @@ public class DeviceInfoActivity extends Activity {
         params.put("situation", String.valueOf((int) situation));
         params.put("needMaintain", String.valueOf(needMaintain));
 
-        if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
+        if (!TextUtils.isEmpty(mReasonTv.getText().toString())) {
             params.put("remark", mReasonTv.getText().toString());
         }
 

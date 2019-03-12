@@ -23,6 +23,7 @@ import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.RecordApi;
+import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
@@ -31,11 +32,13 @@ import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 import com.bjxapp.worker.ui.widget.CheckOrderItemLayout;
 import com.bjxapp.worker.ui.widget.DimenUtils;
+import com.bjxapp.worker.utils.IDCardValidate;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,15 +89,24 @@ public class CheckOrderDetailActivity extends Activity {
         CheckChangeTimeActivity.startActivity(this, checkDetailBean.getTime(), checkDetailBean.getActualTime(), checkDetailBean.getId());
     }
 
+    @BindView(R.id.change_time_tv)
+    TextView mChangeTimeTv;
+
     @OnClick(R.id.add_confirm_btn)
     void onConfirm() {
         startConfirm();
     }
 
+    @BindView(R.id.add_confirm_btn)
+    XButton mConfirmBtn;
+
     private LinearLayoutManager mLayoutManager;
 
     @BindView(R.id.record_recycler_view)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.name)
+    TextView mTitleName;
 
     private String orderId;
 
@@ -106,13 +118,15 @@ public class CheckOrderDetailActivity extends Activity {
 
     public static final String TYPE_ID = "type_id";
 
+    private int mCurrentType;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_order_detail_activity);
         ButterKnife.bind(this);
-        initView();
         handleIntent();
+        initView();
     }
 
     private void handleIntent() {
@@ -121,6 +135,7 @@ public class CheckOrderDetailActivity extends Activity {
 
         if (intent != null) {
             orderId = intent.getStringExtra(TYPE_ID);
+            mCurrentType = intent.getIntExtra("type" , 0);
         }
     }
 
@@ -136,6 +151,12 @@ public class CheckOrderDetailActivity extends Activity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(recordAdapter);
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(DimenUtils.dp2px(15, this)));
+
+        if(mCurrentType == 0){
+            mTitleName.setText("门店巡检");
+        }else{
+            mTitleName.setText("门店保养");
+        }
 
     }
 
@@ -211,9 +232,11 @@ public class CheckOrderDetailActivity extends Activity {
         String actualTime = mainObj.get("actualTime").getAsString();
         String id = mainObj.get("id").getAsString();
 
+
         checkDetailBean.setTime(day);
         checkDetailBean.setId(id);
         checkDetailBean.setActualTime(actualTime);
+        checkDetailBean.setProcessState(mainObj.get("processState").getAsInt());
 
         JsonArray categoryArray = mainObj.get("equipmentCategoryList").getAsJsonArray();
 
@@ -275,15 +298,25 @@ public class CheckOrderDetailActivity extends Activity {
                 mShopTv.setText(checkDetailBean.getShopInfoBean().getEnterpriseName()
                         + checkDetailBean.getShopInfoBean().getName());
                 recordAdapter.setItems(checkDetailBean.getCategoryList());
+
+                if (checkDetailBean.getProcessState() >= 3){
+                    mChangeTimeTv.setVisibility(View.GONE);
+                }
+
+                if (checkDetailBean.getProcessState() >= 6){
+                    mConfirmBtn.setVisibility(View.GONE);
+                }
+
             }
         });
 
     }
 
-    public static void goToActivity(Context context, String orderId) {
+    public static void goToActivity(Context context, String orderId, int type) {
         Intent intent = new Intent();
         intent.setClass(context, CheckOrderDetailActivity.class);
         intent.putExtra(TYPE_ID, orderId);
+        intent.putExtra("type", type);
         context.startActivity(intent);
     }
 
@@ -358,7 +391,7 @@ public class CheckOrderDetailActivity extends Activity {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     DimenUtils.dp2px(45, mRecordItemContainer.getContext()));
 
-            itemLayout.bindData(itemBean, itemBean.getId());
+            itemLayout.bindData(checkDetailBean.getProcessState() , itemBean, itemBean.getId());
 
             mRecordItemContainer.addView(itemLayout, layoutParams);
         }

@@ -90,7 +90,7 @@
                 android:paddingLeft="25dp"
                 android:paddingTop="9dp"
                 android:paddingBottom="9dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/add_img_ly"
@@ -177,30 +177,35 @@
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
-                android:paddingLeft="20dp">
+                android:paddingLeft="20dp"
+                android:paddingBottom="10dp">
 
                 <RadioButton
                     android:id="@+id/normal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_marginTop="5dp"
+                    android:button="@drawable/radio_selector"
+                    android:paddingLeft="10dp"
                     android:text="设备情况正常"
-                    android:button="@drawable/service_bg"
                     android:textSize="14sp" />
 
                 <RadioButton
                     android:id="@+id/recommend"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_height="40dp"
+                    android:height="40dp"
+                    android:button="@drawable/radio_selector"
+                    android:paddingLeft="10dp"
                     android:text="设备带病运行，建议报修"
                     android:textSize="14sp" />
 
                 <RadioButton
                     android:id="@+id/must"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_height="40dp"
+                    android:button="@drawable/radio_selector"
+                    android:paddingLeft="10dp"
                     android:text="设备情况故障，必须报修"
                     android:textSize="14sp" />
 
@@ -385,6 +390,8 @@
                         android:id="@+id/yes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:button="@drawable/radio_selector"
+                        android:paddingLeft="10dp"
                         android:text="报修" />
 
                     <RadioButton
@@ -392,6 +399,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="40dp"
+                        android:button="@drawable/radio_selector"
+                        android:paddingLeft="10dp"
                         android:text="不报修" />
                 </RadioGroup>
             </LinearLayout>

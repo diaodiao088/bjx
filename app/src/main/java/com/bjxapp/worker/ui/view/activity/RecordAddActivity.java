@@ -167,7 +167,7 @@ public class RecordAddActivity extends Activity {
 
     @OnClick(R.id.frag_layout)
     void onClickFrag() {
-        FragileActivity.gotoActivity(this, mFragList);
+        FragileActivity.gotoActivity(this, mFragList ,isFinished);
     }
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();

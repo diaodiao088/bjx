@@ -36,6 +36,8 @@ public class FragileHolder extends RecyclerView.ViewHolder {
 
     private int currentPos;
 
+    private boolean isFinished;
+
     public FragileHolder(View itemView) {
         super(itemView);
         mEditText = itemView.findViewById(R.id.frag_name_tv);
@@ -46,6 +48,10 @@ public class FragileHolder extends RecyclerView.ViewHolder {
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, true));
         myAdapter = new MyAdapter();
         mRecyclerView.setAdapter(myAdapter);
+    }
+
+    public void setFinished(){
+        this.isFinished = true;
     }
 
     public void setData(FragileBean fragileBean, final int position) {
@@ -187,6 +193,11 @@ public class FragileHolder extends RecyclerView.ViewHolder {
             super(itemView);
             mDeleteIv = itemView.findViewById(R.id.deleteImageView);
             mIv = itemView.findViewById(R.id.screenShotImageView);
+
+            if (isFinished){
+                mDeleteIv.setVisibility(View.GONE);
+            }
+
         }
     }
 

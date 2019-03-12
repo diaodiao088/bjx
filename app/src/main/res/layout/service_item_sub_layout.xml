@@ -78,7 +78,7 @@
             android:paddingTop="4dp"
             android:paddingRight="8dp"
             android:paddingBottom="4dp"
-            android:text="评分"
+            android:text="选择"
             android:textColor="#ffffff"
             android:textSize="12sp" />
 

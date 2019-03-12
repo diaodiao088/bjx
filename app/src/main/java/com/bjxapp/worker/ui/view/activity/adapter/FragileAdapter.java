@@ -14,11 +14,17 @@ public class FragileAdapter extends RecyclerView.Adapter<FragileHolder> {
 
     private ArrayList<FragileBean> mItemList = new ArrayList<>();
 
+    public boolean isFinished;
+
     @Override
     public FragileHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragile_item_layout, parent, false);
         FragileHolder holder = new FragileHolder(view);
         holder.setOnItemClickListener(mClickListener);
+        if (isFinished){
+            holder.setFinished();
+        }
+
 
         return holder;
     }

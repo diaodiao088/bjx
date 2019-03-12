@@ -44,7 +44,7 @@ public class CheckOrderItemLayout extends LinearLayout {
         mSubStatusTv = findViewById(R.id.sub_status);
     }
 
-    public void bindData(final CheckDetailBean.DeviceBean itemBean, final String shopId) {
+    public void bindData(final int processState , final CheckDetailBean.DeviceBean itemBean, final String shopId) {
         this.itemBean = itemBean;
         mSubNameTv.setText(itemBean.getEquipName());
 
@@ -60,7 +60,7 @@ public class CheckOrderItemLayout extends LinearLayout {
             @Override
             public void onClick(View v) {
                 //  RecordAddActivity.goToActivity((Activity) getContext(), itemBean, shopId);
-                DeviceInfoActivity.goToActivity(getContext() , itemBean.getId());
+                DeviceInfoActivity.goToActivity(getContext() , itemBean.getId() , processState <= 3);
             }
         });
 

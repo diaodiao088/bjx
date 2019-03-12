@@ -14,6 +14,8 @@ public class CheckDetailBean {
 
     private String time;
 
+    private int processState;
+
     public String getActualTime() {
         return actualTime;
     }
@@ -122,5 +124,11 @@ public class CheckDetailBean {
         }
     }
 
+    public int getProcessState() {
+        return processState;
+    }
 
+    public void setProcessState(int processState) {
+        this.processState = processState;
+    }
 }

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
@@ -95,6 +96,11 @@ public class FragileActivity extends Activity {
         savePic();
     }
 
+    @BindView(R.id.add_confirm_btn)
+    XButton mBtn;
+
+    private boolean isFinished;
+
     public static final int REQUEST_CODE_RESULT = 0x04;
 
     public static final String TYPE_LIST = "type_list";
@@ -134,6 +140,8 @@ public class FragileActivity extends Activity {
 
         }
 
+        isFinished = intent.getBooleanExtra("isFinish" ,false);
+
         refineList();
     }
 
@@ -155,6 +163,11 @@ public class FragileActivity extends Activity {
 
             }
 
+        }
+
+        if (isFinished){
+            mTitleRightTv.setVisibility(View.GONE);
+            mBtn.setVisibility(View.GONE);
         }
 
     }
@@ -303,6 +316,7 @@ public class FragileActivity extends Activity {
     private void initData() {
 
         mAdapter = new FragileAdapter();
+        mAdapter.isFinished = isFinished;
         mAdapter.setItems(mList);
         mAdapter.setListener(new FragileAdapter.OnItemClickListener() {
             @Override
@@ -337,10 +351,11 @@ public class FragileActivity extends Activity {
         }
     }
 
-    public static void gotoActivity(Activity context , ArrayList<FragileBean> list) {
+    public static void gotoActivity(Activity context , ArrayList<FragileBean> list , boolean isfinished) {
         Intent intent = new Intent();
         intent.setClass(context, FragileActivity.class);
         intent.putParcelableArrayListExtra(TYPE_LIST , list);
+        intent.putExtra("isFinish", isfinished);
         context.startActivityForResult(intent, REQUEST_CODE_RESULT);
     }
 

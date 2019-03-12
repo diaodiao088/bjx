@@ -466,7 +466,7 @@ public class CheckMainActivity extends Activity implements
                 mRootView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CheckOrderDetailActivity.goToActivity(CheckMainActivity.this, checkBean.getOrderId());
+                        CheckOrderDetailActivity.goToActivity(CheckMainActivity.this, checkBean.getOrderId(), mCurrentType);
                     }
                 });
 

@@ -79,5 +79,13 @@ public interface RecordApi {
     @POST("/enterpriseOrderEquipment/update")
     Call<JsonObject> updateEquip(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/enterpriseOrder/quantity")
+    Call<JsonObject> getEnterRedotCount(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/order/quantity")
+    Call<JsonObject> getRepairRedotCount(@FieldMap Map<String, String> params);
+
 
 }

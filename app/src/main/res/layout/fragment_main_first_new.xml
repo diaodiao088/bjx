@@ -49,6 +49,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/service_item_top_Ly"
@@ -57,6 +58,21 @@
                     android:textColor="#545454"
                     android:textSize="14sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/redot_weixiu"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/redot"
+                    android:textColor="@color/white"
+                    android:text="29"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:layout_above="@+id/name"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    />
 
 
             </RelativeLayout>
@@ -106,6 +122,7 @@
                     android:gravity="center"
                     android:text="设备录入"
                     android:textColor="#545454"
+
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -156,6 +173,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/check"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/check_item_top_Ly"
@@ -164,6 +182,21 @@
                     android:textColor="#545454"
                     android:textSize="14sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/redot_check"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/redot"
+                    android:textColor="@color/white"
+                    android:text="29"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:layout_above="@+id/check"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    />
 
             </RelativeLayout>
 
@@ -205,6 +238,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/baoyang"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/maintain_item_top_Ly"
@@ -213,6 +247,21 @@
                     android:textColor="#545454"
                     android:textSize="14sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/redot_baoyang"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/redot"
+                    android:textColor="@color/white"
+                    android:text="29"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:layout_above="@+id/baoyang"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>
