@@ -62,7 +62,7 @@ public class CheckMainActivity extends Activity implements
     RecyclerView mRecyclerView;
 
     @OnClick(R.id.title_image_back)
-    void onBack(){
+    void onBack() {
         onBackPressed();
     }
 
@@ -83,22 +83,30 @@ public class CheckMainActivity extends Activity implements
 
     private int mCurrentType;
 
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_main_activity);
         ButterKnife.bind(this);
-        initView();
 
         mCurrentType = getIntent().getIntExtra(ACTIVITY_TYPE, TYPE_CHECK);
+        initView();
 
         initCalendar();
+
+        mYear = mCalendarView.getCurYear();
+        mMonth = mCalendarView.getCurMonth();
+        mDay = mCalendarView.getCurDay();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initData(mCalendarView.getCurYear(), mCalendarView.getCurMonth(), mCalendarView.getCurDay());
+        initData(mYear, mMonth, mDay);
     }
 
     private void initView() {
@@ -253,6 +261,9 @@ public class CheckMainActivity extends Activity implements
     public void onCalendarSelect(Calendar calendar, boolean isClick) {
         mTitleTextView.setText(calendar.getYear() + "年" + calendar.getMonth() + "月");
         if (isClick) {
+            mYear = calendar.getYear();
+            mMonth = calendar.getMonth();
+            mDay = calendar.getDay();
             onDataChanged(calendar.getYear(), calendar.getMonth(), calendar.getDay());
         } else {
             initData(calendar.getYear(), calendar.getMonth(), calendar.getDay());
@@ -420,6 +431,7 @@ public class CheckMainActivity extends Activity implements
         private TextView mShopTv;
 
         private TextView mStatusTv;
+        private TextView mNameTv;
 
         public MyHolder(View itemView) {
             super(itemView);
@@ -427,6 +439,7 @@ public class CheckMainActivity extends Activity implements
             mAddressTv = itemView.findViewById(R.id.address);
             mShopTv = itemView.findViewById(R.id.shop);
             mStatusTv = itemView.findViewById(R.id.status);
+            mNameTv = itemView.findViewById(R.id.name);
             mRootView = itemView;
         }
 
@@ -456,6 +469,13 @@ public class CheckMainActivity extends Activity implements
                         CheckOrderDetailActivity.goToActivity(CheckMainActivity.this, checkBean.getOrderId());
                     }
                 });
+
+                if (mCurrentType == TYPE_CHECK) {
+                    mNameTv.setText("门店巡检");
+                } else {
+                    mNameTv.setText("门店保养");
+                }
+
             }
         }
 

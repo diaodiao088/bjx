@@ -185,6 +185,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="设备情况正常"
+                    android:button="@drawable/service_bg"
                     android:textSize="14sp" />
 
                 <RadioButton

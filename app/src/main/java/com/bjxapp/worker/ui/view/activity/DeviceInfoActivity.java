@@ -415,6 +415,11 @@ public class DeviceInfoActivity extends Activity {
             return;
         }
 
+        if (mImgList.size() <= 0){
+            Toast.makeText(this , "请添加照片" , Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         Map<String, String> params = new HashMap<>();
         params.put("token", ConfigManager.getInstance(this).getUserSession());

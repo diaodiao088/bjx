@@ -129,7 +129,7 @@ public class CheckOrderDetailActivity extends Activity {
 
     private void initView() {
 
-        mTitleTextView.setText("服务详情");
+        mTitleTextView.setText("订单详情");
 
         mLayoutManager = new LinearLayoutManager(this);
         recordAdapter = new RecordAdapter();
