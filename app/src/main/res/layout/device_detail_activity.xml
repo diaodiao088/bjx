@@ -89,7 +89,8 @@
                 android:orientation="vertical"
                 android:paddingLeft="25dp"
                 android:paddingTop="9dp"
-                android:paddingBottom="9dp" />
+                android:paddingBottom="9dp"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:id="@+id/add_img_ly"
@@ -169,6 +170,7 @@
                 android:minHeight="1dp" />
 
             <RadioGroup
+                android:id="@+id/device_group"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
@@ -178,6 +180,7 @@
                 android:paddingLeft="20dp">
 
                 <RadioButton
+                    android:id="@+id/normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -185,6 +188,7 @@
                     android:textSize="14sp" />
 
                 <RadioButton
+                    android:id="@+id/recommend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -192,6 +196,7 @@
                     android:textSize="14sp" />
 
                 <RadioButton
+                    android:id="@+id/must"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"

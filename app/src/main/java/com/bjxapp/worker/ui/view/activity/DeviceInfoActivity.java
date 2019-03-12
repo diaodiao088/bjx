@@ -10,19 +10,26 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.RecordApi;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
+import com.bjxapp.worker.ui.widget.DimenUtils;
+import com.bjxapp.worker.ui.widget.ServiceItemLayout;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
@@ -66,9 +73,11 @@ public class DeviceInfoActivity extends Activity {
 
     private String id;
 
+    private String realId;
+
     private String[] imgUrls;
 
-    private Boolean needMaintain;
+    private Integer needMaintain;
 
     private String remark;
 
@@ -91,8 +100,15 @@ public class DeviceInfoActivity extends Activity {
     @BindView(R.id.need_maintain)
     RadioGroup mRadioGroup;
 
+    @BindView(R.id.device_group)
+    RadioGroup mDeviceRadioGroup;
+
+    @BindView(R.id.service_process_ly)
+    LinearLayout mServiceLy;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private XWaitingDialog mWaitingDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,6 +144,8 @@ public class DeviceInfoActivity extends Activity {
                 }
             }
         });
+
+        mWaitingDialog = new XWaitingDialog(this);
 
     }
 
@@ -173,11 +191,10 @@ public class DeviceInfoActivity extends Activity {
         });
     }
 
-
     private void parseData(JsonObject object) {
 
         if (object.get("needMaintain") != null && !(object.get("needMaintain") instanceof JsonNull)) {
-            needMaintain = object.get("needMaintain").getAsBoolean();
+            needMaintain = object.get("needMaintain").getAsInt();
         }
 
         if (object.get("remark") != null && !(object.get("remark") instanceof JsonNull)) {
@@ -187,6 +204,9 @@ public class DeviceInfoActivity extends Activity {
         if (object.get("situation") != null && !(object.get("situation") instanceof JsonNull)) {
             situation = object.get("situation").getAsInt();
         }
+
+        id = object.get("equipmentId").getAsString();
+        realId = object.get("id").getAsString();
 
         JsonArray urlArray = object.get("imgUrls").getAsJsonArray();
 
@@ -206,7 +226,7 @@ public class DeviceInfoActivity extends Activity {
                 serviceItem.setActualScore(item.get("actualScore").getAsString());
             }
 
-            serviceItem.setId(item.get("id").getAsInt());
+            serviceItem.setId(item.get("id").getAsString());
             serviceItem.setMaxScore(item.get("maxScore").getAsInt());
             serviceItem.setProcessName(item.get("processName").getAsString());
             mList.add(serviceItem);
@@ -221,12 +241,48 @@ public class DeviceInfoActivity extends Activity {
             mReasonTv.setText(remark);
         }
 
-        if (needMaintain != null){
-            if (needMaintain){
+        if (needMaintain != null) {
+            if (needMaintain == 1) {
                 mRadioGroup.check(R.id.yes);
-            }else{
+            } else {
                 mRadioGroup.check(R.id.no);
             }
+        }
+
+        if (situation != null) {
+            if (situation == 0) {
+                mDeviceRadioGroup.check(R.id.normal);
+            } else if (situation == 3) {
+                mDeviceRadioGroup.check(R.id.recommend);
+            } else {
+                mDeviceRadioGroup.check(R.id.must);
+            }
+        }
+
+        if (mList.size() > 0) {
+            mServiceLy.setVisibility(View.VISIBLE);
+            mServiceLy.removeAllViews();
+            updateServiceLy();
+        } else {
+            mServiceLy.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateServiceLy() {
+
+
+        for (int i = 0; i < mList.size(); i++) {
+
+            ServiceItem serviceItem = mList.get(i);
+            ServiceItemLayout serviceItemLayout = new ServiceItemLayout(this);
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    DimenUtils.dp2px(45, this));
+
+            serviceItemLayout.bindData(i, serviceItem);
+
+            mServiceLy.addView(serviceItemLayout, layoutParams);
+
         }
     }
 
@@ -239,11 +295,11 @@ public class DeviceInfoActivity extends Activity {
         context.startActivity(intent);
     }
 
-    class ServiceItem {
+    public class ServiceItem {
 
         String actualScore;
 
-        int id;
+        String id;
 
         int maxScore;
 
@@ -257,11 +313,11 @@ public class DeviceInfoActivity extends Activity {
             this.actualScore = actualScore;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(String id) {
             this.id = id;
         }
 
@@ -296,9 +352,131 @@ public class DeviceInfoActivity extends Activity {
                 }
                 break;
         }
-    }
-
-    public void startComit() {
 
     }
+
+    public void startCommit() {
+
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
+        if (situation == null) {
+            Toast.makeText(this, "请先选择设备状态", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (needMaintain == null) {
+            Toast.makeText(this, "请选择是否需要维修", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isAllChecked()) {
+            Toast.makeText(this, "请先进行评分", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("id", realId);
+        params.put("situation", String.valueOf((int) situation));
+        params.put("needMaintain", String.valueOf(needMaintain));
+
+        if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
+            params.put("remark", mReasonTv.getText().toString());
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < mImgList.size(); i++) {
+            if (i < mImgList.size() - 1) {
+                builder.append(mImgList.get(i) + ",");
+            } else {
+                builder.append(mImgList.get(i));
+            }
+        }
+
+        params.put("imgUrls", builder.toString());
+
+        putPartial(params);
+
+        Call<JsonObject> call = recordApi.updateEquip(params);
+
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        Utils.showShortToast(DeviceInfoActivity.this, "提交成功");
+                        finish();
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(DeviceInfoActivity.this, msg + ":" + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Toast.makeText(DeviceInfoActivity.this, "提交失败..", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void putPartial(Map<String, String> params) {
+
+        if (mList == null || mList.size() <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < mList.size(); i++) {
+
+            String namekey = "serviceProcessList[" + i + "].id";
+            String urlkey = "serviceProcessList[" + i + "].actualScore";
+
+            String nameValue = mList.get(i).getId();
+
+            params.put(namekey, nameValue);
+
+            String score = mList.get(i).getActualScore();
+
+            params.put(urlkey, score);
+
+        }
+
+
+    }
+
+    private boolean isAllChecked() {
+        for (int i = 0; i < mList.size(); i++) {
+            if (TextUtils.isEmpty(mList.get(i).getActualScore())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
 }

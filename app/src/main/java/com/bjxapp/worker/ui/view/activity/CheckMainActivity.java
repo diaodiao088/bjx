@@ -38,6 +38,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,6 +61,11 @@ public class CheckMainActivity extends Activity implements
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
+    @OnClick(R.id.title_image_back)
+    void onBack(){
+        onBackPressed();
+    }
+
     private XWaitingDialog mWaitingDialog;
 
     private MyAdapter mAdapter;
@@ -70,12 +76,22 @@ public class CheckMainActivity extends Activity implements
 
     private ArrayList<CheckBean> mAdapterList = new ArrayList<>();
 
+    public static final int TYPE_CHECK = 0x00;
+    public static final int TYPE_MAIN = 0x01;
+
+    public static final String ACTIVITY_TYPE = "activity_type";
+
+    private int mCurrentType;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_main_activity);
         ButterKnife.bind(this);
         initView();
+
+        mCurrentType = getIntent().getIntExtra(ACTIVITY_TYPE, TYPE_CHECK);
+
         initData(mCalendarView.getCurYear(), mCalendarView.getCurMonth(), mCalendarView.getCurDay());
         initCalendar();
     }
@@ -119,7 +135,7 @@ public class CheckMainActivity extends Activity implements
         params.put("token", ConfigManager.getInstance(this).getUserSession());
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
         params.put("month", getFormatMonth(year, month));
-        params.put("serviceType", "0");
+        params.put("serviceType", String.valueOf(mCurrentType));
 
         if (mCall != null && !mCall.isCanceled()) {
             mCall.cancel();
@@ -326,9 +342,10 @@ public class CheckMainActivity extends Activity implements
     }
 
 
-    public static void goToActivity(Context context) {
+    public static void goToActivity(Context context, int type) {
         Intent intent = new Intent();
         intent.setClass(context, CheckMainActivity.class);
+        intent.putExtra(ACTIVITY_TYPE, type);
         context.startActivity(intent);
     }
 
@@ -430,7 +447,7 @@ public class CheckMainActivity extends Activity implements
                 mRootView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CheckOrderDetailActivity.goToActivity(CheckMainActivity.this , checkBean.getOrderId());
+                        CheckOrderDetailActivity.goToActivity(CheckMainActivity.this, checkBean.getOrderId());
                     }
                 });
             }

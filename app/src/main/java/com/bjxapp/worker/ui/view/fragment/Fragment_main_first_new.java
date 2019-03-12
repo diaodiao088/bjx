@@ -63,10 +63,10 @@ public class Fragment_main_first_new extends BaseFragment implements View.OnClic
         switch (v.getId()) {
 
             case R.id.check_entrance_ly:
-                CheckMainActivity.goToActivity(getActivity());
+                CheckMainActivity.goToActivity(getActivity() , CheckMainActivity.TYPE_CHECK);
                 break;
             case R.id.maintain_entrance_ly:
-                Toast.makeText(getActivity(), "巡检/保养业务即将上线，敬请期待~", Toast.LENGTH_SHORT).show();
+                CheckMainActivity.goToActivity(getActivity() , CheckMainActivity.TYPE_MAIN);
                 break;
 
             case R.id.service_entrance_ly:
