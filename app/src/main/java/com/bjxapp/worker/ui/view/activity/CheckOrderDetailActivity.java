@@ -113,7 +113,6 @@ public class CheckOrderDetailActivity extends Activity {
         ButterKnife.bind(this);
         initView();
         handleIntent();
-        initData();
     }
 
     private void handleIntent() {
@@ -140,6 +139,12 @@ public class CheckOrderDetailActivity extends Activity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
 
     private void initData() {
 

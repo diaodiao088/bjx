@@ -92,10 +92,14 @@ public class CheckMainActivity extends Activity implements
 
         mCurrentType = getIntent().getIntExtra(ACTIVITY_TYPE, TYPE_CHECK);
 
-        initData(mCalendarView.getCurYear(), mCalendarView.getCurMonth(), mCalendarView.getCurDay());
         initCalendar();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData(mCalendarView.getCurYear(), mCalendarView.getCurMonth(), mCalendarView.getCurDay());
+    }
 
     private void initView() {
 
@@ -160,6 +164,8 @@ public class CheckMainActivity extends Activity implements
                     if (code == 0) {
 
                         JsonArray array = object.get("list").getAsJsonArray();
+
+                        mDataList.clear();
 
                         for (int i = 0; i < array.size(); i++) {
 

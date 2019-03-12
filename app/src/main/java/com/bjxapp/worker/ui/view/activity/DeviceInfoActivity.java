@@ -66,6 +66,11 @@ public class DeviceInfoActivity extends Activity {
         RecordAddActivity.goToActivity(this, recordItemBean, "");
     }
 
+    @OnClick(R.id.add_confirm_btn)
+    void onConfirm() {
+        startCommit();
+    }
+
     @OnClick(R.id.add_img_ly)
     void onAddImage() {
         AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImgList, false);
@@ -146,6 +151,42 @@ public class DeviceInfoActivity extends Activity {
         });
 
         mWaitingDialog = new XWaitingDialog(this);
+
+        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.yes:
+                        needMaintain = 1;
+                        break;
+
+                    case R.id.no:
+                        needMaintain = 0;
+                        break;
+                }
+            }
+        });
+
+        mDeviceRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                switch (checkedId) {
+                    case R.id.must:
+                        situation = 6;
+                        break;
+
+                    case R.id.recommend:
+                        situation = 3;
+                        break;
+
+                    case R.id.normal:
+                        situation = 0;
+                        break;
+                }
+
+            }
+        });
 
     }
 
