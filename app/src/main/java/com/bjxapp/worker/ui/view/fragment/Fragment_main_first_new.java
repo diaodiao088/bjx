@@ -64,6 +64,7 @@ public class Fragment_main_first_new extends BaseFragment implements View.OnClic
 
             case R.id.check_entrance_ly:
                 CheckMainActivity.goToActivity(getActivity());
+                break;
             case R.id.maintain_entrance_ly:
                 Toast.makeText(getActivity(), "巡检/保养业务即将上线，敬请期待~", Toast.LENGTH_SHORT).show();
                 break;

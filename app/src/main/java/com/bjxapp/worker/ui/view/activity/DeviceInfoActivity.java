@@ -7,6 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
@@ -19,6 +25,7 @@ import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -61,19 +68,29 @@ public class DeviceInfoActivity extends Activity {
 
     private String[] imgUrls;
 
-    private boolean needMaintain;
+    private Boolean needMaintain;
 
     private String remark;
 
     private int status;
 
-    private int situation;
+    private Integer situation;
 
     private ArrayList<ServiceItem> mList = new ArrayList<>();
 
     ArrayList<String> mImgList = new ArrayList<>();
 
     public static final String TYPE_ID = "type_id";
+
+    @BindView(R.id.change_reason_tv)
+    EditText mReasonTv;
+
+    @BindView(R.id.content_limit)
+    TextView mLimitTv;
+
+    @BindView(R.id.need_maintain)
+    RadioGroup mRadioGroup;
+
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -90,6 +107,27 @@ public class DeviceInfoActivity extends Activity {
     private void initView() {
 
         mTitleTextView.setText("设备详情");
+
+        mReasonTv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int textSum = s.toString().length();
+
+                if (textSum <= 200) {
+                    mLimitTv.setText(textSum + "/200");
+                }
+            }
+        });
 
     }
 
@@ -115,7 +153,7 @@ public class DeviceInfoActivity extends Activity {
 
                     if (code == 0) {
 
-                        parseData(object);
+                        parseData(object.get("equipment").getAsJsonObject());
 
                     } else {
                         mHandler.post(new Runnable() {
@@ -138,9 +176,17 @@ public class DeviceInfoActivity extends Activity {
 
     private void parseData(JsonObject object) {
 
-        needMaintain = object.get("needMaintain").getAsBoolean();
-        remark = object.get("remark").getAsString();
-        situation = object.get("situation").getAsInt();
+        if (object.get("needMaintain") != null && !(object.get("needMaintain") instanceof JsonNull)) {
+            needMaintain = object.get("needMaintain").getAsBoolean();
+        }
+
+        if (object.get("remark") != null && !(object.get("remark") instanceof JsonNull)) {
+            remark = object.get("remark").getAsString();
+        }
+
+        if (object.get("situation") != null && !(object.get("situation") instanceof JsonNull)) {
+            situation = object.get("situation").getAsInt();
+        }
 
         JsonArray urlArray = object.get("imgUrls").getAsJsonArray();
 
@@ -156,13 +202,32 @@ public class DeviceInfoActivity extends Activity {
         for (int i = 0; i < serviceArray.size(); i++) {
             JsonObject item = serviceArray.get(i).getAsJsonObject();
             ServiceItem serviceItem = new ServiceItem();
-            serviceItem.setActualScore(item.get("actualScore").getAsString());
+            if (item.get("actualScore") != null && !(item.get("actualScore") instanceof JsonNull)) {
+                serviceItem.setActualScore(item.get("actualScore").getAsString());
+            }
+
             serviceItem.setId(item.get("id").getAsInt());
             serviceItem.setMaxScore(item.get("maxScore").getAsInt());
             serviceItem.setProcessName(item.get("processName").getAsString());
             mList.add(serviceItem);
         }
 
+        updateUi();
+
+    }
+
+    private void updateUi() {
+        if (!TextUtils.isEmpty(remark)) {
+            mReasonTv.setText(remark);
+        }
+
+        if (needMaintain != null){
+            if (needMaintain){
+                mRadioGroup.check(R.id.yes);
+            }else{
+                mRadioGroup.check(R.id.no);
+            }
+        }
     }
 
 
@@ -231,5 +296,9 @@ public class DeviceInfoActivity extends Activity {
                 }
                 break;
         }
+    }
+
+    public void startComit() {
+
     }
 }
