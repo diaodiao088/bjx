@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -165,9 +166,18 @@ public class RecordAddActivity extends Activity {
     @BindView(R.id.title_text_tv)
     XTextView mTitleTextView;
 
+    @BindView(R.id.ser_divider)
+    View divider;
+
+    @BindView(R.id.ser_ly)
+    LinearLayout mSerly;
+
+    @BindView(R.id.record_device_ser_num)
+    TextView mSerTv;
+
     @OnClick(R.id.frag_layout)
     void onClickFrag() {
-        FragileActivity.gotoActivity(this, mFragList ,isFinished);
+        FragileActivity.gotoActivity(this, mFragList, isFinished);
     }
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
@@ -220,13 +230,37 @@ public class RecordAddActivity extends Activity {
                     mTitleRightTv.setVisibility(View.GONE);
                     isFinished = true;
                     mBtn.setVisibility(View.GONE);
+                    mSerly.setVisibility(View.VISIBLE);
+                    divider.setVisibility(View.VISIBLE);
+                    disableEvent();
                 }
             }
 
             mAdapter.setList(mImageList);
-
             loadDetails();
         }
+    }
+
+    private void disableEvent(){
+
+        mRecordBrandNameTv.setFocusableInTouchMode(false);
+        mRecordBrandNameTv.setFocusable(false);
+
+        mRecordDeviceNameTv.setFocusable(false);
+        mRecordDeviceNameTv.setFocusableInTouchMode(false);
+
+        mRecordTypeTv.setFocusable(false);
+        mRecordTypeTv.setFocusableInTouchMode(false);
+
+        mMistakeReasonTv.setFocusableInTouchMode(false);
+        mMistakeReasonTv.setFocusable(false);
+
+        mRecordTimeTv.setClickable(false);
+        mRecordTimeTv.setEnabled(false);
+
+        mRecordStatusTv.setClickable(false);
+        mRecordStatusTv.setEnabled(false);
+
     }
 
     private boolean isFinished;
@@ -342,6 +376,7 @@ public class RecordAddActivity extends Activity {
                 mRecordDeviceNameTv.setText(mRecordItemBean.getName());
                 mRecordBrandNameTv.setText(mRecordItemBean.getBrandName());
                 mRecordTypeTv.setText(mRecordItemBean.getModel());
+                mSerTv.setText(mRecordItemBean.getEquipmentNo());
 
                 String time = mRecordItemBean.getProductTime();
 

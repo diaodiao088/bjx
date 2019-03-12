@@ -128,7 +128,7 @@ public class DeviceInfoActivity extends Activity {
         setContentView(R.layout.device_detail_activity);
         ButterKnife.bind(this);
         id = getIntent().getStringExtra(TYPE_ID);
-        isNeedMod = getIntent().getBooleanExtra(IS_NEED_MOD ,true);
+        isNeedMod = getIntent().getBooleanExtra(IS_NEED_MOD, true);
         initView();
         initData();
     }
@@ -195,12 +195,25 @@ public class DeviceInfoActivity extends Activity {
             }
         });
 
-        if (!isNeedMod){
+        if (!isNeedMod) {
             mBtn.setVisibility(View.GONE);
-            mRadioGroup.setClickable(false);
-            mRadioGroup.setEnabled(false);
-            mDeviceRadioGroup.setEnabled(false);
-            mDeviceRadioGroup.setClickable(false);
+            mRadioGroup.setFocusable(false);
+            mRadioGroup.setFocusableInTouchMode(false);
+
+            mDeviceRadioGroup.setFocusable(false);
+            mDeviceRadioGroup.setFocusableInTouchMode(false);
+
+            mReasonTv.setFocusable(false);
+            mReasonTv.setFocusableInTouchMode(false);
+
+//            for (int i = 0; i < mRadioGroup.getChildCount(); i++) {
+//                mRadioGroup.getChildAt(i).setEnabled(false);
+//            }
+//
+//            for (int i = 0; i < mDeviceRadioGroup.getChildCount(); i++) {
+//                mDeviceRadioGroup.getChildAt(i).setEnabled(false);
+//            }
+
         }
 
     }
@@ -335,7 +348,7 @@ public class DeviceInfoActivity extends Activity {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     DimenUtils.dp2px(45, this));
 
-            serviceItemLayout.bindData(i, serviceItem , isNeedMod);
+            serviceItemLayout.bindData(i, serviceItem, isNeedMod);
 
             mServiceLy.addView(serviceItemLayout, layoutParams);
 
@@ -347,7 +360,7 @@ public class DeviceInfoActivity extends Activity {
         Intent intent = new Intent();
         intent.setClass(context, DeviceInfoActivity.class);
         intent.putExtra(TYPE_ID, deviceId);
-        intent.putExtra(IS_NEED_MOD ,flag);
+        intent.putExtra(IS_NEED_MOD, flag);
 
         context.startActivity(intent);
     }
@@ -431,8 +444,8 @@ public class DeviceInfoActivity extends Activity {
             return;
         }
 
-        if (mImgList.size() <= 0){
-            Toast.makeText(this , "请添加照片" , Toast.LENGTH_SHORT).show();
+        if (mImgList.size() <= 0) {
+            Toast.makeText(this, "请添加照片", Toast.LENGTH_SHORT).show();
             return;
         }
 

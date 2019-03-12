@@ -162,7 +162,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleType="centerInside"
-                    android:src="@drawable/check_address" />
+                    android:src="@drawable/check_person" />
 
                 <TextView
                     android:layout_width="wrap_content"

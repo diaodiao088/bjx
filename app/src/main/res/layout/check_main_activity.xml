@@ -15,6 +15,35 @@
         android:orientation="vertical"
         app:calendar_content_view_id="@+id/recyclerView">
 
+        <!--<com.haibin.calendarview.CalendarView-->
+            <!--android:id="@+id/calendarView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="12dp"-->
+            <!--android:layout_marginRight="12dp"-->
+            <!--android:background="#f2f2f2"-->
+            <!--app:current_day_lunar_text_color="#00000000"-->
+            <!--app:current_day_text_color="#333"-->
+            <!--app:current_month_lunar_text_color="#CFCFCF"-->
+            <!--app:current_month_text_color="#333333"-->
+            <!--app:day_text_size="16sp"-->
+            <!--app:lunar_text_size="8sp"-->
+            <!--app:min_year="2004"-->
+            <!--app:month_view="com.haibin.calendarview.simple.SimpleMonthView"-->
+            <!--app:month_view_show_mode="mode_fix"-->
+            <!--app:other_month_text_color="#e1e1e1"-->
+            <!--app:scheme_text_color="#333"-->
+            <!--app:scheme_theme_color="#128c4b"-->
+            <!--app:selected_lunar_text_color="#00000000"-->
+            <!--app:selected_text_color="#333"-->
+            <!--app:selected_theme_color="#cfcfcf"-->
+            <!--app:week_background="#f2f2f2"-->
+            <!--app:week_text_color="#111"-->
+            <!--app:week_view="com.haibin.calendarview.simple.IndexWeekView"-->
+            <!--app:year_view_day_text_color="#333333"-->
+            <!--app:year_view_day_text_size="9sp"-->
+            <!--app:year_view_month_text_size="20sp" />-->
+
         <com.haibin.calendarview.CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
@@ -23,20 +52,22 @@
             android:layout_marginRight="12dp"
             android:background="#f2f2f2"
             app:current_day_lunar_text_color="#00000000"
+            app:other_month_lunar_text_color="#00000000"
+            app:scheme_lunar_text_color="#00000000"
             app:current_day_text_color="#333"
             app:current_month_lunar_text_color="#CFCFCF"
             app:current_month_text_color="#333333"
             app:day_text_size="16sp"
             app:lunar_text_size="8sp"
             app:min_year="2004"
-            app:month_view="com.haibin.calendarview.simple.IndexMonthView"
+            app:month_view="com.haibin.calendarview.simple.SimpleMonthView"
             app:month_view_show_mode="mode_fix"
             app:other_month_text_color="#e1e1e1"
             app:scheme_text_color="#333"
             app:scheme_theme_color="#128c4b"
             app:selected_lunar_text_color="#00000000"
-            app:selected_text_color="#333"
-            app:selected_theme_color="#cfcfcf"
+            app:selected_text_color="#ffffff"
+            app:selected_theme_color="#00a551"
             app:week_background="#f2f2f2"
             app:week_text_color="#111"
             app:week_view="com.haibin.calendarview.simple.IndexWeekView"

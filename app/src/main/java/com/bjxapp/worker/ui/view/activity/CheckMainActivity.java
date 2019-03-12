@@ -313,8 +313,8 @@ public class CheckMainActivity extends Activity implements
 
             CheckBean checkBean = uncertList.get(i);
 
-            map.put(getSchemeCalendar(checkBean.getYear(), checkBean.getMonth(), checkBean.getDays(), 0xff564978, "记").toString(),
-                    getSchemeCalendar(checkBean.getYear(), checkBean.getMonth(), checkBean.getDays(), 0xff564978, "记"));
+            map.put(getSchemeCalendar(checkBean.getYear(), checkBean.getMonth(), checkBean.getDays(), 0xfffcdedd, "记").toString(),
+                    getSchemeCalendar(checkBean.getYear(), checkBean.getMonth(), checkBean.getDays(), 0xfffcdedd, "记"));
 
         }
 
@@ -353,8 +353,6 @@ public class CheckMainActivity extends Activity implements
         int month = mCalendarView.getCurMonth();
         int day = mCalendarView.getCurDay();
 
-        map.put(getSchemeCalendar(year, month, day, 0xff00a551, "记").toString(),
-                getSchemeCalendar(year, month, day, 0xff00a551, "记"));
         mCalendarView.setSchemeDate(map);
     }
 

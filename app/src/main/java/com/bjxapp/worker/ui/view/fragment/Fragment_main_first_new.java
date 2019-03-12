@@ -37,6 +37,11 @@ public class Fragment_main_first_new extends BaseFragment implements View.OnClic
     @Override
     protected void initView() {
         initViews();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         startMainRedot();
         startCheckRedot();
         startBaoYangeRedot();

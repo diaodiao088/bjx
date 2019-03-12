@@ -52,6 +52,8 @@ public class FragileHolder extends RecyclerView.ViewHolder {
 
     public void setFinished(){
         this.isFinished = true;
+        mEditText.setFocusableInTouchMode(false);
+        mEditText.setFocusable(false);
     }
 
     public void setData(FragileBean fragileBean, final int position) {
