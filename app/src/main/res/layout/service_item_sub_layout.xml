@@ -1,88 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="45dp"
-    android:background="@color/white"
-    android:paddingLeft="25dp">
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_below="@+id/type_name_ly"
-        android:layout_alignParentBottom="true"
-        android:background="#f5f5f5" />
+    android:layout_height="50dp"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/divider"
-        android:gravity="center_vertical">
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        android:paddingLeft="15dp">
 
-        <TextView
-            android:id="@+id/index"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:text="1."
-            android:textColor="@color/main_text_color"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/service_name_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="4dp"
-            android:text="检查门缝"
-            android:textColor="@color/main_text_color"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/service_max_tv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_weight="1"
-            android:paddingLeft="4dp"
-            android:text="（20分）"
-            android:textColor="#848484"
-            android:textSize="12sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_above="@+id/divider"
+            android:gravity="center_vertical">
 
 
-        <TextView
-            android:id="@+id/service_score_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="10dp"
-            android:paddingLeft="5dp"
-            android:paddingTop="2dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="2dp"
-            android:textColor="#14ba61"
-            android:textSize="18sp" />
+            <LinearLayout
+                android:id="@+id/right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/service_score_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="2dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="#14ba61"
+                    android:textSize="18sp" />
 
 
-        <TextView
-            android:id="@+id/service_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/service_bg"
-            android:drawablePadding="10dp"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="4dp"
-            android:text="选择"
-            android:textColor="#ffffff"
-            android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/service_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/service_bg"
+                    android:drawablePadding="10dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="选择"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
 
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/right"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/index"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="1."
+                    android:textColor="@color/main_text_color"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/service_name_tv"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:maxWidth="230dp"
+                    android:paddingLeft="4dp"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/service_max_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:text="（20分）"
+                    android:textColor="#848484"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f5f5f5" />
 
     </LinearLayout>
 
-</RelativeLayout>
+
+</ScrollView>

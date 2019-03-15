@@ -346,7 +346,7 @@ public class DeviceInfoActivity extends Activity {
             ServiceItemLayout serviceItemLayout = new ServiceItemLayout(this);
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    DimenUtils.dp2px(45, this));
+                    DimenUtils.dp2px(50, this));
 
             serviceItemLayout.bindData(i, serviceItem, isNeedMod);
 
