@@ -2,6 +2,7 @@ package com.bjxapp.worker.ui.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.DeviceConfirmDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.ServiceItemLayout;
 import com.bjxapp.worker.utils.Utils;
@@ -80,6 +82,7 @@ public class DeviceInfoActivity extends Activity {
         AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImgList, !isNeedMod);
     }
 
+
     private String id;
 
     private String realId;
@@ -115,6 +118,15 @@ public class DeviceInfoActivity extends Activity {
 
     @BindView(R.id.service_process_ly)
     LinearLayout mServiceLy;
+
+    @BindView(R.id.process_status_tv)
+    TextView mProcessStatusTv;
+
+    @OnClick(R.id.process_status_tv)
+    void onStatusClick() {
+        showStatusDialog();
+    }
+
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -205,6 +217,9 @@ public class DeviceInfoActivity extends Activity {
 
             mReasonTv.setFocusable(false);
             mReasonTv.setFocusableInTouchMode(false);
+
+            mProcessStatusTv.setEnabled(false);
+            mProcessStatusTv.setVisibility(View.GONE);
 
 //            for (int i = 0; i < mRadioGroup.getChildCount(); i++) {
 //                mRadioGroup.getChildAt(i).setEnabled(false);
@@ -328,6 +343,15 @@ public class DeviceInfoActivity extends Activity {
             }
         }
 
+
+        if (!isAllSelected()) {
+            mProcessStatusTv.setText("选择");
+        } else if (isAllMaxScore()) {
+            mProcessStatusTv.setText("正常");
+        } else {
+            mProcessStatusTv.setText("有异常");
+        }
+
         if (mList.size() > 0) {
             mServiceLy.setVisibility(View.VISIBLE);
             mServiceLy.removeAllViews();
@@ -338,20 +362,16 @@ public class DeviceInfoActivity extends Activity {
     }
 
     private void updateServiceLy() {
-
-
         for (int i = 0; i < mList.size(); i++) {
-
             ServiceItem serviceItem = mList.get(i);
             ServiceItemLayout serviceItemLayout = new ServiceItemLayout(this);
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     DimenUtils.dp2px(50, this));
 
-            serviceItemLayout.bindData(i, serviceItem, isNeedMod);
+            serviceItemLayout.bindData(i, serviceItem, isNeedMod, isAllMaxScore());
 
             mServiceLy.addView(serviceItemLayout, layoutParams);
-
         }
     }
 
@@ -551,6 +571,92 @@ public class DeviceInfoActivity extends Activity {
             }
         }
         return true;
+    }
+
+
+    private boolean isAllSelected() {
+        for (int i = 0; i < mList.size(); i++) {
+            if (TextUtils.isEmpty(mList.get(i).getActualScore())) {
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    private boolean isAllMaxScore() {
+        for (int i = 0; i < mList.size(); i++) {
+            if (TextUtils.isEmpty(mList.get(i).getActualScore())) {
+                return false;
+            }
+
+            if (Integer.parseInt(mList.get(i).getActualScore()) != mList.get(i).getMaxScore()) {
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    private void showStatusDialog() {
+
+        final DeviceConfirmDialog deviceConfirmDialog = new DeviceConfirmDialog(this);
+
+        deviceConfirmDialog.setNormalListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateAllAsNormal();
+            }
+        }).setUnNormalListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                updateAllAsUnNormal();
+
+            }
+        }).setCancelBtnListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                deviceConfirmDialog.dismiss();
+
+            }
+        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+
+                deviceConfirmDialog.dismiss();
+
+            }
+        }).show();
+
+    }
+
+    public void updateAllAsNormal() {
+        mProcessStatusTv.setText("正常");
+
+        for (int i = 0; i < mServiceLy.getChildCount(); i++) {
+
+            View view = mServiceLy.getChildAt(i);
+
+            if (view instanceof ServiceItemLayout) {
+                ((ServiceItemLayout) view).showAsNormal();
+            }
+        }
+    }
+
+    public void updateAllAsUnNormal() {
+
+        mProcessStatusTv.setText("有异常");
+
+        for (int i = 0; i < mServiceLy.getChildCount(); i++) {
+
+            View view = mServiceLy.getChildAt(i);
+
+            if (view instanceof ServiceItemLayout) {
+                ((ServiceItemLayout) view).showAsSerNormal();
+            }
+        }
     }
 
 

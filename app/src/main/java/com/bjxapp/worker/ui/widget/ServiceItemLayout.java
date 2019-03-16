@@ -2,6 +2,7 @@ package com.bjxapp.worker.ui.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
-import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 
 import cn.qqtheme.framework.picker.OptionPicker;
 import cn.qqtheme.framework.widget.WheelView;
@@ -23,14 +23,9 @@ public class ServiceItemLayout extends LinearLayout {
 
     private TextView mMaxTv;
 
-    private TextView mScoreTv;
-
     private TextView mScoreBtn;
 
-
-    private View mRootView;
-
-    private CheckDetailBean.DeviceBean itemBean;
+    private boolean isRealUnNormal;
 
     private DeviceInfoActivity.ServiceItem serviceItem;
 
@@ -57,13 +52,12 @@ public class ServiceItemLayout extends LinearLayout {
         mServiceNameTv = findViewById(R.id.service_name_tv);
         mMaxTv = findViewById(R.id.service_max_tv);
 
-        mScoreTv = findViewById(R.id.service_score_tv);
         mScoreBtn = findViewById(R.id.service_btn);
 
     }
 
 
-    public void bindData(int index, final DeviceInfoActivity.ServiceItem serviceItem, boolean isNeedMod) {
+    public void bindData(int index, final DeviceInfoActivity.ServiceItem serviceItem, boolean isNeedMod, boolean isNormal) {
 
         this.serviceItem = serviceItem;
 
@@ -74,25 +68,35 @@ public class ServiceItemLayout extends LinearLayout {
 
         mServiceNameTv.setText(serviceItem.getProcessName());
 
-        if (!TextUtils.isEmpty(serviceItem.getActualScore())) {
-
-            if ("0".equals(serviceItem.getActualScore())) {
-                mScoreTv.setText("不正常");
-            } else {
-                mScoreTv.setText("正常");
-            }
-        }
-
-        if (!isNeedMod){
-            mScoreBtn.setVisibility(GONE);
-        }
-
         mScoreBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePicker(serviceItem.getMaxScore());
+                // showTimePicker(serviceItem.getMaxScore());
+
+                isRealUnNormal = !isRealUnNormal;
+
+                if (isRealUnNormal) {
+                    showAsRealUnNormal();
+                } else {
+                    showAsSerNormal();
+                }
+
             }
         });
+
+        if (!isNeedMod) {
+            mScoreBtn.setOnClickListener(null);
+        }
+
+        if (isNormal || TextUtils.isEmpty(serviceItem.getActualScore())) {
+            mScoreBtn.setVisibility(GONE);
+        } else {
+            if (Integer.parseInt(serviceItem.getActualScore()) == serviceItem.getMaxScore()) {
+                showAsSerNormal();
+            } else {
+                showAsRealUnNormal();
+            }
+        }
 
     }
 
@@ -123,7 +127,6 @@ public class ServiceItemLayout extends LinearLayout {
         picker.setOnOptionPickListener(new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
-                mScoreTv.setText(item);
                 if ("正常".equals(item)) {
                     serviceItem.setActualScore(String.valueOf(maxScore));
                 } else {
@@ -135,15 +138,27 @@ public class ServiceItemLayout extends LinearLayout {
         picker.show();
     }
 
-    private String[] generateString(int maxScore) {
-
-        String[] str = new String[maxScore];
-
-        for (int i = 0; i < maxScore; i++) {
-            str[i] = String.valueOf(i + 1);
-        }
-
-        return str;
+    public void showAsNormal() {
+        mScoreBtn.setVisibility(GONE);
     }
+
+    public void showAsSerNormal() {
+        mScoreBtn.setVisibility(VISIBLE);
+        mScoreBtn.setBackgroundResource(R.drawable.service_normal_bg);
+        mScoreBtn.setTextColor(Color.parseColor("#545454"));
+        mScoreBtn.setText("异常");
+        isRealUnNormal = false;
+        serviceItem.setActualScore(String.valueOf(serviceItem.getMaxScore()));
+    }
+
+    public void showAsRealUnNormal() {
+        mScoreBtn.setVisibility(VISIBLE);
+        mScoreBtn.setBackgroundResource(R.drawable.service_bg);
+        mScoreBtn.setTextColor(Color.parseColor("#fffff"));
+        mScoreBtn.setText("异常");
+        isRealUnNormal = false;
+        serviceItem.setActualScore(String.valueOf(0));
+    }
+
 
 }
