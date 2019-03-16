@@ -56,8 +56,6 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
     protected static final String TAG = "首页";
 
     private XWaitingDialog mWaitingDialog;
-    private ToggleSwitchButton mSwitchBtn;
-    private TextView mSwitchStatusTv;
     private ViewPager mVp;
     private PageSlipingCtrl mSlipCtrl;
     private BillAdapter mBillAdapter;
@@ -88,17 +86,14 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
     private void initViews() {
         registerUpdateUIBroadcast();
 
-        mSwitchStatusTv = (TextView) findViewById(R.id.status_tv);
 
         initVp();
 
-        mSwitchBtn = (ToggleSwitchButton) findViewById(R.id.toggle_switch_btn);
         mSlipCtrl = new PageSlipingCtrl(mRoot);
         mSlipCtrl.init();
         mSlipCtrl.updateUnderLineUi(0);
 
         initListener();
-        initSwitchBar();
 
         mWaitingDialog = new XWaitingDialog(mActivity);
     }
@@ -127,39 +122,6 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
         findViewById(R.id.already_enter_ly).setOnClickListener(this);
         findViewById(R.id.waiting_room_ly).setOnClickListener(this);
         findViewById(R.id.waiting_pay_ly).setOnClickListener(this);
-    }
-
-    private void initSwitchBar() {
-
-        boolean receiverStatus = ConfigManager.getInstance(getContext()).getReceiverBillStatus();
-
-        if (receiverStatus) {
-            mSwitchBtn.setCheckedWithoutCallback(true);
-            mSwitchStatusTv.setText("恭喜你，开启了你的赚钱旅程");
-        } else {
-            mSwitchBtn.setCheckedWithoutCallback(false);
-            mSwitchStatusTv.setText("今天你赚钱了吗？马上开启你的赚钱旅程吧！");
-        }
-
-        mSwitchBtn.setOnCheckedChangeListener(new ToggleSwitchButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(View view, boolean isChecked) {
-
-                changeStatusUi(isChecked);
-
-                changeStatusReal(isChecked);
-
-                ConfigManager.getInstance(getContext()).setReceiverBillStatus(isChecked);
-            }
-        });
-    }
-
-    private void changeStatusUi(boolean isChecked) {
-        if (isChecked) {
-            mSwitchStatusTv.setText("恭喜你，开启了你的赚钱旅程");
-        } else {
-            mSwitchStatusTv.setText("今天你赚钱了吗？马上开启你的赚钱旅程吧！");
-        }
     }
 
     /**
@@ -205,23 +167,6 @@ public class Fragment_Main_First extends BaseFragment implements OnClickListener
                 }
             });
         }
-    }
-
-    /**
-     * 是否接单
-     *
-     * @param receiveBill
-     */
-    public void changeServiceStatusReal(boolean receiveBill) {
-        ConfigManager.getInstance(getContext()).setReceiverBillStatus(receiveBill);
-
-        if (receiveBill) {
-            mSwitchBtn.setCheckedWithoutCallback(true);
-        } else {
-            mSwitchBtn.setCheckedWithoutCallback(false);
-        }
-
-        changeStatusUi(receiveBill);
     }
 
     @Override

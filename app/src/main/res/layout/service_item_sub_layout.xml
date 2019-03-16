@@ -76,15 +76,6 @@
                     android:textColor="@color/main_text_color"
                     android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/service_max_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="4dp"
-                    android:text="（20分）"
-                    android:textColor="#848484"
-                    android:textSize="12sp" />
-
             </LinearLayout>
 
 

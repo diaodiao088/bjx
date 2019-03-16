@@ -219,8 +219,7 @@ public class DeviceInfoActivity extends Activity {
             mReasonTv.setFocusableInTouchMode(false);
 
             mProcessStatusTv.setEnabled(false);
-            mProcessStatusTv.setVisibility(View.GONE);
-
+            mProcessStatusTv.setClickable(false);
 //            for (int i = 0; i < mRadioGroup.getChildCount(); i++) {
 //                mRadioGroup.getChildAt(i).setEnabled(false);
 //            }
@@ -464,6 +463,11 @@ public class DeviceInfoActivity extends Activity {
             return;
         }
 
+        if (!isExpectChecked()) {
+            Toast.makeText(this, "请选择异常原因", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (mImgList.size() <= 0) {
             Toast.makeText(this, "请添加照片", Toast.LENGTH_SHORT).show();
             return;
@@ -573,6 +577,18 @@ public class DeviceInfoActivity extends Activity {
         return true;
     }
 
+    private boolean isExpectChecked() {
+
+        if ("有异常".equals(mProcessStatusTv.getText().toString())) {
+            if (isAllMaxScore()){
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
 
     private boolean isAllSelected() {
         for (int i = 0; i < mList.size(); i++) {
@@ -606,12 +622,14 @@ public class DeviceInfoActivity extends Activity {
             @Override
             public void onClick(View v) {
                 updateAllAsNormal();
+                deviceConfirmDialog.dismiss();
             }
         }).setUnNormalListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 updateAllAsUnNormal();
+                deviceConfirmDialog.dismiss();
 
             }
         }).setCancelBtnListener(new View.OnClickListener() {

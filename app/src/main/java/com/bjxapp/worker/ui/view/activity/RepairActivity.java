@@ -56,8 +56,6 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
     protected static final String TAG = "首页";
 
     private XWaitingDialog mWaitingDialog;
-    private ToggleSwitchButton mSwitchBtn;
-    private TextView mSwitchStatusTv;
     private ViewPager mVp;
     private PageSlipingCtrl mSlipCtrl;
     private BillAdapter mBillAdapter;
@@ -106,17 +104,14 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         mTitleTextView.setText("维修");
 
-        mSwitchStatusTv = (TextView) findViewById(R.id.status_tv);
 
         initVp();
 
-        mSwitchBtn = (ToggleSwitchButton) findViewById(R.id.toggle_switch_btn);
         mSlipCtrl = new PageSlipingCtrl(mRoot);
         mSlipCtrl.init();
         mSlipCtrl.updateUnderLineUi(0);
 
         initListener();
-        initSwitchBar();
 
         mWaitingDialog = new XWaitingDialog(this);
     }
@@ -131,13 +126,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
     }
 
 
-    private void changeStatusUi(boolean isChecked) {
-        if (isChecked) {
-            mSwitchStatusTv.setText("恭喜你，开启了你的赚钱旅程");
-        } else {
-            mSwitchStatusTv.setText("今天你赚钱了吗？马上开启你的赚钱旅程吧！");
-        }
-    }
+
 
     /**
      * @param shouldReceiveBill
@@ -184,48 +173,6 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         }
     }
 
-
-    private void initSwitchBar() {
-
-        boolean receiverStatus = ConfigManager.getInstance(this).getReceiverBillStatus();
-
-        if (receiverStatus) {
-            mSwitchBtn.setCheckedWithoutCallback(true);
-            mSwitchStatusTv.setText("恭喜你，开启了你的赚钱旅程");
-        } else {
-            mSwitchBtn.setCheckedWithoutCallback(false);
-            mSwitchStatusTv.setText("今天你赚钱了吗？马上开启你的赚钱旅程吧！");
-        }
-
-        mSwitchBtn.setOnCheckedChangeListener(new ToggleSwitchButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(View view, boolean isChecked) {
-
-                changeStatusUi(isChecked);
-
-                changeStatusReal(isChecked);
-
-                ConfigManager.getInstance(RepairActivity.this).setReceiverBillStatus(isChecked);
-            }
-        });
-    }
-
-    /**
-     * 是否接单
-     *
-     * @param receiveBill
-     */
-    public void changeServiceStatusReal(boolean receiveBill) {
-        ConfigManager.getInstance(this).setReceiverBillStatus(receiveBill);
-
-        if (receiveBill) {
-            mSwitchBtn.setCheckedWithoutCallback(true);
-        } else {
-            mSwitchBtn.setCheckedWithoutCallback(false);
-        }
-
-        changeStatusUi(receiveBill);
-    }
 
     @Override
     public void onClick(View v) {

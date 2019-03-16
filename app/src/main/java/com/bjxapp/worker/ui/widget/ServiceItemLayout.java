@@ -21,8 +21,6 @@ public class ServiceItemLayout extends LinearLayout {
 
     private TextView mIndexTv, mServiceNameTv;
 
-    private TextView mMaxTv;
-
     private TextView mScoreBtn;
 
     private boolean isRealUnNormal;
@@ -50,7 +48,6 @@ public class ServiceItemLayout extends LinearLayout {
 
         mIndexTv = findViewById(R.id.index);
         mServiceNameTv = findViewById(R.id.service_name_tv);
-        mMaxTv = findViewById(R.id.service_max_tv);
 
         mScoreBtn = findViewById(R.id.service_btn);
 
@@ -62,9 +59,6 @@ public class ServiceItemLayout extends LinearLayout {
         this.serviceItem = serviceItem;
 
         mIndexTv.setText(String.valueOf(index + 1) + ".");
-
-
-        mMaxTv.setText("（" + serviceItem.getMaxScore() + "分）");
 
         mServiceNameTv.setText(serviceItem.getProcessName());
 
@@ -140,6 +134,9 @@ public class ServiceItemLayout extends LinearLayout {
 
     public void showAsNormal() {
         mScoreBtn.setVisibility(GONE);
+        if (serviceItem != null){
+            serviceItem.setActualScore(String.valueOf(serviceItem.getMaxScore()));
+        }
     }
 
     public void showAsSerNormal() {
@@ -154,9 +151,9 @@ public class ServiceItemLayout extends LinearLayout {
     public void showAsRealUnNormal() {
         mScoreBtn.setVisibility(VISIBLE);
         mScoreBtn.setBackgroundResource(R.drawable.service_bg);
-        mScoreBtn.setTextColor(Color.parseColor("#fffff"));
+        mScoreBtn.setTextColor(Color.parseColor("#ffffff"));
         mScoreBtn.setText("异常");
-        isRealUnNormal = false;
+        isRealUnNormal = true;
         serviceItem.setActualScore(String.valueOf(0));
     }
 
