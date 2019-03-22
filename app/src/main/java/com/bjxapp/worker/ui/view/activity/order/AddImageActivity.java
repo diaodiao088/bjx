@@ -615,6 +615,7 @@ public class AddImageActivity extends Activity {
                         public void run() {
                             Utils.showShortToast(AddImageActivity.this, "图片保存成功！");
                             Intent intent = new Intent();
+                            updateImageList(list);
                             intent.putStringArrayListExtra("result", list);
                             setResult(RESULT_OK, intent);
                             Utils.finishWithoutAnim(AddImageActivity.this);
@@ -631,6 +632,20 @@ public class AddImageActivity extends Activity {
                 }
             }
         });
+    }
+
+    private void updateImageList(ArrayList<String> imageList) {
+
+        if (mList.size() <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < mList.size(); i++) {
+            String item = mList.get(i).getUrl();
+            if (item.startsWith("http")) {
+                imageList.add(item);
+            }
+        }
     }
 
 

@@ -72,6 +72,8 @@ public class Fragment_main_first_new extends BaseFragment implements View.OnClic
                         if (count > 0) {
                             mMainRedotTv.setVisibility(View.VISIBLE);
                             mMainRedotTv.setText(String.valueOf(count));
+                        }else{
+                            mMainRedotTv.setVisibility(View.GONE);
                         }
                     }
                 }
@@ -112,6 +114,8 @@ public class Fragment_main_first_new extends BaseFragment implements View.OnClic
                         if (count > 0) {
                             mCheckRedotTv.setVisibility(View.VISIBLE);
                             mCheckRedotTv.setText(String.valueOf(count));
+                        }else{
+                            mCheckRedotTv.setVisibility(View.GONE);
                         }
                     }
                 }
@@ -150,6 +154,8 @@ public class Fragment_main_first_new extends BaseFragment implements View.OnClic
                         if (count > 0) {
                             mBaoYangRedotTv.setVisibility(View.VISIBLE);
                             mBaoYangRedotTv.setText(String.valueOf(count));
+                        }else{
+                            mBaoYangRedotTv.setVisibility(View.GONE);
                         }
                     }
                 }
