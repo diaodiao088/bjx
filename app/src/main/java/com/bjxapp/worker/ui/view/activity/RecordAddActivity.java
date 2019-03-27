@@ -3,6 +3,8 @@ package com.bjxapp.worker.ui.view.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -160,6 +162,23 @@ public class RecordAddActivity extends Activity {
         }
     }
 
+    @OnClick(R.id.copy_tv)
+    void onClickCopy() {
+
+        if (TextUtils.isEmpty(mSerTv.getText().toString())) {
+            return;
+        }
+
+        try{
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            cm.setText(mSerTv.getText());
+            Toast.makeText(this , "复制成功", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Toast.makeText(this , "复制失败", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
     @BindView(R.id.add_confirm_btn)
     XButton mBtn;
 
@@ -241,7 +260,7 @@ public class RecordAddActivity extends Activity {
         }
     }
 
-    private void disableEvent(){
+    private void disableEvent() {
 
         mRecordBrandNameTv.setFocusableInTouchMode(false);
         mRecordBrandNameTv.setFocusable(false);

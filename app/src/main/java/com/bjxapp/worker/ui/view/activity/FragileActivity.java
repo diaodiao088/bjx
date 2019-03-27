@@ -90,6 +90,18 @@ public class FragileActivity extends Activity {
     @BindView(R.id.fragile_recycler_view)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.add_frag_tv)
+    TextView mAddFragTv;
+
+    @OnClick(R.id.add_frag_tv)
+    void onAddClick(){
+        FragileBean fragileBean = new FragileBean();
+        FragileBean.ImageBean bean = fragileBean.new ImageBean(FragileBean.ImageBean.TYPE_IMAGE, "");
+        fragileBean.getImageList().add(bean);
+        mList.add(fragileBean);
+        mAdapter.notifyDataSetChanged();
+    }
+
 
     @OnClick(R.id.add_confirm_btn)
     void onClickConfirm() {
@@ -168,13 +180,15 @@ public class FragileActivity extends Activity {
         if (isFinished){
             mTitleRightTv.setVisibility(View.GONE);
             mBtn.setVisibility(View.GONE);
+
+            mAddFragTv.setVisibility(View.GONE);
         }
 
     }
 
     private void initView() {
         mTitleTextView.setText("易损件");
-        mTitleRightTv.setVisibility(View.VISIBLE);
+        mTitleRightTv.setVisibility(View.GONE);
         mTitleRightTv.setText("添加");
 
         mLayoutManager = new LinearLayoutManager(this);

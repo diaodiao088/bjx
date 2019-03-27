@@ -9,13 +9,38 @@
         android:id="@+id/title"
         layout="@layout/layout_title" />
 
+    <LinearLayout
+        android:layout_marginTop="2dp"
+        android:id="@+id/add_frag_ly"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/title"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/add_frag_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:drawablePadding="4dp"
+            android:drawableLeft="@drawable/add_plus"
+            android:gravity="center"
+            android:text="添加易损件"
+            android:textColor="#00a551"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragile_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/add_confirm_btn"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/add_frag_ly"
         android:background="@color/white"
+        android:layout_marginTop="3dp"
         android:paddingLeft="8dp"
         android:paddingTop="8dp"
         android:paddingRight="8dp" />

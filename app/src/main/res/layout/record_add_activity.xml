@@ -85,16 +85,16 @@
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:visibility="gone"
-                android:paddingLeft="15dp">
+                android:paddingLeft="15dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="*"
-                    android:visibility="invisible"
                     android:textColor="#ff0000"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -115,14 +115,28 @@
                     android:textColorHint="#e3e0e0"
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/copy_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/copy_bg"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="4dp"
+                    android:text="复制"
+                    android:textSize="14sp" />
+
+
             </LinearLayout>
 
             <View
                 android:id="@+id/ser_divider"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#f5f5f5" />
+                android:background="#f5f5f5"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
