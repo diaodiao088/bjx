@@ -28,6 +28,8 @@ import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.ui.expandablelayout.ExpandableLayout;
+import com.bjxapp.worker.ui.expandablelayout.Section;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.DeviceConfirmDialog;
@@ -121,6 +123,9 @@ public class DeviceInfoActivity extends Activity {
 
     @BindView(R.id.process_status_tv)
     TextView mProcessStatusTv;
+
+    @BindView(R.id.expand_ly)
+    ExpandableLayout mExpandLayout;
 
     @OnClick(R.id.process_status_tv)
     void onStatusClick() {
@@ -227,10 +232,41 @@ public class DeviceInfoActivity extends Activity {
 //            for (int i = 0; i < mDeviceRadioGroup.getChildCount(); i++) {
 //                mDeviceRadioGroup.getChildAt(i).setEnabled(false);
 //            }
-
         }
 
+        mExpandLayout.setRenderer(new ExpandableLayout.Renderer<CategoryService, ServiceItemDes>() {
+
+            @Override
+            public void renderParent(View view, CategoryService model, boolean isExpanded, int parentPosition) {
+
+
+            }
+
+            @Override
+            public void renderChild(View view, ServiceItemDes model, int parentPosition, int childPosition) {
+
+            }
+        });
+
+        mExpandLayout.addSection(getSection());
+
     }
+
+
+    private Section<CategoryService, ServiceItemDes> getSection() {
+
+        Section<CategoryService, ServiceItemDes> section = new Section<>();
+
+        CategoryService categoryService = new CategoryService();
+        categoryService.setName("服务步骤");
+
+        section.parent = categoryService;
+
+        section.expanded = false;
+
+        return section;
+    }
+
 
     private void initData() {
 
@@ -580,7 +616,7 @@ public class DeviceInfoActivity extends Activity {
     private boolean isExpectChecked() {
 
         if ("有异常".equals(mProcessStatusTv.getText().toString())) {
-            if (isAllMaxScore()){
+            if (isAllMaxScore()) {
                 return false;
             }
         }
@@ -674,6 +710,44 @@ public class DeviceInfoActivity extends Activity {
             if (view instanceof ServiceItemLayout) {
                 ((ServiceItemLayout) view).showAsSerNormal();
             }
+        }
+    }
+
+
+    static class CategoryService {
+
+        String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+
+    static class ServiceItemDes {
+
+        String index;
+
+        String serviceDes;
+
+        public String getIndex() {
+            return index;
+        }
+
+        public void setIndex(String index) {
+            this.index = index;
+        }
+
+        public String getServiceDes() {
+            return serviceDes;
+        }
+
+        public void setServiceDes(String serviceDes) {
+            this.serviceDes = serviceDes;
         }
     }
 

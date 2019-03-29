@@ -66,4 +66,5 @@ dependencies {
     compile 'com.getui:sdk:2.12.5.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation project(':calendarview1')
+    implementation 'androidx.annotation:annotation:1.0.0-rc01'
 }

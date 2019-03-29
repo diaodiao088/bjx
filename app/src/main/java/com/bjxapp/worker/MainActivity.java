@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,7 +22,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bjx.master.BuildConfig;
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
@@ -49,15 +46,16 @@ import com.bjxapp.worker.ui.titlemenu.TitlePopup;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup.OnItemOnClickListener;
 import com.bjxapp.worker.ui.view.activity.JoinUsActivity;
 import com.bjxapp.worker.ui.view.activity.PushDetailActivity;
+import com.bjxapp.worker.ui.view.activity.RecordActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.user.LoginActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseFragmentActivity;
-import com.bjxapp.worker.ui.view.fragment.Fragment_main_first_new;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Fourth;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Second;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Third;
-import com.bjxapp.worker.utils.LogUtils;
+import com.bjxapp.worker.ui.view.fragment.Fragment_main_first_new;
+import com.bjxapp.worker.utils.ACache;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.VersionUtils;
 import com.bjxapp.worker.utils.zxing.CaptureActivity;
@@ -161,8 +159,9 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
         //检查最新APK版本
         checkNewVersion();
-    }
 
+       // getCache();
+    }
 
     private void checkRingRedot() {
 
