@@ -228,6 +228,12 @@ public class RecordDetailActivity extends Activity {
 
         JsonArray categoryArray = mainObject.getAsJsonArray("list");
 
+        for (int i = 0; i < mRecordList.size(); i++) {
+
+            mRecordList.get(i).getmItemList().clear();
+
+        }
+
         for (int i = 0; i < categoryArray.size(); i++) {
             JsonObject object = categoryArray.get(i).getAsJsonObject();
 
@@ -255,6 +261,9 @@ public class RecordDetailActivity extends Activity {
 
     private void addToSpecifiedParent(RecordItemBean recordItemBean) {
         for (int i = 0; i < mRecordList.size(); i++) {
+
+//            mRecordList.get(i).getmItemList().clear();
+
             if (recordItemBean.getParentId().equals(mRecordList.get(i).getTypeId())) {
                 mRecordList.get(i).getmItemList().add(recordItemBean);
             }

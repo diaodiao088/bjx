@@ -54,6 +54,7 @@ import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -327,6 +328,11 @@ public class RecordAddActivity extends Activity {
     }
 
     private void parseRecordData(JsonObject mainObject) {
+
+        if (mainObject.get("equipment") == null || (mainObject).get("equipment") instanceof JsonNull){
+            return;
+        }
+
 
         JsonObject object = mainObject.get("equipment").getAsJsonObject();
 

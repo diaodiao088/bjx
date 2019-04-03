@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,6 +14,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -35,6 +38,7 @@ import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.DeviceConfirmDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.ServiceItemLayout;
+import com.bjxapp.worker.utils.IDCardValidate;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
@@ -73,6 +77,9 @@ public class DeviceInfoActivity extends Activity {
 
     @BindView(R.id.add_confirm_btn)
     XButton mBtn;
+
+    @BindView(R.id.add_img_tv)
+    TextView mAddImgTv;
 
     @OnClick(R.id.add_confirm_btn)
     void onConfirm() {
@@ -127,6 +134,19 @@ public class DeviceInfoActivity extends Activity {
     @BindView(R.id.expand_ly)
     ExpandableLayout mExpandLayout;
 
+    @BindView(R.id.process_divider)
+    View dividerView;
+
+    @BindView(R.id.status_ly)
+    LinearLayout mStatusLy;
+
+    @BindView(R.id.process_sit_ly)
+    LinearLayout mProcessSitLy;
+
+    @BindView(R.id.record_status_tv)
+    TextView mRecordStatusTv;
+
+
     @OnClick(R.id.process_status_tv)
     void onStatusClick() {
         showStatusDialog();
@@ -138,6 +158,8 @@ public class DeviceInfoActivity extends Activity {
     private XWaitingDialog mWaitingDialog;
 
     private boolean isNeedMod = true;
+    private boolean isCheck = true;
+    private boolean isFromBill = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -145,6 +167,8 @@ public class DeviceInfoActivity extends Activity {
         setContentView(R.layout.device_detail_activity);
         ButterKnife.bind(this);
         id = getIntent().getStringExtra(TYPE_ID);
+        isCheck = getIntent().getBooleanExtra("is_check", true);
+        isFromBill = getIntent().getBooleanExtra("is_from_bill", false);
         isNeedMod = getIntent().getBooleanExtra(IS_NEED_MOD, true);
         initView();
         initData();
@@ -153,6 +177,12 @@ public class DeviceInfoActivity extends Activity {
     private void initView() {
 
         mTitleTextView.setText("设备详情");
+
+        if (isCheck) {
+            mExpandLayout.setVisibility(View.GONE);
+        } else {
+            mExpandLayout.setVisibility(View.VISIBLE);
+        }
 
         mReasonTv.addTextChangedListener(new TextWatcher() {
             @Override
@@ -204,15 +234,11 @@ public class DeviceInfoActivity extends Activity {
                     case R.id.recommend:
                         situation = 3;
                         break;
-
-                    case R.id.normal:
-                        situation = 0;
-                        break;
                 }
             }
         });
 
-        if (!isNeedMod) {
+        if (!isNeedMod && !isFromBill) {
             mBtn.setVisibility(View.GONE);
             mRadioGroup.setFocusable(false);
             mRadioGroup.setFocusableInTouchMode(false);
@@ -225,6 +251,9 @@ public class DeviceInfoActivity extends Activity {
 
             mProcessStatusTv.setEnabled(false);
             mProcessStatusTv.setClickable(false);
+
+            mRecordStatusTv.setTextColor(Color.TRANSPARENT);
+            mAddImgTv.setText("查看照片");
 //            for (int i = 0; i < mRadioGroup.getChildCount(); i++) {
 //                mRadioGroup.getChildAt(i).setEnabled(false);
 //            }
@@ -232,18 +261,57 @@ public class DeviceInfoActivity extends Activity {
 //            for (int i = 0; i < mDeviceRadioGroup.getChildCount(); i++) {
 //                mDeviceRadioGroup.getChildAt(i).setEnabled(false);
 //            }
+        }else if (isFromBill){
+            mBtn.setVisibility(View.GONE);
+            mRadioGroup.setFocusable(false);
+            mRadioGroup.setFocusableInTouchMode(false);
+
+            mDeviceRadioGroup.setFocusable(false);
+            mDeviceRadioGroup.setFocusableInTouchMode(false);
+
+            mReasonTv.setFocusable(false);
+            mReasonTv.setFocusableInTouchMode(false);
+
+            mProcessStatusTv.setEnabled(false);
+            mProcessStatusTv.setClickable(false);
+
+            mExpandLayout.setVisibility(View.GONE);
+
+            mDeviceRadioGroup.setVisibility(View.GONE);
+            mProcessSitLy.setVisibility(View.GONE);
+            dividerView.setVisibility(View.GONE);
+
+            mStatusLy.setVisibility(View.GONE);
+
+            mRecordStatusTv.setTextColor(Color.TRANSPARENT);
+            mAddImgTv.setText("查看照片");
+
+//            for (int i = 0; i < mRadioGroup.getCh
         }
 
         mExpandLayout.setRenderer(new ExpandableLayout.Renderer<CategoryService, ServiceItemDes>() {
 
             @Override
             public void renderParent(View view, CategoryService model, boolean isExpanded, int parentPosition) {
-
-
+                // ((TextView) view.findViewById(R.id.tvParent)).setText(model.name);
+                view.findViewById(R.id.arrow).setBackgroundResource(isExpanded ? R.drawable.arrow_up : R.drawable.arrow_down);
             }
 
             @Override
             public void renderChild(View view, ServiceItemDes model, int parentPosition, int childPosition) {
+
+                WebView webView = view.findViewById(R.id.tvChild);
+
+                WebSettings wSet = webView.getSettings();
+                wSet.setJavaScriptEnabled(true);
+                wSet.setDefaultTextEncodingName("utf-8");
+
+                webView.loadData(model.getServiceDes(), "text/html; charset=UTF-8", null);
+
+                // ((HtmlTextView) view.findViewById(R.id.tvChild)).setHtml(model.getServiceDes());
+
+
+                // ((TextView) view.findViewById(R.id.tvChild)).setText(Html.fromHtml("交易明细：<font color= '#564978'>"+"姓名：" + "<big>"+"hhh" +"</big></font> "+"日期：17-01-06  20:00"));
 
             }
         });
@@ -253,11 +321,17 @@ public class DeviceInfoActivity extends Activity {
     }
 
 
+
+
+
+
+    CategoryService categoryService;
+
     private Section<CategoryService, ServiceItemDes> getSection() {
 
         Section<CategoryService, ServiceItemDes> section = new Section<>();
 
-        CategoryService categoryService = new CategoryService();
+        categoryService = new CategoryService();
         categoryService.setName("服务步骤");
 
         section.parent = categoryService;
@@ -351,9 +425,26 @@ public class DeviceInfoActivity extends Activity {
             mList.add(serviceItem);
         }
 
+        if (object.get("stepList") != null) {
+            JsonArray stepArray = object.get("stepList").getAsJsonArray();
+
+            ArrayList<String> customImgUrls = new ArrayList<>();
+
+            if (stepArray != null && stepArray.size() > 0) {
+                for (int i = 0; i < stepArray.size(); i++) {
+                    String itemUrl = stepArray.get(i).getAsString();
+                    customImgUrls.add(itemUrl);
+                }
+            }
+
+            steplist = customImgUrls;
+        }
+
         updateUi();
 
     }
+
+    ArrayList<String> steplist = new ArrayList<>();
 
     private void updateUi() {
         if (!TextUtils.isEmpty(remark)) {
@@ -370,10 +461,12 @@ public class DeviceInfoActivity extends Activity {
 
         if (situation != null) {
             if (situation == 0) {
-                mDeviceRadioGroup.check(R.id.normal);
+                hideSituation();
             } else if (situation == 3) {
+                showSituation();
                 mDeviceRadioGroup.check(R.id.recommend);
             } else {
+                showSituation();
                 mDeviceRadioGroup.check(R.id.must);
             }
         }
@@ -381,10 +474,15 @@ public class DeviceInfoActivity extends Activity {
 
         if (!isAllSelected()) {
             mProcessStatusTv.setText("选择");
+            hideSituation();
         } else if (isAllMaxScore()) {
             mProcessStatusTv.setText("正常");
+            hideSituation();
+            needMaintain = 0;
         } else {
             mProcessStatusTv.setText("有异常");
+            showSituation();
+            needMaintain = 1;
         }
 
         if (mList.size() > 0) {
@@ -394,6 +492,24 @@ public class DeviceInfoActivity extends Activity {
         } else {
             mServiceLy.setVisibility(View.GONE);
         }
+
+        insertObj();
+    }
+
+    private void insertObj() {
+
+        if (steplist == null || steplist.size() <= 0) {
+            mExpandLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        for (int i = 0; i < steplist.size(); i++) {
+            ServiceItemDes serviceItemDes = new ServiceItemDes();
+            serviceItemDes.setIndex(String.valueOf(i + 1));
+            serviceItemDes.setServiceDes(steplist.get(i));
+            mExpandLayout.addChild(categoryService, serviceItemDes);
+        }
+
     }
 
     private void updateServiceLy() {
@@ -411,11 +527,17 @@ public class DeviceInfoActivity extends Activity {
     }
 
 
-    public static void goToActivity(Context context, String deviceId, boolean flag) {
+    public static void goToActivity(Context context, String deviceId, boolean flag, boolean isCheck) {
+        goToActivity(context, deviceId, flag, isCheck, false);
+    }
+
+    public static void goToActivity(Context context, String deviceId, boolean flag, boolean isCheck, boolean isFromBill) {
         Intent intent = new Intent();
         intent.setClass(context, DeviceInfoActivity.class);
         intent.putExtra(TYPE_ID, deviceId);
         intent.putExtra(IS_NEED_MOD, flag);
+        intent.putExtra("is_check", isCheck);
+        intent.putExtra("is_from_bill", isFromBill);
 
         context.startActivity(intent);
     }
@@ -486,11 +608,6 @@ public class DeviceInfoActivity extends Activity {
 
         if (situation == null) {
             Toast.makeText(this, "请先选择设备状态", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (needMaintain == null) {
-            Toast.makeText(this, "请选择是否需要维修", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -580,6 +697,20 @@ public class DeviceInfoActivity extends Activity {
 
     }
 
+    private void hideSituation(){
+        situation = 0;
+        mDeviceRadioGroup.setVisibility(View.GONE);
+        mProcessSitLy.setVisibility(View.GONE);
+        dividerView.setVisibility(View.GONE);
+    }
+
+
+    private void showSituation(){
+        mDeviceRadioGroup.setVisibility(View.VISIBLE);
+        mProcessSitLy.setVisibility(View.VISIBLE);
+        dividerView.setVisibility(View.VISIBLE);
+    }
+
     private void putPartial(Map<String, String> params) {
 
         if (mList == null || mList.size() <= 0) {
@@ -658,12 +789,14 @@ public class DeviceInfoActivity extends Activity {
             @Override
             public void onClick(View v) {
                 updateAllAsNormal();
+                hideSituation();
                 deviceConfirmDialog.dismiss();
             }
         }).setUnNormalListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                needMaintain = 1;
+                showSituation();
                 updateAllAsUnNormal();
                 deviceConfirmDialog.dismiss();
 
@@ -687,6 +820,7 @@ public class DeviceInfoActivity extends Activity {
     }
 
     public void updateAllAsNormal() {
+        needMaintain = 0;
         mProcessStatusTv.setText("正常");
 
         for (int i = 0; i < mServiceLy.getChildCount(); i++) {

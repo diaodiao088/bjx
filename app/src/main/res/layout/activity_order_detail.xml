@@ -22,14 +22,14 @@
                 android:id="@+id/ready_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="12dp"
-                android:paddingLeft="15dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="12dp"
                 android:background="@drawable/ready_bg"
+                android:orientation="horizontal"
+                android:paddingLeft="15dp"
+                android:paddingTop="12dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="12dp"
                 android:visibility="gone">
 
                 <View
@@ -44,9 +44,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"
+                    android:lineSpacingExtra="8dp"
                     android:text="@string/ready_tips"
                     android:textColor="#ED612B"
-                    android:lineSpacingExtra="8dp"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -65,10 +65,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginBottom="10dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -92,10 +92,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@drawable/layout_textview_radius"
-                        android:paddingBottom="2dp"
                         android:paddingLeft="4dp"
-                        android:paddingRight="4dp"
                         android:paddingTop="2dp"
+                        android:paddingRight="4dp"
+                        android:paddingBottom="2dp"
                         android:textColor="#ffffff"
                         android:textSize="14sp" />
 
@@ -122,10 +122,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_receive_textview_orderdate"
@@ -142,10 +142,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_receive_textview_address"
@@ -162,10 +162,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_receive_textview_money"
@@ -182,10 +182,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginBottom="10dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_receive_textview_remark"
@@ -203,10 +203,10 @@
                     android:id="@+id/tele_contacts_ly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
                     android:visibility="gone">
 
                     <com.bjxapp.worker.controls.XTextView
@@ -224,16 +224,44 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/check_service_ly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/layout_radius"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/check_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="5dp"
+                    android:layout_marginRight="8dp"
+                    android:drawableRight="@drawable/right"
+                    android:paddingLeft="5dp"
+                    android:text="查看巡检详情"
+                    android:textColor="@color/main_text_color" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
                 android:id="@+id/order_receive_detail_images"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="horizontal"
-                android:paddingBottom="5dp"
                 android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:visibility="gone">
 
                 <com.bjxapp.worker.controls.XTextView
@@ -275,10 +303,10 @@
                 android:id="@+id/modify_strategy_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="vertical"
                 android:visibility="gone">
@@ -287,8 +315,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
                     android:gravity="center_vertical">
 
                     <RelativeLayout
@@ -329,10 +357,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@drawable/layout_textview_radius"
-                        android:paddingBottom="3dp"
                         android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
                         android:paddingTop="3dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="3dp"
                         android:text="编辑"
                         android:textColor="#ffffff"
                         android:textSize="14sp" />
@@ -342,17 +370,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
                     android:background="#f0f0f0" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="20dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_receive_detail_addition_content_text"
@@ -378,10 +406,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/strategy_tv"
@@ -407,10 +435,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/price_tv"
@@ -439,12 +467,12 @@
                 android:id="@+id/issue_add_image_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/layout_radius"
-                android:paddingBottom="5dp"
                 android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:visibility="gone">
 
                 <com.bjxapp.worker.controls.XTextView
@@ -464,8 +492,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/add_image"
-                    android:drawablePadding="8dp"
                     android:drawableRight="@drawable/right"
+                    android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:paddingRight="8dp"
                     android:text="请添加维修前，维修中，维修后的照片"
@@ -477,9 +505,9 @@
                 android:id="@+id/order_bill_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="vertical"
                 android:visibility="gone">
@@ -488,8 +516,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
                     android:gravity="center_vertical">
 
                     <RelativeLayout
@@ -528,10 +556,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@drawable/layout_textview_radius"
-                        android:paddingBottom="3dp"
                         android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
                         android:paddingTop="3dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="3dp"
                         android:text="编辑"
                         android:textColor="#ffffff"
                         android:textSize="14sp" />
@@ -541,17 +569,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
                     android:background="#f5f5f5" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="20dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_bill_tv"
@@ -578,10 +606,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_bill_cash_tv"
@@ -610,9 +638,9 @@
                 android:id="@+id/final_money_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="vertical"
                 android:visibility="gone">
@@ -621,8 +649,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
                     android:gravity="center_vertical">
 
                     <RelativeLayout
@@ -661,17 +689,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
                     android:background="#f5f5f5" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/enter_room_tv"
@@ -697,10 +725,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/entire_price_tv"
@@ -727,17 +755,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
                     android:background="#f5f5f5" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/total_tv"
@@ -763,10 +791,10 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/price_ready_tv"
@@ -793,17 +821,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
                     android:background="#f5f5f5" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginBottom="5dp">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/fukuan_tv"
@@ -831,8 +859,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp">
 
                 <RelativeLayout
                     android:id="@+id/save_ly"
@@ -908,8 +936,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
                         android:text="提示"
                         android:textColor="#999999"
                         android:textSize="12sp" />
@@ -919,8 +947,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
                         android:layout_marginTop="8dp"
+                        android:layout_marginRight="20dp"
                         android:textColor="#999999"
                         android:textSize="12sp" />
 

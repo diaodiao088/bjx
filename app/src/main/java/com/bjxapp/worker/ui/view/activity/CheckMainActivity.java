@@ -296,6 +296,8 @@ public class CheckMainActivity extends Activity implements
 
     private void changeCalendar(int yearReal, int monthReal, int dayReal) {
 
+        map.clear();
+
         ArrayList<CheckBean> hasBillList = getBillList();
 
         for (int i = 0; i < hasBillList.size(); i++) {
@@ -464,7 +466,7 @@ public class CheckMainActivity extends Activity implements
                 mRootView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CheckOrderDetailActivity.goToActivity(CheckMainActivity.this, checkBean.getOrderId(), mCurrentType);
+                            CheckOrderDetailActivity.goToActivity(CheckMainActivity.this, checkBean.getOrderId(), mCurrentType);
                     }
                 });
 

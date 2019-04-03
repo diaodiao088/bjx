@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/windows_color"
@@ -51,7 +52,10 @@
             <com.bjxapp.worker.ui.expandablelayout.ExpandableLayout
                 android:id="@+id/expand_ly"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:childLayout="@layout/layout_child"
+                app:parentLayout="@layout/layout_parent" />
 
             <View
                 android:layout_width="match_parent"
@@ -138,6 +142,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/add_img_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -163,6 +168,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/process_sit_ly"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="15dp"
@@ -192,6 +198,7 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/process_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/windows_color"
@@ -207,16 +214,6 @@
                 android:orientation="vertical"
                 android:paddingLeft="20dp"
                 android:paddingBottom="10dp">
-
-                <RadioButton
-                    android:id="@+id/normal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="5dp"
-                    android:button="@drawable/radio_selector"
-                    android:paddingLeft="10dp"
-                    android:text="设备情况正常"
-                    android:textSize="14sp" />
 
                 <RadioButton
                     android:id="@+id/recommend"
@@ -356,7 +353,7 @@
                         android:layout_marginRight="8dp"
                         android:background="@drawable/edit_tv_bg"
                         android:gravity="left"
-                        android:hint="请输入修改原因..."
+                        android:hint="请输入备注信息..."
                         android:lineSpacingExtra="3dp"
                         android:maxLength="200"
                         android:paddingLeft="5dp"
@@ -382,12 +379,14 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/status_ly"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="15dp"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:paddingLeft="15dp">
 
                 <TextView

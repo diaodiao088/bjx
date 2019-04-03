@@ -62,6 +62,26 @@ public class OrderDes {
 
     private int originType;
 
+    private String mServiceType;
+
+    private String enterpriseId;
+
+    public String getmServiceType() {
+        return mServiceType;
+    }
+
+    public void setmServiceType(String mServiceType) {
+        this.mServiceType = mServiceType;
+    }
+
+    public String getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(String enterpriseId) {
+        this.enterpriseId = enterpriseId;
+    }
+
     public OrderDes(String orderId, int processStatus, int status, String serviceName,
                     String appointmentDay, String appointmentEndTime,
                     String appointmentStartTime, String locationAddress,

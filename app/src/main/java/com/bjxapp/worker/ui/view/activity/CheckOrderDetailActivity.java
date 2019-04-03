@@ -391,7 +391,7 @@ public class CheckOrderDetailActivity extends Activity {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     DimenUtils.dp2px(45, mRecordItemContainer.getContext()));
 
-            itemLayout.bindData(checkDetailBean.getProcessState() , itemBean, itemBean.getId());
+            itemLayout.bindData(checkDetailBean.getProcessState() , itemBean, itemBean.getId(), mCurrentType == 0);
 
             mRecordItemContainer.addView(itemLayout, layoutParams);
         }

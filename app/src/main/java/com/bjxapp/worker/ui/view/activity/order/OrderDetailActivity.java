@@ -19,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bjx.master.R;
-import com.bjxapp.worker.MainActivity;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
@@ -34,8 +33,8 @@ import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
+import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
-import com.bjxapp.worker.ui.view.activity.RepairActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
@@ -183,6 +182,23 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     @BindView(R.id.ready_tips_tv)
     TextView mReadyTv;
+
+    @BindView(R.id.check_service_ly)
+    RelativeLayout mCheckServiceLy;
+
+    @BindView(R.id.check_tv)
+    TextView mCheckTv;
+
+    @OnClick(R.id.check_service_ly)
+    void onClickService() {
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null){
+            return;
+        }
+
+        DeviceInfoActivity.goToActivity(this , mDetailInfo.getOrderDes().getEnterpriseId() ,
+                false , true , true);
+    }
 
     @OnClick(R.id.order_receive_textview_address)
     void onAddressClick() {
@@ -842,6 +858,16 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mOrderImagesLinear.setVisibility(View.GONE);
         }
 
+        if (order.getmServiceType().equals("0")) {
+            mCheckServiceLy.setVisibility(View.VISIBLE);
+            mCheckTv.setText("查看巡检详情");
+        } else if (order.getmServiceType().equals("1")) {
+            mCheckServiceLy.setVisibility(View.VISIBLE);
+            mCheckTv.setText("查看保养详情");
+        } else {
+            mCheckServiceLy.setVisibility(View.GONE);
+        }
+
     }
 
 
@@ -991,6 +1017,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String lontitude = detailItem.getString("longitude");
 
             JSONArray urlArray = detailItem.getJSONArray("customerImgUrls");
+
+            String enterpriseId = "";
+            String serviceType = "";
+
+            if (detailItem.has("enterpriseOrderEquipmentId") && detailItem.has("enterpriseOrderServiceType")) {
+                enterpriseId = detailItem.getString("enterpriseOrderEquipmentId");
+                serviceType = detailItem.getString("enterpriseOrderServiceType");
+            }
+
             ArrayList<String> customImgUrls = new ArrayList<>();
 
             if (urlArray != null && urlArray.length() > 0) {
@@ -1015,6 +1050,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             orderItem.setDetailAddress(detailAddress);
             orderItem.setBillType(Integer.parseInt(billType));
             orderItem.setOriginType(origin);
+            orderItem.setmServiceType(serviceType);
+            orderItem.setEnterpriseId(enterpriseId);
 
             return orderItem;
 
