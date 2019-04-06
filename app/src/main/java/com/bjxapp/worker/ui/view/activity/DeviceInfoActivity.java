@@ -38,7 +38,6 @@ import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.DeviceConfirmDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.ServiceItemLayout;
-import com.bjxapp.worker.utils.IDCardValidate;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
@@ -261,7 +260,7 @@ public class DeviceInfoActivity extends Activity {
 //            for (int i = 0; i < mDeviceRadioGroup.getChildCount(); i++) {
 //                mDeviceRadioGroup.getChildAt(i).setEnabled(false);
 //            }
-        }else if (isFromBill){
+        } else if (isFromBill) {
             mBtn.setVisibility(View.GONE);
             mRadioGroup.setFocusable(false);
             mRadioGroup.setFocusableInTouchMode(false);
@@ -319,10 +318,6 @@ public class DeviceInfoActivity extends Activity {
         mExpandLayout.addSection(getSection());
 
     }
-
-
-
-
 
 
     CategoryService categoryService;
@@ -542,7 +537,7 @@ public class DeviceInfoActivity extends Activity {
         context.startActivity(intent);
     }
 
-    public class ServiceItem {
+    public static class ServiceItem {
 
         String actualScore;
 
@@ -697,7 +692,7 @@ public class DeviceInfoActivity extends Activity {
 
     }
 
-    private void hideSituation(){
+    private void hideSituation() {
         situation = 0;
         mDeviceRadioGroup.setVisibility(View.GONE);
         mProcessSitLy.setVisibility(View.GONE);
@@ -705,7 +700,7 @@ public class DeviceInfoActivity extends Activity {
     }
 
 
-    private void showSituation(){
+    private void showSituation() {
         mDeviceRadioGroup.setVisibility(View.VISIBLE);
         mProcessSitLy.setVisibility(View.VISIBLE);
         dividerView.setVisibility(View.VISIBLE);
