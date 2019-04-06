@@ -35,6 +35,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.ui.view.activity.adapter.FragileAdapter;
 import com.bjxapp.worker.ui.view.activity.bean.FragileBean;
 import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
+import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
@@ -343,6 +344,11 @@ public class FragileActivity extends Activity {
             public void addImage(int position) {
                 currentPos = position;
                 loadImages();
+            }
+
+            @Override
+            public void goToImageDetail(FragileBean.ImageBean imageBean) {
+                ImageOrderActivity.goToActivity(FragileActivity.this, imageBean.getUrl());
             }
         });
         mRecyclerView.setAdapter(mAdapter);

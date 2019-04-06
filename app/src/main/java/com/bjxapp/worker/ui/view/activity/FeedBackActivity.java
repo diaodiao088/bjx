@@ -137,6 +137,7 @@ public class FeedBackActivity extends Activity {
                             @Override
                             public void run() {
                                 Utils.showShortToast(FeedBackActivity.this, "提交成功");
+                                finish();
                             }
                         });
                     } else {

@@ -1,7 +1,5 @@
 package com.bjxapp.worker.ui.view.fragment;
 
-import org.apache.http.message.BasicNameValuePair;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bjx.master.R;
 import com.bjxapp.worker.App;
 import com.bjxapp.worker.SplashActivity;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XCircleImageView;
-import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ActivitiesManager;
 import com.bjxapp.worker.global.ConfigManager;
@@ -35,7 +33,6 @@ import com.bjxapp.worker.model.UserInfo;
 import com.bjxapp.worker.model.UserInfoDetail;
 import com.bjxapp.worker.ui.view.activity.FeedBackActivity;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
-import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyEditActivity;
 import com.bjxapp.worker.ui.view.activity.user.BalanceBankActivity;
 import com.bjxapp.worker.ui.view.activity.user.BalanceBankWithdrawActivity;
@@ -46,11 +43,12 @@ import com.bjxapp.worker.ui.widget.FlowLayout;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.diskcache.DiskCacheManager.DataType;
 import com.bjxapp.worker.utils.image.BitmapManager;
-import com.bjx.master.R;;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+
+import org.apache.http.message.BasicNameValuePair;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -58,11 +56,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+;
 
 public class Fragment_Main_Fourth extends BaseFragment implements OnClickListener {
     protected static final String TAG = "我的";

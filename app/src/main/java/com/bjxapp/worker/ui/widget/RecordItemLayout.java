@@ -59,7 +59,6 @@ public class RecordItemLayout extends LinearLayout {
         mSubStatusTv.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // RecordAddActivity.gotoActivity((Activity) getContext(), RecordAddActivity.REQUEST_CODE_RECORD_ADD);
                 RecordAddActivity.goToActivity((Activity) getContext(), itemBean, shopId);
             }
         });

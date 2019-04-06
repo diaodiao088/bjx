@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.ui.view.activity.RecordAddActivity;
 import com.bjxapp.worker.ui.view.activity.bean.FragileBean;
 
 import java.util.ArrayList;
@@ -21,10 +22,9 @@ public class FragileAdapter extends RecyclerView.Adapter<FragileHolder> {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragile_item_layout, parent, false);
         FragileHolder holder = new FragileHolder(view);
         holder.setOnItemClickListener(mClickListener);
-        if (isFinished){
+        if (isFinished) {
             holder.setFinished();
         }
-
 
         return holder;
     }
@@ -44,7 +44,7 @@ public class FragileAdapter extends RecyclerView.Adapter<FragileHolder> {
         notifyDataSetChanged();
     }
 
-    public FragileBean getSpecFragBean(int position){
+    public FragileBean getSpecFragBean(int position) {
         return mItemList.get(position);
     }
 
@@ -54,6 +54,8 @@ public class FragileAdapter extends RecyclerView.Adapter<FragileHolder> {
 
         void addImage(int position);
 
+        void goToImageDetail(FragileBean.ImageBean imageBean);
+
     }
 
     public OnItemClickListener mClickListener;
@@ -61,6 +63,5 @@ public class FragileAdapter extends RecyclerView.Adapter<FragileHolder> {
     public void setListener(OnItemClickListener listener) {
         this.mClickListener = listener;
     }
-
 
 }

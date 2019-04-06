@@ -451,11 +451,33 @@ public class RecordDetailActivity extends Activity {
 //                mAdapter.notifyDataSetChanged();
 
                 RecordAddActivity.goToActivityForResult(RecordDetailActivity.this, item, recordBean.getTypeId(),
-                        shopInfoBean.getEnterpriseId(), shopInfoBean.getId(), itemList.get(index).getCategoryId());
+                        shopInfoBean.getEnterpriseId(), shopInfoBean.getId(), itemList.get(index).getCategoryId(), getCurrentIndex(recordBean.getmItemList(), item));
 
             }
         });
         picker.show();
+    }
+
+
+    private int getCurrentIndex(ArrayList<RecordItemBean> list, String itemStr) {
+        int index = 1;
+
+        if (list.size() <= 0) {
+            return index;
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+
+            RecordItemBean recordItemBean = list.get(i);
+
+            if (recordItemBean.getName().startsWith(itemStr)) {
+                index++;
+            }
+
+        }
+
+
+        return index;
     }
 
 

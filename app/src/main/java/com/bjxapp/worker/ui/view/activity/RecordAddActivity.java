@@ -45,6 +45,7 @@ import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.view.activity.bean.FragileBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
+import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
@@ -170,12 +171,12 @@ public class RecordAddActivity extends Activity {
             return;
         }
 
-        try{
+        try {
             ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             cm.setText(mSerTv.getText());
-            Toast.makeText(this , "复制成功", Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
-            Toast.makeText(this , "复制失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "复制成功", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "复制失败", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -229,7 +230,14 @@ public class RecordAddActivity extends Activity {
 
     private void initData() {
 
-        mRecordDeviceNameTv.setText(mName);
+        mRecordDeviceNameTv.setFocusable(false);
+        mRecordDeviceNameTv.setFocusableInTouchMode(false);
+
+        String nameReal = mName;
+        if (mIndex > 0) {
+            nameReal = nameReal + "-" + mIndex;
+        }
+        mRecordDeviceNameTv.setText(nameReal);
 
         // 如果是新增
         if (mIsAdd) {
@@ -329,7 +337,7 @@ public class RecordAddActivity extends Activity {
 
     private void parseRecordData(JsonObject mainObject) {
 
-        if (mainObject.get("equipment") == null || (mainObject).get("equipment") instanceof JsonNull){
+        if (mainObject.get("equipment") == null || (mainObject).get("equipment") instanceof JsonNull) {
             return;
         }
 
@@ -674,7 +682,7 @@ public class RecordAddActivity extends Activity {
 
         @Override
         public void goToImageDetail(ImageBean bean) {
-            //  ImageOrderActivity.goToActivity(AddImageActivity.this, bean.getUrl());
+            ImageOrderActivity.goToActivity(RecordAddActivity.this, bean.getUrl());
         }
     };
 
@@ -825,6 +833,7 @@ public class RecordAddActivity extends Activity {
     private String mShopId;
     private String mCategoryId;
     private boolean mIsAdd;
+    private int mIndex;
 
     public static final String TYPE_NAME = "type_name";
     public static final String TYPE_PARENT_ID = "parent_id";
@@ -832,6 +841,7 @@ public class RecordAddActivity extends Activity {
     public static final String TYPE_SHOP_ID = "shop_id";
     public static final String TYPE_CATEGORY_ID = "category_id";
     public static final String TYPE_IS_ADD = "is_add";
+    public static final String TYPE_INDEX = "type_index";
 
     public static final String TYPE_BEAN = "type_bean";
 
@@ -849,13 +859,14 @@ public class RecordAddActivity extends Activity {
             mShopId = intent.getStringExtra(TYPE_SHOP_ID);
             mCategoryId = intent.getStringExtra(TYPE_CATEGORY_ID);
             mIsAdd = intent.getBooleanExtra(TYPE_IS_ADD, false);
+            mIndex = intent.getIntExtra(TYPE_INDEX, 0);
             mRecordItemBean = intent.getParcelableExtra(TYPE_BEAN);
         }
 
     }
 
     public static void goToActivityForResult(Activity context, String name, String parentId, String enterId,
-                                             String shopId, String categoryId) {
+                                             String shopId, String categoryId, int index) {
 
         Intent intent = new Intent();
 
@@ -867,6 +878,7 @@ public class RecordAddActivity extends Activity {
         intent.putExtra(TYPE_PARENT_ID, parentId);
         intent.putExtra(TYPE_ENTER_ID, enterId);
         intent.putExtra(TYPE_IS_ADD, true);
+        intent.putExtra(TYPE_INDEX, index);
 
         context.startActivityForResult(intent, REQUEST_CODE_ADD_DEVICE);
     }
