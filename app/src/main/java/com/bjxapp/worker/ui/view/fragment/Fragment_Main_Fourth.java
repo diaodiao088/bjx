@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bjxapp.worker.App;
@@ -32,6 +33,7 @@ import com.bjxapp.worker.model.LabelStat;
 import com.bjxapp.worker.model.UserApplyInfo;
 import com.bjxapp.worker.model.UserInfo;
 import com.bjxapp.worker.model.UserInfoDetail;
+import com.bjxapp.worker.ui.view.activity.FeedBackActivity;
 import com.bjxapp.worker.ui.view.activity.WebViewActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyEditActivity;
@@ -102,10 +104,18 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
     @BindView(R.id.look_percent_tv)
     TextView mLookTv;
 
+    @BindView(R.id.feed_back_ly)
+    LinearLayout feedbackLy;
+
+    @OnClick(R.id.feed_back_ly)
+    void onClickFeedBack() {
+        FeedBackActivity.goToActivity(getActivity());
+    }
+
     public static final int MAX_VIEW_WIDTH = DimenUtils.dp2px(200, App.getInstance());
 
     @OnClick(R.id.me_header)
-    void onClickHeader(){
+    void onClickHeader() {
         ApplyEditActivity.goToActivity(getActivity());
     }
 
@@ -466,7 +476,7 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
 
                 if (response.code() == APIConstants.RESULT_CODE_SUCCESS && object.get("code").getAsInt() == 0) {
 
-                    if (object.get("bankInfo") instanceof JsonNull){
+                    if (object.get("bankInfo") instanceof JsonNull) {
                         goToBankActivity();
                         return;
                     }
@@ -503,7 +513,7 @@ public class Fragment_Main_Fourth extends BaseFragment implements OnClickListene
         }
     }
 
-    private void goToBankActivity(){
+    private void goToBankActivity() {
         if (mActivity != null && !mActivity.isFinishing()) {
             mActivity.runOnUiThread(new Runnable() {
                 @Override

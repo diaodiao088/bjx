@@ -174,6 +174,11 @@
 
         </activity>
 
+        <activity android:name="com.bjxapp.worker.ui.view.activity.FeedBackActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme"/>
+
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.CheckOrderDetailActivity"
             android:launchMode="singleTask"

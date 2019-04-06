@@ -87,5 +87,9 @@ public interface RecordApi {
     @POST("/order/quantity")
     Call<JsonObject> getRepairRedotCount(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/feedback/save")
+    Call<JsonObject> doFeedBack(@FieldMap Map<String, String> params);
+
 
 }
