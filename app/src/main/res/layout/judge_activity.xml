@@ -2,134 +2,288 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/windows_color"
     android:orientation="vertical">
 
     <include layout="@layout/layout_title" />
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <View
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@color/main_text_green" />
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginTop="15dp"
-                android:src="@drawable/order_time" />
-
-            <TextView
-                android:id="@+id/judge_des_tv"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="35dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="35dp"
-                android:gravity="center"
-                android:text="设备维修已完成，请选择您的评价意见"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_height="200dp"
+                android:background="@color/main_text_green" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/feedback_bg"
-                android:orientation="vertical"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp">
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:focusableInTouchMode="true"
+                android:focusable="true"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/order_time" />
+
+                <TextView
+                    android:id="@+id/judge_des_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="35dp"
+                    android:gravity="center"
+                    android:text="设备维修已完成，请选择您的评价意见"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/feedback_bg"
+                    android:orientation="vertical"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp">
 
-                    android:background="@color/white"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingLeft="15dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        android:background="@color/white"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="*"
+                            android:textColor="#ff0000"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="24dp"
+                            android:layout_weight="1"
+                            android:text="服务流程"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/process_status_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right|center_vertical"
+                            android:layout_marginRight="10dp"
+                            android:background="@drawable/service_bg"
+                            android:paddingLeft="12dp"
+                            android:paddingTop="6dp"
+                            android:paddingRight="12dp"
+                            android:paddingBottom="6dp"
+                            android:text="选择"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/windows_color"
+                        android:minHeight="1dp" />
+
+
+                    <LinearLayout
+                        android:id="@+id/service_process_ly"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="*"
-                        android:textColor="#ff0000"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="24dp"
-                        android:layout_weight="1"
-                        android:text="服务流程"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/process_status_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right|center_vertical"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/service_bg"
-                        android:paddingLeft="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingRight="12dp"
-                        android:paddingBottom="6dp"
-                        android:text="选择"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        android:paddingLeft="25dp"
+                        android:paddingTop="9dp"
+                        android:paddingBottom="9dp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
-                <View
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/windows_color"
-                    android:minHeight="1dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/feedback_bg"
+                    android:orientation="vertical"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp">
+
+
+                    <LinearLayout
+                        android:id="@+id/process_sit_ly"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/white"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="*"
+                            android:textColor="#ff0000"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="24dp"
+                            android:layout_weight="1"
+                            android:text="设备情况"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/process_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/windows_color"
+                        android:minHeight="1dp" />
+
+                    <RadioGroup
+                        android:id="@+id/device_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/white"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:paddingLeft="20dp"
+                        android:paddingBottom="10dp">
+
+                        <RadioButton
+                            android:id="@+id/recommend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:height="40dp"
+                            android:button="@drawable/radio_selector"
+                            android:paddingLeft="10dp"
+                            android:text="设备带病运行，建议报修"
+                            android:textSize="14sp" />
+
+                        <RadioButton
+                            android:id="@+id/must"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:button="@drawable/radio_selector"
+                            android:paddingLeft="10dp"
+                            android:text="设备情况故障，必须报修"
+                            android:textSize="14sp" />
+
+                    </RadioGroup>
+                </LinearLayout>
 
 
                 <LinearLayout
-                    android:id="@+id/service_process_ly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/feedback_bg"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
-                    android:paddingLeft="25dp"
-                    android:paddingTop="9dp"
-                    android:paddingBottom="9dp"
-                    android:visibility="gone" />
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="15dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="6dp"
+                        android:text="备注信息"
+                        android:textColor="#545454"
+                        android:textSize="14sp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/change_reason_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_below="@+id/layout_title"
+                            android:layout_gravity="left"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@drawable/edit_tv_bg"
+                            android:gravity="left"
+                            android:hint="请输入备注信息..."
+                            android:lineSpacingExtra="3dp"
+                            android:maxLength="200"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="15dp"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/content_limit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignRight="@+id/change_reason_tv"
+                            android:layout_alignBottom="@+id/change_reason_tv"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="5dp"
+                            android:text="0/200"
+                            android:textColor="#B5B5B5" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <com.bjxapp.worker.controls.XButton
+                    android:id="@+id/add_confirm_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/button_background_green"
+                    android:text="确认"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+
 
             </LinearLayout>
+        </RelativeLayout>
 
-            <com.bjxapp.worker.controls.XButton
-                android:id="@+id/add_confirm_btn"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/button_background_green"
-                android:text="确认"
-                android:textColor="@android:color/white"
-                android:textSize="18sp" />
-
-
-        </LinearLayout>
-    </RelativeLayout>
+    </ScrollView>
 </LinearLayout>

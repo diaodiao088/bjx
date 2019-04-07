@@ -65,6 +65,19 @@ public class OrderDes {
     private String mServiceType;
 
     private String enterpriseId;
+    private String enterpriseOrderId;
+
+    public String getEnterpriseOrderId() {
+        return enterpriseOrderId;
+    }
+
+    public void setEnterpriseOrderId(String enterpriseOrderId) {
+        this.enterpriseOrderId = enterpriseOrderId;
+    }
+
+    private boolean isFree;
+
+    private boolean isTwiceServed;
 
     public String getmServiceType() {
         return mServiceType;
@@ -287,5 +300,21 @@ public class OrderDes {
 
     public void setOrderNum(String orderNum) {
         this.orderNum = orderNum;
+    }
+
+    public boolean isFree() {
+        return isFree;
+    }
+
+    public void setFree(boolean free) {
+        isFree = free;
+    }
+
+    public boolean isTwiceServed() {
+        return isTwiceServed;
+    }
+
+    public void setTwiceServed(boolean twiceServed) {
+        isTwiceServed = twiceServed;
     }
 }

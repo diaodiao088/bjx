@@ -894,6 +894,20 @@
                         android:textSize="16sp"
                         android:visibility="gone" />
 
+                    <TextView
+                        android:id="@+id/look_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/order_receive_detail_save"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="查看设备评价详情>>"
+                        android:textColor="#00a554"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
                 </RelativeLayout>
 
                 <LinearLayout

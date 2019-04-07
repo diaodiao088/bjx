@@ -92,4 +92,13 @@ public interface RecordApi {
     Call<JsonObject> doFeedBack(@FieldMap Map<String, String> params);
 
 
+    @FormUrlEncoded
+    @POST("/enterpriseOrderEquipment/info/v2")
+    Call<JsonObject> getOrderEquipV2(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/enterpriseOrderEquipment/updateAgain")
+    Call<JsonObject> updateOrderAgain(@FieldMap Map<String, String> params);
+
+
 }

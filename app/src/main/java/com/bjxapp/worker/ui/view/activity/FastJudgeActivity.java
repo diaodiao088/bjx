@@ -2,16 +2,22 @@ package com.bjxapp.worker.ui.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
@@ -19,8 +25,10 @@ import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.RecordApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.DeviceConfirmDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.ServiceItemLayout;
 import com.bjxapp.worker.utils.Utils;
@@ -42,8 +50,13 @@ import retrofit2.Response;
 public class FastJudgeActivity extends Activity {
 
     public static final String IS_FINISHED = "is_finished";
+    public static final String ORDER_ID = "order_id";
+    public static final String EQUIP_ID = "equip_id";
+    public static final String IMG_LIST = "img_list";
+    public static final String ORDER_ID_REAL = "order_id_real";
 
     private boolean isFinished;
+    private Integer situation;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -60,19 +73,50 @@ public class FastJudgeActivity extends Activity {
         onBackPressed();
     }
 
+    @BindView(R.id.device_group)
+    RadioGroup mDeviceRadioGroup;
+
     @BindView(R.id.judge_des_tv)
     TextView mJudgeTv;
 
     @OnClick(R.id.add_confirm_btn)
     void onClickConfirm() {
-
+        startCommit();
     }
+
+    @BindView(R.id.content_limit)
+    TextView mLimitTv;
+
+    @BindView(R.id.change_reason_tv)
+    EditText mReasonTv;
+
+    @BindView(R.id.process_sit_ly)
+    LinearLayout mProcessSitLy;
+
+    @BindView(R.id.process_divider)
+    View dividerView;
 
     @BindView(R.id.process_status_tv)
     TextView mProcessStatusTv;
 
     @BindView(R.id.add_confirm_btn)
     XButton mConfirmBtn;
+
+    @OnClick(R.id.process_status_tv)
+    void onStatusClick() {
+        showStatusDialog();
+    }
+
+    ArrayList<String> imgList = new ArrayList<>();
+
+    private XWaitingDialog mWaitingDialog;
+
+    private String mOrderId;
+    private String mOrderIdReal;
+    private String mEquipId;
+    private String remark;
+    private String id;
+    private String realId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,27 +125,54 @@ public class FastJudgeActivity extends Activity {
         ButterKnife.bind(this);
         handleIntent();
         initView();
+        initData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initData();
     }
 
     private void handleIntent() {
         isFinished = getIntent().getBooleanExtra(IS_FINISHED, false);
+        mOrderId = getIntent().getStringExtra(ORDER_ID);
+        mEquipId = getIntent().getStringExtra(EQUIP_ID);
+        imgList = getIntent().getStringArrayListExtra(IMG_LIST);
+        mOrderIdReal = getIntent().getStringExtra(ORDER_ID_REAL);
     }
 
     private void initView() {
 
-        if (isFinished) {
+        if (!isFinished) {
             mJudgeTv.setText("设备维修已完成，请选择您的处理意见～");
             mConfirmBtn.setVisibility(View.VISIBLE);
         } else {
             mJudgeTv.setText("设备维续评价已完成～");
             mConfirmBtn.setVisibility(View.GONE);
         }
+
+        mWaitingDialog = new XWaitingDialog(this);
+
+        mReasonTv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int textSum = s.toString().length();
+
+                if (textSum <= 200) {
+                    mLimitTv.setText(textSum + "/200");
+                }
+            }
+        });
 
     }
 
@@ -112,9 +183,10 @@ public class FastJudgeActivity extends Activity {
         Map<String, String> params = new HashMap<>();
         params.put("token", ConfigManager.getInstance(this).getUserSession());
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
-        params.put("id", "");
+        params.put("orderId", mOrderId);
+        params.put("equipmentId", mEquipId);
 
-        Call<JsonObject> call = recordApi.getOrderEquip(params);
+        Call<JsonObject> call = recordApi.getOrderEquipV2(params);
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -149,6 +221,17 @@ public class FastJudgeActivity extends Activity {
 
     private void parseData(JsonObject object) {
 
+        if (object.get("remark") != null && !(object.get("remark") instanceof JsonNull)) {
+            remark = object.get("remark").getAsString();
+        }
+
+        if (object.get("situation") != null && !(object.get("situation") instanceof JsonNull)) {
+            situation = object.get("situation").getAsInt();
+        }
+
+        id = object.get("equipmentId").getAsString();
+        realId = object.get("id").getAsString();
+
         JsonArray serviceArray = object.get("serviceProcessList").getAsJsonArray();
 
         for (int i = 0; i < serviceArray.size(); i++) {
@@ -167,14 +250,70 @@ public class FastJudgeActivity extends Activity {
         updateUi();
     }
 
+    private void showStatusDialog() {
+
+        final DeviceConfirmDialog deviceConfirmDialog = new DeviceConfirmDialog(this);
+
+        deviceConfirmDialog.setNormalListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateAllAsNormal();
+                hideSituation();
+                deviceConfirmDialog.dismiss();
+            }
+        }).setUnNormalListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSituation();
+                updateAllAsUnNormal();
+                deviceConfirmDialog.dismiss();
+
+            }
+        }).setCancelBtnListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                deviceConfirmDialog.dismiss();
+
+            }
+        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+
+                deviceConfirmDialog.dismiss();
+
+            }
+        }).show();
+
+    }
+
     private void updateUi() {
+
+        if (!TextUtils.isEmpty(remark)) {
+            mReasonTv.setText(remark);
+        }
+
+        if (situation != null) {
+            if (situation == 0) {
+                hideSituation();
+            } else if (situation == 3) {
+                showSituation();
+                mDeviceRadioGroup.check(R.id.recommend);
+            } else {
+                showSituation();
+                mDeviceRadioGroup.check(R.id.must);
+            }
+        }
 
         if (!isAllSelected()) {
             mProcessStatusTv.setText("选择");
+            hideSituation();
         } else if (isAllMaxScore()) {
             mProcessStatusTv.setText("正常");
+            hideSituation();
         } else {
             mProcessStatusTv.setText("有异常");
+            showSituation();
         }
 
         if (mList.size() > 0) {
@@ -184,9 +323,13 @@ public class FastJudgeActivity extends Activity {
         } else {
             mServiceLy.setVisibility(View.GONE);
         }
+
     }
 
     private void updateServiceLy() {
+
+
+
         for (int i = 0; i < mList.size(); i++) {
             DeviceInfoActivity.ServiceItem serviceItem = mList.get(i);
             ServiceItemLayout serviceItemLayout = new ServiceItemLayout(this);
@@ -224,12 +367,191 @@ public class FastJudgeActivity extends Activity {
         return true;
     }
 
-    public static void goToActivity(Context context, boolean isFinished) {
+    private void startCommit() {
+
+        if (!isAllChecked()) {
+            Toast.makeText(this, "请先进行选择评分", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (situation == null) {
+            Toast.makeText(this, "请先选择设备状态", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isExpectChecked()) {
+            Toast.makeText(this, "请选择异常原因", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("id", realId);
+        params.put("maintainOrderId",mOrderIdReal);
+        params.put("situation", String.valueOf((int) situation));
+
+        if (!TextUtils.isEmpty(mReasonTv.getText().toString())) {
+            params.put("remark", mReasonTv.getText().toString());
+        }
+
+        putPartial(params);
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < imgList.size(); i++) {
+            builder.append(imgList.get(i));
+            if (i != imgList.size() - 1) {
+                builder.append(",");
+            }
+        }
+
+        if (imgList.size() > 0) {
+            params.put("imgUrls", builder.toString());
+        }
+
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
+        Call<JsonObject> call = recordApi.updateOrderAgain(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        Utils.showShortToast(FastJudgeActivity.this, "提交成功");
+                        finish();
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(FastJudgeActivity.this, msg + ":" + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Toast.makeText(FastJudgeActivity.this, "提交失败..", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+
+    }
+
+    private void putPartial(Map<String, String> params) {
+
+        if (mList == null || mList.size() <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < mList.size(); i++) {
+
+            String namekey = "serviceProcessList[" + i + "].id";
+            String urlkey = "serviceProcessList[" + i + "].actualScore";
+
+            String nameValue = mList.get(i).getId();
+
+            params.put(namekey, nameValue);
+
+            String score = mList.get(i).getActualScore();
+
+            params.put(urlkey, score);
+
+        }
+    }
+
+
+    private boolean isExpectChecked() {
+
+        if ("有异常".equals(mProcessStatusTv.getText().toString())) {
+            if (isAllMaxScore()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void hideSituation() {
+        situation = 0;
+        mDeviceRadioGroup.setVisibility(View.GONE);
+        mProcessSitLy.setVisibility(View.GONE);
+        dividerView.setVisibility(View.GONE);
+    }
+
+
+    private void showSituation() {
+        mDeviceRadioGroup.setVisibility(View.VISIBLE);
+        mProcessSitLy.setVisibility(View.VISIBLE);
+        dividerView.setVisibility(View.VISIBLE);
+    }
+
+    private boolean isAllChecked() {
+        for (int i = 0; i < mList.size(); i++) {
+            if (TextUtils.isEmpty(mList.get(i).getActualScore())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void updateAllAsNormal() {
+        mProcessStatusTv.setText("正常");
+
+        for (int i = 0; i < mServiceLy.getChildCount(); i++) {
+
+            View view = mServiceLy.getChildAt(i);
+
+            if (view instanceof ServiceItemLayout) {
+                ((ServiceItemLayout) view).showAsNormal();
+            }
+        }
+    }
+
+    public void updateAllAsUnNormal() {
+
+        mProcessStatusTv.setText("有异常");
+
+        for (int i = 0; i < mServiceLy.getChildCount(); i++) {
+
+            View view = mServiceLy.getChildAt(i);
+
+            if (view instanceof ServiceItemLayout) {
+                ((ServiceItemLayout) view).showAsSerNormal();
+            }
+        }
+    }
+
+
+    public static void goToActivity(Context context, boolean isFinished, String orderId, String equipId, ArrayList<String> imgList , String orderIdReal) {
 
         Intent intent = new Intent();
 
         intent.setClass(context, FastJudgeActivity.class);
         intent.putExtra(IS_FINISHED, isFinished);
+        intent.putExtra(ORDER_ID, orderId);
+        intent.putExtra(EQUIP_ID, equipId);
+        intent.putExtra(IMG_LIST, imgList);
+        intent.putExtra(ORDER_ID_REAL , orderIdReal);
 
         context.startActivity(intent);
     }

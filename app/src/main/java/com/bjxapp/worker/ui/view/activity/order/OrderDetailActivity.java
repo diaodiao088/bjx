@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
@@ -34,6 +35,7 @@ import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
 import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
+import com.bjxapp.worker.ui.view.activity.FastJudgeActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
@@ -77,6 +79,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     private int mOrderCode;
 
     private int mCurrentStatus;
+
+    private boolean isDeviceBill;
 
     @BindView(R.id.title_image_back)
     XImageView mBackImageView;
@@ -189,15 +193,29 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @BindView(R.id.check_tv)
     TextView mCheckTv;
 
+    @BindView(R.id.look_info)
+    TextView mLookInfoTv;
+
+    @OnClick(R.id.look_info)
+    void onClickLookinfo() {
+
+        if (mImageList.size() > 0){
+            FastJudgeActivity.goToActivity(this, true, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
+                    mDetailInfo.getOrderDes().getEnterpriseId(), mImageList , mDetailInfo.getOrderDes().getOrderId());
+        }else{
+            Toast.makeText(OrderDetailActivity.this , "请至少添加一张照片" ,Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @OnClick(R.id.check_service_ly)
     void onClickService() {
 
-        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null){
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
             return;
         }
 
-        DeviceInfoActivity.goToActivity(this , mDetailInfo.getOrderDes().getEnterpriseId() ,
-                false , true , true);
+        DeviceInfoActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(),
+                false, true, true);
     }
 
     @OnClick(R.id.order_receive_textview_address)
@@ -532,6 +550,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
     @Override
     protected void initData() {
+        //loadData(false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadData(false);
     }
 
@@ -668,17 +692,34 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         int processStatus = mDetailInfo.getOrderDes().getProcessStatus();
         int status = mDetailInfo.getOrderDes().getStatus();
 
+        mLookInfoTv.setVisibility(View.GONE);
+
         if (processStatus == 3) {
             mStatusTv.setText("待上门");
-            mSaveButton.setText("完成");
+
+            if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+                mSaveButton.setText("下一步");
+            } else {
+                mSaveButton.setText("完成");
+            }
+
         } else if (processStatus == 4) {
             mStatusTv.setText("已上门");
-            mSaveButton.setText("完成");
+            if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+                mSaveButton.setText("下一步");
+            } else {
+                mSaveButton.setText("完成");
+            }
         } else if (processStatus == 5) {
             mStatusTv.setText("待支付");
             preBillBtn.setVisibility(View.GONE);
             mSaveButton.setText("支付");
             mServiceEditBtn.setVisibility(View.GONE);
+
+            if (isDeviceBill) {
+                mLookInfoTv.setVisibility(View.VISIBLE);
+            }
+
         } else if (processStatus == 6) {
             mStatusTv.setText("待评价");
             preBillBtn.setVisibility(View.GONE);
@@ -861,11 +902,21 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         if (order.getmServiceType().equals("0")) {
             mCheckServiceLy.setVisibility(View.VISIBLE);
             mCheckTv.setText("查看巡检详情");
+            isDeviceBill = true;
         } else if (order.getmServiceType().equals("1")) {
             mCheckServiceLy.setVisibility(View.VISIBLE);
             mCheckTv.setText("查看保养详情");
+            isDeviceBill = true;
         } else {
             mCheckServiceLy.setVisibility(View.GONE);
+        }
+
+        // if is free ,then return
+
+        if (order.isFree()) {
+            mPreBillLy.setVisibility(View.GONE);
+        } else {
+            mPreBillLy.setVisibility(View.VISIBLE);
         }
 
     }
@@ -1016,14 +1067,24 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String latitude = detailItem.getString("latitude");
             String lontitude = detailItem.getString("longitude");
 
+            boolean isTwiceServed = false;
+
+            if (detailItem.has("twiceServed") && detailItem.get("twiceServed") != null) {
+                isTwiceServed = detailItem.getBoolean("twiceServed");
+            }
+
+            boolean isFree = detailItem.getBoolean("free");
+
             JSONArray urlArray = detailItem.getJSONArray("customerImgUrls");
 
             String enterpriseId = "";
             String serviceType = "";
+            String enterpriseOrderId = "";
 
-            if (detailItem.has("enterpriseOrderEquipmentId") && detailItem.has("enterpriseOrderServiceType")) {
-                enterpriseId = detailItem.getString("enterpriseOrderEquipmentId");
+            if (detailItem.has("equipmentId") && detailItem.has("enterpriseOrderServiceType")) {
+                enterpriseId = detailItem.getString("equipmentId");
                 serviceType = detailItem.getString("enterpriseOrderServiceType");
+                enterpriseOrderId = detailItem.getString("enterpriseOrderId");
             }
 
             ArrayList<String> customImgUrls = new ArrayList<>();
@@ -1052,6 +1113,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             orderItem.setOriginType(origin);
             orderItem.setmServiceType(serviceType);
             orderItem.setEnterpriseId(enterpriseId);
+            orderItem.setFree(isFree);
+            orderItem.setTwiceServed(isTwiceServed);
+            orderItem.setEnterpriseOrderId(enterpriseOrderId);
 
             return orderItem;
 
@@ -1351,41 +1415,28 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 break;
             case 4:
             case 3:
-                toWaitPay(orderDes.getOriginType() == 2);
+
+                if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+                    if (mImageList.size() > 0){
+                        FastJudgeActivity.goToActivity(OrderDetailActivity.this, false, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
+                                mDetailInfo.getOrderDes().getEnterpriseId() , mImageList, mDetailInfo.getOrderDes().getOrderId());
+                    }else{
+                        Toast.makeText(OrderDetailActivity.this , "请至少添加一张照片" ,Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    toWaitPay(orderDes.getOriginType() == 2, orderDes.isFree());
+                }
+
                 break;
             case 5:
-                toThirdStep(true, orderDes.getOriginType() == 2);
+                toThirdStep(true, orderDes.getOriginType() == 2, orderDes.isFree());
                 break;
         }
 
-
-        /*if (mSaveButton.getTag() == null) return;
-
-        int status = Integer.parseInt(mSaveButton.getTag().toString());
-
-        //接单
-        if (status == 0) {
-            acceptOperation();
-        }
-
-        //完成订单
-        if (status == 1) {
-            finishOperation();
-        }
-
-        //生成支付二维码
-        if (status == 2) {
-            payOperation();
-        }
-
-        //查看支付情况
-        if (status == 3) {
-            showPaySuccessActivity();
-        }*/
     }
 
-    private void toWaitPay(boolean isNeedShowDialog) {
-        if (!isNeedShowDialog) {
+    private void toWaitPay(boolean isNeedShowDialog, boolean isFree) {
+        if (!isNeedShowDialog && !isFree) {
             toWaitPayReal();
         } else {
             showReadyAlertDialog(new OnClickListener() {
@@ -1393,7 +1444,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 public void onClick(View v) {
                     saveCompleteInfoOnly();
                 }
-            });
+            }, isFree);
         }
     }
 
@@ -1530,7 +1581,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 final int code = object.get("code").getAsInt();
 
                 if (code == 0) {
-                    toThirdStep(false, mDetailInfo.getOrderDes().getOriginType() == 2);
+                    toThirdStep(false, mDetailInfo.getOrderDes().getOriginType() == 2, mDetailInfo.getOrderDes().isFree());
                 } else {
                     mHandler.post(new Runnable() {
                         @Override
@@ -1562,7 +1613,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         });
     }
 
-    private void showReadyAlertDialog(final OnClickListener listener) {
+    private void showReadyAlertDialog(final OnClickListener listener, boolean isFree) {
         final ICFunSimpleAlertDialog dialog = new ICFunSimpleAlertDialog(this);
         dialog.setOnNegativeListener(new OnClickListener() {
             @Override
@@ -1586,19 +1637,25 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             }
         });
 
-        dialog.setContent("如有增项费用，请督促客户在到位平台进行补差价！");
+        if (isFree) {
+            dialog.setContent("该订单无需支付");
+        } else {
+            dialog.setContent("如有增项费用，请督促客户在到位平台进行补差价！");
+        }
+
+
         dialog.show();
     }
 
-    private void toThirdStep(final boolean showDialog, boolean isNeedShowAlertDialog) {
+    private void toThirdStep(final boolean showDialog, boolean isNeedShowAlertDialog, boolean isFree) {
 
-        if (isNeedShowAlertDialog) {
+        if (isNeedShowAlertDialog || isFree) {
             showReadyAlertDialog(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     finish();
                 }
-            });
+            }, isFree);
             return;
         }
 
