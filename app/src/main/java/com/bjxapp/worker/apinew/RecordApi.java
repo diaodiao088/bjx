@@ -100,5 +100,9 @@ public interface RecordApi {
     @POST("/enterpriseOrderEquipment/updateAgain")
     Call<JsonObject> updateOrderAgain(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/order/saveImg")
+    Call<JsonObject> updateImage(@FieldMap Map<String, String> params);
+
 
 }

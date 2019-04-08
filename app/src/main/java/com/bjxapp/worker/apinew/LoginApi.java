@@ -29,22 +29,22 @@ public interface LoginApi {
 
     @FormUrlEncoded
     @POST("/login/authCode")
-    Call<JsonObject> getAuthCode(@FieldMap Map<String , String> params); // 获取验证码
+    Call<JsonObject> getAuthCode(@FieldMap Map<String, String> params); // 获取验证码
 
     @FormUrlEncoded
     @POST("/login/authCodeLogin")
-    Call<JsonObject> authCodeLogin(@FieldMap Map<String , String> params); // 验证码登录
+    Call<JsonObject> authCodeLogin(@FieldMap Map<String, String> params); // 验证码登录
 
     @FormUrlEncoded
     @POST("/login/passwordLogin")
-    Call<JsonObject> pwdLogin(@FieldMap Map<String , String> params); // 账号密码登录
+    Call<JsonObject> pwdLogin(@FieldMap Map<String, String> params); // 账号密码登录
 
     @FormUrlEncoded
     @POST("/profile/password")
-    Call<JsonObject> changePwd(@FieldMap Map<String , String> params);
+    Call<JsonObject> changePwd(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("/logout")
-    Call<JsonObject> logOut(@FieldMap Map<String , String> params); // 退出登录
+    Call<JsonObject> logOut(@FieldMap Map<String, String> params); // 退出登录
 
 }

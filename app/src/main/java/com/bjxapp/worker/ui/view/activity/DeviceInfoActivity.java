@@ -169,6 +169,7 @@ public class DeviceInfoActivity extends Activity {
         isCheck = getIntent().getBooleanExtra("is_check", true);
         isFromBill = getIntent().getBooleanExtra("is_from_bill", false);
         isNeedMod = getIntent().getBooleanExtra(IS_NEED_MOD, true);
+
         initView();
         initData();
     }
@@ -605,6 +606,12 @@ public class DeviceInfoActivity extends Activity {
             Toast.makeText(this, "请先选择设备状态", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        if (!isAllMaxScore() && situation == 0) {
+            Toast.makeText(this, "请先选择设备状态", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         if (!isAllChecked()) {
             Toast.makeText(this, "请先进行选择评分", Toast.LENGTH_SHORT).show();

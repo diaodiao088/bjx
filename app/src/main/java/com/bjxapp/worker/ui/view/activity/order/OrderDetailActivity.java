@@ -23,6 +23,7 @@ import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
 import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.RecordApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
@@ -199,11 +200,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @OnClick(R.id.look_info)
     void onClickLookinfo() {
 
-        if (mImageList.size() > 0){
+        if (mImageList.size() > 0) {
             FastJudgeActivity.goToActivity(this, true, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
-                    mDetailInfo.getOrderDes().getEnterpriseId(), mImageList , mDetailInfo.getOrderDes().getOrderId());
-        }else{
-            Toast.makeText(OrderDetailActivity.this , "请至少添加一张照片" ,Toast.LENGTH_SHORT).show();
+                    mDetailInfo.getOrderDes().getEnterpriseId(), mImageList, mDetailInfo.getOrderDes().getOrderId());
+        } else {
+            Toast.makeText(OrderDetailActivity.this, "请至少添加一张照片", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -214,7 +215,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             return;
         }
 
-        DeviceInfoActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(),
+        DeviceInfoActivity.goToActivity(this, mDetailInfo.getOrderDes().getDetailId(),
                 false, true, true);
     }
 
@@ -703,6 +704,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 mSaveButton.setText("完成");
             }
 
+
+            if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+                mLookInfoTv.setVisibility(View.VISIBLE);
+            }
+
+
         } else if (processStatus == 4) {
             mStatusTv.setText("已上门");
             if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
@@ -710,6 +717,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             } else {
                 mSaveButton.setText("完成");
             }
+
+            if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+                mLookInfoTv.setVisibility(View.VISIBLE);
+            }
+
+
         } else if (processStatus == 5) {
             mStatusTv.setText("待支付");
             preBillBtn.setVisibility(View.GONE);
@@ -725,11 +738,21 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             preBillBtn.setVisibility(View.GONE);
             mServiceEditBtn.setVisibility(View.GONE);
             mSaveButton.setVisibility(View.GONE);
+
+            if (isDeviceBill) {
+                mLookInfoTv.setVisibility(View.VISIBLE);
+            }
+
         } else if (processStatus == 7) {
             mStatusTv.setText("已评价");
             preBillBtn.setVisibility(View.GONE);
             mServiceEditBtn.setVisibility(View.GONE);
             mSaveButton.setVisibility(View.GONE);
+
+            if (isDeviceBill) {
+                mLookInfoTv.setVisibility(View.VISIBLE);
+            }
+
         }
 
         if (status == 4) {
@@ -1024,6 +1047,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             maintainInfo.setMasterImgUrls(customImgUrls);
 
+            mImageList.clear();
+
             if (customImgUrls.size() > 0) {
                 mImageList.addAll(customImgUrls);
             }
@@ -1081,10 +1106,17 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             String serviceType = "";
             String enterpriseOrderId = "";
 
+            String detailId = "";
+
             if (detailItem.has("equipmentId") && detailItem.has("enterpriseOrderServiceType")) {
                 enterpriseId = detailItem.getString("equipmentId");
                 serviceType = detailItem.getString("enterpriseOrderServiceType");
                 enterpriseOrderId = detailItem.getString("enterpriseOrderId");
+            }
+
+
+            if (detailItem.has("enterpriseOrderEquipmentId")){
+                detailId = detailItem.getString("enterpriseOrderEquipmentId");
             }
 
             ArrayList<String> customImgUrls = new ArrayList<>();
@@ -1116,6 +1148,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             orderItem.setFree(isFree);
             orderItem.setTwiceServed(isTwiceServed);
             orderItem.setEnterpriseOrderId(enterpriseOrderId);
+
+            orderItem.setDetailId(detailId);
 
             return orderItem;
 
@@ -1417,11 +1451,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case 3:
 
                 if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                    if (mImageList.size() > 0){
+                    if (mImageList.size() > 0) {
                         FastJudgeActivity.goToActivity(OrderDetailActivity.this, false, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
-                                mDetailInfo.getOrderDes().getEnterpriseId() , mImageList, mDetailInfo.getOrderDes().getOrderId());
-                    }else{
-                        Toast.makeText(OrderDetailActivity.this , "请至少添加一张照片" ,Toast.LENGTH_SHORT).show();
+                                mDetailInfo.getOrderDes().getEnterpriseId(), mImageList, mDetailInfo.getOrderDes().getOrderId());
+                    } else {
+                        Toast.makeText(OrderDetailActivity.this, "请至少添加一张照片", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     toWaitPay(orderDes.getOriginType() == 2, orderDes.isFree());
@@ -1852,6 +1886,43 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         context.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
+    private void commitImage(ArrayList<String> imageList) {
+
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < imageList.size(); i++) {
+            if (i < imageList.size() - 1) {
+                builder.append(imageList.get(i) + ",");
+            } else {
+                builder.append(imageList.get(i));
+            }
+        }
+
+        params.put("masterImgUrls", builder.toString());
+        params.put("orderId", mDetailInfo.getOrderDes().getOrderId());
+
+        retrofit2.Call<JsonObject> call = recordApi.updateImage(params);
+
+        call.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
@@ -1865,11 +1936,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     if (resultCode == RESULT_OK) {
                         ArrayList<String> list = data.getStringArrayListExtra("result");
                         if (list != null) {
+
+                            mImageList.clear();
                             mImageList.addAll(list);
 
                             if (mDetailInfo != null && mDetailInfo.getMaintainInfo() != null) {
                                 mDetailInfo.getMaintainInfo().setMasterImgUrls(mImageList);
                             }
+
+                            commitImage(mImageList);
 
                         }
                     }

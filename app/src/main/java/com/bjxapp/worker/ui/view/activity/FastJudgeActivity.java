@@ -102,6 +102,12 @@ public class FastJudgeActivity extends Activity {
     @BindView(R.id.add_confirm_btn)
     XButton mConfirmBtn;
 
+    @BindView(R.id.process_total_Ly)
+    LinearLayout processTotalLy;
+
+    @BindView(R.id.situation_tv)
+    TextView situationTv;
+
     @OnClick(R.id.process_status_tv)
     void onStatusClick() {
         showStatusDialog();
@@ -151,6 +157,25 @@ public class FastJudgeActivity extends Activity {
             mConfirmBtn.setVisibility(View.GONE);
         }
 
+        mTitleTextView.setText("设备评价");
+
+        situationTv.setVisibility(View.GONE);
+
+        if (isFinished) {
+
+            mDeviceRadioGroup.setFocusable(false);
+            mDeviceRadioGroup.setFocusableInTouchMode(false);
+
+            mReasonTv.setFocusable(false);
+            mReasonTv.setFocusableInTouchMode(false);
+
+            mProcessStatusTv.setEnabled(false);
+            mProcessStatusTv.setClickable(false);
+
+            situationTv.setVisibility(View.VISIBLE);
+            mDeviceRadioGroup.setVisibility(View.GONE);
+        }
+
         mWaitingDialog = new XWaitingDialog(this);
 
         mReasonTv.addTextChangedListener(new TextWatcher() {
@@ -170,6 +195,22 @@ public class FastJudgeActivity extends Activity {
 
                 if (textSum <= 200) {
                     mLimitTv.setText(textSum + "/200");
+                }
+            }
+        });
+
+        mDeviceRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                switch (checkedId) {
+                    case R.id.must:
+                        situation = 6;
+                        break;
+
+                    case R.id.recommend:
+                        situation = 3;
+                        break;
                 }
             }
         });
@@ -221,13 +262,16 @@ public class FastJudgeActivity extends Activity {
 
     private void parseData(JsonObject object) {
 
-        if (object.get("remark") != null && !(object.get("remark") instanceof JsonNull)) {
-            remark = object.get("remark").getAsString();
+        if (isFinished) {
+
+            if (object.get("remark") != null && !(object.get("remark") instanceof JsonNull)) {
+                remark = object.get("remark").getAsString();
+            }
+            if (object.get("situation") != null && !(object.get("situation") instanceof JsonNull)) {
+                situation = object.get("situation").getAsInt();
+            }
         }
 
-        if (object.get("situation") != null && !(object.get("situation") instanceof JsonNull)) {
-            situation = object.get("situation").getAsInt();
-        }
 
         id = object.get("equipmentId").getAsString();
         realId = object.get("id").getAsString();
@@ -237,7 +281,7 @@ public class FastJudgeActivity extends Activity {
         for (int i = 0; i < serviceArray.size(); i++) {
             JsonObject item = serviceArray.get(i).getAsJsonObject();
             DeviceInfoActivity.ServiceItem serviceItem = new DeviceInfoActivity.ServiceItem();
-            if (item.get("actualScore") != null && !(item.get("actualScore") instanceof JsonNull)) {
+            if (item.get("actualScore") != null && !(item.get("actualScore") instanceof JsonNull) && isFinished) {
                 serviceItem.setActualScore(item.get("actualScore").getAsString());
             }
 
@@ -329,7 +373,6 @@ public class FastJudgeActivity extends Activity {
     private void updateServiceLy() {
 
 
-
         for (int i = 0; i < mList.size(); i++) {
             DeviceInfoActivity.ServiceItem serviceItem = mList.get(i);
             ServiceItemLayout serviceItemLayout = new ServiceItemLayout(this);
@@ -379,6 +422,11 @@ public class FastJudgeActivity extends Activity {
             return;
         }
 
+        if (!isAllMaxScore() && situation == 0) {
+            Toast.makeText(this, "请先选择设备状态", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (!isExpectChecked()) {
             Toast.makeText(this, "请选择异常原因", Toast.LENGTH_SHORT).show();
             return;
@@ -388,7 +436,7 @@ public class FastJudgeActivity extends Activity {
         params.put("token", ConfigManager.getInstance(this).getUserSession());
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
         params.put("id", realId);
-        params.put("maintainOrderId",mOrderIdReal);
+        params.put("maintainOrderId", mOrderIdReal);
         params.put("situation", String.valueOf((int) situation));
 
         if (!TextUtils.isEmpty(mReasonTv.getText().toString())) {
@@ -496,13 +544,28 @@ public class FastJudgeActivity extends Activity {
         mDeviceRadioGroup.setVisibility(View.GONE);
         mProcessSitLy.setVisibility(View.GONE);
         dividerView.setVisibility(View.GONE);
+        processTotalLy.setVisibility(View.GONE);
     }
 
 
     private void showSituation() {
-        mDeviceRadioGroup.setVisibility(View.VISIBLE);
-        mProcessSitLy.setVisibility(View.VISIBLE);
+
+        processTotalLy.setVisibility(View.VISIBLE);
         dividerView.setVisibility(View.VISIBLE);
+        mProcessSitLy.setVisibility(View.VISIBLE);
+
+        if (isFinished) {
+            mDeviceRadioGroup.setVisibility(View.GONE);
+            situationTv.setVisibility(View.VISIBLE);
+            if (situation == 3) {
+                situationTv.setText("设备带病运行，建议报修");
+            } else {
+                situationTv.setText("设备情况故障，必须报修");
+            }
+        } else {
+            mDeviceRadioGroup.setVisibility(View.VISIBLE);
+            situationTv.setVisibility(View.GONE);
+        }
     }
 
     private boolean isAllChecked() {
@@ -542,7 +605,7 @@ public class FastJudgeActivity extends Activity {
     }
 
 
-    public static void goToActivity(Context context, boolean isFinished, String orderId, String equipId, ArrayList<String> imgList , String orderIdReal) {
+    public static void goToActivity(Context context, boolean isFinished, String orderId, String equipId, ArrayList<String> imgList, String orderIdReal) {
 
         Intent intent = new Intent();
 
@@ -551,7 +614,7 @@ public class FastJudgeActivity extends Activity {
         intent.putExtra(ORDER_ID, orderId);
         intent.putExtra(EQUIP_ID, equipId);
         intent.putExtra(IMG_LIST, imgList);
-        intent.putExtra(ORDER_ID_REAL , orderIdReal);
+        intent.putExtra(ORDER_ID_REAL, orderIdReal);
 
         context.startActivity(intent);
     }

@@ -28,7 +28,7 @@ public class OrderDes {
 
     private String locationAddress;
 
-    private String serviceVisitCost;
+    private String serviceVisitCost = "";
 
     private String contactPhone;
 
@@ -66,6 +66,16 @@ public class OrderDes {
 
     private String enterpriseId;
     private String enterpriseOrderId;
+
+    String detailId;
+
+    public String getDetailId() {
+        return detailId;
+    }
+
+    public void setDetailId(String detailId) {
+        this.detailId = detailId;
+    }
 
     public String getEnterpriseOrderId() {
         return enterpriseOrderId;
