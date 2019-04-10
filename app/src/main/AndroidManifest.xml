@@ -472,5 +472,11 @@
             android:name="com.bjxapp.worker.zxing.CaptureActivity"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.CustomScanActivity"
+            android:screenOrientation="portrait"/>
+
+
+
     </application>
 </manifest>

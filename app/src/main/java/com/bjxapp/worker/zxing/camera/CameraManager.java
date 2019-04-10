@@ -25,6 +25,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import com.bjxapp.worker.App;
+import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.zxing.camera.open.OpenCamera;
 import com.bjxapp.worker.zxing.camera.open.OpenCameraInterface;
 import com.google.zxing.PlanarYUVLuminanceSource;
@@ -174,7 +176,6 @@ public final class CameraManager {
     }
 
     /**
-     *
      * @param newSetting if {@code true}, light should be turned on if currently off. And vice versa.
      */
     public synchronized void setTorch(boolean newSetting) {
@@ -230,10 +231,11 @@ public final class CameraManager {
             int width = findDesiredDimensionInRange(screenResolution.x, MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
             int height = findDesiredDimensionInRange(screenResolution.y, MIN_FRAME_HEIGHT, MAX_FRAME_HEIGHT);
 
-            int size = Math.min(width,height);
+            int size = Math.min(width, height);
 
             int leftOffset = (screenResolution.x - size) / 2;
-            int topOffset = (screenResolution.y - size) / 2;
+            int topOffset = (screenResolution.y - size) / 2 - DimenUtils.dp2px(140 , App.getInstance());
+
             framingRect = new Rect(leftOffset, topOffset, leftOffset + size, topOffset + size);
             Log.d(TAG, "Calculated framing rect: " + framingRect);
         }
@@ -300,7 +302,7 @@ public final class CameraManager {
      * Allows third party apps to specify the scanning rectangle dimensions, rather than determine
      * them automatically based on screen resolution.
      *
-     * @param width The width in pixels to scan.
+     * @param width  The width in pixels to scan.
      * @param height The height in pixels to scan.
      */
     public synchronized void setManualFramingRect(int width, int height) {
@@ -327,8 +329,8 @@ public final class CameraManager {
      * A factory method to build the appropriate LuminanceSource object based on the format
      * of the preview buffers, as described by Camera.Parameters.
      *
-     * @param data A preview frame.
-     * @param width The width of the image.
+     * @param data   A preview frame.
+     * @param width  The width of the image.
      * @param height The height of the image.
      * @return A PlanarYUVLuminanceSource instance.
      */
@@ -337,12 +339,12 @@ public final class CameraManager {
         if (rect == null) {
             return null;
         }
-        int size = Math.min(width,height);
-        int left = (width-size)/2;
-        int top = (height-size)/2;
+        int size = Math.min(width, height);
+        int left = (width - size) / 2;
+        int top = (height - size) / 2;
         // Go ahead and assume it's YUV rather than die.
-        return new PlanarYUVLuminanceSource(data, width, height, left, top,
-                left + size, top + size, false);
+        return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
+                rect.width(), rect.height(), false);
     }
 
 }

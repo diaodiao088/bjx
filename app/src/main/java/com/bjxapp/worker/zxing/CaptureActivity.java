@@ -195,7 +195,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback 
                 decodeFormats = DecodeFormatManager.parseDecodeFormats(intent);
                 decodeHints = DecodeHintManager.parseDecodeHints(intent);
 
-                if (intent.hasExtra(Intents.Scan.WIDTH) && intent.hasExtra(Intents.Scan.HEIGHT)) {
+                if (true || intent.hasExtra(Intents.Scan.WIDTH) && intent.hasExtra(Intents.Scan.HEIGHT)) {
                     int width = intent.getIntExtra(Intents.Scan.WIDTH, 0);
                     int height = intent.getIntExtra(Intents.Scan.HEIGHT, 0);
                     if (width > 0 && height > 0) {

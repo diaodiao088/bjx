@@ -511,7 +511,7 @@ public class CheckOrderDetailActivity extends Activity {
     }
 
     private void startScan() {
-        Intent intent = new Intent(this, CaptureActivity.class);
+        Intent intent = new Intent(this, CustomScanActivity.class);
         ActivityCompat.startActivityForResult(this, intent, REQUEST_CODE_SCAN, null);
     }
 
