@@ -32,13 +32,11 @@ import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 import com.bjxapp.worker.ui.widget.CheckOrderItemLayout;
 import com.bjxapp.worker.ui.widget.DimenUtils;
-import com.bjxapp.worker.utils.IDCardValidate;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,6 +103,14 @@ public class CheckOrderDetailActivity extends Activity {
     @BindView(R.id.record_recycler_view)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.check_to_scan_tv)
+    TextView mScanTv;
+
+    @OnClick(R.id.scan_ly)
+    void onClickScan() {
+
+    }
+
     @BindView(R.id.name)
     TextView mTitleName;
 
@@ -135,7 +141,7 @@ public class CheckOrderDetailActivity extends Activity {
 
         if (intent != null) {
             orderId = intent.getStringExtra(TYPE_ID);
-            mCurrentType = intent.getIntExtra("type" , 0);
+            mCurrentType = intent.getIntExtra("type", 0);
         }
     }
 
@@ -152,10 +158,12 @@ public class CheckOrderDetailActivity extends Activity {
         mRecyclerView.setAdapter(recordAdapter);
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(DimenUtils.dp2px(15, this)));
 
-        if(mCurrentType == 0){
+        if (mCurrentType == 0) {
             mTitleName.setText("门店巡检");
-        }else{
+            mScanTv.setText("点击进行巡检");
+        } else {
             mTitleName.setText("门店保养");
+            mScanTv.setText("点击进行保养");
         }
 
     }
@@ -299,11 +307,11 @@ public class CheckOrderDetailActivity extends Activity {
                         + checkDetailBean.getShopInfoBean().getName());
                 recordAdapter.setItems(checkDetailBean.getCategoryList());
 
-                if (checkDetailBean.getProcessState() >= 3){
+                if (checkDetailBean.getProcessState() >= 3) {
                     mChangeTimeTv.setVisibility(View.GONE);
                 }
 
-                if (checkDetailBean.getProcessState() >= 6){
+                if (checkDetailBean.getProcessState() >= 6) {
                     mConfirmBtn.setVisibility(View.GONE);
                 }
 
@@ -391,7 +399,7 @@ public class CheckOrderDetailActivity extends Activity {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     DimenUtils.dp2px(45, mRecordItemContainer.getContext()));
 
-            itemLayout.bindData(checkDetailBean.getProcessState() , itemBean, itemBean.getId(), mCurrentType == 0);
+            itemLayout.bindData(checkDetailBean.getProcessState(), itemBean, itemBean.getId(), mCurrentType == 0);
 
             mRecordItemContainer.addView(itemLayout, layoutParams);
         }

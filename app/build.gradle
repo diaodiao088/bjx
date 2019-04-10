@@ -6,8 +6,8 @@ android {
         applicationId "com.bjx.master"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 4010
-        versionName "4.2.0"
+        versionCode 4011
+        versionName "4.2.1"
         useLibrary 'org.apache.http.legacy'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -67,4 +67,5 @@ dependencies {
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation project(':calendarview1')
     implementation 'androidx.annotation:annotation:1.0.0-rc01'
+    api deps.zxing
 }

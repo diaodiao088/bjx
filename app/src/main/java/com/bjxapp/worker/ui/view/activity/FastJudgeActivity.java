@@ -153,7 +153,7 @@ public class FastJudgeActivity extends Activity {
             mJudgeTv.setText("设备维修已完成，请选择您的处理意见～");
             mConfirmBtn.setVisibility(View.VISIBLE);
         } else {
-            mJudgeTv.setText("设备维续评价已完成～");
+            mJudgeTv.setText("设备维修评价已完成～");
             mConfirmBtn.setVisibility(View.GONE);
         }
 

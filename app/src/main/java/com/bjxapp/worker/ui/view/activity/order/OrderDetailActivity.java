@@ -1047,9 +1047,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             maintainInfo.setMasterImgUrls(customImgUrls);
 
-            mImageList.clear();
-
             if (customImgUrls.size() > 0) {
+                mImageList.clear();
                 mImageList.addAll(customImgUrls);
             }
 

@@ -151,13 +151,13 @@ public class OrderAdapter extends BaseAdapter {
         }
 
         if (type == 1){
-            holder.textViewOrderDate.setText("紧急上门");
+            holder.textViewOrderDate.setText("立即上门");
         }else{
             holder.textViewOrderDate.setText(aInfo.get(position).getAppointmentDay() + " " + aInfo.get(position).getAppointmentEndTime());
         }
 
         if (type == 1) {
-            holder.emergencyTv.setVisibility(View.VISIBLE);
+            holder.emergencyTv.setVisibility(View.GONE);
         } else {
             holder.emergencyTv.setVisibility(View.GONE);
         }
