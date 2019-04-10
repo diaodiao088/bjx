@@ -215,6 +215,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         String orderId = item.get("orderId").getAsString();
                         int processStatus = item.get("processStatus").getAsInt();
                         int status = item.get("status").getAsInt();
+                        int bussinessType = item.get("type").getAsInt();
                         JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
                         String serviceName = detailItem.get("serviceName").getAsString();
                         String appointmentDay = detailItem.get("appointmentDay").getAsString();
@@ -249,6 +250,8 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         orderItem.setSelectMasterTime(orderTime);
 
                         orderItem.setEsCost(serviceEsCost);
+
+                        orderItem.setBusinessType(bussinessType);
 
                         list.add(orderItem);
                     }

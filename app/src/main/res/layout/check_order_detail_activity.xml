@@ -196,6 +196,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginRight="9dp"
         android:layout_marginBottom="15dp"
+        android:visibility="gone"
         android:background="@drawable/check_item_bg">
 
         <TextView
@@ -212,7 +213,6 @@
             android:drawableLeft="@drawable/add_plus"
             android:textSize="14sp" />
 
-
     </RelativeLayout>
 
 
@@ -222,7 +222,7 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/button_background_green"

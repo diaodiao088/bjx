@@ -157,7 +157,13 @@ public class OrderAdapter extends BaseAdapter {
         }
 
         if (type == 1) {
-            holder.emergencyTv.setVisibility(View.GONE);
+
+           if (aInfo.get(position).getBusinessType() != 1){
+               holder.emergencyTv.setVisibility(View.VISIBLE);
+           }else{
+               holder.emergencyTv.setVisibility(View.GONE);
+           }
+
         } else {
             holder.emergencyTv.setVisibility(View.GONE);
         }

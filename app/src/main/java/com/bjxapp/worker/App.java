@@ -7,8 +7,9 @@ import com.bjxapp.worker.http.keyboard.commonutils.CommonUtilsEnv;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
-public class App extends Application {
+public class App extends MultiDexApplication {
 
     private static Context _context;
 

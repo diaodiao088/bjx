@@ -7,6 +7,10 @@
     <color name="possible_result_points">#c0ffff00</color>
     <color name="result_view">#b0000000</color>
     <color name="viewfinder_laser">#E9E9E9</color>
+
+    <color name="viewfinder_corner">#FF1FB3E2</color>
+    <color name="viewfinder_result_point_color">#C0FFBD21</color>
+    <color name="viewfinder_text_color">#FFC0C0C0</color>
     <!-- end zxing -->
     
 </resources>

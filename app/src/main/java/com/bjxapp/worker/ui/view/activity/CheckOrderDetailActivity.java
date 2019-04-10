@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -33,6 +34,8 @@ import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 import com.bjxapp.worker.ui.widget.CheckOrderItemLayout;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.Utils;
+import com.bjxapp.worker.zxing.CaptureActivity;
+import com.bjxapp.worker.zxing.Intents;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -48,6 +51,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CheckOrderDetailActivity extends Activity {
+
+    public static final int REQUEST_CODE_SCAN = 0X01;
 
     @OnClick(R.id.title_image_back)
     void onBack() {
@@ -108,7 +113,7 @@ public class CheckOrderDetailActivity extends Activity {
 
     @OnClick(R.id.scan_ly)
     void onClickScan() {
-
+        startScan();
     }
 
     @BindView(R.id.name)
@@ -503,8 +508,26 @@ public class CheckOrderDetailActivity extends Activity {
 
             }
         });
-
-
     }
 
+    private void startScan() {
+        Intent intent = new Intent(this, CaptureActivity.class);
+        ActivityCompat.startActivityForResult(this, intent, REQUEST_CODE_SCAN, null);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && data!=null){
+            switch (requestCode){
+                case REQUEST_CODE_SCAN:
+                    String result = data.getStringExtra(Intents.Scan.RESULT);
+                    Toast.makeText(this,result,Toast.LENGTH_SHORT).show();
+                    break;
+
+            }
+
+        }
+    }
 }

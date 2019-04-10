@@ -26,6 +26,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            multiDexEnabled true
         }
     }
 
@@ -68,4 +69,5 @@ dependencies {
     implementation project(':calendarview1')
     implementation 'androidx.annotation:annotation:1.0.0-rc01'
     api deps.zxing
+    compile 'com.android.support:multidex:1.0.3'
 }

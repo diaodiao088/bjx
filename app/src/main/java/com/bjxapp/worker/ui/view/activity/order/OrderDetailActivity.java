@@ -1093,11 +1093,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             boolean isTwiceServed = false;
 
-            if (detailItem.has("twiceServed") && detailItem.get("twiceServed") != null) {
+            if (detailItem.has("twiceServed") && detailItem.get("twiceServed") != null && !detailItem.get("twiceServed").toString().equals("null")) {
                 isTwiceServed = detailItem.getBoolean("twiceServed");
             }
 
-            boolean isFree = detailItem.getBoolean("free");
+            boolean isFree = false;
+
+            if (detailItem.has("free") && detailItem.get("free") != null && !detailItem.get("free").toString().equals("null")) {
+                isFree = detailItem.getBoolean("free");
+            }
 
             JSONArray urlArray = detailItem.getJSONArray("customerImgUrls");
 
@@ -1114,7 +1118,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             }
 
 
-            if (detailItem.has("enterpriseOrderEquipmentId")){
+            if (detailItem.has("enterpriseOrderEquipmentId")) {
                 detailId = detailItem.getString("enterpriseOrderEquipmentId");
             }
 
@@ -1918,8 +1922,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             }
         });
-
-
     }
 
     @Override

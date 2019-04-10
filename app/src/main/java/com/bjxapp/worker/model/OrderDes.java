@@ -69,6 +69,8 @@ public class OrderDes {
 
     String detailId;
 
+    private int businessType;
+
     public String getDetailId() {
         return detailId;
     }
@@ -88,6 +90,14 @@ public class OrderDes {
     private boolean isFree;
 
     private boolean isTwiceServed;
+
+    public int getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(int businessType) {
+        this.businessType = businessType;
+    }
 
     public String getmServiceType() {
         return mServiceType;
