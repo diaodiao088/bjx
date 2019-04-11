@@ -36,6 +36,17 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
+    <!-- 蓝牙相关 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <!-- 这个权限用于进行网络定位-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
     <!-- 这个权限用于访问GPS定位-->
@@ -182,10 +193,11 @@
 
         </activity>
 
-        <activity android:name="com.bjxapp.worker.ui.view.activity.FeedBackActivity"
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.FeedBackActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme"/>
+            android:theme="@style/XAppTheme" />
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.CheckOrderDetailActivity"
@@ -239,6 +251,9 @@
             android:name="com.bjxapp.worker.ui.view.activity.user.ApplyEditActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.FindPrinterActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.AddImageActivity"
             android:screenOrientation="portrait"></activity>
@@ -470,12 +485,11 @@
 
         <activity
             android:name="com.bjxapp.worker.zxing.CaptureActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.CustomScanActivity"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
 
 
     </application>
