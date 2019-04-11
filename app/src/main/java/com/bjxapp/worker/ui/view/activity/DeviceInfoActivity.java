@@ -111,6 +111,7 @@ public class DeviceInfoActivity extends Activity {
 
     public static final String TYPE_ID = "type_id";
     public static final String IS_NEED_MOD = "is_need_Mod";
+    public static final String TYPE_NUM = "type_num";
 
     @BindView(R.id.change_reason_tv)
     EditText mReasonTv;
@@ -160,6 +161,10 @@ public class DeviceInfoActivity extends Activity {
     private boolean isCheck = true;
     private boolean isFromBill = false;
 
+    private boolean isFromScan = false;
+
+    private String orderNum = "";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,7 +173,10 @@ public class DeviceInfoActivity extends Activity {
         id = getIntent().getStringExtra(TYPE_ID);
         isCheck = getIntent().getBooleanExtra("is_check", true);
         isFromBill = getIntent().getBooleanExtra("is_from_bill", false);
+        isFromScan = getIntent().getBooleanExtra("is_from_scan", false);
         isNeedMod = getIntent().getBooleanExtra(IS_NEED_MOD, true);
+
+        orderNum = getIntent().getStringExtra(TYPE_NUM);
 
         initView();
         initData();
@@ -342,12 +350,20 @@ public class DeviceInfoActivity extends Activity {
 
         RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
 
+        Call<JsonObject> call = null;
+
         Map<String, String> params = new HashMap<>();
         params.put("token", ConfigManager.getInstance(this).getUserSession());
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
-        params.put("id", id);
 
-        Call<JsonObject> call = recordApi.getOrderEquip(params);
+        if (isFromScan) {
+            params.put("equipmentNo", orderNum);
+            params.put("orderId", id);
+            call = recordApi.getOrderEquip(params);
+        } else {
+            params.put("id", id);
+            call = recordApi.getOrderEquipOld(params);
+        }
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -520,6 +536,19 @@ public class DeviceInfoActivity extends Activity {
 
             mServiceLy.addView(serviceItemLayout, layoutParams);
         }
+    }
+
+    public static void goToActivity(Context context, String orderNum, boolean isNeedMod, boolean isCheck, boolean isFromBill, boolean fromScan, String order_id) {
+        Intent intent = new Intent();
+        intent.setClass(context, DeviceInfoActivity.class);
+        intent.putExtra(TYPE_NUM, orderNum);
+        intent.putExtra(TYPE_ID, order_id);
+        intent.putExtra(IS_NEED_MOD, isNeedMod);
+        intent.putExtra("is_check", isCheck);
+        intent.putExtra("is_from_bill", isFromBill);
+        intent.putExtra("is_from_scan", fromScan);
+
+        context.startActivity(intent);
     }
 
 

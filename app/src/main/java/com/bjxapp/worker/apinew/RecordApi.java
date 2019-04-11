@@ -72,8 +72,12 @@ public interface RecordApi {
     Call<JsonObject> submitOrder(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST("/enterpriseOrderEquipment/info")
+    @POST("/enterpriseOrderEquipment/info/v2")
     Call<JsonObject> getOrderEquip(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/enterpriseOrderEquipment/info")
+    Call<JsonObject> getOrderEquipOld(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("/enterpriseOrderEquipment/update")

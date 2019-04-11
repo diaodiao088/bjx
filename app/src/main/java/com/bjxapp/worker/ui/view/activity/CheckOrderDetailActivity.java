@@ -511,8 +511,14 @@ public class CheckOrderDetailActivity extends Activity {
     }
 
     private void startScan() {
-        Intent intent = new Intent(this, CustomScanActivity.class);
-        ActivityCompat.startActivityForResult(this, intent, REQUEST_CODE_SCAN, null);
+//        Intent intent = new Intent(this, CustomScanActivity.class);
+//        ActivityCompat.startActivityForResult(this, intent, REQUEST_CODE_SCAN, null);
+
+        if (checkDetailBean == null){
+            return;
+        }
+
+        CustomScanActivity.goToActivity(this , orderId, checkDetailBean.getProcessState() , mCurrentType);
     }
 
 
