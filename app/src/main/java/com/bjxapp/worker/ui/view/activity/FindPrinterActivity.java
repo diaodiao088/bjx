@@ -234,7 +234,7 @@ public class FindPrinterActivity extends Activity {
         }
 
         if (!btAdapter.isEnabled()) {
-            Toast.makeText(FindPrinterActivity.this, "蓝牙适配器未打开", Toast.LENGTH_SHORT).show();
+            Toast.makeText(FindPrinterActivity.this, "监测到系统蓝牙未连接设备，请在系统连接蓝牙设置中连接打印设备", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -339,9 +339,8 @@ public class FindPrinterActivity extends Activity {
         Toast.makeText(FindPrinterActivity.this, "连接打印机成功", Toast.LENGTH_SHORT).show();
         mPrinterAddress = printer;
         // 调用LPAPI对象的getPrinterInfo方法获得当前连接的打印机信息
-        String txt = "打印机：";
+        String txt = "已连接设备：";
         txt += api.getPrinterInfo().deviceName + "\n";
-        txt += api.getPrinterInfo().deviceAddress;
         mDesTv.setText(txt);
 
         if (!isPrinted) {

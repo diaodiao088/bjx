@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -34,7 +33,6 @@ import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 import com.bjxapp.worker.ui.widget.CheckOrderItemLayout;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.Utils;
-import com.bjxapp.worker.zxing.CaptureActivity;
 import com.bjxapp.worker.zxing.Intents;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -514,22 +512,22 @@ public class CheckOrderDetailActivity extends Activity {
 //        Intent intent = new Intent(this, CustomScanActivity.class);
 //        ActivityCompat.startActivityForResult(this, intent, REQUEST_CODE_SCAN, null);
 
-        if (checkDetailBean == null){
+        if (checkDetailBean == null) {
             return;
         }
 
-        CustomScanActivity.goToActivity(this , orderId, checkDetailBean.getProcessState() , mCurrentType);
+        CustomScanActivity.goToActivity(this, orderId, checkDetailBean.getProcessState(), mCurrentType);
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && data!=null){
-            switch (requestCode){
+        if (resultCode == RESULT_OK && data != null) {
+            switch (requestCode) {
                 case REQUEST_CODE_SCAN:
                     String result = data.getStringExtra(Intents.Scan.RESULT);
-                    Toast.makeText(this,result,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
                     break;
 
             }

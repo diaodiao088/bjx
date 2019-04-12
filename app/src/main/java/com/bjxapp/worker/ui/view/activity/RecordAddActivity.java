@@ -180,10 +180,9 @@ public class RecordAddActivity extends Activity {
             startDraw();
         } else {
             Intent intent = new Intent(this, FindPrinterActivity.class);
-            intent.putExtra(FindPrinterActivity.TYPE_NUM , mRecordItemBean.getEquipmentNo());
-            intent.putExtra(FindPrinterActivity.TYPE_TITLE , mRecordItemBean.getName());
+            intent.putExtra(FindPrinterActivity.TYPE_NUM, mRecordItemBean.getEquipmentNo());
+            intent.putExtra(FindPrinterActivity.TYPE_TITLE, mRecordItemBean.getName());
             startActivity(intent);
-            finish();
         }
     }
 
@@ -313,13 +312,13 @@ public class RecordAddActivity extends Activity {
 
         // 打印机未连接
         if (state == null || state.equals(IDzPrinter.PrinterState.Disconnected)) {
-            Toast.makeText(RecordAddActivity.this, "打印机未连接", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(RecordAddActivity.this, "打印机未连接", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // 打印机正在连接
         if (state.equals(IDzPrinter.PrinterState.Connecting)) {
-            Toast.makeText(RecordAddActivity.this, "打印机正在连接", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(RecordAddActivity.this, "打印机正在连接", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -422,7 +421,7 @@ public class RecordAddActivity extends Activity {
 
     private void tryToConnect() {
 
-        if (!mIsAdd){
+        if (!mIsAdd) {
             IDzPrinter.PrinterAddress printerAddress = null;
 
             SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
@@ -493,7 +492,7 @@ public class RecordAddActivity extends Activity {
                     mSerly.setVisibility(View.VISIBLE);
                     divider.setVisibility(View.VISIBLE);
                     disableEvent();
-                }else if (!mIsAdd){
+                } else if (!mIsAdd) {
                     mPrintBtn.setVisibility(View.VISIBLE);
                 }
             }
@@ -1581,7 +1580,7 @@ public class RecordAddActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (api != null){
+        if (api != null) {
             api.quit();
         }
     }
