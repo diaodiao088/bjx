@@ -108,5 +108,9 @@ public interface RecordApi {
     @POST("/order/saveImg")
     Call<JsonObject> updateImage(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/enterpriseOrderEquipment/exists")
+    Call<JsonObject> isNumExists(@FieldMap Map<String, String> params);
+
 
 }

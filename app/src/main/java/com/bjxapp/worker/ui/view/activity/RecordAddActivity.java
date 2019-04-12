@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -54,6 +55,8 @@ import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
+import com.dothantech.lpapi.LPAPI;
+import com.dothantech.printer.IDzPrinter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -87,11 +90,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
+import static com.bjxapp.worker.ui.view.activity.FindPrinterActivity.KeyLastPrinterName;
+import static com.bjxapp.worker.ui.view.activity.FindPrinterActivity.KeyLastPrinterType;
 import static java.lang.String.valueOf;
 
 public class RecordAddActivity extends Activity {
 
     public static final int REQUEST_CODE_RECORD_ADD = 0x01;
+
+    private LPAPI api;
 
     @BindView(R.id.record_device_name)
     TextView mRecordDeviceNameTv;
@@ -116,6 +123,9 @@ public class RecordAddActivity extends Activity {
 
     @BindView(R.id.mistake_reason_tv)
     EditText mMistakeReasonTv;
+
+    @BindView(R.id.print_btn)
+    XButton mPrintBtn;
 
     @OnClick(R.id.title_right_small_tv)
     void onClickDelete() {
@@ -162,6 +172,184 @@ public class RecordAddActivity extends Activity {
         } else {
             changeConfirm();
         }
+    }
+
+    @OnClick(R.id.print_btn)
+    void onClickPrint() {
+        if (isConnected()) {
+            startDraw();
+        } else {
+            Intent intent = new Intent(this, FindPrinterActivity.class);
+            intent.putExtra(FindPrinterActivity.TYPE_NUM , mRecordItemBean.getEquipmentNo());
+            intent.putExtra(FindPrinterActivity.TYPE_TITLE , mRecordItemBean.getName());
+            startActivity(intent);
+            finish();
+        }
+    }
+
+
+    private void startDraw() {
+
+        if (mRecordItemBean != null) {
+            String title = mRecordItemBean.getName();
+            String num = mRecordItemBean.getEquipmentNo();
+
+            if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(num)) {
+                printText1DBarcode(title, num, null);
+            }
+
+        }
+
+    }
+
+    // LPAPI 打印机操作相关的回调函数。
+    private final LPAPI.Callback mCallback = new LPAPI.Callback() {
+
+        /****************************************************************************************************************************************/
+        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
+
+        /****************************************************************************************************************************************/
+
+        // 打印机连接状态发生变化时被调用
+        @Override
+        public void onStateChange(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterState arg1) {
+            final IDzPrinter.PrinterAddress printer = arg0;
+            switch (arg1) {
+                case Connected:
+                case Connected2:
+                    // 打印机连接成功，发送通知，刷新界面提示
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            // onPrinterConnected(printer);
+                        }
+                    });
+                    break;
+
+                case Disconnected:
+                    // 打印机连接失败、断开连接，发送通知，刷新界面提示
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            onPrinterDisconnected();
+                        }
+                    });
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        // 蓝牙适配器状态发生变化时被调用
+        @Override
+        public void onProgressInfo(IDzPrinter.ProgressInfo arg0, Object arg1) {
+        }
+
+        @Override
+        public void onPrinterDiscovery(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterInfo arg1) {
+        }
+
+        // 打印标签的进度发生变化是被调用
+        @Override
+        public void onPrintProgress(IDzPrinter.PrinterAddress address, Object bitmapData, IDzPrinter.PrintProgress progress, Object addiInfo) {
+            switch (progress) {
+                case Success:
+                    // 打印标签成功，发送通知，刷新界面提示
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            onPrintSuccess();
+                        }
+                    });
+                    break;
+
+                case Failed:
+                    // 打印标签失败，发送通知，刷新界面提示
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            // onPrintFailed();
+                        }
+                    });
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
+
+    // 标签打印成功时操作
+    private void onPrintSuccess() {
+        // 标签打印成功时，刷新界面提示
+        Toast.makeText(RecordAddActivity.this, "标签打印成功", Toast.LENGTH_SHORT).show();
+    }
+
+    // 连接打印机操作提交失败、打印机连接失败或连接断开时操作
+    private void onPrinterDisconnected() {
+        // 连接打印机操作提交失败、打印机连接失败或连接断开时，刷新界面提示
+        Toast.makeText(RecordAddActivity.this, "连接打印机失败！", Toast.LENGTH_SHORT).show();
+    }
+
+
+    // 连接打印机成功时操作
+    private void onPrinterConnected(IDzPrinter.PrinterAddress printer) {
+        // 连接打印机成功时，刷新界面提示，保存相关信息
+        Toast.makeText(RecordAddActivity.this, "连接打印机成功", Toast.LENGTH_SHORT).show();
+//        mPrinterAddress = printer;
+//        // 调用LPAPI对象的getPrinterInfo方法获得当前连接的打印机信息
+//        String txt = "打印机：";
+//        txt += api.getPrinterInfo().deviceName + "\n";
+//        txt += api.getPrinterInfo().deviceAddress;
+//        mDesTv.setText(txt);
+    }
+
+
+    private boolean isConnected() {
+
+        // 调用LPAPI对象的getPrinterState方法获取当前打印机的连接状态
+        IDzPrinter.PrinterState state = api.getPrinterState();
+
+        // 打印机未连接
+        if (state == null || state.equals(IDzPrinter.PrinterState.Disconnected)) {
+            Toast.makeText(RecordAddActivity.this, "打印机未连接", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // 打印机正在连接
+        if (state.equals(IDzPrinter.PrinterState.Connecting)) {
+            Toast.makeText(RecordAddActivity.this, "打印机正在连接", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // 打印机已连接
+        return true;
+
+    }
+
+
+    // 打印文本一维码
+    private boolean printText1DBarcode(String text, String onedBarcde, Bundle param) {
+
+        // 开始绘图任务，传入参数(页面宽度, 页面高度)
+        api.startJob(48, 48, 0);
+
+        // api.setItemOrientation(180);
+
+        // 开始一个页面的绘制，绘制文本字符串
+        // 传入参数(需要绘制的文本字符串, 绘制的文本框左上角水平位置, 绘制的文本框左上角垂直位置, 绘制的文本框水平宽度, 绘制的文本框垂直高度, 文字大小, 字体风格)
+        api.drawText(text, 15, 4, 40, 20, 4);
+
+        // 设置之后绘制的对象内容旋转180度
+        //api.setItemOrientation(180);
+
+        // 绘制一维码，此一维码绘制时内容会旋转180度，sdf
+        // 传入参数(需要绘制的一维码的数据, 绘制的一维码左上角水平位置, 绘制的一维码左上角垂直位置, 绘制的一维码水平宽度, 绘制的一维码垂直高度)
+        api.draw1DBarcode(onedBarcde, LPAPI.BarcodeType.AUTO, 4, 11, 40, 15, 3);
+
+        // 结束绘图任务提交打印
+        return api.commitJob();
     }
 
     @OnClick(R.id.copy_tv)
@@ -213,6 +401,50 @@ public class RecordAddActivity extends Activity {
         initView();
         handleIntent();
         initData();
+        tryToConnect();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            if (api != null) {
+                api.quit();
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    private void tryToConnect() {
+
+        if (!mIsAdd){
+            IDzPrinter.PrinterAddress printerAddress = null;
+
+            SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
+            String lastPrinterMac = sharedPreferences.getString(FindPrinterActivity.KeyLastPrinterMac, null);
+            String lastPrinterName = sharedPreferences.getString(KeyLastPrinterName, null);
+            String lastPrinterType = sharedPreferences.getString(KeyLastPrinterType, null);
+            IDzPrinter.AddressType lastAddressType = TextUtils.isEmpty(lastPrinterType) ? null : Enum.valueOf(IDzPrinter.AddressType.class, lastPrinterType);
+            if (lastPrinterMac == null || lastPrinterName == null || lastAddressType == null) {
+                printerAddress = null;
+            } else {
+                printerAddress = new IDzPrinter.PrinterAddress(lastPrinterName, lastPrinterMac, lastAddressType);
+            }
+
+            this.api = LPAPI.Factory.createInstance(mCallback);
+
+            if (printerAddress != null) {
+                if (api.openPrinterByAddress(printerAddress)) {
+                    // 连接打印机的请求提交成功，刷新界面提示
+                    return;
+                }
+            }
+        }
     }
 
     private void initView() {
@@ -225,7 +457,6 @@ public class RecordAddActivity extends Activity {
         mTitleRightTv.setText("删除");
         mTitleTextView.setText("设备录入详情");
         mWaitingDialog = new XWaitingDialog(this);
-
     }
 
     private void initData() {
@@ -243,6 +474,7 @@ public class RecordAddActivity extends Activity {
         if (mIsAdd) {
 
             mTitleRightTv.setVisibility(View.GONE);
+            mPrintBtn.setVisibility(View.GONE);
 
             ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
             mImageList.add(bean);
@@ -261,6 +493,8 @@ public class RecordAddActivity extends Activity {
                     mSerly.setVisibility(View.VISIBLE);
                     divider.setVisibility(View.VISIBLE);
                     disableEvent();
+                }else if (!mIsAdd){
+                    mPrintBtn.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -289,7 +523,15 @@ public class RecordAddActivity extends Activity {
         mRecordStatusTv.setClickable(false);
         mRecordStatusTv.setEnabled(false);
 
+        showPrintBtn();
+
     }
+
+    private void showPrintBtn() {
+
+        mPrintBtn.setVisibility(View.VISIBLE);
+    }
+
 
     private boolean isFinished;
 
@@ -331,8 +573,6 @@ public class RecordAddActivity extends Activity {
 
             }
         });
-
-
     }
 
     private void parseRecordData(JsonObject mainObject) {
@@ -1338,5 +1578,11 @@ public class RecordAddActivity extends Activity {
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (api != null){
+            api.quit();
+        }
+    }
 }

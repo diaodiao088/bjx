@@ -6,14 +6,28 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.App;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.apinew.RecordApi;
+import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.zxing.CaptureActivity;
+import com.google.gson.JsonObject;
 import com.google.zxing.Result;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CustomScanActivity extends CaptureActivity {
 
@@ -92,10 +106,87 @@ public class CustomScanActivity extends CaptureActivity {
 //        intent.putExtra(KEY_RESULT, result.getText());
 //        setResult(RESULT_OK, intent);
 
-        DeviceInfoActivity.goToActivity(this, result.getText(), processState <= 3,
-                currentType == 0, false, true, orderId);
+        judgeValid(result);
+    }
 
-        finish();
+
+    private void judgeValid(final Result result) {
+
+        if (result.getText().length() != 19) {
+            Toast.makeText(this, "无效的标签", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(App.getInstance()).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(App.getInstance()).getUserCode());
+        params.put("equipmentNo", result.getText());
+        params.put("orderId", orderId);
+
+        Call<JsonObject> call = recordApi.isNumExists(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+
+                    JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        if (object.has("exists")) {
+
+                            String isExist = object.get("exists").getAsString();
+
+                            if ("true".equals(isExist)) {
+                                DeviceInfoActivity.goToActivity(CustomScanActivity.this, result.getText(), processState <= 3,
+                                        currentType == 0, false, true, orderId);
+
+                                finish();
+                            } else {
+                                CustomScanActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(CustomScanActivity.this, "无效的标签", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+                            }
+                        }
+                    } else {
+                        CustomScanActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(CustomScanActivity.this, "无效的标签", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                CustomScanActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(CustomScanActivity.this, "无效的标签", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+
+            }
+        });
+
+
     }
 
     private void clickFlash(View v) {

@@ -40,6 +40,11 @@ public class FindPrinterActivity extends Activity {
     @BindView(R.id.find_printer_btn)
     TextView mSearchTv;
 
+    @OnClick(R.id.find_printer_btn)
+    void refreshPrint() {
+        updateListLayout(mPrinterAddress);
+    }
+
     @BindView(R.id.printer_list_ly)
     LinearLayout mPrintListLy;
 
@@ -55,6 +60,12 @@ public class FindPrinterActivity extends Activity {
 
     private IDzPrinter.PrinterAddress mPrinterAddress;
 
+    public static final String TYPE_TITLE = "type_title";
+    public static final String TYPE_NUM = "type_num";
+
+    private String mTitle;
+    private String mTypeNum;
+
     private LPAPI api;
 
     // 保存各种信息时的名称
@@ -63,9 +74,9 @@ public class FindPrinterActivity extends Activity {
     private static final String KeyPrintSpeed = "PrintSpeed";
     private static final String KeyGapType = "GapType";
 
-    private static final String KeyLastPrinterMac = "LastPrinterMac";
-    private static final String KeyLastPrinterName = "LastPrinterName";
-    private static final String KeyLastPrinterType = "LastPrinterType";
+    public static final String KeyLastPrinterMac = "LastPrinterMac";
+    public static final String KeyLastPrinterName = "LastPrinterName";
+    public static final String KeyLastPrinterType = "LastPrinterType";
 
     private static final String KeyDefaultText1 = "DefaultText1";
     private static final String KeyDefaultText2 = "DefaultText2";
@@ -98,6 +109,8 @@ public class FindPrinterActivity extends Activity {
     private String[] printDensityList = null;
     private String[] printSpeedList = null;
     private String[] gapTypeList = null;
+
+    private boolean isPrinted = false;
 
     private List<IDzPrinter.PrinterAddress> pairedPrinters = new ArrayList<IDzPrinter.PrinterAddress>();
 
@@ -189,6 +202,7 @@ public class FindPrinterActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_find_printer_ly);
         ButterKnife.bind(this);
+        handleIntent();
         initView();
         // 调用LPAPI对象的init方法初始化对象
         this.api = LPAPI.Factory.createInstance(mCallback);
@@ -205,6 +219,11 @@ public class FindPrinterActivity extends Activity {
         searchAvailableDev();
     }
 
+    private void handleIntent() {
+        mTitle = getIntent().getStringExtra(TYPE_TITLE);
+        mTypeNum = getIntent().getStringExtra(TYPE_NUM);
+    }
+
 
     private void searchAvailableDev() {
 
@@ -219,19 +238,26 @@ public class FindPrinterActivity extends Activity {
             return;
         }
 
-        pairedPrinters = api.getAllPrinterAddresses(null);
-
-        updateListLayout();
+        updateListLayout(null);
     }
 
 
-    private void updateListLayout() {
+    private void updateListLayout(IDzPrinter.PrinterAddress printerAddress) {
+
+        pairedPrinters = api.getAllPrinterAddresses(null);
 
         if (pairedPrinters.size() > 0) {
             mPrintListLy.setVisibility(View.VISIBLE);
             mPrintListLy.removeAllViews();
 
             for (int i = 0; i < pairedPrinters.size(); i++) {
+
+                IDzPrinter.PrinterAddress item = pairedPrinters.get(i);
+
+                if (item == null || item.equals(printerAddress)) {
+                    break;
+                }
+
                 PrintItemLayout itemLayout = new PrintItemLayout(this);
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -317,6 +343,13 @@ public class FindPrinterActivity extends Activity {
         txt += api.getPrinterInfo().deviceName + "\n";
         txt += api.getPrinterInfo().deviceAddress;
         mDesTv.setText(txt);
+
+        if (!isPrinted) {
+            printText1DBarcode(mTitle, mTypeNum, null);
+        }
+
+        updateListLayout(printer);
+
     }
 
 
@@ -371,6 +404,31 @@ public class FindPrinterActivity extends Activity {
         }
         editor.commit();
 
+    }
+
+    // 打印文本一维码
+    private boolean printText1DBarcode(String text, String onedBarcde, Bundle param) {
+
+        isPrinted = true;
+
+        // 开始绘图任务，传入参数(页面宽度, 页面高度)
+        api.startJob(48, 48, 0);
+
+        // api.setItemOrientation(180);
+
+        // 开始一个页面的绘制，绘制文本字符串
+        // 传入参数(需要绘制的文本字符串, 绘制的文本框左上角水平位置, 绘制的文本框左上角垂直位置, 绘制的文本框水平宽度, 绘制的文本框垂直高度, 文字大小, 字体风格)
+        api.drawText(text, 15, 4, 40, 20, 4);
+
+        // 设置之后绘制的对象内容旋转180度
+        //api.setItemOrientation(180);
+
+        // 绘制一维码，此一维码绘制时内容会旋转180度，sdf
+        // 传入参数(需要绘制的一维码的数据, 绘制的一维码左上角水平位置, 绘制的一维码左上角垂直位置, 绘制的一维码水平宽度, 绘制的一维码垂直高度)
+        api.draw1DBarcode(onedBarcde, LPAPI.BarcodeType.AUTO, 4, 11, 40, 15, 3);
+
+        // 结束绘图任务提交打印
+        return api.commitJob();
     }
 
 }

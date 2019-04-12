@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f5f5f5"
@@ -11,24 +12,48 @@
         android:id="@+id/title"
         layout="@layout/layout_title" />
 
-    <com.bjxapp.worker.controls.XButton
-        android:id="@+id/add_confirm_btn"
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/btn_layout"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/button_background_green"
-        android:text="保存"
-        android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <com.bjxapp.worker.controls.XButton
+            android:id="@+id/add_confirm_btn"
+            android:layout_width="140dp"
+            android:layout_height="45dp"
+            android:background="@drawable/button_background_green"
+            android:gravity="center"
+            android:text="保存"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/print_btn" />
+
+        <com.bjxapp.worker.controls.XButton
+            android:id="@+id/print_btn"
+            android:layout_width="140dp"
+            android:layout_height="45dp"
+            android:background="@drawable/button_background_green"
+            android:gravity="center"
+            android:text="打印"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toRightOf="@+id/add_confirm_btn"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/add_confirm_btn"
+        android:layout_above="@+id/btn_layout"
         android:layout_below="@id/title">
 
         <LinearLayout
