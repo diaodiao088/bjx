@@ -3,6 +3,7 @@ package com.bjxapp.worker.ui.view.activity;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ public class FindPrinterActivity extends Activity {
 
     @OnClick(R.id.find_printer_btn)
     void refreshPrint() {
-        updateListLayout(mPrinterAddress);
+        updateListLayout(mPrinterAddress, true);
     }
 
     @BindView(R.id.printer_list_ly)
@@ -235,6 +236,15 @@ public class FindPrinterActivity extends Activity {
 
         if (!btAdapter.isEnabled()) {
             Toast.makeText(FindPrinterActivity.this, "监测到系统蓝牙未连接设备，请在系统连接蓝牙设置中连接打印设备", Toast.LENGTH_LONG).show();
+
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent settintIntent = new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+                    startActivity(settintIntent);
+                }
+            }, 500);
+
             return;
         }
 
@@ -243,6 +253,10 @@ public class FindPrinterActivity extends Activity {
 
 
     private void updateListLayout(IDzPrinter.PrinterAddress printerAddress) {
+        updateListLayout(printerAddress, false);
+    }
+
+    private void updateListLayout(IDzPrinter.PrinterAddress printerAddress, boolean flag) {
 
         pairedPrinters = api.getAllPrinterAddresses(null);
 
@@ -289,6 +303,19 @@ public class FindPrinterActivity extends Activity {
 
         } else {
             mPrintListLy.setVisibility(View.GONE);
+
+            if (mPrinterAddress == null && flag){
+                Toast.makeText(FindPrinterActivity.this, "未有授权的打印设备，请前往连接打印设备", Toast.LENGTH_LONG).show();
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent settintIntent = new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+                        startActivity(settintIntent);
+                    }
+                }, 0);
+            }
+
         }
 
     }
@@ -370,6 +397,9 @@ public class FindPrinterActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        mHandler.removeCallbacksAndMessages(null);
+
         api.quit();
         fini();
     }

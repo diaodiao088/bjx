@@ -169,6 +169,14 @@ public class CustomScanActivity extends CaptureActivity {
                             }
                         });
                     }
+                }else{
+                    CustomScanActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(CustomScanActivity.this, "无效的标签", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
                 }
             }
 

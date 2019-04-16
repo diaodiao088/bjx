@@ -421,7 +421,7 @@ public class RecordAddActivity extends Activity {
 
     private void tryToConnect() {
 
-        if (!mIsAdd) {
+        if (true) {
             IDzPrinter.PrinterAddress printerAddress = null;
 
             SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
@@ -502,6 +502,14 @@ public class RecordAddActivity extends Activity {
         }
     }
 
+
+    private void startChangeStatus(){
+        mIsAdd = false;
+        mTitleRightTv.setVisibility(View.VISIBLE);
+        mPrintBtn.setVisibility(View.VISIBLE);
+        loadDetails();
+    }
+
     private void disableEvent() {
 
         mRecordBrandNameTv.setFocusableInTouchMode(false);
@@ -536,8 +544,13 @@ public class RecordAddActivity extends Activity {
 
     private void loadDetails() {
 
-        if (mRecordItemBean == null) {
-            return;
+
+        String id = "";
+
+        if (mRecordItemBean != null ) {
+            id = mRecordItemBean.getId();
+        }else {
+            id = String.valueOf(this.id);
         }
 
         RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
@@ -546,7 +559,7 @@ public class RecordAddActivity extends Activity {
         params.put("token", ConfigManager.getInstance(App.getInstance()).getUserSession());
         params.put("userCode", ConfigManager.getInstance(App.getInstance()).getUserCode());
 
-        Call<JsonObject> call = recordApi.getDeviceInfo(mRecordItemBean.getId(), params);
+        Call<JsonObject> call = recordApi.getDeviceInfo(id, params);
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -588,6 +601,7 @@ public class RecordAddActivity extends Activity {
         recordItemBean.setBrandName(object.get("brandName").getAsString());
         recordItemBean.setParentId(object.get("parentCategoryId").getAsString());
         recordItemBean.setId(object.get("id").getAsString());
+
         recordItemBean.setCategoryId(object.get("categoryId").getAsString());
         recordItemBean.setEquipmentNo(object.get("equipmentNo").getAsString());
         recordItemBean.setModel(object.get("model").getAsString());
@@ -641,6 +655,8 @@ public class RecordAddActivity extends Activity {
         updateUi();
     }
 
+    int id ;
+
     private void updateUi() {
         mHandler.post(new Runnable() {
             @Override
@@ -670,6 +686,7 @@ public class RecordAddActivity extends Activity {
                         ImageBean item = new ImageBean(ImageBean.TYPE_ADD, mRecordItemBean.getmImgUrls().get(i));
                         temList.add(item);
                     }
+                    mImageList.clear();
                     mImageList.addAll(0, temList);
 
                     if (mImageList.size() < 20) {
@@ -1455,6 +1472,8 @@ public class RecordAddActivity extends Activity {
 
     }
 
+
+
     private void realStartCommit(ArrayList<String> imageList) {
 
         RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
@@ -1506,11 +1525,15 @@ public class RecordAddActivity extends Activity {
                     final int code = object.get("code").getAsInt();
 
                     if (code == 0) {
+
+                        RecordAddActivity.this.id = object.get("id").getAsInt();
+
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 Utils.showShortToast(RecordAddActivity.this, "添加成功");
-                                finish();
+                               // finish();
+                                startChangeStatus();
                             }
                         });
                     } else {

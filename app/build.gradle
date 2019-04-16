@@ -6,8 +6,8 @@ android {
         applicationId "com.bjx.master"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 4011
-        versionName "4.2.1"
+        versionCode 4012
+        versionName "4.2.2"
         useLibrary 'org.apache.http.legacy'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
