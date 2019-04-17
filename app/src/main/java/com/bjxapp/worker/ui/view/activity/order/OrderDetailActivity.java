@@ -37,6 +37,7 @@ import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
 import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
 import com.bjxapp.worker.ui.view.activity.FastJudgeActivity;
+import com.bjxapp.worker.ui.view.activity.MaintainActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
@@ -324,10 +325,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             return;
         }
 
-        MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+        if (isDeviceBill){
+            MaintainActivity.goToActivity(this , mDetailInfo.getOrderDes().getEnterpriseId());
+        }else{
+            MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+            ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
+        }
 
-
-        ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
     }
 
     boolean isBillFinished = false;
@@ -1111,9 +1115,17 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             String detailId = "";
 
-            if (detailItem.has("equipmentId") && detailItem.has("enterpriseOrderServiceType")) {
+            if (detailItem.has("equipmentId")) {
                 enterpriseId = detailItem.getString("equipmentId");
+
+            }
+
+            if(detailItem.has("enterpriseOrderServiceType")){
                 serviceType = detailItem.getString("enterpriseOrderServiceType");
+
+            }
+
+            if (detailItem.has("enterpriseOrderId")){
                 enterpriseOrderId = detailItem.getString("enterpriseOrderId");
             }
 

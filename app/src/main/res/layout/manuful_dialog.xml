@@ -23,7 +23,7 @@
             android:layout_height="1dp"
             android:background="#dfdfdf" />
 
-        <com.bjxapp.worker.ui.view.activity.widget.MaxHeightRecyclerView
+        <com.bjxapp.worker.ui.view.activity.widget.MaxHeightRecyclerView_250
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -1,17 +1,15 @@
 package com.bjxapp.worker.ui.view.activity.widget.dialog;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bjx.master.R;
-import com.bjxapp.worker.ui.view.activity.widget.MaxHeightRecyclerView;
+import com.bjxapp.worker.ui.view.activity.widget.MaxHeightRecyclerView_250;
 
 import java.util.ArrayList;
 
@@ -30,13 +28,14 @@ public class ManfulDialog {
 
     private MyAdapter myAdapter;
 
-    private MaxHeightRecyclerView mRecyclerView;
+    private MaxHeightRecyclerView_250 mRecyclerView;
 
     private ArrayList<String> mStringList = new ArrayList<>();
 
     public ManfulDialog(Context ctx) {
         this.mCtx = ctx;
         mDialog = new CustomLayoutDialog(ctx, R.layout.manuful_dialog);
+        mDialog.setCanceledOnTouchOutside(true);
         initView();
     }
 
@@ -68,17 +67,17 @@ public class ManfulDialog {
         return mDialog.isShowing();
     }
 
-    public void setData(ArrayList<String> data){
+    public void setData(ArrayList<String> data) {
         this.mStringList = data;
         myAdapter.notifyDataSetChanged();
     }
 
-    public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>{
+    public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.manful_item_layout , parent ,false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.manful_item_layout, parent, false);
 
             return new MyViewHolder(view);
         }
@@ -86,7 +85,7 @@ public class ManfulDialog {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             String name = mStringList.get(position);
-            holder.setData(name , position);
+            holder.setData(name, position);
         }
 
         @Override
@@ -95,7 +94,7 @@ public class ManfulDialog {
         }
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mNameTv;
 
@@ -107,30 +106,30 @@ public class ManfulDialog {
             mNameTv = mRootView.findViewById(R.id.manful_reason_tv);
         }
 
-        public void setData(final String name , final int position){
+        public void setData(final String name, final int position) {
             this.mNameTv.setText(name);
 
             this.mNameTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mClickListener != null){
-                        mClickListener.onClick(name , position);
+                    if (mClickListener != null) {
+                        mClickListener.onClick(name, position);
                     }
+                    dismiss();
                 }
             });
         }
     }
 
-    public interface OnManClickListener{
+    public interface OnManClickListener {
 
-        void onClick(String name , int index);
+        void onClick(String name, int index);
 
     }
 
     private OnManClickListener mClickListener;
 
-
-    public void setClickListener(OnManClickListener listener){
+    public void setClickListener(OnManClickListener listener) {
         this.mClickListener = listener;
     }
 

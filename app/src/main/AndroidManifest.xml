@@ -152,6 +152,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+
             <intent-filter>
                 <data
                     android:host="bjxapp.com"
@@ -179,6 +180,23 @@
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.DeviceInfoActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme">
+
+        </activity>
+
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.MaintainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme">
+
+
+        </activity>
+
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.ThiActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/XAppTheme">

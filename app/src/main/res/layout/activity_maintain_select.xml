@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -14,12 +16,11 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-
             <include layout="@layout/layout_title" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -88,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:text="备注信息"
+                        android:text="维修方案"
                         android:textColor="@color/main_text_color"
                         android:textSize="14sp" />
 
@@ -107,7 +108,7 @@
                         android:layout_marginTop="10dp"
                         android:background="@drawable/edit_tv_bg"
                         android:gravity="left"
-                        android:hint="请输入备注信息..."
+                        android:hint="请输入维修方案..."
                         android:lineSpacingExtra="3dp"
                         android:maxLength="200"
                         android:paddingLeft="5dp"
@@ -134,7 +135,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:background="@color/white"
                 android:gravity="center_vertical"
@@ -164,8 +165,9 @@
                 android:background="#f5f5f5" />
 
             <LinearLayout
+                android:id="@+id/add_thi_ly"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:background="@color/white"
                 android:gravity="center">
@@ -183,6 +185,13 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/main_container_ly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+
         </LinearLayout>
 
     </ScrollView>
@@ -191,6 +200,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <TextView

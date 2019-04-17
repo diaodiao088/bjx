@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.model.MainTainBean;
 
 public class MaintainItemLayout extends LinearLayout implements View.OnClickListener {
 
@@ -26,6 +27,8 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
 
     private LinearLayout mOtherLy;
     private TextView mRealPriceTv;
+
+    private MainTainBean maintainInfo;
 
     public MaintainItemLayout(Context context) {
         super(context);
@@ -58,7 +61,17 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
         mDelTv = mRootView.findViewById(R.id.del_tv);
     }
 
-    private void bindData() {
+    public void bindData(MainTainBean maintainInfo) {
+        this.maintainInfo = maintainInfo;
+
+        if (maintainInfo.isOthers()) {
+            mOtherLy.setVisibility(VISIBLE);
+            mRealPriceTv.setVisibility(GONE);
+
+        } else {
+            mOtherLy.setVisibility(GONE);
+            mRealPriceTv.setVisibility(VISIBLE);
+        }
 
     }
 
