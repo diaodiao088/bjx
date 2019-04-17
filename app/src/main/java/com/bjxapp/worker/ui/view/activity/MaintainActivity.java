@@ -221,6 +221,7 @@ public class MaintainActivity extends Activity {
                     } else {
                         mainTainBean.setOthers(true);
                         mainTainBean.setQuantity(1);
+                        mainTainBean.setModel("其他");
                         mMainTainList.add(mainTainBean);
                     }
 

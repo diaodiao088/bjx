@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,6 +34,7 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
     private MainTainBean maintainInfo;
 
     private TextView mNameTv;
+    private EditText mNameEv;
 
     public MaintainItemLayout(Context context) {
         super(context);
@@ -62,6 +66,10 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
         mRealPriceTv = mRootView.findViewById(R.id.real_price_tv);
         mDelTv = mRootView.findViewById(R.id.del_tv);
 
+        mNameEv = mRootView.findViewById(R.id.name_ev);
+
+        mDelTv.setOnClickListener(this);
+
 
     }
 
@@ -79,13 +87,30 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
             mTypeNameTv.setText(maintainInfo.getModel());
         }
 
-        mCountTv.setText(maintainInfo.getQuantity());
+        mCountTv.setText(String.valueOf(maintainInfo.getQuantity()));
 
     }
 
 
     @Override
     public void onClick(View v) {
+
+        switch (v.getId()){
+
+            case R.id.del_tv:
+
+                final ViewParent viewParent = getParent();
+
+                if (viewParent != null && viewParent instanceof ViewGroup) {
+
+                    ((ViewGroup) viewParent).removeViewInLayout(MaintainItemLayout.this);
+
+                }
+
+
+                break;
+
+        }
 
     }
 

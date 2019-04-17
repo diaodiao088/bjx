@@ -24,7 +24,22 @@
             android:text="配件名称"
             android:textColor="@color/main_text_color"
             android:textSize="14sp"
+            android:visibility="gone"
             android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/name_ev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/maintain_item_bg"
+            android:hint="输入名称"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:textSize="14sp" />
+
+
 
         <TextView
             android:layout_width="wrap_content"
