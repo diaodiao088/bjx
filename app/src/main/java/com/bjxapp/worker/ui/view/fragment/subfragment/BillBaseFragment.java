@@ -320,29 +320,36 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (loading && mWaitingDialog != null) {
-                            mWaitingDialog.dismiss();
+                if (getActivity() != null){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (loading && mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
                         }
-                    }
-                });
+                    });
 
-                parseResponse(response);
+                    parseResponse(response);
+                }
+
+
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (loading && mWaitingDialog != null) {
-                            mWaitingDialog.dismiss();
+                if (getActivity() != null){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (loading && mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
                         }
-                    }
-                });
+                    });
+                }
+
             }
         });
 

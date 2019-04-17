@@ -30,6 +30,8 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
 
     private MainTainBean maintainInfo;
 
+    private TextView mNameTv;
+
     public MaintainItemLayout(Context context) {
         super(context);
         init();
@@ -59,6 +61,8 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
 
         mRealPriceTv = mRootView.findViewById(R.id.real_price_tv);
         mDelTv = mRootView.findViewById(R.id.del_tv);
+
+
     }
 
     public void bindData(MainTainBean maintainInfo) {
@@ -71,7 +75,11 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
         } else {
             mOtherLy.setVisibility(GONE);
             mRealPriceTv.setVisibility(VISIBLE);
+            mNameTv.setText(maintainInfo.getComponentName());
+            mTypeNameTv.setText(maintainInfo.getModel());
         }
+
+        mCountTv.setText(maintainInfo.getQuantity());
 
     }
 
