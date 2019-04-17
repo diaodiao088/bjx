@@ -25,6 +25,7 @@ import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ThiInfoBean;
+import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -169,6 +170,8 @@ public class ThiActivity extends Activity {
     private void initView() {
         mTitleTv.setText("配件列表");
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mRecyclerView.addItemDecoration(new FragileActivity.SpaceItemDecoration(DimenUtils.dp2px(10 , this)));
 
         addOtherBean();
 

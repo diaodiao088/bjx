@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.EnterpriseApi;
 import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.MainTainBean;
@@ -27,6 +30,7 @@ import com.bjxapp.worker.ui.widget.MaintainItemLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +64,7 @@ public class MaintainActivity extends Activity {
     ScrollView mScrollView;
 
     private String equipId;
+    private String orderId;
 
     public ArrayList<MainTainBean> mMainTainList = new ArrayList<>();
 
@@ -88,7 +93,7 @@ public class MaintainActivity extends Activity {
 
     @OnClick(R.id.add_thi_ly)
     void onAddThiClick() {
-        ThiActivity.goToActivityForResult(this ,equipId);
+        ThiActivity.goToActivityForResult(this, equipId);
     }
 
     @BindView(R.id.change_reason_tv)
@@ -99,6 +104,14 @@ public class MaintainActivity extends Activity {
 
     @BindView(R.id.main_container_ly)
     LinearLayout mContainerLy;
+
+    @BindView(R.id.total_price_tv)
+    TextView mTotalPriceTv;
+
+    @OnClick(R.id.add_confirm_btn)
+    void onConfirmClick(){startCommit();}
+
+    private XWaitingDialog mWaitingDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,6 +130,7 @@ public class MaintainActivity extends Activity {
     private void handleIntent() {
 
         equipId = getIntent().getStringExtra("equip_id");
+        orderId = getIntent().getStringExtra("order_id");
 
     }
 
@@ -149,13 +163,9 @@ public class MaintainActivity extends Activity {
                         mMalfulList.clear();
 
                         for (int i = 0; i < array.size(); i++) {
-
                             JsonObject item = array.get(i).getAsJsonObject();
-
                             String value = item.get("value").getAsString();
-
                             mMalfulList.add(value);
-
                         }
                     }
                 }
@@ -169,6 +179,7 @@ public class MaintainActivity extends Activity {
     }
 
     private void initView() {
+        mWaitingDialog = new XWaitingDialog(this);
         mTitleTv.setText("维修项");
 
         mMethodTv.addTextChangedListener(new TextWatcher() {
@@ -213,6 +224,7 @@ public class MaintainActivity extends Activity {
                             mainTainBean.setModel(thiInfoBean.getModel());
                             mainTainBean.setCost(thiInfoBean.getCost());
                             mainTainBean.setUnit(thiInfoBean.getUnit());
+                            mainTainBean.setComponentName(thiInfoBean.getName());
                             mainTainBean.setOthers(false);
                             mainTainBean.setQuantity(1);
                         }
@@ -225,7 +237,7 @@ public class MaintainActivity extends Activity {
                         mMainTainList.add(mainTainBean);
                     }
 
-                    refreshUi(mainTainBean);
+                    addUi(mainTainBean);
 
                     break;
             }
@@ -233,32 +245,200 @@ public class MaintainActivity extends Activity {
     }
 
 
-    private void refreshUi(MainTainBean mainTainBean) {
+    private void addUi(MainTainBean mainTainBean) {
 
-        MaintainItemLayout maintainItemLayout = new MaintainItemLayout(this);
-
+        final MaintainItemLayout maintainItemLayout = new MaintainItemLayout(this);
         maintainItemLayout.bindData(mainTainBean);
 
+        maintainItemLayout.setOperationListener(new MaintainItemLayout.OnOperationListener() {
+            @Override
+            public void onDelete(MainTainBean mainTainBean) {
+                mMainTainList.remove(mainTainBean);
+                calTotalCount();
+            }
+
+            @Override
+            public void onPriceChange() {
+                calTotalCount();
+            }
+
+            @Override
+            public void onCountChange() {
+                calTotalCount();
+            }
+        });
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
         params.setMargins(0, DimenUtils.dp2px(10, this), 0, 0);
-
         mContainerLy.addView(maintainItemLayout, params);
-
         mScrollView.fullScroll(View.FOCUS_DOWN);
+
+        calTotalCount();
+    }
+
+
+    private void calTotalCount() {
+
+        mTotalPriceTv.setText("总报价：" + getTotalPrice() + "元");
+
+    }
+
+    private String getTotalPrice() {
+
+        double price = 0l;
+
+        for (int i = 0; i < mMainTainList.size(); i++) {
+
+            MainTainBean item = mMainTainList.get(i);
+
+            if (!TextUtils.isEmpty(item.getCost())) {
+                price += (item.getQuantity() * Double.parseDouble(item.getCost()));
+            }
+
+        }
+
+        return getFormatPrice(price);
+    }
+
+
+    private String getFormatPrice(double price) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(price);
     }
 
 
     public void startCommit() {
 
+        if (TextUtils.isEmpty(mManfulTv.getText().toString())) {
+            Toast.makeText(this, "请先选择故障原因", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(mMethodTv.getText().toString())) {
+            Toast.makeText(this, "请先选择故障原因", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isDataValid()) {
+            Toast.makeText(this, "请填写完整数据", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mWaitingDialog.show("正在提交", false);
+
+        EnterpriseApi enterpriseApi = KHttpWorker.ins().createHttpService(LoginApi.URL, EnterpriseApi.class);
+
+        Call<JsonObject> call = null;
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("orderId", orderId);
+        params.put("fault", mManfulTv.getText().toString());
+        params.put("plan", mMethodTv.getText().toString());
+        params.put("totalCost", getTotalPrice());
+
+        putPartialList(params);
+
+        call = enterpriseApi.saveMainTain(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                mWaitingDialog.dismiss();
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        MaintainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MaintainActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        });
+
+                    } else {
+                        MaintainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MaintainActivity.this, msg + ":" + code, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                MaintainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWaitingDialog.dismiss();
+                        Toast.makeText(MaintainActivity.this, "提交失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    private boolean isDataValid() {
+
+        for (int i = 0; i < mMainTainList.size(); i++) {
+            MainTainBean item = mMainTainList.get(i);
+
+            if (TextUtils.isEmpty(item.getComponentName())
+                    || TextUtils.isEmpty(item.getCost())) {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    private void putPartialList(Map<String, String> params) {
+
+        for (int i = 0; i < mMainTainList.size(); i++) {
+
+            MainTainBean item = mMainTainList.get(i);
+
+            String nameKey = "equipmentComponentList[" + i + "].name";
+            String costKey = "equipmentComponentList[" + i + "].cost";
+            String quantityKey = "equipmentComponentList[" + i + "].quantity";
+
+            params.put(nameKey, item.getComponentName());
+            params.put(costKey, item.getCost());
+            params.put(quantityKey, String.valueOf(item.getQuantity()));
+
+            if (!item.isOthers) {
+                String idKey = "equipmentComponentList[" + i + "].id";
+                params.put(idKey, String.valueOf(item.getId()));
+                String modelKey = "equipmentComponentList[" + i + "].model";
+                params.put(modelKey, String.valueOf(item.getModel()));
+                String unitKey = "equipmentComponentList[" + i + "].unit";
+                params.put(unitKey, item.getUnit());
+            }
+        }
+
     }
 
 
-    public static void goToActivity(Activity context, String equipId) {
+    public static void goToActivity(Activity context, String equipId, String orderId) {
 
         Intent intent = new Intent();
         intent.setClass(context, MaintainActivity.class);
         intent.putExtra("equip_id", equipId);
+        intent.putExtra("order_id", orderId);
         context.startActivityForResult(intent, 0x05);
     }
 

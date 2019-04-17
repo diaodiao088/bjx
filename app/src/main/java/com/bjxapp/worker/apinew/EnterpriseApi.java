@@ -21,10 +21,13 @@ public interface EnterpriseApi {
     @POST("/equipmentComponent/list")
     Call<JsonObject> getComponentList(@FieldMap Map<String, String> params);
 
-
     @FormUrlEncoded
     @POST("/dict/info")
     Call<JsonObject> getDicList(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("/order/saveMaintain/v2")
+    Call<JsonObject> saveMainTain(@FieldMap Map<String, String> params);
 
 
 

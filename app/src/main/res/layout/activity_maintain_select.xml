@@ -204,11 +204,12 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/total_price_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:text="总报价：40元"
+            android:text="总报价：0元"
             android:textColor="#00a554"
             android:textSize="14sp" />
 

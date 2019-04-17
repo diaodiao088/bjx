@@ -326,7 +326,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
 
         if (isDeviceBill){
-            MaintainActivity.goToActivity(this , mDetailInfo.getOrderDes().getEnterpriseId());
+            MaintainActivity.goToActivity(this , mDetailInfo.getOrderDes().getEnterpriseId() , mDetailInfo.getOrderDes().getOrderId());
         }else{
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
