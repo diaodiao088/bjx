@@ -31,7 +31,6 @@ import com.bjxapp.worker.ui.widget.MaintainItemLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -327,8 +326,8 @@ public class MaintainActivity extends Activity {
 
 
     private String getFormatPrice(double price) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        return df.format(price);
+        // DecimalFormat df = new DecimalFormat("#.00");
+        return String.format("%.2f", price);
     }
 
 
@@ -340,7 +339,7 @@ public class MaintainActivity extends Activity {
         }
 
         if (TextUtils.isEmpty(mMethodTv.getText().toString())) {
-            Toast.makeText(this, "请先选择故障原因", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "请先填写维修方案", Toast.LENGTH_SHORT).show();
             return;
         }
 

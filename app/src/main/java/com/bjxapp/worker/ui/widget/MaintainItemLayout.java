@@ -156,6 +156,8 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
                 final ViewParent viewParent = getParent();
                 if (viewParent != null && viewParent instanceof ViewGroup) {
                     ((ViewGroup) viewParent).removeViewInLayout(MaintainItemLayout.this);
+
+                    viewParent.requestLayout();
                 }
 
                 if (listener != null) {

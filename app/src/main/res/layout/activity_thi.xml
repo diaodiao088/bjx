@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:padding="5dp"
-            android:src="@drawable/type_arrow" />
+            android:src="@drawable/search_thi" />
 
     </LinearLayout>
 

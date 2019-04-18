@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bjx.master.R;
@@ -153,17 +152,23 @@ public class ThiActivity extends Activity {
                     }
                     addOtherBean();
                     mAdapter.notifyDataSetChanged();
+                } else {
+                    mSelectedList.clear();
+                    for (int i = 0; i < mAllList.size(); i++) {
+                        ThiInfoBean bean = mAllList.get(i);
+                        mSelectedList.add(bean);
+                    }
+                    addOtherBean();
+                    mAdapter.notifyDataSetChanged();
                 }
             }
         });
     }
 
-    private void addOtherBean(){
-
+    private void addOtherBean() {
         ThiInfoBean thiInfoBean = new ThiInfoBean();
         thiInfoBean.setOther(true);
         mSelectedList.add(thiInfoBean);
-
     }
 
 
@@ -171,7 +176,7 @@ public class ThiActivity extends Activity {
         mTitleTv.setText("配件列表");
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mRecyclerView.addItemDecoration(new FragileActivity.SpaceItemDecoration(DimenUtils.dp2px(10 , this)));
+        mRecyclerView.addItemDecoration(new FragileActivity.SpaceItemDecoration(DimenUtils.dp2px(10, this)));
 
         addOtherBean();
 

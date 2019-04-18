@@ -69,6 +69,8 @@ public class OrderDes {
 
     String detailId;
 
+    private boolean isBussiness;
+
     private int businessType;
 
     public String getDetailId() {
@@ -101,6 +103,14 @@ public class OrderDes {
 
     public String getmServiceType() {
         return mServiceType;
+    }
+
+    public boolean isBussiness() {
+        return isBussiness;
+    }
+
+    public void setBussiness(boolean bussiness) {
+        isBussiness = bussiness;
     }
 
     public void setmServiceType(String mServiceType) {

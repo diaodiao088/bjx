@@ -46,7 +46,6 @@ import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
-import com.bjxapp.worker.ui.widget.MaintainItemLayout;
 import com.bjxapp.worker.ui.widget.MaintainItemLayoutStub;
 import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
@@ -336,7 +335,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             return;
         }
 
-        if (isDeviceBill) {
+        if (mDetailInfo.getOrderDes().isBussiness()) {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo);
         } else {
@@ -797,6 +796,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mPriceDetailLy.setVisibility(View.GONE);
         } else {
             mPriceDetailLy.setVisibility(View.VISIBLE);
+            mMainLy.removeAllViews();
             for (int i = 0; i < maintainInfo.getmMaintainList().size(); i++) {
                 addUi(maintainInfo.getmMaintainList().get(i));
             }
@@ -821,6 +821,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     }
 
     private void addUi(MainTainBean mainTainBean) {
+
 
         final MaintainItemLayoutStub maintainItemLayout = new MaintainItemLayoutStub(this);
         maintainItemLayout.bindData(mainTainBean);
@@ -1147,6 +1148,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             int status = (int) detailJson.getInt("status");
             int origin = detailJson.getInt("origin");
             String orderNum = detailJson.getString("orderNo");
+            int businessType = detailJson.getInt("type");
 
             JSONObject detailItem = detailJson.getJSONObject("appointmentDetail");
 
@@ -1226,6 +1228,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             orderItem.setPersonName(personName);
             orderItem.setmLatitude(latitude);
             orderItem.setmLongtitude(lontitude);
+            orderItem.setBussiness(businessType == 1);
             orderItem.setOrderNum(orderNum);
             orderItem.setDetailAddress(detailAddress);
             orderItem.setBillType(Integer.parseInt(billType));
