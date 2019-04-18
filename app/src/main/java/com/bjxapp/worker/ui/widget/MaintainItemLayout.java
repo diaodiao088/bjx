@@ -131,7 +131,7 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
             mNameTv.setVisibility(GONE);
             mNameEv.setVisibility(VISIBLE);
             mPriceTv.setText(maintainInfo.getCost());
-
+            mNameEv.setText(maintainInfo.getComponentName());
         } else {
             mOtherLy.setVisibility(GONE);
             mRealPriceTv.setVisibility(VISIBLE);

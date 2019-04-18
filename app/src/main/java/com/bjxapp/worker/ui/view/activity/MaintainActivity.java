@@ -246,7 +246,6 @@ public class MaintainActivity extends Activity {
                             mainTainBean.setComponentId(thiInfoBean.getId());
                             mainTainBean.setCost(thiInfoBean.getCost());
                             mainTainBean.setModel(thiInfoBean.getModel());
-                            mainTainBean.setCost(thiInfoBean.getCost());
                             mainTainBean.setUnit(thiInfoBean.getUnit());
                             mainTainBean.setComponentName(thiInfoBean.getName());
                             mainTainBean.setOthers(false);

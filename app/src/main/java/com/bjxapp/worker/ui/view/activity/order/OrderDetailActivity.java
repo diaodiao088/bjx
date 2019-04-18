@@ -1046,6 +1046,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
                     if (!mainItem.get("equipmentComponentId").toString().equals("null")) {
                         mainTainBean.setComponentId(mainItem.getInt("equipmentComponentId"));
+                        mainTainBean.setOthers(false);
+                    } else {
+                        mainTainBean.setOthers(true);
                     }
 
                     if (!mainItem.get("equipmentComponentModel").toString().equals("null")) {
