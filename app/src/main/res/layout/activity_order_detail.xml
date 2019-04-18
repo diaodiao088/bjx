@@ -309,7 +309,7 @@
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -431,6 +431,32 @@
                         android:textColor="#545454"
                         android:textSize="14sp" />
                 </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/detail_price_ly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="报价明细"
+                        android:textColor="@color/main_text_color"
+                        android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:id="@+id/main_container_ly"
+                        android:layout_marginTop="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                </LinearLayout>
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"

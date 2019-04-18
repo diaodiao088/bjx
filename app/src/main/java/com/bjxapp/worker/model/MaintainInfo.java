@@ -1,7 +1,5 @@
 package com.bjxapp.worker.model;
 
-import android.text.TextUtils;
-
 import java.util.ArrayList;
 
 /**
@@ -37,6 +35,8 @@ public class MaintainInfo {
 
     private String orderTime;
 
+    private ArrayList<MainTainBean> mMaintainList = new ArrayList<>();
+
     public MaintainInfo() {
 
     }
@@ -55,6 +55,14 @@ public class MaintainInfo {
         this.prePayService = prePayService;
         this.totalAmount = totalAmount;
         this.totalCost = totalCost;
+    }
+
+    public ArrayList<MainTainBean> getmMaintainList() {
+        return mMaintainList;
+    }
+
+    public void setmMaintainList(ArrayList<MainTainBean> mMaintainList) {
+        this.mMaintainList = mMaintainList;
     }
 
     public String getOrderTime() {

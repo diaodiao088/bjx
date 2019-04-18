@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
@@ -43,6 +45,9 @@ import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
+import com.bjxapp.worker.ui.widget.DimenUtils;
+import com.bjxapp.worker.ui.widget.MaintainItemLayout;
+import com.bjxapp.worker.ui.widget.MaintainItemLayoutStub;
 import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
 import com.bjxapp.worker.utils.Utils;
@@ -198,6 +203,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @BindView(R.id.look_info)
     TextView mLookInfoTv;
 
+    @BindView(R.id.main_container_ly)
+    LinearLayout mMainLy;
+
+    @BindView(R.id.detail_price_ly)
+    LinearLayout mPriceDetailLy;
+
     @OnClick(R.id.look_info)
     void onClickLookinfo() {
 
@@ -325,9 +336,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             return;
         }
 
-        if (isDeviceBill){
-            MaintainActivity.goToActivity(this , mDetailInfo.getOrderDes().getEnterpriseId() , mDetailInfo.getOrderDes().getOrderId());
-        }else{
+        if (isDeviceBill) {
+            MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo);
+        } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
         }
@@ -781,6 +793,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         mTotalPriceTv.setText("+ " + maintainInfo.getTotalCost()); // 总报价
 
+        if (!isDeviceBill) {
+            mPriceDetailLy.setVisibility(View.GONE);
+        } else {
+            mPriceDetailLy.setVisibility(View.VISIBLE);
+            for (int i = 0; i < maintainInfo.getmMaintainList().size(); i++) {
+                addUi(maintainInfo.getmMaintainList().get(i));
+            }
+        }
+
         BigDecimal totalCost = new BigDecimal(Double.parseDouble(maintainInfo.getTotalCost()));
         BigDecimal serviceCost = new BigDecimal(mDetailInfo.getOrderDes().getServiceVisitCost());
         BigDecimal preCost = new BigDecimal(Double.parseDouble(maintainInfo.getPreCost()));
@@ -798,6 +819,18 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mFuKuanContentTv.setText(String.valueOf(payAmount));
 
     }
+
+    private void addUi(MainTainBean mainTainBean) {
+
+        final MaintainItemLayoutStub maintainItemLayout = new MaintainItemLayoutStub(this);
+        maintainItemLayout.bindData(mainTainBean);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, DimenUtils.dp2px(10, this), 0, 0);
+        mMainLy.addView(maintainItemLayout, params);
+
+    }
+
 
     private AsyncTask<String, Void, OrderDetail> mLoadDataTask;
 
@@ -996,6 +1029,43 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         try {
             JSONObject detailItem = detailJson.getJSONObject("maintainDetail");
 
+            ArrayList<MainTainBean> mainTainList = new ArrayList<>();
+
+            if (detailItem.has("equipmentComponentList")) {
+
+                JSONArray array = detailItem.getJSONArray("equipmentComponentList");
+
+                for (int i = 0; i < array.length(); i++) {
+
+                    JSONObject mainItem = array.getJSONObject(i);
+                    MainTainBean mainTainBean = new MainTainBean();
+                    mainTainBean.setComponentName(mainItem.getString("equipmentComponentName"));
+                    mainTainBean.setCost(mainItem.getString("equipmentComponentCost"));
+                    mainTainBean.setQuantity(mainItem.getInt("equipmentComponentQuantity"));
+
+                    if (!mainItem.get("equipmentComponentId").toString().equals("null")) {
+                        mainTainBean.setComponentId(mainItem.getInt("equipmentComponentId"));
+                    }
+
+                    if (!mainItem.get("equipmentComponentModel").toString().equals("null")) {
+
+                        if (TextUtils.isEmpty(mainItem.getString("equipmentComponentModel"))) {
+                            mainTainBean.setOthers(true);
+                        } else {
+                            mainTainBean.setModel(mainItem.getString("equipmentComponentModel"));
+                        }
+                    } else {
+                        mainTainBean.setOthers(true);
+                    }
+
+                    if (!mainItem.get("equipmentComponentUnit").toString().equals("null")) {
+                        mainTainBean.setUnit(mainItem.getString("equipmentComponentUnit"));
+                    }
+
+                    mainTainList.add(mainTainBean);
+                }
+            }
+
             String costDetail = detailItem.getString("costDetail");
             String fault = detailItem.getString("fault");
             boolean paid = detailItem.getBoolean("paid");
@@ -1032,6 +1102,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     plan, prePaid, preCost, prePayService, totalAmount, totalCost);
 
             maintainInfo.setOrderTime(orderTime);
+
+            maintainInfo.setmMaintainList(mainTainList);
 
             if (!TextUtils.isEmpty(costDetailTemp)) {
                 maintainInfo.setCostDetail(costDetailTemp);
@@ -1120,12 +1192,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             }
 
-            if(detailItem.has("enterpriseOrderServiceType")){
+            if (detailItem.has("enterpriseOrderServiceType")) {
                 serviceType = detailItem.getString("enterpriseOrderServiceType");
 
             }
 
-            if (detailItem.has("enterpriseOrderId")){
+            if (detailItem.has("enterpriseOrderId")) {
                 enterpriseOrderId = detailItem.getString("enterpriseOrderId");
             }
 

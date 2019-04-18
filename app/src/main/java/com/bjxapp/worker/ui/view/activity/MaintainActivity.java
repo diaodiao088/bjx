@@ -23,6 +23,7 @@ import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.MainTainBean;
+import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.ThiInfoBean;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ManfulDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -109,9 +110,14 @@ public class MaintainActivity extends Activity {
     TextView mTotalPriceTv;
 
     @OnClick(R.id.add_confirm_btn)
-    void onConfirmClick(){startCommit();}
+    void onConfirmClick() {
+        startCommit();
+    }
 
     private XWaitingDialog mWaitingDialog;
+
+    private String plan;
+    private String fault;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,6 +137,25 @@ public class MaintainActivity extends Activity {
 
         equipId = getIntent().getStringExtra("equip_id");
         orderId = getIntent().getStringExtra("order_id");
+        plan = getIntent().getStringExtra("plan");
+        fault = getIntent().getStringExtra("fault");
+        mMainTainList = getIntent().getParcelableArrayListExtra("maintainList");
+
+        if (mMainTainList == null) {
+            mMainTainList = new ArrayList<>();
+        }
+
+        refreshUi();
+    }
+
+    private void refreshUi() {
+
+        mMethodTv.setText(plan);
+        mManfulTv.setText(fault);
+
+        for (int i = 0; i < mMainTainList.size(); i++) {
+            addUi(mMainTainList.get(i));
+        }
 
     }
 
@@ -416,15 +441,16 @@ public class MaintainActivity extends Activity {
             String costKey = "equipmentComponentList[" + i + "].cost";
             String quantityKey = "equipmentComponentList[" + i + "].quantity";
 
+            String modelKey = "equipmentComponentList[" + i + "].model";
+            params.put(modelKey, String.valueOf(item.getModel()));
+
             params.put(nameKey, item.getComponentName());
             params.put(costKey, item.getCost());
             params.put(quantityKey, String.valueOf(item.getQuantity()));
 
             if (!item.isOthers) {
                 String idKey = "equipmentComponentList[" + i + "].id";
-                params.put(idKey, String.valueOf(item.getId()));
-                String modelKey = "equipmentComponentList[" + i + "].model";
-                params.put(modelKey, String.valueOf(item.getModel()));
+                params.put(idKey, String.valueOf(item.getComponentId()));
                 String unitKey = "equipmentComponentList[" + i + "].unit";
                 params.put(unitKey, item.getUnit());
             }
@@ -433,12 +459,17 @@ public class MaintainActivity extends Activity {
     }
 
 
-    public static void goToActivity(Activity context, String equipId, String orderId) {
+    public static void goToActivity(Activity context, String equipId, String orderId, MaintainInfo maintainInfo) {
 
         Intent intent = new Intent();
         intent.setClass(context, MaintainActivity.class);
         intent.putExtra("equip_id", equipId);
         intent.putExtra("order_id", orderId);
+
+        intent.putExtra("plan", maintainInfo.getPlan());
+        intent.putExtra("fault", maintainInfo.getFault());
+        intent.putParcelableArrayListExtra("maintainList", maintainInfo.getmMaintainList());
+
         context.startActivityForResult(intent, 0x05);
     }
 
