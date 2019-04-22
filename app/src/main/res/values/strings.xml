@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="app_name">百家修师傅</string>
+    <string name="app_name_test">师傅测试</string>
     <string name="service_telephone">010-53170256</string>
     <string name="service_telephone_display">010-53170256</string>
     <string name="service_about_url">http://app.100jiaxiu.com/profile/about_an.html</string>

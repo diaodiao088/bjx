@@ -12,13 +12,13 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters "armeabi", "armeabi-v7a", "x86_64","x86"
+            abiFilters "armeabi", "armeabi-v7a", "x86_64", "x86"
         }
 
         manifestPlaceholders = [
-                GETUI_APP_ID : "va63C5q0Bm67h8M6hbVx35",
-                GETUI_APP_KEY : "xTa8BxKblAAwh7uuaZ5aU4",
-                GETUI_APP_SECRET : "iV9JSIUrjb8IbMENCFTWt1"
+                GETUI_APP_ID    : "va63C5q0Bm67h8M6hbVx35",
+                GETUI_APP_KEY   : "xTa8BxKblAAwh7uuaZ5aU4",
+                GETUI_APP_SECRET: "iV9JSIUrjb8IbMENCFTWt1"
         ]
 
     }
@@ -30,9 +30,26 @@ android {
         }
     }
 
-    sourceSets{
-        main{
+    sourceSets {
+        main {
             jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    flavorDimensions "version"
+
+    productFlavors {
+        free {
+            // Assigns this product flavor to the "version" flavor dimension.
+            // This property is optional if you are using only one dimension.
+            dimension "version"
+            applicationIdSuffix ".test"
+            manifestPlaceholders = [appname: "@string/app_name_test", icon: "@drawable/icon_test"]
+        }
+        formal {
+            dimension "version"
+            applicationIdSuffix ".formal"
+            manifestPlaceholders = [appname: "@string/app_name", icon: "@drawable/icon"]
         }
     }
 
