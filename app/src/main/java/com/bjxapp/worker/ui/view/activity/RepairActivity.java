@@ -28,6 +28,7 @@ import com.bjxapp.worker.model.DateTime;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.ReceiveButton;
 import com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity;
+import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.view.fragment.ctrl.PageSlipingCtrl;
 import com.bjxapp.worker.ui.view.fragment.subfragment.AlreadyRoomFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.BillAdapter;
@@ -77,7 +78,6 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         setContentView(R.layout.fragment_main_first);
         ButterKnife.bind(this);
         initViews();
-        initializeReceiveButton(null);
     }
 
     private void initVp() {
@@ -126,54 +126,6 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
     }
 
 
-
-
-    /**
-     * @param shouldReceiveBill
-     */
-    private void changeStatusReal(boolean shouldReceiveBill) {
-
-        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
-
-        Map<String, String> params = new HashMap<>();
-
-        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
-        params.put("token", ConfigManager.getInstance(this).getUserSession());
-
-        if (shouldReceiveBill) {
-            Call<JsonObject> request = billApi.receiveBill(params);
-
-            KHttpWorker.ins().requestWithOrigin(request, new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
-
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-
-                }
-            });
-
-        } else {
-            Call<JsonObject> request = billApi.denyBill(params);
-
-            KHttpWorker.ins().requestWithOrigin(request, new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-
-                }
-            });
-        }
-    }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -213,103 +165,9 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         }
     }
 
-    private void initializeReceiveButton(List<ReceiveButton> buttons) {
-        String today = DateTime.getTodayDateTimeString();
-        String tomorrow = DateTime.getTomorrowDateTimeString();
-
-        ReceiveButton receiveButton = new ReceiveButton();
-        receiveButton.setDate(today);
-        receiveButton.setType(0);
-        receiveButton.setFlag(0);
-        if (buttons != null && buttons.size() > 0) {
-            for (ReceiveButton button : buttons) {
-                if (button.getDate().equals(today) && button.getType() == 0) {
-                    receiveButton.setFlag(1);
-                }
-            }
-        }
-
-        receiveButton = new ReceiveButton();
-        receiveButton.setDate(tomorrow);
-        receiveButton.setType(0);
-        receiveButton.setFlag(0);
-        if (buttons != null && buttons.size() > 0) {
-            for (ReceiveButton button : buttons) {
-                if (button.getDate().equals(tomorrow) && button.getType() == 0) {
-                    receiveButton.setFlag(1);
-                }
-            }
-        }
-
-        receiveButton = new ReceiveButton();
-        receiveButton.setDate(today);
-        receiveButton.setType(1);
-        receiveButton.setFlag(0);
-        if (buttons != null && buttons.size() > 0) {
-            for (ReceiveButton button : buttons) {
-                if (button.getDate().equals(today) && button.getType() == 1) {
-                    receiveButton.setFlag(1);
-                }
-            }
-        }
-
-        receiveButton = new ReceiveButton();
-        receiveButton.setDate(tomorrow);
-        receiveButton.setType(1);
-        receiveButton.setFlag(0);
-        if (buttons != null && buttons.size() > 0) {
-            for (ReceiveButton button : buttons) {
-                if (button.getDate().equals(tomorrow) && button.getType() == 1) {
-                    receiveButton.setFlag(1);
-                }
-            }
-        }
-    }
 
     private AsyncTask<Void, Void, Integer> mUpdateReceiveStateTask;
 
-    private void updateReceiveState(final XButton button) {
-        ReceiveButton receiveButton = (ReceiveButton) button.getTag();
-        final String date = receiveButton.getDate();
-        final String type = String.valueOf(receiveButton.getType());
-        String flagString = "";
-        if (receiveButton.getFlag() == 0) {
-            flagString = "1";
-        } else {
-            flagString = "0";
-        }
-        final String flag = flagString;
-
-        mWaitingDialog.show("正在更改接单状态，请稍候...", false);
-        mUpdateReceiveStateTask = new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                int result = LogicFactory.getDesktopLogic(RepairActivity.this).setOrderReceiveState(date, type, flag);
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(Integer result) {
-                mWaitingDialog.dismiss();
-                if (result == APIConstants.RESULT_CODE_SUCCESS) {
-                    ReceiveButton receiveButton = (ReceiveButton) button.getTag();
-                    if (receiveButton.getFlag() == 0) {
-                        receiveButton.setFlag(1);
-                        button.setText("不能接单");
-                        button.setTextColor(RepairActivity.this.getResources().getColor(R.color.receive_button_not));
-                        button.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_receive_not));
-                    } else {
-                        receiveButton.setFlag(0);
-                        button.setText("可以接单");
-                        button.setTextColor(RepairActivity.this.getResources().getColor(R.color.receive_button_can));
-                        button.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_receive_can));
-                    }
-                }
-            }
-        };
-
-        mUpdateReceiveStateTask.execute();
-    }
 
     /**
      * 定义广播接收器（内部类）
@@ -381,6 +239,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         try {
             //注销广播
             unregisterReceiver(broadcastReceiver);
+            DataManagerCtrl.getIns().markDataDirty(true);
         } catch (Exception e) {
         }
 
