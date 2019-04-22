@@ -53,6 +53,17 @@ android {
         }
     }
 
+    applicationVariants.all { variant ->
+        if(variant.buildType.name.equals('release')){
+            variant.outputs.all { output ->
+                def buildName = "bjx"
+                def type = variant.buildType.name
+                def releaseApkName = buildName + '_' + type + "_" + versionName + '_' + variant.flavorName + '.apk'
+                outputFileName = releaseApkName
+            }
+        }
+    }
+
 }
 
 dependencies {
