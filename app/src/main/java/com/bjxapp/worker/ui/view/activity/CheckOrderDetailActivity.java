@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
@@ -30,6 +31,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
+import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
 import com.bjxapp.worker.ui.widget.CheckOrderItemLayout;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.Utils;
@@ -95,7 +97,13 @@ public class CheckOrderDetailActivity extends Activity {
 
     @OnClick(R.id.add_confirm_btn)
     void onConfirm() {
-        startConfirm();
+
+        if (checkDetailBean != null && checkDetailBean.getProcessState() == 0) {
+            startSign();
+        } else {
+            startConfirm();
+        }
+
     }
 
     @BindView(R.id.add_confirm_btn)
@@ -154,6 +162,8 @@ public class CheckOrderDetailActivity extends Activity {
     private void initView() {
 
         mWaitingDialog = new XWaitingDialog(this);
+
+        initAddress();
 
         mTitleTextView.setText("订单详情");
 
@@ -320,6 +330,12 @@ public class CheckOrderDetailActivity extends Activity {
                     mConfirmBtn.setVisibility(View.GONE);
                 }
 
+                if (checkDetailBean.getProcessState() == 0) {
+                    mConfirmBtn.setText("上门签到");
+                } else {
+                    mConfirmBtn.setText("生成报告");
+                }
+
             }
         });
 
@@ -426,6 +442,74 @@ public class CheckOrderDetailActivity extends Activity {
         }
     }
 
+
+    private void startSign() {
+
+        RecordApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(CheckOrderDetailActivity.this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(CheckOrderDetailActivity.this).getUserCode());
+        params.put("id", orderId);
+        params.put("address", currentAddress);
+
+        retrofit2.Call<JsonObject> request = billApi.signBill(params);
+
+        mWaitingDialog.show("正在签到，请稍后..", false);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                JsonObject object = response.body();
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
+
+                if (code == 0) {
+                    initData();
+                    Utils.showShortToast(CheckOrderDetailActivity.this, "签到成功");
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                            Utils.showShortToast(CheckOrderDetailActivity.this, msg + ": " + code);
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Utils.showShortToast(CheckOrderDetailActivity.this, "签到失败..");
+                    }
+                });
+            }
+        });
+
+    }
+
+
     private void startConfirm() {
 
         if (checkDetailBean == null) {
@@ -531,9 +615,28 @@ public class CheckOrderDetailActivity extends Activity {
                     String result = data.getStringExtra(Intents.Scan.RESULT);
                     Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
                     break;
-
             }
-
         }
     }
+
+    private String currentAddress = "";
+
+    private void initAddress() {
+        MapPositioning mMapPositioning = MapPositioning.getInstance();
+        mMapPositioning.setmLocation(new MapPositioning.XbdLocation() {
+
+            @Override
+            public void locSuccess(BDLocation location) {
+                currentAddress = location.getAddrStr() + location.getLocationDescribe();
+            }
+
+
+            @Override
+            public void locFailure(int errorType, String errorString) {
+
+            }
+        });
+        mMapPositioning.start();
+    }
+
 }

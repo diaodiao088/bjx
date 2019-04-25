@@ -112,5 +112,9 @@ public interface RecordApi {
     @POST("/enterpriseOrderEquipment/exists")
     Call<JsonObject> isNumExists(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/enterpriseOrder/visit")
+    Call<JsonObject> signBill(@FieldMap Map<String, String> params);
+
 
 }
