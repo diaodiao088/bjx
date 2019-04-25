@@ -153,6 +153,8 @@ public class CheckOrderDetailActivity extends Activity {
 
     private void initView() {
 
+        mWaitingDialog = new XWaitingDialog(this);
+
         mTitleTextView.setText("订单详情");
 
         mLayoutManager = new LinearLayoutManager(this);

@@ -41,5 +41,6 @@
     <string name="bank_subtitle">为提现日，每个提现日只能提现一次。客服电话： &lt;a href=\&quot;http://www.action.html\&quot;&gt;010-5317025&lt;/a&gt;</string>
     <string name="bank_title">提示：\n每个月1至5日、15日至18日为提现日，每个提现日只能提现一次。客服电话：010-5317025</string>
     <string name="ready_tips">到位平台订单--客户已经在到位支付%s元，如有增项报价请让客户在到位进行补差价</string>
+    <string name="img_count"><Data><![CDATA[已添加<font color="#ff0000"><b>%1$s</b></font>张照片]]></Data></string>
 
 </resources>

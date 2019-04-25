@@ -48,7 +48,6 @@ android {
         }
         formal {
             dimension "version"
-            applicationIdSuffix ".formal"
             manifestPlaceholders = [appname: "@string/app_name", icon: "@drawable/icon"]
         }
     }

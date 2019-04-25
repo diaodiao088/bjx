@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;
@@ -41,6 +41,7 @@ import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
 import com.bjxapp.worker.ui.view.activity.FastJudgeActivity;
 import com.bjxapp.worker.ui.view.activity.MaintainActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
+import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
@@ -546,12 +547,39 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             toNewBillStatus();
         } else if (processStatus == 2) {
             toWaitStatus();
-        } else if (processStatus == 3 || processStatus == 4 || processStatus == 5
+        } else if (processStatus == 4 || processStatus == 5
                 || processStatus == 6 || processStatus == 7) {
             toDetailUi();
+        } else if (processStatus == 3) {
+            toWaitRootStatus();
         }
     }
 
+    private void toWaitRootStatus() {
+
+        mHourLastTv.setVisibility(View.GONE);
+        mOrderWaitLy.setVisibility(View.GONE);
+        mSaveButton.setVisibility(View.VISIBLE);
+        mCancelBillTv.setVisibility(View.GONE);
+        mSaveLy.setVisibility(View.VISIBLE);
+
+        mPreBillLy.setVisibility(View.GONE);
+        mFinalMoneyLy.setVisibility(View.GONE);
+        mIssueImgLy.setVisibility(View.GONE);
+
+        mStatusTv.setText("待上门");
+
+        mSaveButton.setText("上门签到");
+
+        mSaveButton.setEnabled(true);
+
+        if (mDetailInfo != null) {
+            if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+                mLookInfoTv.setVisibility(View.VISIBLE);
+            }
+        }
+
+    }
 
     private void initTitle() {
         XTextView mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
@@ -559,9 +587,25 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mBackImageView.setVisibility(View.VISIBLE);
     }
 
+    private String currentAddress = "";
+
     @Override
     protected void initView() {
+        MapPositioning mMapPositioning = MapPositioning.getInstance();
+        mMapPositioning.setmLocation(new MapPositioning.XbdLocation() {
 
+            @Override
+            public void locSuccess(BDLocation location) {
+                currentAddress = location.getAddrStr() + location.getLocationDescribe();
+            }
+
+
+            @Override
+            public void locFailure(int errorType, String errorString) {
+
+            }
+        });
+        mMapPositioning.start();
     }
 
     @Override
@@ -628,7 +672,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             @Override
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
 
-                Log.d("slog_zd", "confirm : " + response.body().toString());
 
                 mHandler.post(new Runnable() {
                     @Override
@@ -650,7 +693,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                             @Override
                             public void run() {
                                 orderDes.setProcessStatus(3);
-                                toDetailUi();
+                                toWaitRootStatus();
                             }
                         });
                     } else {
@@ -767,7 +810,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             if (isDeviceBill) {
                 mLookInfoTv.setVisibility(View.VISIBLE);
             }
-
         }
 
         if (status == 4) {
@@ -1002,6 +1044,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 toWaitStatus();
                 break;
             case 3:
+                toWaitRootStatus();
+                break;
             case 4:
             case 5:
             case 6:
@@ -1340,9 +1384,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mHourLastTv.setVisibility(View.VISIBLE);
         mPreBillLy.setVisibility(View.GONE);
         mFinalMoneyLy.setVisibility(View.GONE);
+        mIssueImgLy.setVisibility(View.GONE);
         mSaveLy.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.VISIBLE);
-        mIssueImgLy.setVisibility(View.GONE);
+
         mContactLy.setVisibility(View.VISIBLE);
 
         if (mDetailInfo == null || mDetailInfo.getOrderDes() == null || mDetailInfo.getMaintainInfo() == null
@@ -1541,8 +1586,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 acceptOperation();
                 break;
             case 4:
-            case 3:
-
                 if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
                     if (mImageList.size() > 0) {
                         FastJudgeActivity.goToActivity(OrderDetailActivity.this, false, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
@@ -1555,12 +1598,83 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 }
 
                 break;
+            case 3:
+                startSign();
+                break;
             case 5:
                 toThirdStep(true, orderDes.getOriginType() == 2, orderDes.isFree());
                 break;
         }
+    }
+
+    private void startSign() {
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(OrderDetailActivity.this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(OrderDetailActivity.this).getUserCode());
+        params.put("orderId", orderId);
+        params.put("address", currentAddress);
+
+        retrofit2.Call<JsonObject> request = billApi.signBill(params);
+
+        final OrderDes orderDes = mDetailInfo.getOrderDes();
+
+        mWaitingDialog.show("正在签到，请稍后..", false);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                JsonObject object = response.body();
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
+
+                if (code == 0) {
+                    orderDes.setProcessStatus(4);
+                    toDetailUi();
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                            Utils.showShortToast(OrderDetailActivity.this, msg + ": " + code);
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Utils.showShortToast(OrderDetailActivity.this, "签到失败..");
+                    }
+                });
+            }
+        });
 
     }
+
 
     private void toWaitPay(boolean isNeedShowDialog, boolean isFree) {
         if (!isNeedShowDialog && !isFree) {

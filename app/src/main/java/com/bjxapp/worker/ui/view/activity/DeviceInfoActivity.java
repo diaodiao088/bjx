@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -260,7 +261,9 @@ public class DeviceInfoActivity extends Activity {
             mProcessStatusTv.setEnabled(false);
             mProcessStatusTv.setClickable(false);
 
-            mRecordStatusTv.setTextColor(Color.TRANSPARENT);
+            //mRecordStatusTv.setTextColor(Color.TRANSPARENT);
+
+
             mAddImgTv.setText("查看照片");
 //            for (int i = 0; i < mRadioGroup.getChildCount(); i++) {
 //                mRadioGroup.getChildAt(i).setEnabled(false);
@@ -291,7 +294,7 @@ public class DeviceInfoActivity extends Activity {
 
             mStatusLy.setVisibility(View.GONE);
 
-            mRecordStatusTv.setTextColor(Color.TRANSPARENT);
+            // mRecordStatusTv.setTextColor(Color.TRANSPARENT);
             mAddImgTv.setText("查看照片");
 
 //            for (int i = 0; i < mRadioGroup.getCh
@@ -505,6 +508,17 @@ public class DeviceInfoActivity extends Activity {
             mServiceLy.setVisibility(View.GONE);
         }
 
+        if (mImgList.size() > 0) {
+
+            String imgCountStr = getResources().getString(R.string.img_count, String.valueOf(mImgList.size()));
+            mRecordStatusTv.setText(Html.fromHtml(imgCountStr));
+
+        } else {
+            if (mAddImgTv.getText().toString().equals("查看照片")) {
+                mRecordStatusTv.setTextColor(Color.TRANSPARENT);
+            }
+        }
+
         insertObj();
     }
 
@@ -620,6 +634,12 @@ public class DeviceInfoActivity extends Activity {
                     if (list != null) {
                         mImgList.clear();
                         mImgList.addAll(list);
+
+                        if (mImgList.size() > 0) {
+                            String imgCountStr = getResources().getString(R.string.img_count, String.valueOf(mImgList.size()));
+                            mRecordStatusTv.setText(Html.fromHtml(imgCountStr));
+                        }
+
                     }
                 }
                 break;

@@ -73,4 +73,9 @@ public interface BillApi {
     @POST("/order/saveMaintain")
     Call<JsonObject> saveMaintain(@FieldMap Map<String, String> params);
 
+
+    @FormUrlEncoded
+    @POST("/order/visit")
+    Call<JsonObject> signBill(@FieldMap Map<String, String> params);
+
 }
