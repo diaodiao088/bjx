@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,6 +122,12 @@ public class CheckOrderDetailActivity extends Activity {
     void onClickScan() {
         startScan();
     }
+
+    @BindView(R.id.scan_ly)
+    RelativeLayout mScanLy;
+
+    @BindView(R.id.order_status_tv)
+    XTextView mOrderStatusTv;
 
     @BindView(R.id.name)
     TextView mTitleName;
@@ -334,6 +341,24 @@ public class CheckOrderDetailActivity extends Activity {
                     mConfirmBtn.setText("上门签到");
                 } else {
                     mConfirmBtn.setText("生成报告");
+                }
+
+                if (checkDetailBean.getProcessState() == 0) {
+                    mOrderStatusTv.setText("待上门");
+                    mScanLy.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.GONE);
+                } else if (checkDetailBean.getProcessState() == 3) {
+                    mScanLy.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mOrderStatusTv.setText("已上门");
+                } else if (checkDetailBean.getProcessState() == 6) {
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mScanLy.setVisibility(View.VISIBLE);
+                    mOrderStatusTv.setText("待确认");
+                } else {
+                    mOrderStatusTv.setText("已完成");
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mScanLy.setVisibility(View.VISIBLE);
                 }
 
             }
