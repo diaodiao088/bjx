@@ -476,8 +476,28 @@ public class RecordDetailActivity extends Activity {
 
         }
 
+        while (!isValidIndex(index, list, itemStr)) {
+            index++;
+        }
+
 
         return index;
+    }
+
+
+    private boolean isValidIndex(int currentIndex, ArrayList<RecordItemBean> list, String itemStr) {
+
+        for (int i = 0; i < list.size(); i++) {
+
+            RecordItemBean recordItemBean = list.get(i);
+
+            if (recordItemBean.getName().equals(itemStr + "-" + currentIndex)) {
+                return false;
+            }
+
+        }
+
+        return true;
     }
 
 
