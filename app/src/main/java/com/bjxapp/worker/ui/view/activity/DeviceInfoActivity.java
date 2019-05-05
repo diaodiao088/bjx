@@ -138,6 +138,9 @@ public class DeviceInfoActivity extends Activity {
     @BindView(R.id.process_divider)
     View dividerView;
 
+    @BindView(R.id.info_tv)
+    TextView mInfoTv;
+
     @BindView(R.id.status_ly)
     LinearLayout mStatusLy;
 
@@ -399,7 +402,11 @@ public class DeviceInfoActivity extends Activity {
         });
     }
 
+    private String deviceName = "";
+
     private void parseData(JsonObject object) {
+
+        deviceName = object.get("equipmentName").getAsString();
 
         if (object.get("needMaintain") != null && !(object.get("needMaintain") instanceof JsonNull)) {
             needMaintain = object.get("needMaintain").getAsInt();
@@ -462,6 +469,11 @@ public class DeviceInfoActivity extends Activity {
     ArrayList<String> steplist = new ArrayList<>();
 
     private void updateUi() {
+
+        if (!TextUtils.isEmpty(deviceName)) {
+            mInfoTv.setText(deviceName + " " + "设备信息");
+        }
+
         if (!TextUtils.isEmpty(remark)) {
             mReasonTv.setText(remark);
         }

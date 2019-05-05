@@ -35,6 +35,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/info_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
