@@ -6,8 +6,8 @@ android {
         applicationId "com.bjx.master"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 4014
-        versionName "4.2.4"
+        versionCode 4013
+        versionName "4.2.3"
         useLibrary 'org.apache.http.legacy'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -15,11 +15,7 @@ android {
             abiFilters "armeabi", "armeabi-v7a", "x86_64", "x86"
         }
 
-        manifestPlaceholders = [
-                GETUI_APP_ID    : "va63C5q0Bm67h8M6hbVx35",
-                GETUI_APP_KEY   : "xTa8BxKblAAwh7uuaZ5aU4",
-                GETUI_APP_SECRET: "iV9JSIUrjb8IbMENCFTWt1"
-        ]
+
 
     }
     buildTypes {
@@ -44,11 +40,26 @@ android {
             // This property is optional if you are using only one dimension.
             dimension "version"
             applicationIdSuffix ".test"
-            manifestPlaceholders = [appname: "@string/app_name_test", icon: "@drawable/icon_test"]
+
+            manifestPlaceholders = [
+                    appname: "@string/app_name_test",
+                    icon: "@drawable/icon_test",
+                    GETUI_APP_ID    : "PvUw82rW3H9u3gcRsY6d76",
+                    GETUI_APP_KEY   : "r6bKWOQVM36Ayi1n0CUNV4",
+                    GETUI_APP_SECRET: "BUkqviTIap6AzIkX9vjid8"
+            ]
+
         }
         formal {
             dimension "version"
-            manifestPlaceholders = [appname: "@string/app_name", icon: "@drawable/icon"]
+
+            manifestPlaceholders = [
+                    appname: "@string/app_name",
+                    icon: "@drawable/icon",
+                    GETUI_APP_ID    : "va63C5q0Bm67h8M6hbVx35",
+                    GETUI_APP_KEY   : "xTa8BxKblAAwh7uuaZ5aU4",
+                    GETUI_APP_SECRET: "iV9JSIUrjb8IbMENCFTWt1"
+            ]
         }
     }
 
