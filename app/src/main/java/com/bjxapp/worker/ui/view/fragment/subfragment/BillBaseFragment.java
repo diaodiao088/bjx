@@ -227,12 +227,20 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         String selectTime = detailItem.get("selectMasterTime").getAsString();
                         String type = detailItem.get("type").getAsString();
 
+                        String shopName = detailItem.get("shopName").getAsString();
+                        String enterpriseName = detailItem.get("enterpriseName").getAsString();
+
                         OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                 serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                 locationAddress, serviceVisitCost);
 
+                        orderItem.setmShopName(shopName);
+                        orderItem.setmEnterpriseName(enterpriseName);
+
                         orderItem.setmSelectTime(selectTime);
                         orderItem.setBillType(Integer.parseInt(type));
+
+
 
                         JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
                         String orderTime = "";

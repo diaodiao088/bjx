@@ -73,6 +73,9 @@ public class OrderDes {
 
     private int businessType;
 
+    private String mShopName = "";
+    private String mEnterpriseName = "";
+
     public String getDetailId() {
         return detailId;
     }
@@ -83,6 +86,22 @@ public class OrderDes {
 
     public String getEnterpriseOrderId() {
         return enterpriseOrderId;
+    }
+
+    public String getmShopName() {
+        return mShopName;
+    }
+
+    public void setmShopName(String mShopName) {
+        this.mShopName = mShopName;
+    }
+
+    public String getmEnterpriseName() {
+        return mEnterpriseName;
+    }
+
+    public void setmEnterpriseName(String mEnterpriseName) {
+        this.mEnterpriseName = mEnterpriseName;
     }
 
     public void setEnterpriseOrderId(String enterpriseOrderId) {

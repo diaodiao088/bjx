@@ -61,11 +61,31 @@
             android:background="#E5E5E5" />
 
         <RelativeLayout
+            android:id="@+id/shop_ly"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="15dp">
+
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/shop_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:drawableLeft="@drawable/check_shop"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp">
 
             <com.bjxapp.worker.controls.XTextView
                 android:id="@+id/order_receive_textview_orderdate"

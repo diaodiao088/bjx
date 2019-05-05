@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bjx.master.R;
@@ -59,6 +60,8 @@ public class OrderAdapter extends BaseAdapter {
             holder.textViewMoney = (XTextView) convertView.findViewById(R.id.order_receive_textview_money);
             holder.mOutTimeIv = convertView.findViewById(R.id.out_time_iv);
             holder.emergencyTv = convertView.findViewById(R.id.emergency_tv);
+            holder.mShopLy = convertView.findViewById(R.id.shop_ly);
+            holder.shopTv = convertView.findViewById(R.id.shop_tv);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -150,22 +153,34 @@ public class OrderAdapter extends BaseAdapter {
             holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
         }
 
-        if (type == 1){
-            holder.textViewOrderDate.setText("立即上门");
-        }else{
+        if (type == 1) {
+            holder.textViewOrderDate.setText("立即上门 ：" + aInfo.get(position).getAppointmentDay()
+                    + " " + aInfo.get(position).getAppointmentEndTime());
+        } else {
             holder.textViewOrderDate.setText(aInfo.get(position).getAppointmentDay() + " " + aInfo.get(position).getAppointmentEndTime());
         }
 
         if (type == 1) {
 
-           if (aInfo.get(position).getBusinessType() != 1){
-               holder.emergencyTv.setVisibility(View.VISIBLE);
-           }else{
-               holder.emergencyTv.setVisibility(View.GONE);
-           }
+            if (aInfo.get(position).getBusinessType() != 1) {
+                holder.emergencyTv.setVisibility(View.VISIBLE);
+            } else {
+                holder.emergencyTv.setVisibility(View.GONE);
+            }
 
         } else {
             holder.emergencyTv.setVisibility(View.GONE);
+        }
+
+        // 显示门店
+        if (aInfo.get(position).getBusinessType() == 1 && aInfo.get(position).getProcessStatus() < 6) {
+            holder.mShopLy.setVisibility(View.VISIBLE);
+
+            holder.shopTv.setText(aInfo.get(position).getmEnterpriseName()
+                    + aInfo.get(position).getmShopName());
+
+        } else {
+            holder.mShopLy.setVisibility(View.GONE);
         }
 
         holder.textViewStatus.setBackgroundResource(R.drawable.layout_textview_radius);
@@ -187,7 +202,9 @@ public class OrderAdapter extends BaseAdapter {
         XTextView textViewOrderDate;
         XTextView textViewAddress;
         XTextView textViewMoney;
+        XTextView shopTv;
         ImageView mOutTimeIv;
         TextView emergencyTv;
+        RelativeLayout mShopLy;
     }
 }
