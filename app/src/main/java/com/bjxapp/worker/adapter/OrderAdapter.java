@@ -155,9 +155,12 @@ public class OrderAdapter extends BaseAdapter {
 
         if (type == 1) {
             holder.textViewOrderDate.setText("立即上门 ：" + aInfo.get(position).getAppointmentDay()
+                    + " " + aInfo.get(position).getAppointmentStartTime() + " - "
                     + " " + aInfo.get(position).getAppointmentEndTime());
         } else {
-            holder.textViewOrderDate.setText(aInfo.get(position).getAppointmentDay() + " " + aInfo.get(position).getAppointmentEndTime());
+            holder.textViewOrderDate.setText(aInfo.get(position).getAppointmentDay()
+                    + " " + aInfo.get(position).getAppointmentStartTime() + " - "
+                    + " " + aInfo.get(position).getAppointmentEndTime());
         }
 
         if (type == 1) {
