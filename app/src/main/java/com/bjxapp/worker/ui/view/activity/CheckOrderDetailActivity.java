@@ -132,6 +132,9 @@ public class CheckOrderDetailActivity extends Activity {
     @BindView(R.id.name)
     TextView mTitleName;
 
+    @BindView(R.id.time_out_tv)
+    TextView mTimeOutTv;
+
     private String orderId;
 
     private CheckDetailBean checkDetailBean;
@@ -268,6 +271,8 @@ public class CheckOrderDetailActivity extends Activity {
         checkDetailBean.setActualTime(actualTime);
         checkDetailBean.setProcessState(mainObj.get("processState").getAsInt());
 
+        checkDetailBean.setStatus(mainObj.get("status").getAsInt());
+
         JsonArray categoryArray = mainObj.get("equipmentCategoryList").getAsJsonArray();
 
         for (int i = 0; i < categoryArray.size(); i++) {
@@ -343,6 +348,12 @@ public class CheckOrderDetailActivity extends Activity {
                     mConfirmBtn.setText("生成报告");
                 }
 
+                if (checkDetailBean.getStatus() == 1) {
+                    mTimeOutTv.setVisibility(View.VISIBLE);
+                } else {
+                    mTimeOutTv.setVisibility(View.GONE);
+                }
+
                 if (checkDetailBean.getProcessState() == 0) {
                     mOrderStatusTv.setText("待上门");
                     mScanLy.setVisibility(View.GONE);
@@ -355,12 +366,15 @@ public class CheckOrderDetailActivity extends Activity {
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mScanLy.setVisibility(View.VISIBLE);
                     mOrderStatusTv.setText("待确认");
-                } else {
+                } else if (checkDetailBean.getProcessState() == 9) {
                     mOrderStatusTv.setText("已完成");
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mScanLy.setVisibility(View.VISIBLE);
+                } else if (checkDetailBean.getStatus() == -3) {
+                    mOrderStatusTv.setText("待联系");
+                    mScanLy.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.GONE);
                 }
-
             }
         });
 

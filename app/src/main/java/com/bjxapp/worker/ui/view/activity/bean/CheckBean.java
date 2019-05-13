@@ -18,6 +18,8 @@ public class CheckBean {
 
     private ShopInfoBean shopInfoBean;
 
+    private int status;
+
     private int type = 0;
 
     public String getTime() {
@@ -93,4 +95,11 @@ public class CheckBean {
         return Integer.parseInt(this.day.substring(8 , 10));
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

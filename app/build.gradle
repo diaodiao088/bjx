@@ -46,7 +46,8 @@ android {
                     icon: "@drawable/icon_test",
                     GETUI_APP_ID    : "PvUw82rW3H9u3gcRsY6d76",
                     GETUI_APP_KEY   : "r6bKWOQVM36Ayi1n0CUNV4",
-                    GETUI_APP_SECRET: "BUkqviTIap6AzIkX9vjid8"
+                    GETUI_APP_SECRET: "BUkqviTIap6AzIkX9vjid8",
+                    BAIDU_APP_ID : "DVbpcKHQELPFn3NycUX38gzPhyueLBWt"
             ]
 
         }
@@ -58,7 +59,8 @@ android {
                     icon: "@drawable/icon",
                     GETUI_APP_ID    : "va63C5q0Bm67h8M6hbVx35",
                     GETUI_APP_KEY   : "xTa8BxKblAAwh7uuaZ5aU4",
-                    GETUI_APP_SECRET: "iV9JSIUrjb8IbMENCFTWt1"
+                    GETUI_APP_SECRET: "iV9JSIUrjb8IbMENCFTWt1",
+                    BAIDU_APP_ID : "NmRQXqiX1jCs4ICsQWyMfZN22LmcvXQP"
             ]
         }
     }

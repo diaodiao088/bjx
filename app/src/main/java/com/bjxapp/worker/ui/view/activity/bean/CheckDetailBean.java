@@ -16,6 +16,8 @@ public class CheckDetailBean {
 
     private int processState;
 
+    private int status;
+
     public String getActualTime() {
         return actualTime;
     }
@@ -56,6 +58,14 @@ public class CheckDetailBean {
 
     public void setCategoryList(ArrayList<CategoryBean> categoryList) {
         this.categoryList = categoryList;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public static class CategoryBean {

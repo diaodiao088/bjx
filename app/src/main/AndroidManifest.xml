@@ -96,7 +96,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="NmRQXqiX1jCs4ICsQWyMfZN22LmcvXQP" />
+            android:value="${BAIDU_APP_ID}" />
 
         <!-- baidu location end -->
 

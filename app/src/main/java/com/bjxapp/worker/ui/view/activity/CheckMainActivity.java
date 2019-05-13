@@ -185,6 +185,7 @@ public class CheckMainActivity extends Activity implements
                             checkBean.setProcessStatus(item.get("processState").getAsInt());
                             checkBean.setServiceName(item.get("serviceName").getAsString());
                             checkBean.setOrderId(item.get("id").getAsString());
+                            checkBean.setStatus(item.get("status").getAsInt());
 
 
                             JsonObject shopItem = item.get("shop").getAsJsonObject();
@@ -433,6 +434,8 @@ public class CheckMainActivity extends Activity implements
         private TextView mStatusTv;
         private TextView mNameTv;
 
+        private TextView mTimeOutTv;
+
         public MyHolder(View itemView) {
             super(itemView);
             mTimeTv = itemView.findViewById(R.id.time);
@@ -440,6 +443,7 @@ public class CheckMainActivity extends Activity implements
             mShopTv = itemView.findViewById(R.id.shop);
             mStatusTv = itemView.findViewById(R.id.status);
             mNameTv = itemView.findViewById(R.id.name);
+            mTimeOutTv = itemView.findViewById(R.id.time_out_tv);
             mRootView = itemView;
         }
 
@@ -461,12 +465,14 @@ public class CheckMainActivity extends Activity implements
                     mStatusTv.setText("待确认");
                 } else if (status == 9) {
                     mStatusTv.setText("已完成");
+                } else if (status == -3) {
+                    mStatusTv.setText("待联系");
                 }
 
                 mRootView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                            CheckOrderDetailActivity.goToActivity(CheckMainActivity.this, checkBean.getOrderId(), mCurrentType);
+                        CheckOrderDetailActivity.goToActivity(CheckMainActivity.this, checkBean.getOrderId(), mCurrentType);
                     }
                 });
 
@@ -474,6 +480,12 @@ public class CheckMainActivity extends Activity implements
                     mNameTv.setText("门店巡检");
                 } else {
                     mNameTv.setText("门店保养");
+                }
+
+                if (checkBean.getStatus() == 1) {
+                    mTimeOutTv.setVisibility(View.VISIBLE);
+                } else {
+                    mTimeOutTv.setVisibility(View.GONE);
                 }
 
             }
