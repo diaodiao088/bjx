@@ -189,7 +189,7 @@ public class OrderAdapter extends BaseAdapter {
         holder.textViewStatus.setBackgroundResource(R.drawable.layout_textview_radius);
         holder.textViewStatus.setText(statusString);
 
-        if (isOutTime) {
+        if (isOutTime || status == 2) {
             holder.mOutTimeIv.setVisibility(View.VISIBLE);
             holder.mOutTimeIv.setImageResource(R.drawable.out_time);
         } else {
