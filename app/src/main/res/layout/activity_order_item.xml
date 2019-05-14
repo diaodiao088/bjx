@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:drawableLeft="@drawable/check_shop"
+                android:drawableLeft="@drawable/mendian"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/main_text_color"

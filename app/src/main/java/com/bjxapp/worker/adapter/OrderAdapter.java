@@ -176,7 +176,7 @@ public class OrderAdapter extends BaseAdapter {
         }
 
         // 显示门店
-        if (aInfo.get(position).getBusinessType() == 1 && aInfo.get(position).getProcessStatus() < 6) {
+        if (aInfo.get(position).getBusinessType() == 1) {
             holder.mShopLy.setVisibility(View.VISIBLE);
 
             holder.shopTv.setText(aInfo.get(position).getmEnterpriseName()

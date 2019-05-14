@@ -209,6 +209,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     @BindView(R.id.detail_price_ly)
     LinearLayout mPriceDetailLy;
 
+    @BindView(R.id.order_receive_textview_mendian)
+    XTextView menDianTv;
+
+    @BindView(R.id.mendian_ly)
+    RelativeLayout mendianLy;
+
     @OnClick(R.id.look_info)
     void onClickLookinfo() {
 
@@ -580,11 +586,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 mLookInfoTv.setVisibility(View.VISIBLE);
             }
 
-            if (mDetailInfo.getOrderDes().getStatus() == 2){
+            if (mDetailInfo.getOrderDes().getStatus() == 2) {
                 mHourLastTv.setVisibility(View.VISIBLE);
                 mHourLastTv.setText("已超时");
                 mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
-            }else {
+            } else {
                 mHourLastTv.setVisibility(View.GONE);
             }
 
@@ -828,7 +834,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             preBillBtn.setVisibility(View.GONE);
             mServiceEditBtn.setVisibility(View.GONE);
             mSaveButton.setVisibility(View.GONE);
-        }else if (status == 2){
+        } else if (status == 2) {
             mHourLastTv.setText("已超时");
             mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
             mHourLastTv.setVisibility(View.VISIBLE);
@@ -1004,6 +1010,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         mPriceTv.setText("费用 : " + order.getServiceVisitCost());
         mRemarkTv.setText(order.getmRemarkDes());
 
+
         mEnterRoomPrice.setText(order.getServiceVisitCost());
 
         ArrayList<String> imgList = order.getmCustomImageUrls();
@@ -1027,6 +1034,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             isDeviceBill = true;
         } else {
             mCheckServiceLy.setVisibility(View.GONE);
+        }
+
+        if (!TextUtils.isEmpty(order.getmEnterpriseName()) && !TextUtils.isEmpty(order.getmShopName())){
+            menDianTv.setVisibility(View.VISIBLE);
+            mendianLy.setVisibility(View.VISIBLE);
+            menDianTv.setText(order.getmEnterpriseName() + order.getmShopName());
+        }else{
+            menDianTv.setVisibility(View.GONE);
+            mendianLy.setVisibility(View.GONE);
         }
 
         // if is free ,then return
@@ -1270,6 +1286,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 detailId = detailItem.getString("enterpriseOrderEquipmentId");
             }
 
+
             ArrayList<String> customImgUrls = new ArrayList<>();
 
             if (urlArray != null && urlArray.length() > 0) {
@@ -1282,6 +1299,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                     serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                     locationAddress, serviceVisitCost);
+
+            if (detailItem.has("enterpriseName")) {
+                orderItem.setmEnterpriseName(detailItem.getString("enterpriseName"));
+            }
+
+            if (detailItem.has("shopName")) {
+                orderItem.setmShopName(detailItem.getString("shopName"));
+            }
 
             orderItem.setContactPhone(phoneNum);
             orderItem.setmSelectTime(selectTime);
@@ -1437,8 +1462,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     mHourLastTv.setText("已超时");
                     mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
                     mHourLastTv.setVisibility(View.GONE);
-                   // mStatusTv.setText("已超时");
-                   // mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
+                    // mStatusTv.setText("已超时");
+                    // mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
                 }
             };
 
@@ -1447,8 +1472,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mHourLastTv.setVisibility(View.VISIBLE);
             mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
             mHourLastTv.setText("已超时");
-           // mStatusTv.setText("已超时");
-           // mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
+            // mStatusTv.setText("已超时");
+            // mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
         }
 
         if (billType == OrderDes.BILL_TYPE_EMERGENCY) {

@@ -295,16 +295,20 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String appointmentEndTime = detailItem.get("appointmentEndTime").getAsString();
                                 String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
                                 String locationAddress = detailItem.get("locationAddress").getAsString();
+
+                                String shopName = detailItem.get("shopName").getAsString();
+                                String enterpriseName = detailItem.get("enterpriseName").getAsString();
+
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
 
                                 JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
 
                                 String orderTime = "";
-                                try{
-                                    if (maintainObject.get("receiveOrderTime") != null){
+                                try {
+                                    if (maintainObject.get("receiveOrderTime") != null) {
                                         orderTime = maintainObject.get("receiveOrderTime").getAsString();
                                     }
-                                }catch (Exception e){
+                                } catch (Exception e) {
 
                                 }
 
@@ -316,11 +320,14 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
 
+                                orderItem.setmShopName(shopName);
+                                orderItem.setmEnterpriseName(enterpriseName);
+
                                 orderItem.setInGuaranteePeriod(isGuarnt);
                                 orderItem.setSelectMasterTime(orderTime);
                                 orderItem.setmSelectTime(selectTime);
 
-                                savePayAmount(orderItem , maintainObject);
+                                savePayAmount(orderItem, maintainObject);
 
                                 list.add(orderItem);
                             }
@@ -372,14 +379,15 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
     private String mCreateTime;
 
     private void savePayAmount(OrderDes orderItem, JsonObject maintainItem) {
-        try{
+        try {
             String payAmount = "";
-            if (maintainItem.get("payAmount") != null){
+            if (maintainItem.get("payAmount") != null) {
                 payAmount = maintainItem.get("payAmount").getAsString();
             }
 
             orderItem.setPayAmount(payAmount);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
     }
 
@@ -436,16 +444,18 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String appointmentStartTime = detailItem.get("appointmentStartTime").getAsString();
                                 String locationAddress = detailItem.get("locationAddress").getAsString();
                                 String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
+                                String shopName = detailItem.get("shopName").getAsString();
+                                String enterpriseName = detailItem.get("enterpriseName").getAsString();
 
                                 JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
                                 String selectTime = detailItem.get("selectMasterTime").getAsString();
 
                                 String orderTime = "";
-                                try{
-                                    if (maintainObject.get("receiveOrderTime") != null){
+                                try {
+                                    if (maintainObject.get("receiveOrderTime") != null) {
                                         orderTime = maintainObject.get("receiveOrderTime").getAsString();
                                     }
-                                }catch (Exception e){
+                                } catch (Exception e) {
 
                                 }
 
@@ -457,8 +467,10 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
                                 orderItem.setSelectMasterTime(orderTime);
                                 orderItem.setmSelectTime(selectTime);
+                                orderItem.setmShopName(shopName);
+                                orderItem.setmEnterpriseName(enterpriseName);
 
-                                savePayAmount(orderItem , maintainObject);
+                                savePayAmount(orderItem, maintainObject);
 
                                 orderItem.setInGuaranteePeriod(isGuarnt);
 
@@ -552,25 +564,31 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
                                 JsonObject maintainObject = item.getAsJsonObject("maintainDetail");
                                 String orderTime = "";
-                                try{
-                                    if (maintainObject.get("receiveOrderTime") != null){
+                                try {
+                                    if (maintainObject.get("receiveOrderTime") != null) {
                                         orderTime = maintainObject.get("receiveOrderTime").getAsString();
                                     }
-                                }catch (Exception e){
+                                } catch (Exception e) {
 
                                 }
 
                                 boolean isGuarnt = maintainObject.get("inGuaranteePeriod").getAsBoolean();
 
+                                String shopName = detailItem.get("shopName").getAsString();
+                                String enterpriseName = detailItem.get("enterpriseName").getAsString();
+
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setmShopName(shopName);
+                                orderItem.setmEnterpriseName(enterpriseName);
 
                                 orderItem.setInGuaranteePeriod(isGuarnt);
                                 orderItem.setSelectMasterTime(orderTime);
                                 orderItem.setmSelectTime(selectTime);
 
-                                savePayAmount(orderItem , maintainObject);
+                                savePayAmount(orderItem, maintainObject);
 
                                 list.add(orderItem);
                             }
