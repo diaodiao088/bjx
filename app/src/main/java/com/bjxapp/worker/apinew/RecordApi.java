@@ -116,5 +116,9 @@ public interface RecordApi {
     @POST("/enterpriseOrder/visit")
     Call<JsonObject> signBill(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/enterpriseOrder/contact")
+    Call<JsonObject> contactBill(@FieldMap Map<String, String> params);
+
 
 }

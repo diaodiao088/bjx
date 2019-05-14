@@ -101,7 +101,9 @@ public class CheckOrderDetailActivity extends Activity {
 
         if (checkDetailBean != null && checkDetailBean.getProcessState() == 0) {
             startSign();
-        } else {
+        } else if(checkDetailBean != null && checkDetailBean.getProcessState() == -3){
+            startContact();
+        }else {
             startConfirm();
         }
 
@@ -344,6 +346,8 @@ public class CheckOrderDetailActivity extends Activity {
 
                 if (checkDetailBean.getProcessState() == 0) {
                     mConfirmBtn.setText("上门签到");
+                } else if (checkDetailBean.getProcessState() == -3) {
+                    mConfirmBtn.setText("确定");
                 } else {
                     mConfirmBtn.setText("生成报告");
                 }
@@ -370,7 +374,7 @@ public class CheckOrderDetailActivity extends Activity {
                     mOrderStatusTv.setText("已完成");
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mScanLy.setVisibility(View.VISIBLE);
-                } else if (checkDetailBean.getStatus() == -3) {
+                } else {
                     mOrderStatusTv.setText("待联系");
                     mScanLy.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.GONE);
@@ -479,6 +483,69 @@ public class CheckOrderDetailActivity extends Activity {
         public SpaceItemDecoration(int space) {
             this.mSpace = space;
         }
+    }
+
+    private void startContact(){
+        RecordApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(CheckOrderDetailActivity.this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(CheckOrderDetailActivity.this).getUserCode());
+        params.put("id", orderId);
+
+        retrofit2.Call<JsonObject> request = billApi.contactBill(params);
+
+        mWaitingDialog.show("请稍后..", false);
+
+        request.enqueue(new retrofit2.Callback<JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                    }
+                });
+
+                JsonObject object = response.body();
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
+
+                if (code == 0) {
+                    initData();
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (mWaitingDialog != null) {
+                                mWaitingDialog.dismiss();
+                            }
+                            Utils.showShortToast(CheckOrderDetailActivity.this, msg + ": " + code);
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Utils.showShortToast(CheckOrderDetailActivity.this, "联系失败..");
+                    }
+                });
+            }
+        });
+
     }
 
 

@@ -35,6 +35,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+
             <com.bjxapp.worker.controls.XTextView
                 android:id="@+id/order_status_tv"
                 android:layout_width="wrap_content"
@@ -47,6 +48,19 @@
                 android:paddingBottom="2dp"
                 android:textColor="#ffffff"
                 android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/time_out_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/order_status_tv"
+                android:background="@drawable/time_out_radius"
+                android:padding="5dp"
+                android:text="超时"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -93,19 +107,6 @@
                     android:textColor="@color/main_text_color"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/time_out_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:background="@drawable/time_out_radius"
-                    android:padding="5dp"
-                    android:text="超时"
-                    android:layout_marginRight="10dp"
-                    android:textColor="@color/white"
-                    android:visibility="gone"
-                    android:textSize="14sp" />
-
 
                 <TextView
                     android:id="@+id/change_time_tv"
@@ -114,7 +115,7 @@
                     android:layout_gravity="right"
                     android:background="@drawable/button_background_green"
                     android:padding="5dp"
-                    android:text="修改"
+                    android:text="改期"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
