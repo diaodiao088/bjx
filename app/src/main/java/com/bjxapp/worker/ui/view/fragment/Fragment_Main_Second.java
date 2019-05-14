@@ -288,6 +288,8 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 int processStatus = item.get("processStatus").getAsInt();
                                 int status = item.get("status").getAsInt();
 
+                                int bussinessType = item.get("type").getAsInt();
+
                                 JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
 
                                 String serviceName = detailItem.get("serviceName").getAsString();
@@ -319,6 +321,8 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setBusinessType(bussinessType);
 
                                 orderItem.setmShopName(shopName);
                                 orderItem.setmEnterpriseName(enterpriseName);
@@ -435,6 +439,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String orderId = item.get("orderId").getAsString();
                                 int processStatus = item.get("processStatus").getAsInt();
                                 int status = item.get("status").getAsInt();
+                                int bussinessType = item.get("type").getAsInt();
 
                                 JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
 
@@ -469,6 +474,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 orderItem.setmSelectTime(selectTime);
                                 orderItem.setmShopName(shopName);
                                 orderItem.setmEnterpriseName(enterpriseName);
+                                orderItem.setBusinessType(bussinessType);
 
                                 savePayAmount(orderItem, maintainObject);
 
@@ -551,6 +557,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 String orderId = item.get("orderId").getAsString();
                                 int processStatus = item.get("processStatus").getAsInt();
                                 int status = item.get("status").getAsInt();
+                                int bussinessType = item.get("type").getAsInt();
 
                                 JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
 
@@ -580,6 +587,8 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                 OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                         serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                         locationAddress, serviceVisitCost);
+
+                                orderItem.setBusinessType(bussinessType);
 
                                 orderItem.setmShopName(shopName);
                                 orderItem.setmEnterpriseName(enterpriseName);
