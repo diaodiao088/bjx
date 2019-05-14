@@ -588,9 +588,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             if (mDetailInfo.getOrderDes().getStatus() == 2) {
                 mHourLastTv.setVisibility(View.VISIBLE);
-                mHourLastTv.setText("已超时");
-                mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
-            } else {
+                mHourLastTv.setText("超时");
+                mHourLastTv.setBackgroundResource(R.drawable.time_out_radius);
+                mHourLastTv.setTextColor(Color.parseColor("#ffffff"));
+            }else {
                 mHourLastTv.setVisibility(View.GONE);
             }
 
@@ -834,9 +835,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             preBillBtn.setVisibility(View.GONE);
             mServiceEditBtn.setVisibility(View.GONE);
             mSaveButton.setVisibility(View.GONE);
-        } else if (status == 2) {
-            mHourLastTv.setText("已超时");
-            mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+        }else if (status == 2){
+            mHourLastTv.setText("超时");
+            mHourLastTv.setBackgroundResource(R.drawable.time_out_radius);
+            mHourLastTv.setTextColor(Color.parseColor("#ffffff"));
             mHourLastTv.setVisibility(View.VISIBLE);
         }
 
@@ -1396,16 +1398,18 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
                 @Override
                 public void onFinish() {
-                    mHourLastTv.setText("已超时");
-                    mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+                    mHourLastTv.setText("超时");
+                    mHourLastTv.setTextColor(Color.parseColor("#ffffff"));
                     mHourLastTv.setVisibility(View.VISIBLE);
+                    mHourLastTv.setBackgroundResource(R.drawable.time_out_radius);
                 }
             };
 
             mNewBillTimer.start();
         } else {
-            mHourLastTv.setText("已超时");
-            mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+            mHourLastTv.setText("超时");
+            mHourLastTv.setBackgroundResource(R.drawable.time_out_radius);
+            mHourLastTv.setTextColor(Color.parseColor("#ffffff"));
             mHourLastTv.setVisibility(View.VISIBLE);
         }
     }
@@ -1459,21 +1463,19 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
                 @Override
                 public void onFinish() {
-                    mHourLastTv.setText("已超时");
-                    mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
+                    mHourLastTv.setText("超时");
+                    mHourLastTv.setBackgroundResource(R.drawable.time_out_radius);
+                    mHourLastTv.setTextColor(Color.parseColor("#ffffff"));
                     mHourLastTv.setVisibility(View.GONE);
-                    // mStatusTv.setText("已超时");
-                    // mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
                 }
             };
 
             mCountDownTimer.start();
         } else {
             mHourLastTv.setVisibility(View.VISIBLE);
-            mHourLastTv.setTextColor(Color.parseColor("#fd3838"));
-            mHourLastTv.setText("已超时");
-            // mStatusTv.setText("已超时");
-            // mStatusTv.setBackgroundResource(R.drawable.layout_textview_red_radius);
+            mHourLastTv.setTextColor(Color.parseColor("#ffffff"));
+            mHourLastTv.setText("超时");
+            mHourLastTv.setBackgroundResource(R.drawable.time_out_radius);
         }
 
         if (billType == OrderDes.BILL_TYPE_EMERGENCY) {

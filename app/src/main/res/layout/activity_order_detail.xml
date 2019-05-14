@@ -106,6 +106,10 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="10dp"
                         android:layout_toLeftOf="@+id/order_status_tv"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
                         android:text="30:00"
                         android:textColor="#FD3838"
                         android:textSize="14sp" />
