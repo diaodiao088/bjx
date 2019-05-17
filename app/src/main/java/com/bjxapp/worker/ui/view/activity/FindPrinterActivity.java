@@ -260,9 +260,13 @@ public class FindPrinterActivity extends Activity {
 
         pairedPrinters = api.getAllPrinterAddresses(null);
 
+        Toast.makeText(this , "已配对的个数：" + pairedPrinters.size() , Toast.LENGTH_LONG).show();
+
         if (pairedPrinters.size() > 0) {
             mPrintListLy.setVisibility(View.VISIBLE);
             mPrintListLy.removeAllViews();
+
+
 
             for (int i = 0; i < pairedPrinters.size(); i++) {
 
