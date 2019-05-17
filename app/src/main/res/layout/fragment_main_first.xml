@@ -9,7 +9,7 @@
 
     <include layout="@layout/layout_title" />
 
-    <include layout="@layout/pager_sliding_strip" />
+
 
     <com.bjxapp.worker.ui.widget.BlockableViewPager
         android:id="@+id/main_pager"
