@@ -26,7 +26,6 @@ public class MaxHeightRecyclerView extends RecyclerView {
 
         int maxHeight = DimenUtils.dp2px(170 ,getContext());
 
-
         int heightSpecMod = MeasureSpec.makeMeasureSpec(maxHeight , MeasureSpec.AT_MOST);
 
         super.onMeasure(widthSpec, heightSpecMod);

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f8f8f8"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="28dp">
+
+        <TextView
+            android:id="@+id/total_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="全部"
+            android:textColor="@color/main_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/total_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#e5e5e5" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="28dp">
+
+        <TextView
+            android:id="@+id/wait_contact_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="待联系"
+            android:textColor="@color/main_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/wait_contact_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#e5e5e5" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="28dp">
+
+        <TextView
+            android:id="@+id/wait_room_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="待上门"
+            android:textColor="@color/main_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/wait_room_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#e5e5e5" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="28dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/already_room_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="已上门"
+            android:textColor="@color/main_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/already_room_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#e5e5e5" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="28dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/xietiao_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="协调中"
+            android:textColor="@color/main_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/xietiao_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#e5e5e5" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="28dp">
+
+        <TextView
+            android:id="@+id/jiesuan_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="结算待审核"
+            android:textColor="@color/main_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/jiesuan_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#e5e5e5" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="28dp">
+
+        <TextView
+            android:id="@+id/waitpay_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="待支付"
+            android:textColor="@color/main_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/waitpay_redot"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/redot_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#e5e5e5" />
+
+</LinearLayout>

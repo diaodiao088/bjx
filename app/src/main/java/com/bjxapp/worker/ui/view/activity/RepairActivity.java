@@ -5,12 +5,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bjx.master.R;
@@ -133,6 +137,8 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
             case R.id.total_ly:
                 mSlipCtrl.updateUnderLineUi(0);
                 mVp.setCurrentItem(0, true);
+
+                showPopupWindow(v);
                 break;
 
             case R.id.new_bill_ly:
@@ -252,5 +258,42 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         context.startActivity(intent);
     }
 
+
+    private void showPopupWindow(View v) {
+
+        View view = LayoutInflater.from(this).inflate(R.layout.bill_state_popup_window, null, false);
+
+        TextView totalTv = view.findViewById(R.id.total_tv);
+        TextView totalRedotTv = view.findViewById(R.id.total_reddot_tv);
+
+        TextView waitContactTv = view.findViewById(R.id.wait_contact_tv);
+        TextView waitContactRedotTv = view.findViewById(R.id.wait_contact_redot);
+
+        TextView waitRoomTv = view.findViewById(R.id.wait_room_tv);
+        TextView waitRoomRedot = view.findViewById(R.id.wait_room_redot);
+
+        TextView already_room_tv = view.findViewById(R.id.already_room_tv);
+        TextView already_room_redot = view.findViewById(R.id.already_room_redot);
+
+        TextView xietiao_tv = view.findViewById(R.id.xietiao_tv);
+        TextView xietiao_redot = view.findViewById(R.id.xietiao_redot);
+
+        TextView jiesuan_tv = view.findViewById(R.id.jiesuan_tv);
+        TextView jiesuan_redot = view.findViewById(R.id.jiesuan_redot);
+
+        TextView waitpay_tv = view.findViewById(R.id.waitpay_tv);
+        TextView waitpay_redot = view.findViewById(R.id.waitpay_redot);
+
+        final PopupWindow popWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+        popWindow.setTouchable(true);
+
+        popWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
+
+        popWindow.showAsDropDown(v, 50, 0);
+
+
+    }
 
 }
