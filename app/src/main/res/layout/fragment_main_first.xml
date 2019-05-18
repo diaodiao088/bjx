@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#f5f5f5"
     android:orientation="vertical">
 
     <include layout="@layout/layout_title" />
@@ -12,14 +11,112 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
-        <TextView
-            android:id="@+id/all_bill_tv"
+        <RelativeLayout
+            android:id="@+id/all_bill_ly"
             android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"/>
+            android:layout_height="35dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/white_bg">
 
+            <TextView
+                android:id="@+id/all_bill_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="全部工单"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/all_bill_redot"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignTop="@id/all_bill_tv"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="-5dp"
+                android:layout_toRightOf="@id/all_bill_tv"
+                android:background="@drawable/redot_bg"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/white_bg">
+
+            <TextView
+                android:id="@+id/enter_now_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="立即上门"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/enter_now_redot_tv"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignTop="@id/enter_now_tv"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="-5dp"
+                android:layout_toRightOf="@id/enter_now_tv"
+                android:background="@drawable/redot_bg"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/white_bg">
+
+            <TextView
+                android:id="@+id/feed_back_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="待反馈"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/feed_back_redot_tv"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignTop="@id/feed_back_tv"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="-5dp"
+                android:layout_toRightOf="@id/feed_back_tv"
+                android:background="@drawable/redot_bg"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -28,6 +125,7 @@
         android:id="@+id/main_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/call_record_tab" />
+        android:layout_below="@+id/call_record_tab"
+        android:layout_marginTop="5dp" />
 
 </LinearLayout>

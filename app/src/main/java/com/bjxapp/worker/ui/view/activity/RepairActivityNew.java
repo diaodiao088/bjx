@@ -15,15 +15,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
+import com.bjxapp.worker.ui.view.fragment.ctrl.PageSlipingCtrl;
 import com.bjxapp.worker.ui.view.fragment.subfragment.AlreadyRoomFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.BillAdapter;
 import com.bjxapp.worker.ui.view.fragment.subfragment.NewBillFragment;
@@ -38,13 +39,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RepairActivity extends FragmentActivity implements View.OnClickListener {
+public class RepairActivityNew extends FragmentActivity implements View.OnClickListener {
 
     protected static final String TAG = "首页";
 
+    private XWaitingDialog mWaitingDialog;
     private ViewPager mVp;
+    private PageSlipingCtrl mSlipCtrl;
     private BillAdapter mBillAdapter;
     private View mRoot;
+
 
     @OnClick(R.id.title_image_back)
     void onBack() {
@@ -54,17 +58,6 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
     @BindView(R.id.title_text_tv)
     XTextView mTitleTextView;
 
-    @BindView(R.id.all_bill_ly)
-    RelativeLayout mAllBillTv;
-
-    @BindView(R.id.all_bill_redot)
-    TextView mAllBilRedotTv;
-
-    @BindView(R.id.enter_now_redot_tv)
-    TextView mEnterNowRedotTv;
-
-    @BindView(R.id.feed_back_redot_tv)
-    TextView mFeedBackRedotTv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,16 +86,30 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
     private void initViews() {
         registerUpdateUIBroadcast();
+
         mRoot = findViewById(R.id.root);
-        mTitleTextView.setText("工作站");
+
+        mTitleTextView.setText("维修");
+
+
         initVp();
+
+        mSlipCtrl = new PageSlipingCtrl(mRoot);
+        mSlipCtrl.init();
+        mSlipCtrl.updateUnderLineUi(0);
+
         initListener();
+
+        mWaitingDialog = new XWaitingDialog(this);
     }
 
     private void initListener() {
-        findViewById(R.id.all_bill_ly).setOnClickListener(this);
-        findViewById(R.id.enter_now_tv).setOnClickListener(this);
-        findViewById(R.id.feed_back_tv).setOnClickListener(this);
+        findViewById(R.id.total_ly).setOnClickListener(this);
+        findViewById(R.id.new_bill_ly).setOnClickListener(this);
+        findViewById(R.id.waiting_contact_ly).setOnClickListener(this);
+        findViewById(R.id.already_enter_ly).setOnClickListener(this);
+        findViewById(R.id.waiting_room_ly).setOnClickListener(this);
+        findViewById(R.id.waiting_pay_ly).setOnClickListener(this);
     }
 
 
@@ -110,30 +117,36 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.all_bill_ly:
+            case R.id.total_ly:
+                mSlipCtrl.updateUnderLineUi(0);
                 mVp.setCurrentItem(0, true);
 
                 showPopupWindow(v);
                 break;
 
             case R.id.new_bill_ly:
+                mSlipCtrl.updateUnderLineUi(1);
                 mVp.setCurrentItem(1, true);
                 break;
 
             case R.id.waiting_room_ly:
+                mSlipCtrl.updateUnderLineUi(3);
                 mVp.setCurrentItem(3, true);
                 break;
 
             case R.id.waiting_contact_ly:
+                mSlipCtrl.updateUnderLineUi(2);
                 mVp.setCurrentItem(2, true);
                 break;
 
             case R.id.already_enter_ly:
 
+                mSlipCtrl.updateUnderLineUi(4);
                 mVp.setCurrentItem(4, true);
                 break;
 
             case R.id.waiting_pay_ly:
+                mSlipCtrl.updateUnderLineUi(5);
                 mVp.setCurrentItem(5, true);
                 break;
             default:
@@ -204,9 +217,9 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
     public void refreshRedot(ArrayList<OrderDes> list) {
 
-//        if (!isFinishing()) {
-//            mSlipCtrl.updateRedot(list);
-//        }
+        if (!isFinishing()) {
+            mSlipCtrl.updateRedot(list);
+        }
     }
 
 
@@ -224,7 +237,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
     public static void gotoActivity(Context context) {
         Intent intent = new Intent();
-        intent.setClass(context, RepairActivity.class);
+        intent.setClass(context, RepairActivityNew.class);
         context.startActivity(intent);
     }
 
@@ -235,41 +248,33 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         TextView totalTv = view.findViewById(R.id.total_tv);
         TextView totalRedotTv = view.findViewById(R.id.total_reddot_tv);
-        totalTv.setOnClickListener(this);
 
         TextView waitContactTv = view.findViewById(R.id.wait_contact_tv);
         TextView waitContactRedotTv = view.findViewById(R.id.wait_contact_redot);
-        waitContactTv.setOnClickListener(this);
 
         TextView waitRoomTv = view.findViewById(R.id.wait_room_tv);
         TextView waitRoomRedot = view.findViewById(R.id.wait_room_redot);
-        waitRoomTv.setOnClickListener(this);
 
         TextView already_room_tv = view.findViewById(R.id.already_room_tv);
         TextView already_room_redot = view.findViewById(R.id.already_room_redot);
-        already_room_tv.setOnClickListener(this);
 
         TextView xietiao_tv = view.findViewById(R.id.xietiao_tv);
         TextView xietiao_redot = view.findViewById(R.id.xietiao_redot);
-        xietiao_tv.setOnClickListener(this);
 
         TextView jiesuan_tv = view.findViewById(R.id.jiesuan_tv);
         TextView jiesuan_redot = view.findViewById(R.id.jiesuan_redot);
-        jiesuan_tv.setOnClickListener(this);
 
         TextView waitpay_tv = view.findViewById(R.id.waitpay_tv);
         TextView waitpay_redot = view.findViewById(R.id.waitpay_redot);
-        waitpay_tv.setOnClickListener(this);
 
-        final PopupWindow popWindow = new PopupWindow(view, mAllBillTv.getWidth(),
+        final PopupWindow popWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
         popWindow.setTouchable(true);
 
-        popWindow.setBackgroundDrawable(new ColorDrawable(0xf0848484));
+        popWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
 
-        popWindow.showAsDropDown(v, 0, 0);
-
+        popWindow.showAsDropDown(v, 50, 0);
 
     }
 
