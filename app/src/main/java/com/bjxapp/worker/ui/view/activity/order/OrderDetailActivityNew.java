@@ -148,20 +148,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     XTextView mIssuePriceTv; // 维修报价
     @BindView(R.id.issue_edit_btn)
     XButton mServiceEditBtn;  // 维修编辑
-    @BindView(R.id.add_image_content)
-    XTextView mIssueImgTv;  // 添加维修照片
-    @BindView(R.id.issue_add_image_ly)
-    RelativeLayout mIssueImgLy;
-
-    /* 预付项 */
-    @BindView(R.id.order_bill_btn)
-    XButton preBillBtn;
-    @BindView(R.id.pre_bill_tv)
-    XTextView preBillContentTv;
-    @BindView(R.id.order_bill_cash_content_tv)
-    XTextView preBillCashTv;
-    @BindView(R.id.order_bill_ly)
-    LinearLayout mPreBillLy;
 
     /* 订单总和 */
     @BindView(R.id.final_money_ly)
@@ -363,35 +349,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
     boolean isBillFinished = false;
 
-    @OnClick(R.id.add_image_content)
-    void addIssueImage() {
-
-        if (mDetailInfo != null) {
-            OrderDes orderDes = mDetailInfo.getOrderDes();
-            if (orderDes != null) {
-                int status = orderDes.getProcessStatus();
-                if (status > 5) {
-                    isBillFinished = true;
-                }
-            }
-        }
-
-        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImageList, isBillFinished);
-    }
-
-    @OnClick(R.id.order_bill_btn)
-    void editPreBill() {
-        if (TextUtils.isEmpty(mIssuePriceTv.getText().toString()) || TextUtils.isEmpty(mStrategyContentTv.getText().toString())) {
-            Utils.showShortToast(this, "请先填写维修项信息");
-        } else {
-            OrderPriceActivity.goToActivity(this, mDetailInfo != null ? mDetailInfo.getOrderDes().getOrderId() : String.valueOf(-1),
-                    mIssuePriceTv.getText().toString(),
-                    mDetailInfo.getMaintainInfo().getPrePayService(),
-                    mDetailInfo.getMaintainInfo().getPreCost(),
-                    mDetailInfo.getMaintainInfo().getPrepayImgUrls());
-        }
-    }
-
     String orderId = "";
     int processStatus = -1;
 
@@ -538,7 +495,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                                     mDateTv.setText(day + " " + finalStartTime + " - " + finalEndTime);
                                 }
 
-                                if (isUpdate){
+                                if (isUpdate) {
                                     loadData(false);
                                 }
                             }
@@ -605,9 +562,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mCancelBillTv.setVisibility(View.GONE);
         mSaveLy.setVisibility(View.VISIBLE);
 
-        mPreBillLy.setVisibility(View.GONE);
         mFinalMoneyLy.setVisibility(View.GONE);
-        mIssueImgLy.setVisibility(View.GONE);
 
         mStatusTv.setText("待上门");
 
@@ -792,11 +747,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mSaveButton.setVisibility(View.VISIBLE);
         mCancelBillTv.setVisibility(View.GONE);
         mSaveLy.setVisibility(View.VISIBLE);
-        mIssueImgLy.setVisibility(View.VISIBLE);
 
         modifyLy.setVisibility(View.VISIBLE);
         mFinalMoneyLy.setVisibility(View.VISIBLE);
-        mPreBillLy.setVisibility(View.VISIBLE);
 
         if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null) {
             return;
@@ -824,11 +777,13 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         } else if (processStatus == 4) {
             mStatusTv.setText("已上门");
-            if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                mSaveButton.setText("下一步");
-            } else {
-                mSaveButton.setText("完成");
-            }
+//            if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+//                mSaveButton.setText("下一步");
+//            } else {
+//                mSaveButton.setText("完成");
+//            }
+
+            mSaveButton.setText("创建维修方案");
 
             if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
                 mLookInfoTv.setVisibility(View.VISIBLE);
@@ -837,7 +792,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         } else if (processStatus == 5) {
             mStatusTv.setText("待支付");
-            preBillBtn.setVisibility(View.GONE);
             mSaveButton.setText("支付");
             mServiceEditBtn.setVisibility(View.GONE);
 
@@ -847,7 +801,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         } else if (processStatus == 6) {
             mStatusTv.setText("待评价");
-            preBillBtn.setVisibility(View.GONE);
             mServiceEditBtn.setVisibility(View.GONE);
             mSaveButton.setVisibility(View.GONE);
 
@@ -857,7 +810,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         } else if (processStatus == 7) {
             mStatusTv.setText("已评价");
-            preBillBtn.setVisibility(View.GONE);
             mServiceEditBtn.setVisibility(View.GONE);
             mSaveButton.setVisibility(View.GONE);
 
@@ -868,7 +820,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         if (status == 4) {
             mStatusTv.setText("异常");
-            preBillBtn.setVisibility(View.GONE);
             mServiceEditBtn.setVisibility(View.GONE);
             mSaveButton.setVisibility(View.GONE);
         } else if (status == 2) {
@@ -879,13 +830,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         }
 
         MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
-
-        if (maintainInfo.getPrePaid()) {
-            preBillBtn.setVisibility(View.GONE);
-        }
-
-        preBillContentTv.setText("null".equals(maintainInfo.getPrePayService()) ? "" : maintainInfo.getPrePayService());
-        preBillCashTv.setText(maintainInfo.getPreCost());
 
         mIssueReasonTv.setText("null".equals(maintainInfo.getFault()) ? "" : maintainInfo.getFault());
         mStrategyContentTv.setText("null".equals(maintainInfo.getPlan()) ? "" : maintainInfo.getPlan());
@@ -1086,14 +1030,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         } else {
             menDianTv.setVisibility(View.GONE);
             mendianLy.setVisibility(View.GONE);
-        }
-
-        // if is free ,then return
-
-        if (order.isFree()) {
-            mPreBillLy.setVisibility(View.GONE);
-        } else {
-            mPreBillLy.setVisibility(View.VISIBLE);
         }
 
     }
@@ -1410,11 +1346,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mStatusTv.setText("新订单");
         mStatusTv.setBackgroundResource(R.drawable.layout_textview_radius);
         modifyLy.setVisibility(View.GONE);
-        mPreBillLy.setVisibility(View.GONE);
         mFinalMoneyLy.setVisibility(View.GONE);
         mHourLastTv.setVisibility(View.VISIBLE);
         mOrderWaitLy.setVisibility(View.GONE);
-        mIssueImgLy.setVisibility(View.GONE);
         mContactLy.setVisibility(View.GONE);
 
         mSaveLy.setVisibility(View.VISIBLE);
@@ -1483,9 +1417,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mStatusTv.setText("待联系");
         mStatusTv.setBackgroundResource(R.drawable.layout_textview_radius);
         mHourLastTv.setVisibility(View.VISIBLE);
-        mPreBillLy.setVisibility(View.GONE);
         mFinalMoneyLy.setVisibility(View.GONE);
-        mIssueImgLy.setVisibility(View.GONE);
         mSaveLy.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.VISIBLE);
 
@@ -1544,24 +1476,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mChangeDateTv.setOnClickListener(null);
         }
 
-//        mSendMsgTv.setText(Html.fromHtml(getResources().getString(R.string.send_msg)));
-//        HandleUrlLinkMovementMethod instance = HandleUrlLinkMovementMethod.getInstance();
-//        instance.setOnLinkCallBack(new HandleUrlLinkMovementMethod.OnLinkCallBack() {
-//            @Override
-//            public void onClick(String url) {
-//                if (url.contains("action")) {
-//                    /*Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
-//                    sendIntent.setData(Uri.parse("smsto:" + mPhoneTv.getText()));
-//                    sendIntent.putExtra("sms_body", "此处为短信模板");
-//                    OrderDetailActivity.this.startActivity(sendIntent);*/
-//                    showConfirmDialog();
-//                }
-//            }
-//        });
-//
-//        mSendMsgTv.setMovementMethod(instance);
-//        mSendMsgTv.setLinkTextColor(Color.parseColor("#00A551"));
-//        mSendMsgTv.setHighlightColor(Color.TRANSPARENT);
     }
 
     private void showConfirmDialog() {
