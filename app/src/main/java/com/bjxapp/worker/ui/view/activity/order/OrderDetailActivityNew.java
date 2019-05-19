@@ -39,6 +39,7 @@ import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
+import com.bjxapp.worker.ui.view.activity.CheckChangeOrderTimeActivity;
 import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
 import com.bjxapp.worker.ui.view.activity.FastJudgeActivity;
 import com.bjxapp.worker.ui.view.activity.MaintainActivity;
@@ -50,7 +51,6 @@ import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.MaintainItemLayoutStub;
-import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
 
@@ -62,14 +62,12 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.qqtheme.framework.picker.DoublePicker;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -406,59 +404,70 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     }
 
     void changeDate() {
-        final ArrayList<String> firstData = new ArrayList<>();
-        firstData.add(DateUtils.addDay(0));
-        firstData.add(DateUtils.addDay(1));
-        firstData.add(DateUtils.addDay(2));
-        firstData.add(DateUtils.addDay(3));
-        firstData.add(DateUtils.addDay(4));
-        firstData.add(DateUtils.addDay(5));
-        firstData.add(DateUtils.addDay(6));
-        firstData.add(DateUtils.addDay(7));
-        firstData.add(DateUtils.addDay(8));
-        firstData.add(DateUtils.addDay(9));
 
-        final ArrayList<String> secondData = new ArrayList<>();
-        secondData.add("08:00:00--11:00:00");
-        secondData.add("11:00:00--14:00:00");
-        secondData.add("14:00:00--17:00:00");
-        secondData.add("17:00:00--20:00:00");
-        final DoublePicker picker = new DoublePicker(this, firstData, secondData);
-        picker.setDividerVisible(true);
-
-        Calendar startTime = Calendar.getInstance();
-
-        int selectFirstIndex = 0;
-        int selectSecondIndex = 0;
-
-        if (startTime.get(Calendar.HOUR_OF_DAY) < 8) {
-            selectSecondIndex = 0;
-        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 11) {
-            selectSecondIndex = 1;
-        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 14) {
-            selectSecondIndex = 2;
-        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 17) {
-            selectSecondIndex = 3;
-        } else {
-            selectFirstIndex = 1;
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
         }
 
-        picker.setSelectedIndex(selectFirstIndex, selectSecondIndex);
-        picker.setTextSize(12);
-        picker.setContentPadding(15, 10);
-        picker.setOnPickListener(new DoublePicker.OnPickListener() {
-            @Override
-            public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
-                //  showToast(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
+        final OrderDes orderDes = mDetailInfo.getOrderDes();
 
-                changeDateReal(firstData.get(selectedFirstIndex), secondData.get(selectedSecondIndex));
+        CheckChangeOrderTimeActivity.goToActivityForResult(this, orderDes.getAppointmentDay(),
+                orderDes.getAppointmentStartTime() + "-" + orderDes.getAppointmentEndTime());
 
-            }
-        });
-        picker.show();
+
+//        final ArrayList<String> firstData = new ArrayList<>();
+//        firstData.add(DateUtils.addDay(0));
+//        firstData.add(DateUtils.addDay(1));
+//        firstData.add(DateUtils.addDay(2));
+//        firstData.add(DateUtils.addDay(3));
+//        firstData.add(DateUtils.addDay(4));
+//        firstData.add(DateUtils.addDay(5));
+//        firstData.add(DateUtils.addDay(6));
+//        firstData.add(DateUtils.addDay(7));
+//        firstData.add(DateUtils.addDay(8));
+//        firstData.add(DateUtils.addDay(9));
+//
+//        final ArrayList<String> secondData = new ArrayList<>();
+//        secondData.add("08:00:00--11:00:00");
+//        secondData.add("11:00:00--14:00:00");
+//        secondData.add("14:00:00--17:00:00");
+//        secondData.add("17:00:00--20:00:00");
+//        final DoublePicker picker = new DoublePicker(this, firstData, secondData);
+//        picker.setDividerVisible(true);
+//
+//        Calendar startTime = Calendar.getInstance();
+//
+//        int selectFirstIndex = 0;
+//        int selectSecondIndex = 0;
+//
+//        if (startTime.get(Calendar.HOUR_OF_DAY) < 8) {
+//            selectSecondIndex = 0;
+//        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 11) {
+//            selectSecondIndex = 1;
+//        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 14) {
+//            selectSecondIndex = 2;
+//        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 17) {
+//            selectSecondIndex = 3;
+//        } else {
+//            selectFirstIndex = 1;
+//        }
+//
+//        picker.setSelectedIndex(selectFirstIndex, selectSecondIndex);
+//        picker.setTextSize(12);
+//        picker.setContentPadding(15, 10);
+//        picker.setOnPickListener(new DoublePicker.OnPickListener() {
+//            @Override
+//            public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
+//                //  showToast(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
+//
+//                changeDateReal(firstData.get(selectedFirstIndex), secondData.get(selectedSecondIndex));
+//
+//            }
+//        });
+//        picker.show();
     }
 
-    private void changeDateReal(final String day, final String time) {
+    private void changeDateReal(final String day, final String time, final boolean isUpdate) {
 
         if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
             return;
@@ -475,13 +484,25 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
         params.put("orderId", orderId);
         params.put("appointmentDay", day + " 00:00:00");
-        params.put("appointmentStartTime", day + " " + time.split("--")[0]);
-        params.put("appointmentEndTime", day + " " + time.split("--")[1]);
+
+        String startTime = time.split("-")[0];
+
+        if (startTime.length() < 7)
+            startTime += ":00";
+
+        String endTime = time.split("-")[1];
+        if (endTime.length() < 7)
+            endTime += ":00";
+
+        params.put("appointmentStartTime", day + " " + startTime);
+        params.put("appointmentEndTime", day + " " + endTime);
 
         retrofit2.Call<JsonObject> request = billApi.changeTime(params);
 
         mWaitingDialog.show("正在修改时间..", false);
 
+        final String finalStartTime = startTime;
+        final String finalEndTime = endTime;
         request.enqueue(new retrofit2.Callback<JsonObject>() {
             @Override
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
@@ -508,13 +529,17 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                             public void run() {
                                 // toWaitStatus();
                                 orderDes.setAppointmentDay(day);
-                                orderDes.setAppointmentStartTime(time.split("--")[0]);
-                                orderDes.setAppointmentEndTime(time.split("--")[1]);
+                                orderDes.setAppointmentStartTime(finalStartTime);
+                                orderDes.setAppointmentEndTime(finalEndTime);
 
                                 if (orderDes.getBillType() == OrderDes.BILL_TYPE_EMERGENCY) {
                                     mDateTv.setText("紧急上门");
                                 } else {
-                                    mDateTv.setText(day + " " + time.split("--")[0] + " - " + time.split("--")[1]);
+                                    mDateTv.setText(day + " " + finalStartTime + " - " + finalEndTime);
+                                }
+
+                                if (isUpdate){
+                                    loadData(false);
                                 }
                             }
                         });
@@ -2249,6 +2274,16 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
                         updateMainTainUi(maintainInfo);
                     }
+                    break;
+                case 0x07:
+
+                    if (resultCode == RESULT_OK) {
+                        String day = data.getStringExtra(CheckChangeOrderTimeActivity.TYPE_DAY);
+                        String hour = data.getStringExtra(CheckChangeOrderTimeActivity.TYPE_HOUR);
+
+                        changeDateReal(day, hour, true);
+                    }
+
                     break;
             }
         } catch (Exception e) {
