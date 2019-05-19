@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="立即上门"
+                android:text="待反馈"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="待反馈"
+                android:text="协调中"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />

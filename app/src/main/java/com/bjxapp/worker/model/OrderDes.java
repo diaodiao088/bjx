@@ -112,6 +112,8 @@ public class OrderDes {
 
     private boolean isTwiceServed;
 
+    private int settleStatus;
+
     public int getBusinessType() {
         return businessType;
     }
@@ -157,6 +159,14 @@ public class OrderDes {
         this.appointmentStartTime = appointmentStartTime;
         this.locationAddress = locationAddress;
         this.serviceVisitCost = serviceVisitCost;
+    }
+
+    public int getSettleStatus() {
+        return settleStatus;
+    }
+
+    public void setSettleStatus(int settleStatus) {
+        this.settleStatus = settleStatus;
     }
 
     public int getBillType() {

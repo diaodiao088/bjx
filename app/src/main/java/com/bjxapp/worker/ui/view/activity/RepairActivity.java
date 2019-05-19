@@ -203,10 +203,41 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
     }
 
     public void refreshRedot(ArrayList<OrderDes> list) {
+        if (!isFinishing() && list.size() > 0) {
+            mAllBilRedotTv.setText(String.valueOf(list.size()));
+            mEnterNowRedotTv.setText(String.valueOf(getFeedbackSize(list)));
+            mFeedBackRedotTv.setText(String.valueOf(getXieTiaoSize(list)));
+        } else {
+            mAllBilRedotTv.setVisibility(View.GONE);
+            mEnterNowRedotTv.setVisibility(View.GONE);
+            mFeedBackRedotTv.setVisibility(View.GONE);
+        }
+    }
 
-//        if (!isFinishing()) {
-//            mSlipCtrl.updateRedot(list);
-//        }
+    private int getFeedbackSize(ArrayList<OrderDes> list) {
+
+        int result = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getProcessStatus() == 4) {
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+    private int getXieTiaoSize(ArrayList<OrderDes> list) {
+
+        int result = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getProcessStatus() == 43) {
+                result++;
+            }
+        }
+
+        return result;
     }
 
 

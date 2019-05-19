@@ -26,9 +26,7 @@ import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.ui.view.activity.RepairActivity;
-import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
-import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.LogUtils;
@@ -215,6 +213,13 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         JsonObject item = (JsonObject) listArray.get(i);
                         String orderId = item.get("orderId").getAsString();
                         int processStatus = item.get("processStatus").getAsInt();
+
+                        int settleStatus = 0;
+
+                        if (item.has("settlementStatus")) {
+                            settleStatus = item.get("settlementStatus").getAsInt();
+                        }
+
                         int status = item.get("status").getAsInt();
                         int bussinessType = item.get("type").getAsInt();
                         JsonObject detailItem = item.getAsJsonObject("appointmentDetail");
@@ -231,6 +236,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         String shopName = detailItem.get("shopName").getAsString();
                         String enterpriseName = detailItem.get("enterpriseName").getAsString();
 
+
                         OrderDes orderItem = new OrderDes(orderId, processStatus, status,
                                 serviceName, appointmentDay, appointmentEndTime, appointmentStartTime,
                                 locationAddress, serviceVisitCost);
@@ -241,7 +247,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         orderItem.setmSelectTime(selectTime);
                         orderItem.setBillType(Integer.parseInt(type));
 
-
+                        orderItem.setSettleStatus(settleStatus);
 
                         JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
                         String orderTime = "";
@@ -329,7 +335,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                if (getActivity() != null){
+                if (getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -348,7 +354,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
 
-                if (getActivity() != null){
+                if (getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -398,7 +404,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 //            ((Fragment_Main_First) getParentFragment()).refreshRedot(orderArray);
 //        }
 
-        if (getActivity() instanceof RepairActivity && !getActivity().isFinishing()){
+        if (getActivity() instanceof RepairActivity && !getActivity().isFinishing()) {
             ((RepairActivity) getActivity()).refreshRedot(orderArray);
         }
     }
