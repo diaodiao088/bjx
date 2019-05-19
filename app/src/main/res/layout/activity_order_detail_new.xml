@@ -145,7 +145,6 @@
                         android:drawableLeft="@drawable/mendian"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
-                        android:text="BFer897977667788"
                         android:textColor="#545454"
                         android:textSize="14sp" />
 

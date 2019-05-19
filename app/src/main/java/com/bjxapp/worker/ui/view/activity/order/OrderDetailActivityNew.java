@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +33,7 @@ import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.model.FollowUpBean;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.OrderDes;
@@ -51,7 +51,6 @@ import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.MaintainItemLayoutStub;
 import com.bjxapp.worker.utils.DateUtils;
-import com.bjxapp.worker.utils.HandleUrlLinkMovementMethod;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
 
@@ -94,6 +93,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
     @BindView(R.id.order_receive_textview_num)
     XTextView mNumTv;
+
+    @BindView(R.id.follow_size_tv)
+    TextView mFollowSizeTv;
 
     @OnClick(R.id.copy_tv)
     void clickCopy() {
@@ -974,6 +976,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                             JSONObject detailJson = (JSONObject) object.get("order");
                             mDetailInfo = new OrderDetailInfo();
                             mDetailInfo.setOrderDes(getOrderDes(detailJson));
+                            mDetailInfo.setmFollowUpList(getFollowUpList(detailJson));
                             mDetailInfo.setMaintainInfo(getMainTainInfo(detailJson));
 
                             refreshUiSync();
@@ -1007,6 +1010,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         }
 
         OrderDes order = mDetailInfo.getOrderDes();
+        ArrayList<FollowUpBean> followUpList = mDetailInfo.getmFollowUpList();
 
         mServiceNameTv.setText(order.getOrderNum());
         mPhoneTv.setText(order.getPersonName() + "/" + order.getContactPhone());
@@ -1020,6 +1024,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mAdressTv.setText(order.getLocationAddress() + " - " + order.getDetailAddress());
         mPriceTv.setText("费用 : " + order.getServiceVisitCost());
         mRemarkTv.setText(order.getmRemarkDes());
+        mNumTv.setText(order.getOrderNum());
 
 
         mEnterRoomPrice.setText(order.getServiceVisitCost());
@@ -1034,6 +1039,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         } else {
             mOrderImagesLinear.setVisibility(View.GONE);
         }
+
+        mFollowSizeTv.setText(String.valueOf(followUpList.size()));
 
         if (order.getmServiceType().equals("0")) {
             mCheckServiceLy.setVisibility(View.VISIBLE);
@@ -1226,6 +1233,27 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         }
         return null;
+    }
+
+    private ArrayList<FollowUpBean> getFollowUpList(JSONObject detailJson) throws JSONException {
+        ArrayList<FollowUpBean> list = new ArrayList<>();
+
+        JSONArray upArray = detailJson.getJSONArray("followList");
+
+        for (int i = 0; i < upArray.length(); i++) {
+
+            JSONObject item = upArray.getJSONObject(i);
+
+            FollowUpBean followUpBean = new FollowUpBean();
+            followUpBean.setApplicationType(item.getInt("applicationType"));
+            followUpBean.setContent(item.getString("content"));
+            followUpBean.setCreateTime(item.getLong("createTime"));
+
+            list.add(followUpBean);
+        }
+
+
+        return list;
     }
 
 
