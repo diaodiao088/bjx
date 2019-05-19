@@ -374,6 +374,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.bjxapp.worker.ui.view.activity.order.CancelBillActivity"
             android:screenOrientation="portrait" />
 

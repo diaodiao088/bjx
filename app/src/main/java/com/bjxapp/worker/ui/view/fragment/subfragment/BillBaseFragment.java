@@ -27,6 +27,7 @@ import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.ui.view.activity.RepairActivity;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
+import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_First;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -285,7 +286,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
     private void startOrderDetailActivity(OrderDes order) {
         Intent intent = new Intent();
-        intent.setClass(getActivity(), OrderDetailActivity.class);
+        intent.setClass(getActivity(), OrderDetailActivityNew.class);
         intent.putExtra("order_id", order.getOrderId());
         intent.putExtra("processStatus", order.getProcessStatus());
         startActivityForResult(intent, Constant.ACTIVITY_ORDER_DETAIL_RESULT_CODE);
