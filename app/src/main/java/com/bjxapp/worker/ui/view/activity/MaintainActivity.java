@@ -41,11 +41,13 @@ import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.ThiInfoBean;
+import com.bjxapp.worker.model.ThiOtherBean;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ManfulDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.MaintainItemLayout;
+import com.bjxapp.worker.ui.widget.MaintainItemOtherLayout;
 import com.bjxapp.worker.ui.widget.RoundImageView;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
@@ -302,7 +304,7 @@ public class MaintainActivity extends Activity {
                     } else {
                         mainTainBean.setOthers(true);
                         mainTainBean.setQuantity(1);
-                        mainTainBean.setModel("其他");
+                        mainTainBean.setThiOtherBean((ThiOtherBean) data.getParcelableExtra("other"));
                         mMainTainList.add(mainTainBean);
                     }
 
@@ -364,31 +366,60 @@ public class MaintainActivity extends Activity {
 
     private void addUi(MainTainBean mainTainBean) {
 
-        final MaintainItemLayout maintainItemLayout = new MaintainItemLayout(this);
-        maintainItemLayout.bindData(mainTainBean);
+        if (mainTainBean.isOthers()) {
+            final MaintainItemOtherLayout maintainItemLayout = new MaintainItemOtherLayout(this);
+            maintainItemLayout.bindData(mainTainBean);
 
-        maintainItemLayout.setOperationListener(new MaintainItemLayout.OnOperationListener() {
-            @Override
-            public void onDelete(MainTainBean mainTainBean) {
-                mMainTainList.remove(mainTainBean);
-                calTotalCount();
-            }
+            maintainItemLayout.setOperationListener(new MaintainItemOtherLayout.OnOperationListener() {
+                @Override
+                public void onDelete(MainTainBean mainTainBean) {
+                    mMainTainList.remove(mainTainBean);
+                    calTotalCount();
+                }
 
-            @Override
-            public void onPriceChange() {
-                calTotalCount();
-            }
+                @Override
+                public void onPriceChange() {
+                    calTotalCount();
+                }
 
-            @Override
-            public void onCountChange() {
-                calTotalCount();
-            }
-        });
+                @Override
+                public void onCountChange() {
+                    calTotalCount();
+                }
+            });
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, DimenUtils.dp2px(10, this), 0, 0);
-        mContainerLy.addView(maintainItemLayout, params);
-        mScrollView.fullScroll(View.FOCUS_DOWN);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, DimenUtils.dp2px(10, this), 0, 0);
+            mContainerLy.addView(maintainItemLayout, params);
+            mScrollView.fullScroll(View.FOCUS_DOWN);
+        } else {
+            final MaintainItemLayout maintainItemLayout = new MaintainItemLayout(this);
+            maintainItemLayout.bindData(mainTainBean);
+
+            maintainItemLayout.setOperationListener(new MaintainItemLayout.OnOperationListener() {
+                @Override
+                public void onDelete(MainTainBean mainTainBean) {
+                    mMainTainList.remove(mainTainBean);
+                    calTotalCount();
+                }
+
+                @Override
+                public void onPriceChange() {
+                    calTotalCount();
+                }
+
+                @Override
+                public void onCountChange() {
+                    calTotalCount();
+                }
+            });
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, DimenUtils.dp2px(10, this), 0, 0);
+            mContainerLy.addView(maintainItemLayout, params);
+            mScrollView.fullScroll(View.FOCUS_DOWN);
+        }
+
 
         calTotalCount();
     }
@@ -408,8 +439,17 @@ public class MaintainActivity extends Activity {
 
             MainTainBean item = mMainTainList.get(i);
 
-            if (!TextUtils.isEmpty(item.getCost())) {
-                price += (item.getQuantity() * Double.parseDouble(item.getCost()));
+            if (item.isOthers()) {
+
+                ThiOtherBean thiOtherBean = item.getThiOtherBean();
+
+                price += (item.getQuantity() * (Double.parseDouble(thiOtherBean.getRenGongCost())
+                        + Double.parseDouble(thiOtherBean.getCost())));
+
+            } else {
+                if (!TextUtils.isEmpty(item.getCost())) {
+                    price += (item.getQuantity() * Double.parseDouble(item.getCost()));
+                }
             }
 
         }

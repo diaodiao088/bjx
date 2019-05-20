@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class ThiOtherBean implements Parcelable {
 
-    private String remark;
+    private String remark = "";
 
     private String cost;
 
@@ -21,7 +21,7 @@ public class ThiOtherBean implements Parcelable {
 
     private String unit;
 
-    private String renGongCost;
+    private String renGongCost = "0";
 
     private ArrayList<String> imgList = new ArrayList<>();
 

@@ -270,6 +270,7 @@ public class ThiActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 0x01 && resultCode == RESULT_OK){
+            data.putExtra("type_other", true);
             setResult(RESULT_OK , data);
             finish();
         }

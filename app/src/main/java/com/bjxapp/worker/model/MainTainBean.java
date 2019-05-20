@@ -3,7 +3,7 @@ package com.bjxapp.worker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MainTainBean implements Parcelable {
+public class MainTainBean implements Parcelable{
 
     public String cost;
 
@@ -21,8 +21,18 @@ public class MainTainBean implements Parcelable {
 
     public boolean isOthers;
 
+    private ThiOtherBean thiOtherBean;
+
     public MainTainBean() {
 
+    }
+
+    public ThiOtherBean getThiOtherBean() {
+        return thiOtherBean;
+    }
+
+    public void setThiOtherBean(ThiOtherBean thiOtherBean) {
+        this.thiOtherBean = thiOtherBean;
     }
 
     protected MainTainBean(Parcel in) {
@@ -34,23 +44,7 @@ public class MainTainBean implements Parcelable {
         unit = in.readString();
         id = in.readInt();
         isOthers = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(cost);
-        dest.writeInt(componentId);
-        dest.writeString(model);
-        dest.writeString(componentName);
-        dest.writeInt(quantity);
-        dest.writeString(unit);
-        dest.writeInt(id);
-        dest.writeByte((byte) (isOthers ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        thiOtherBean = in.readParcelable(ThiOtherBean.class.getClassLoader());
     }
 
     public static final Creator<MainTainBean> CREATOR = new Creator<MainTainBean>() {
@@ -127,5 +121,23 @@ public class MainTainBean implements Parcelable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(cost);
+        parcel.writeInt(componentId);
+        parcel.writeString(model);
+        parcel.writeString(componentName);
+        parcel.writeInt(quantity);
+        parcel.writeString(unit);
+        parcel.writeInt(id);
+        parcel.writeByte((byte) (isOthers ? 1 : 0));
+        parcel.writeParcelable(thiOtherBean, i);
     }
 }

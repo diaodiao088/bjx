@@ -136,7 +136,7 @@ public class ThiOtherActivity extends Activity {
         ArrayList<String> list = new ArrayList<>();
 
         for (int i = 0; i < mImageList.size(); i++) {
-            if (TextUtils.isEmpty(mImageList.get(i).getUrl())) {
+            if (!TextUtils.isEmpty(mImageList.get(i).getUrl())) {
                 list.add(mImageList.get(i).getUrl());
             }
         }
