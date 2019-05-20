@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
@@ -38,6 +39,7 @@ import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ThiInfoBean;
+import com.bjxapp.worker.model.ThiOtherBean;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -100,8 +102,47 @@ public class ThiOtherActivity extends Activity {
     @OnClick(R.id.order_receive_detail_save)
     void onClickConfirm() {
 
+        if (TextUtils.isEmpty(mNameTv.getText().toString())) {
+            Toast.makeText(this, "请先填写名称", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(mPriceTv.getText().toString())) {
+            Toast.makeText(this, "请先填写价格", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        ThiOtherBean thiOtherBean = new ThiOtherBean();
+        thiOtherBean.setName(mNameTv.getText().toString());
+        thiOtherBean.setCost(mPriceTv.getText().toString());
+        thiOtherBean.setRemark(mReasonTv.getText().toString());
+        thiOtherBean.setModel(mTypeTv.getText().toString());
+        thiOtherBean.setRenGongCost(mRenGongPriceTv.getText().toString());
+        thiOtherBean.setImgList(getImgList());
+
+        Intent intent = new Intent();
+        intent.putExtra("other",thiOtherBean);
+
+        setResult(RESULT_OK , intent);
+        finish();
     }
 
+    private ArrayList<String> getImgList() {
+        if (mImageList.size() == 0) {
+            return null;
+        }
+
+        ArrayList<String> list = new ArrayList<>();
+
+        for (int i = 0; i < mImageList.size(); i++) {
+            if (TextUtils.isEmpty(mImageList.get(i).getUrl())) {
+                list.add(mImageList.get(i).getUrl());
+            }
+        }
+
+        return list;
+    }
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
 
@@ -114,13 +155,6 @@ public class ThiOtherActivity extends Activity {
         ButterKnife.bind(this);
         initView();
     }
-
-    private void addOtherBean() {
-        ThiInfoBean thiInfoBean = new ThiInfoBean();
-        thiInfoBean.setOther(true);
-        mSelectedList.add(thiInfoBean);
-    }
-
 
     private void initView() {
         mTitleTv.setText("添加其他配件");

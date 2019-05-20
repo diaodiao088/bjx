@@ -265,6 +265,16 @@ public class ThiActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0x01 && resultCode == RESULT_OK){
+            setResult(RESULT_OK , data);
+            finish();
+        }
+
+    }
 
     private class MyHolder extends RecyclerView.ViewHolder {
 
