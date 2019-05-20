@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,8 +80,7 @@ public class MaintainActivity extends Activity {
 
     private ArrayList<String> mMalfulList = new ArrayList<>();
 
-    private String mSelectedMalfulStr;
-    private int mSelectedMalfulIndex;
+    private ArrayList<String> mXieTiaoList = new ArrayList<>();
 
     @BindView(R.id.title_text_tv)
     TextView mTitleTv;
@@ -89,6 +89,47 @@ public class MaintainActivity extends Activity {
     void onClickBack() {
         onBackPressed();
     }
+
+    @Override
+    public void onBackPressed() {
+
+        if (mContentLy.getVisibility() == View.VISIBLE){
+            super.onBackPressed();
+        }else{
+            toDiffStatus(true);
+        }
+    }
+
+    @BindView(R.id.xietiao_ly)
+    RelativeLayout mXieTiaoLy;
+
+    @BindView(R.id.xietiao_reason_tv)
+    TextView mXieTiaoReasonTv;
+
+    @OnClick(R.id.xietiao_reason_tv)
+    void onClickXieTiao() {
+        if (mXieTiaoList.size() <= 0) {
+            return;
+        }
+
+        ManfulDialog manfulDialog = new ManfulDialog(this);
+
+        manfulDialog.setData(mXieTiaoList);
+
+        manfulDialog.mTitleTv.setText("协调原因");
+
+        manfulDialog.setClickListener(new ManfulDialog.OnManClickListener() {
+            @Override
+            public void onClick(String name, int index) {
+                mXieTiaoReasonTv.setText(name);
+            }
+        });
+
+        manfulDialog.show();
+    }
+
+    @BindView(R.id.content_ly)
+    LinearLayout mContentLy;
 
     @BindView(R.id.malfun_tv)
     TextView mManfulTv;
@@ -160,8 +201,6 @@ public class MaintainActivity extends Activity {
             @Override
             public void onClick(String name, int index) {
                 mManfulTv.setText(name);
-                mSelectedMalfulIndex = index;
-                mSelectedMalfulStr = name;
             }
         });
 
@@ -192,13 +231,26 @@ public class MaintainActivity extends Activity {
 
     @OnClick(R.id.wait_contact_change_btn)
     void onClickSettle() {
-        startCommit(false);
+        toDiffStatus(false);
     }
 
     private XWaitingDialog mWaitingDialog;
 
     private String plan;
     private String fault;
+
+    private void toDiffStatus(boolean isMain) {
+        if (isMain) {
+            mContentLy.setVisibility(View.VISIBLE);
+            mXieTiaoLy.setVisibility(View.GONE);
+            mTitleTv.setText("维修项");
+        } else {
+            mContentLy.setVisibility(View.GONE);
+            mXieTiaoLy.setVisibility(View.VISIBLE);
+            mTitleTv.setText("选择协调分类");
+        }
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -212,6 +264,7 @@ public class MaintainActivity extends Activity {
 
     private void initData() {
         getDicList();
+        getDicList1();
     }
 
     private void handleIntent() {
@@ -237,7 +290,6 @@ public class MaintainActivity extends Activity {
         for (int i = 0; i < mMainTainList.size(); i++) {
             addUi(mMainTainList.get(i));
         }
-
     }
 
     private void getDicList() {
@@ -284,9 +336,57 @@ public class MaintainActivity extends Activity {
         });
     }
 
+    private void getDicList1() {
+
+        EnterpriseApi enterpriseApi = KHttpWorker.ins().createHttpService(LoginApi.URL, EnterpriseApi.class);
+
+        Call<JsonObject> call = null;
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("type", "maintainCoordinateReason");
+
+        call = enterpriseApi.getDicList(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        JsonArray array = object.get("list").getAsJsonArray();
+
+                        mXieTiaoList.clear();
+
+                        for (int i = 0; i < array.size(); i++) {
+                            JsonObject item = array.get(i).getAsJsonObject();
+                            String value = item.get("value").getAsString();
+                            mXieTiaoList.add(value);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
     private GridLayoutManager mGridLayoutManager;
 
     private void initView() {
+
+        mContentLy.setVisibility(View.VISIBLE);
+        mXieTiaoLy.setVisibility(View.GONE);
+
         mWaitingDialog = new XWaitingDialog(this);
         mTitleTv.setText("维修项");
 
@@ -548,7 +648,7 @@ public class MaintainActivity extends Activity {
             return;
         }
 
-        if (mImageList.size() <= 0){
+        if (mImageList.size() <= 0) {
             Toast.makeText(this, "请至少添加一张维修照片", Toast.LENGTH_SHORT).show();
             return;
         }

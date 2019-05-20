@@ -32,6 +32,8 @@ public class ManfulDialog {
 
     private ArrayList<String> mStringList = new ArrayList<>();
 
+    public TextView mTitleTv;
+
     public ManfulDialog(Context ctx) {
         this.mCtx = ctx;
         mDialog = new CustomLayoutDialog(ctx, R.layout.manuful_dialog);
@@ -43,6 +45,7 @@ public class ManfulDialog {
         mRootView = mDialog.getView();
         if (mRootView != null) {
             mRecyclerView = mRootView.findViewById(R.id.recycler_view);
+            mTitleTv = mRootView.findViewById(R.id.title_tv);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(mCtx));
             myAdapter = new MyAdapter();
             mRecyclerView.setAdapter(myAdapter);
