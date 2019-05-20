@@ -202,11 +202,29 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         }
     }
 
+    private ArrayList<OrderDes> mList = new ArrayList<>();
+
     public void refreshRedot(ArrayList<OrderDes> list) {
+
+        this.mList = list;
+
         if (!isFinishing() && list.size() > 0) {
             mAllBilRedotTv.setText(String.valueOf(list.size()));
-            mEnterNowRedotTv.setText(String.valueOf(getFeedbackSize(list)));
-            mFeedBackRedotTv.setText(String.valueOf(getXieTiaoSize(list)));
+
+            if (getFeedbackSize(list) > 0) {
+                mEnterNowRedotTv.setText(String.valueOf(getFeedbackSize(list)));
+                mEnterNowRedotTv.setVisibility(View.VISIBLE);
+            } else {
+                mEnterNowRedotTv.setVisibility(View.GONE);
+            }
+
+            if (getXieTiaoSize(list) > 0) {
+                mFeedBackRedotTv.setVisibility(View.VISIBLE);
+                mFeedBackRedotTv.setText(String.valueOf(getXieTiaoSize(list)));
+            } else {
+                mFeedBackRedotTv.setVisibility(View.GONE);
+            }
+
         } else {
             mAllBilRedotTv.setVisibility(View.GONE);
             mEnterNowRedotTv.setVisibility(View.GONE);
@@ -240,6 +258,32 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         return result;
     }
 
+    private int getJieSuanSize(ArrayList<OrderDes> list) {
+
+        int result = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getSettleStatus() == 3) {
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+    private int getSpecCount(int processType, ArrayList<OrderDes> list) {
+
+        int result = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getProcessStatus() == processType) {
+                result++;
+            }
+        }
+
+        return result;
+
+    }
 
     @Override
     public void onDestroy() {
@@ -268,29 +312,77 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         TextView totalRedotTv = view.findViewById(R.id.total_reddot_tv);
         totalTv.setOnClickListener(this);
 
+        if (mList.size() > 0) {
+            totalRedotTv.setText(String.valueOf(mList.size()));
+        } else {
+            totalRedotTv.setVisibility(View.GONE);
+        }
+
         TextView waitContactTv = view.findViewById(R.id.wait_contact_tv);
         TextView waitContactRedotTv = view.findViewById(R.id.wait_contact_redot);
         waitContactTv.setOnClickListener(this);
+
+        if (getSpecCount(0x02, mList) > 0) {
+            waitContactRedotTv.setVisibility(View.VISIBLE);
+            waitContactRedotTv.setText(getSpecCount(0x02, mList));
+        } else {
+            waitContactRedotTv.setVisibility(View.GONE);
+        }
 
         TextView waitRoomTv = view.findViewById(R.id.wait_room_tv);
         TextView waitRoomRedot = view.findViewById(R.id.wait_room_redot);
         waitRoomTv.setOnClickListener(this);
 
+        if (getSpecCount(0x03, mList) > 0) {
+            waitRoomRedot.setVisibility(View.VISIBLE);
+            waitRoomRedot.setText(getSpecCount(0x03, mList));
+        } else {
+            waitRoomRedot.setVisibility(View.GONE);
+        }
+
         TextView already_room_tv = view.findViewById(R.id.already_room_tv);
         TextView already_room_redot = view.findViewById(R.id.already_room_redot);
         already_room_tv.setOnClickListener(this);
+
+        if (getSpecCount(0x04, mList) > 0) {
+            already_room_redot.setVisibility(View.VISIBLE);
+            already_room_redot.setText(getSpecCount(0x04, mList));
+        } else {
+            already_room_redot.setVisibility(View.GONE);
+        }
 
         TextView xietiao_tv = view.findViewById(R.id.xietiao_tv);
         TextView xietiao_redot = view.findViewById(R.id.xietiao_redot);
         xietiao_tv.setOnClickListener(this);
 
+        if (getSpecCount(0x43, mList) > 0) {
+            xietiao_redot.setVisibility(View.VISIBLE);
+            xietiao_redot.setText(getSpecCount(0x04, mList));
+        } else {
+            xietiao_redot.setVisibility(View.GONE);
+        }
+
         TextView jiesuan_tv = view.findViewById(R.id.jiesuan_tv);
         TextView jiesuan_redot = view.findViewById(R.id.jiesuan_redot);
         jiesuan_tv.setOnClickListener(this);
 
+        if (getJieSuanSize(mList) > 0) {
+            jiesuan_redot.setVisibility(View.VISIBLE);
+            jiesuan_redot.setText(getSpecCount(0x04, mList));
+        } else {
+            jiesuan_redot.setVisibility(View.GONE);
+        }
+
         TextView waitpay_tv = view.findViewById(R.id.waitpay_tv);
         TextView waitpay_redot = view.findViewById(R.id.waitpay_redot);
         waitpay_tv.setOnClickListener(this);
+
+        if (getSpecCount(0x05, mList) > 0) {
+            waitpay_redot.setVisibility(View.VISIBLE);
+            waitpay_redot.setText(getSpecCount(0x04, mList));
+        } else {
+            waitpay_redot.setVisibility(View.GONE);
+        }
 
         final PopupWindow popWindow = new PopupWindow(view, mAllBillTv.getWidth(),
                 ViewGroup.LayoutParams.WRAP_CONTENT, true);
