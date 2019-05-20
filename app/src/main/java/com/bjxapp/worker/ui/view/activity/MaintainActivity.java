@@ -40,10 +40,12 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.MaintainInfo;
+import com.bjxapp.worker.model.OtherPriceBean;
 import com.bjxapp.worker.model.ThiInfoBean;
 import com.bjxapp.worker.model.ThiOtherBean;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.AddOtherPriceDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ManfulDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.MaintainItemLayout;
@@ -96,12 +98,47 @@ public class MaintainActivity extends Activity {
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.add_other_price_ly)
+    LinearLayout mAddOtherPriceLy;
+
+    @BindView(R.id.other_price_ly)
+    LinearLayout mOtherContainerLy;
+
+    @OnClick(R.id.add_other_price_ly)
+    void onAddOtherPrice() {
+
+        final AddOtherPriceDialog otherPriceDialog = new AddOtherPriceDialog(this);
+
+        otherPriceDialog.setCancelable(true);
+
+        otherPriceDialog.setOnNegativeListener("取消", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                otherPriceDialog.dismiss();
+            }
+        }).setOnPositiveListener("确认", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!otherPriceDialog.isDataValid()){
+                    Toast.makeText(MaintainActivity.this , "请填写完整数据" , Toast.LENGTH_SHORT).show();
+                }else{
+                    mOtherPriceList.add(otherPriceDialog.getValidBean());
+                }
+            }
+        });
+
+        otherPriceDialog.show();
+
+    }
+
     private String equipId;
     private String orderId;
 
     public ArrayList<MainTainBean> mMainTainList = new ArrayList<>();
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
+
+    private ArrayList<OtherPriceBean> mOtherPriceList = new ArrayList<>();
 
     @OnClick(R.id.malfun_tv)
     void onClickManuTv() {

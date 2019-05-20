@@ -212,6 +212,33 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
+            <LinearLayout
+                android:id="@+id/add_other_price_ly"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/add_plus"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    android:text="添加其他费用"
+                    android:textColor="#00a554"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/other_price_ly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
 
         </LinearLayout>
 
