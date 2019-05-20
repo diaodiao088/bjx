@@ -26,7 +26,7 @@ public interface EnterpriseApi {
     Call<JsonObject> getDicList(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST("/order/saveMaintain/v2")
+    @POST("/order/saveMaintainPlan")
     Call<JsonObject> saveMainTain(@FieldMap Map<String, String> params);
 
 

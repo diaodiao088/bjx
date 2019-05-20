@@ -53,6 +53,7 @@ import com.bjxapp.worker.ui.widget.MaintainItemLayout;
 import com.bjxapp.worker.ui.widget.MaintainItemOtherLayout;
 import com.bjxapp.worker.ui.widget.OtherPriceLayout;
 import com.bjxapp.worker.ui.widget.RoundImageView;
+import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
@@ -70,6 +71,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.qqtheme.framework.picker.DoublePicker;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -85,17 +87,25 @@ public class MaintainActivity extends Activity {
     @BindView(R.id.title_text_tv)
     TextView mTitleTv;
 
+    @BindView(R.id.tuichi_time_tv)
+    TextView mTuichiTimeTv;
+
     @OnClick(R.id.title_image_back)
     void onClickBack() {
         onBackPressed();
     }
 
+    @OnClick(R.id.order_receive_detail_save)
+    void onClickXTSuccess() {
+        startCommit(false);
+    }
+
     @Override
     public void onBackPressed() {
 
-        if (mContentLy.getVisibility() == View.VISIBLE){
+        if (mContentLy.getVisibility() == View.VISIBLE) {
             super.onBackPressed();
-        }else{
+        } else {
             toDiffStatus(true);
         }
     }
@@ -105,6 +115,8 @@ public class MaintainActivity extends Activity {
 
     @BindView(R.id.xietiao_reason_tv)
     TextView mXieTiaoReasonTv;
+
+    String xietiaoName = "";
 
     @OnClick(R.id.xietiao_reason_tv)
     void onClickXieTiao() {
@@ -122,6 +134,7 @@ public class MaintainActivity extends Activity {
             @Override
             public void onClick(String name, int index) {
                 mXieTiaoReasonTv.setText(name);
+                xietiaoName = name;
             }
         });
 
@@ -232,6 +245,92 @@ public class MaintainActivity extends Activity {
     @OnClick(R.id.wait_contact_change_btn)
     void onClickSettle() {
         toDiffStatus(false);
+    }
+
+    @OnClick(R.id.xietiao_time_tv)
+    void onChangeTime() {
+        changeDate();
+    }
+
+    @BindView(R.id.xietiao_time_tv)
+    TextView mTimeTv;
+
+    private ArrayList<String> getTimeList(String[] array) {
+        ArrayList<String> list = new ArrayList<>();
+        for (int i = 0; i < array.length; i++) {
+            list.add(array[i]);
+        }
+        return list;
+    }
+
+    private boolean isChangeTime = false;
+
+    private String day = "";
+    private String time = "";
+
+    void changeDate() {
+        final ArrayList<String> firstData = new ArrayList<>();
+        firstData.add(DateUtils.addDay(0));
+        firstData.add(DateUtils.addDay(1));
+        firstData.add(DateUtils.addDay(2));
+        firstData.add(DateUtils.addDay(3));
+
+//        final ArrayList<String> secondData = new ArrayList<>();
+//        secondData.add("08:00:00--11:00:00");
+//        secondData.add("11:00:00--14:00:00");
+//        secondData.add("14:00:00--17:00:00");
+//        secondData.add("17:00:00--20:00:00");
+        final ArrayList<String> secondData = getTimeList(new String[]{"00:00:00-01:00:00", "01:00:00-02:00:00",
+                "02:00:00-03:00:00", "03:00:00-04:00:00",
+                "04:00:00-05:00:00", "05:00:00-06:00:00",
+                "06:00:00-07:00:00", "07:00:00-08:00:00",
+                "08:00:00-09:00:00", "09:00:00-10:00:00",
+                "11:00:00-12:00:00", "12:00:00-13:00:00",
+                "13:00:00-14:00:00", "14:00:00-15:00:00",
+                "15:00:00-16:00:00", "16:00:00-17:00:00",
+                "17:00:00-18:00:00", "18:00:00-19:00:00",
+                "19:00:00-20:00:00", "20:00:00-21:00:00",
+                "21:00:00-22:00:00", "22:00:00-23:00:00",
+                "23:00:00-24:00:00"});
+
+        final DoublePicker picker = new DoublePicker(this, firstData, secondData);
+        picker.setDividerVisible(true);
+
+        Calendar startTime = Calendar.getInstance();
+
+        int selectFirstIndex = 0;
+        int selectSecondIndex = 0;
+
+//        if (startTime.get(Calendar.HOUR_OF_DAY) < 8) {
+//            selectSecondIndex = 0;
+//        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 11) {
+//            selectSecondIndex = 1;
+//        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 14) {
+//            selectSecondIndex = 2;
+//        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 17) {
+//            selectSecondIndex = 3;
+//        } else {
+//            selectFirstIndex = 1;
+//        }
+
+        picker.setSelectedIndex(selectFirstIndex, selectSecondIndex);
+        picker.setTextSize(12);
+        picker.setContentPadding(15, 10);
+        picker.setOnPickListener(new DoublePicker.OnPickListener() {
+            @Override
+            public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
+
+                isChangeTime = true;
+
+                mTimeTv.setText(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
+
+                mTuichiTimeTv.setText("协调天数" + selectedFirstIndex + "天");
+
+                day = firstData.get(selectedFirstIndex);
+                time = secondData.get(selectedSecondIndex);
+            }
+        });
+        picker.show();
     }
 
     private XWaitingDialog mWaitingDialog;
@@ -508,8 +607,11 @@ public class MaintainActivity extends Activity {
 
         ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, imagePath);
         mImageList.add(0, bean);
+        imgList.add(imagePath);
         myAdapter.notifyDataSetChanged();
     }
+
+    private ArrayList<String> imgList = new ArrayList<>();
 
 
     private void addOtherUi(final OtherPriceBean otherPriceBean) {
@@ -648,8 +750,18 @@ public class MaintainActivity extends Activity {
             return;
         }
 
-        if (mImageList.size() <= 0) {
+        if (mImageList.size() <= 1) {
             Toast.makeText(this, "请至少添加一张维修照片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isComplete && TextUtils.isEmpty(xietiaoName)) {
+            Toast.makeText(this, "请先选择协调原因", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isComplete && !isChangeTime) {
+            Toast.makeText(this, "请先选择协调时间", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -663,11 +775,36 @@ public class MaintainActivity extends Activity {
         params.put("token", ConfigManager.getInstance(this).getUserSession());
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
         params.put("orderId", orderId);
+
+        params.put("operate", isComplete ? String.valueOf(1) : String.valueOf(0));
+
         params.put("fault", mManfulTv.getText().toString());
         params.put("plan", mMethodTv.getText().toString());
+
+
+        if (!isComplete) {
+            params.put("coordinateReason", xietiaoName);
+            params.put("coordinateNextHandleStartTime", day + " " + time.split("-")[0]);
+            params.put("coordinateNextHandleStartTime", day + " " + time.split("")[1]);
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < imgList.size(); i++) {
+            if (i < imgList.size() - 1) {
+                builder.append(imgList.get(i) + ",");
+            } else {
+                builder.append(imgList.get(i));
+            }
+        }
+
+        params.put("imgUrls", builder.toString());
+
+
         params.put("totalCost", getTotalPrice());
 
         putPartialList(params);
+
+        putExtraCost(params);
 
         call = enterpriseApi.saveMainTain(params);
 
@@ -729,10 +866,24 @@ public class MaintainActivity extends Activity {
                 return false;
             }
         }
-
         return true;
+    }
+
+    private void putExtraCost(Map<String, String> params) {
+
+        for (int i = 0; i < mOtherPriceList.size(); i++) {
+            OtherPriceBean otherPriceBean = mOtherPriceList.get(i);
+
+            String costName = "extraCostList[" + i + "].name";
+            String amount = "extraCostList[" + i + "].amount";
+
+            params.put(costName, otherPriceBean.getName());
+            params.put(amount, otherPriceBean.getPrice());
+
+        }
 
     }
+
 
     private void putPartialList(Map<String, String> params) {
 
@@ -740,16 +891,39 @@ public class MaintainActivity extends Activity {
 
             MainTainBean item = mMainTainList.get(i);
 
+            ThiOtherBean otherBean = item.getThiOtherBean();
+
             String nameKey = "equipmentComponentList[" + i + "].name";
-            String costKey = "equipmentComponentList[" + i + "].cost";
+            String costKey = "equipmentComponentList[" + i + "].price";
             String quantityKey = "equipmentComponentList[" + i + "].quantity";
+            String laborCost = "equipmentComponentList[" + i + "].laborCost";
+            String remark = "equipmentComponentList[" + i + "].remark";
+            String imgUrls = "equipmentComponentList[" + i + "].imgUrls";
 
             String modelKey = "equipmentComponentList[" + i + "].model";
-            params.put(modelKey, String.valueOf(item.getModel()));
-
-            params.put(nameKey, item.getComponentName());
-            params.put(costKey, item.getCost());
+            params.put(modelKey, !item.isOthers ? String.valueOf(item.getModel()) : otherBean.getModel());
+            params.put(nameKey, !item.isOthers ? item.getComponentName() : otherBean.getName());
+            params.put(laborCost, !item.isOthers ? String.valueOf(0) : otherBean.getRenGongCost());
+            params.put(costKey, !item.isOthers ? item.getCost() : otherBean.getCost());
+            params.put(remark, !item.isOthers ? "" : otherBean.getRemark());
             params.put(quantityKey, String.valueOf(item.getQuantity()));
+
+
+            if (item.isOthers) {
+                StringBuilder builder = new StringBuilder();
+                for (int j = 0; j < otherBean.getImgList().size(); j++) {
+                    if (i < otherBean.getImgList().size() - 1) {
+                        builder.append(otherBean.getImgList().get(j) + ",");
+                    } else {
+                        builder.append(otherBean.getImgList().get(j));
+                    }
+                }
+
+                if (!TextUtils.isEmpty(builder.toString())) {
+                    params.put(imgUrls, builder.toString());
+                }
+            }
+
 
             if (!item.isOthers) {
                 String idKey = "equipmentComponentList[" + i + "].id";

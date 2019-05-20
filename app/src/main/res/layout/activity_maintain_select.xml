@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ScrollView
             android:id="@+id/scroll_view"
@@ -307,7 +307,7 @@
         android:id="@+id/xietiao_ly"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:orientation="vertical">
 
         <LinearLayout
@@ -369,6 +369,15 @@
                 android:text="协调完成时间"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tuichi_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="协调天数0天"
+                android:textColor="#00a551"
+                android:textSize="12sp" />
 
         </LinearLayout>
 

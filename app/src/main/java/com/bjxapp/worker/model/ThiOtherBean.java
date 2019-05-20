@@ -13,7 +13,7 @@ public class ThiOtherBean implements Parcelable {
 
     private int id;
 
-    private String model;
+    private String model = "";
 
     private String name;
 
