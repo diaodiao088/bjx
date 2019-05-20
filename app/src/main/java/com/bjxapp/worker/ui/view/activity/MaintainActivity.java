@@ -123,7 +123,7 @@ public class MaintainActivity extends Activity {
                 if (!otherPriceDialog.isDataValid()) {
                     Toast.makeText(MaintainActivity.this, "请填写完整数据", Toast.LENGTH_SHORT).show();
                 } else {
-                    OtherPriceBean validBean= otherPriceDialog.getValidBean();
+                    OtherPriceBean validBean = otherPriceDialog.getValidBean();
                     mOtherPriceList.add(validBean);
                     addOtherUi(validBean);
                     calTotalCount();
@@ -185,9 +185,14 @@ public class MaintainActivity extends Activity {
     @BindView(R.id.total_price_tv)
     TextView mTotalPriceTv;
 
-    @OnClick(R.id.add_confirm_btn)
-    void onConfirmClick() {
-        startCommit();
+    @OnClick(R.id.wait_contact_ok_btn)
+    void onClickComplete() {
+        startCommit(true);
+    }
+
+    @OnClick(R.id.wait_contact_change_btn)
+    void onClickSettle() {
+        startCommit(false);
     }
 
     private XWaitingDialog mWaitingDialog;
@@ -531,7 +536,7 @@ public class MaintainActivity extends Activity {
     }
 
 
-    public void startCommit() {
+    public void startCommit(boolean isComplete) {
 
         if (TextUtils.isEmpty(mManfulTv.getText().toString())) {
             Toast.makeText(this, "请先选择故障原因", Toast.LENGTH_SHORT).show();
@@ -543,8 +548,8 @@ public class MaintainActivity extends Activity {
             return;
         }
 
-        if (!isDataValid()) {
-            Toast.makeText(this, "请填写完整数据", Toast.LENGTH_SHORT).show();
+        if (mImageList.size() <= 0){
+            Toast.makeText(this, "请至少添加一张维修照片", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -609,7 +614,6 @@ public class MaintainActivity extends Activity {
                         Toast.makeText(MaintainActivity.this, "提交失败", Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
         });
 
