@@ -247,6 +247,11 @@ public class MaintainActivity extends Activity {
         myAdapter = new MyAdapter();
         mRecyclerView.setAdapter(myAdapter);
 
+        ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
+        mImageList.add(bean);
+        myAdapter.setList(mImageList);
+        myAdapter.notifyDataSetChanged();
+
         mMethodTv.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -542,7 +547,6 @@ public class MaintainActivity extends Activity {
                 params.put(unitKey, item.getUnit());
             }
         }
-
     }
 
 

@@ -309,7 +309,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         View view = LayoutInflater.from(this).inflate(R.layout.bill_state_popup_window, null, false);
 
         TextView totalTv = view.findViewById(R.id.total_tv);
-        TextView totalRedotTv = view.findViewById(R.id.total_reddot_tv);
+        TextView totalRedotTv = view.findViewById(R.id.total_redot);
         totalTv.setOnClickListener(this);
 
         if (mList.size() > 0) {
@@ -324,7 +324,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         if (getSpecCount(0x02, mList) > 0) {
             waitContactRedotTv.setVisibility(View.VISIBLE);
-            waitContactRedotTv.setText(getSpecCount(0x02, mList));
+            waitContactRedotTv.setText(String.valueOf(getSpecCount(0x02, mList)));
         } else {
             waitContactRedotTv.setVisibility(View.GONE);
         }
@@ -335,7 +335,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         if (getSpecCount(0x03, mList) > 0) {
             waitRoomRedot.setVisibility(View.VISIBLE);
-            waitRoomRedot.setText(getSpecCount(0x03, mList));
+            waitRoomRedot.setText(String.valueOf(getSpecCount(0x03, mList)));
         } else {
             waitRoomRedot.setVisibility(View.GONE);
         }
@@ -346,7 +346,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         if (getSpecCount(0x04, mList) > 0) {
             already_room_redot.setVisibility(View.VISIBLE);
-            already_room_redot.setText(getSpecCount(0x04, mList));
+            already_room_redot.setText(String.valueOf(getSpecCount(0x04, mList)));
         } else {
             already_room_redot.setVisibility(View.GONE);
         }
@@ -357,7 +357,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         if (getSpecCount(0x43, mList) > 0) {
             xietiao_redot.setVisibility(View.VISIBLE);
-            xietiao_redot.setText(getSpecCount(0x04, mList));
+            xietiao_redot.setText(String.valueOf(getSpecCount(0x04, mList)));
         } else {
             xietiao_redot.setVisibility(View.GONE);
         }
@@ -368,7 +368,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         if (getJieSuanSize(mList) > 0) {
             jiesuan_redot.setVisibility(View.VISIBLE);
-            jiesuan_redot.setText(getSpecCount(0x04, mList));
+            jiesuan_redot.setText(String.valueOf(getSpecCount(0x04, mList)));
         } else {
             jiesuan_redot.setVisibility(View.GONE);
         }
@@ -379,7 +379,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         if (getSpecCount(0x05, mList) > 0) {
             waitpay_redot.setVisibility(View.VISIBLE);
-            waitpay_redot.setText(getSpecCount(0x04, mList));
+            waitpay_redot.setText(String.valueOf(getSpecCount(0x04, mList)));
         } else {
             waitpay_redot.setVisibility(View.GONE);
         }
@@ -388,11 +388,8 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
                 ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
         popWindow.setTouchable(true);
-
         popWindow.setBackgroundDrawable(new ColorDrawable(0xf0848484));
-
         popWindow.showAsDropDown(v, 0, 0);
-
 
     }
 

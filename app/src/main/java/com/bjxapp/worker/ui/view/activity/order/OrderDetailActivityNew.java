@@ -76,8 +76,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-;
-
 public class OrderDetailActivityNew extends BaseActivity implements OnClickListener {
 
     protected static final String TAG = OrderDetailActivityNew.class.getSimpleName();
@@ -760,28 +758,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         mLookInfoTv.setVisibility(View.GONE);
 
-        if (processStatus == 3) {
-            mStatusTv.setText("待上门");
-
-            if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                mSaveButton.setText("下一步");
-            } else {
-                mSaveButton.setText("完成");
-            }
-
-
-            if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
-            }
-
-
-        } else if (processStatus == 4) {
+        if (processStatus == 4) {
             mStatusTv.setText("已上门");
-//            if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-//                mSaveButton.setText("下一步");
-//            } else {
-//                mSaveButton.setText("完成");
-//            }
 
             mSaveButton.setText("创建维修方案");
 
@@ -789,6 +767,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 mLookInfoTv.setVisibility(View.VISIBLE);
             }
 
+            modifyLy.setVisibility(View.GONE);
+            mFinalMoneyLy.setVisibility(View.GONE);
 
         } else if (processStatus == 5) {
             mStatusTv.setText("待支付");
@@ -1599,16 +1579,18 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 acceptOperation();
                 break;
             case 4:
-                if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                    if (mImageList.size() > 0) {
-                        FastJudgeActivity.goToActivity(OrderDetailActivityNew.this, false, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
-                                mDetailInfo.getOrderDes().getEnterpriseId(), mImageList, mDetailInfo.getOrderDes().getOrderId());
-                    } else {
-                        Toast.makeText(OrderDetailActivityNew.this, "请至少添加一张照片", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    toWaitPay(orderDes.getOriginType() == 2, orderDes.isFree());
-                }
+//                if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+//                    if (mImageList.size() > 0) {
+//                        FastJudgeActivity.goToActivity(OrderDetailActivityNew.this, false, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
+//                                mDetailInfo.getOrderDes().getEnterpriseId(), mImageList, mDetailInfo.getOrderDes().getOrderId());
+//                    } else {
+//                        Toast.makeText(OrderDetailActivityNew.this, "请至少添加一张照片", Toast.LENGTH_SHORT).show();
+//                    }
+//                } else {
+//                    toWaitPay(orderDes.getOriginType() == 2, orderDes.isFree());
+//                }
+
+                createMaintainInfo();
 
                 break;
             case 3:
@@ -1617,6 +1599,21 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             case 5:
                 toThirdStep(true, orderDes.getOriginType() == 2, orderDes.isFree());
                 break;
+        }
+    }
+
+    private void createMaintainInfo() {
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null
+                || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        if (mDetailInfo.getOrderDes().isBussiness()) {
+            MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo);
+        } else {
+            MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+            ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
         }
     }
 
