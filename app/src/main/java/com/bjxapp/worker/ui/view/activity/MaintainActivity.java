@@ -50,6 +50,7 @@ import com.bjxapp.worker.ui.view.activity.widget.dialog.ManfulDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.MaintainItemLayout;
 import com.bjxapp.worker.ui.widget.MaintainItemOtherLayout;
+import com.bjxapp.worker.ui.widget.OtherPriceLayout;
 import com.bjxapp.worker.ui.widget.RoundImageView;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
@@ -119,10 +120,14 @@ public class MaintainActivity extends Activity {
         }).setOnPositiveListener("确认", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!otherPriceDialog.isDataValid()){
-                    Toast.makeText(MaintainActivity.this , "请填写完整数据" , Toast.LENGTH_SHORT).show();
-                }else{
-                    mOtherPriceList.add(otherPriceDialog.getValidBean());
+                if (!otherPriceDialog.isDataValid()) {
+                    Toast.makeText(MaintainActivity.this, "请填写完整数据", Toast.LENGTH_SHORT).show();
+                } else {
+                    OtherPriceBean validBean= otherPriceDialog.getValidBean();
+                    mOtherPriceList.add(validBean);
+                    addOtherUi(validBean);
+                    calTotalCount();
+                    otherPriceDialog.dismiss();
                 }
             }
         });
@@ -401,6 +406,27 @@ public class MaintainActivity extends Activity {
         myAdapter.notifyDataSetChanged();
     }
 
+
+    private void addOtherUi(final OtherPriceBean otherPriceBean) {
+
+        OtherPriceLayout layout = new OtherPriceLayout(this);
+        layout.bindData(otherPriceBean, "");
+
+        layout.setOperationListener(new OtherPriceLayout.OnOperationListener() {
+            @Override
+            public void onDelete(OtherPriceBean priceBean) {
+                mOtherPriceList.remove(otherPriceBean);
+                calTotalCount();
+            }
+        });
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, DimenUtils.dp2px(10, this), 0, 0);
+        mOtherContainerLy.addView(layout, params);
+        mScrollView.fullScroll(View.FOCUS_DOWN);
+    }
+
+
     private void addUi(MainTainBean mainTainBean) {
 
         if (mainTainBean.isOthers()) {
@@ -489,6 +515,10 @@ public class MaintainActivity extends Activity {
                 }
             }
 
+        }
+
+        for (int i = 0; i < mOtherPriceList.size(); i++) {
+            price += (Double.parseDouble(mOtherPriceList.get(i).getPrice()));
         }
 
         return getFormatPrice(price);

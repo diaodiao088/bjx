@@ -96,7 +96,7 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
         mNameTv.setVisibility(VISIBLE);
         mNameTv.setText(thiOtherBean.getName());
 
-        mRealPriceTv.setText(thiOtherBean.getCost());
+        mRealPriceTv.setText("$" + thiOtherBean.getCost());
 
         if (!TextUtils.isEmpty(thiOtherBean.getModel())) {
             mTypeNameTv.setText(maintainInfo.getModel());
@@ -105,7 +105,7 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
         }
 
         if (!TextUtils.isEmpty(thiOtherBean.getRenGongCost())) {
-            mRenGongTv.setText(thiOtherBean.getRenGongCost());
+            mRenGongTv.setText("$" + thiOtherBean.getRenGongCost());
         }
 
         mRemarkTv.setText(thiOtherBean.getRemark());
