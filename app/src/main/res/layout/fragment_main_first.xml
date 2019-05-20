@@ -45,9 +45,9 @@
                 android:layout_toRightOf="@id/all_bill_tv"
                 android:background="@drawable/redot_bg"
                 android:gravity="center"
-                android:text="2"
                 android:textColor="#FFFFFF"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -79,9 +79,9 @@
                 android:layout_toRightOf="@id/enter_now_tv"
                 android:background="@drawable/redot_bg"
                 android:gravity="center"
-                android:text="2"
                 android:textColor="#FFFFFF"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -112,9 +112,9 @@
                 android:layout_toRightOf="@id/feed_back_tv"
                 android:background="@drawable/redot_bg"
                 android:gravity="center"
-                android:text="2"
                 android:textColor="#FFFFFF"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.bjx.master.R;
@@ -121,6 +122,11 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         mOrdersArray.addAll(pageResult);
                         mOrderAdapter.setReceiverInfo(getOrderArray());
                         mOrderAdapter.notifyDataSetChanged();
+
+                        if (getOrderArray().size() <= 0){
+                            mLoadAgainLayout.setVisibility(View.VISIBLE);
+                        }
+
                     }
                 });
             }
@@ -396,6 +402,12 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
         mOrderAdapter.setReceiverInfo(getOrderArray());
         mOrderAdapter.notifyDataSetChanged();
         mListView.setAdapter(mOrderAdapter);
+
+        if (getOrderArray().size() <= 0){
+            mLoadAgainLayout.setVisibility(View.VISIBLE);
+        }else{
+            mLoadAgainLayout.setVisibility(View.GONE);
+        }
 
     }
 

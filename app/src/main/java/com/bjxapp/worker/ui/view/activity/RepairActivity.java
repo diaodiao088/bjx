@@ -31,6 +31,7 @@ import com.bjxapp.worker.ui.view.fragment.subfragment.TotalFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.WaitingContactFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.WaitingPayFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.WaitingRoomFragment;
+import com.bjxapp.worker.ui.view.fragment.subfragment.XieTiaoFragment;
 
 import java.util.ArrayList;
 
@@ -76,7 +77,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
     private void initVp() {
         mVp = (ViewPager) findViewById(R.id.main_pager);
-        mVp.setOffscreenPageLimit(5);
+        mVp.setOffscreenPageLimit(6);
         mBillAdapter = new BillAdapter(getSupportFragmentManager());
 
         mBillAdapter.addFragment(TotalFragment.getIns());
@@ -85,6 +86,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         mBillAdapter.addFragment(WaitingRoomFragment.getIns());
         mBillAdapter.addFragment(AlreadyRoomFragment.getIns());
         mBillAdapter.addFragment(WaitingPayFragment.getIns());
+        mBillAdapter.addFragment(XieTiaoFragment.getIns());
 
         mVp.setAdapter(mBillAdapter);
         mVp.setCurrentItem(0);
@@ -108,34 +110,49 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
+
+        if (mPopupWindow != null && mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
+        }
+
         switch (v.getId()) {
 
-            case R.id.all_bill_ly:
-                mVp.setCurrentItem(0, true);
+            case R.id.enter_now_tv:
+            case R.id.already_room_tv:
+                mVp.setCurrentItem(4, false);
+                break;
+            case R.id.feed_back_tv:
+            case R.id.xietiao_tv:
+                mVp.setCurrentItem(6, false);
+                break;
+            case R.id.total_tv:
+                mVp.setCurrentItem(0, false);
+                break;
 
+            case R.id.all_bill_ly:
                 showPopupWindow(v);
                 break;
 
             case R.id.new_bill_ly:
-                mVp.setCurrentItem(1, true);
+                mVp.setCurrentItem(1, false);
                 break;
 
-            case R.id.waiting_room_ly:
-                mVp.setCurrentItem(3, true);
+            case R.id.wait_room_tv:
+                mVp.setCurrentItem(3, false);
                 break;
 
-            case R.id.waiting_contact_ly:
-                mVp.setCurrentItem(2, true);
+            case R.id.wait_contact_tv:
+                mVp.setCurrentItem(2, false);
                 break;
 
-            case R.id.already_enter_ly:
-
-                mVp.setCurrentItem(4, true);
+            case R.id.waitpay_tv:
+                mVp.setCurrentItem(5, false);
                 break;
 
-            case R.id.waiting_pay_ly:
-                mVp.setCurrentItem(5, true);
+            case R.id.jiesuan_tv:
+                mVp.setCurrentItem(7, false);
                 break;
+
             default:
                 break;
         }
@@ -209,6 +226,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         this.mList = list;
 
         if (!isFinishing() && list.size() > 0) {
+            mAllBilRedotTv.setVisibility(View.VISIBLE);
             mAllBilRedotTv.setText(String.valueOf(list.size()));
 
             if (getFeedbackSize(list) > 0) {
@@ -303,6 +321,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         context.startActivity(intent);
     }
 
+    PopupWindow mPopupWindow;
 
     private void showPopupWindow(View v) {
 
@@ -368,7 +387,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         if (getJieSuanSize(mList) > 0) {
             jiesuan_redot.setVisibility(View.VISIBLE);
-            jiesuan_redot.setText(String.valueOf(getSpecCount(0x04, mList)));
+            jiesuan_redot.setText(String.valueOf(getJieSuanSize(mList)));
         } else {
             jiesuan_redot.setVisibility(View.GONE);
         }
@@ -384,12 +403,12 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
             waitpay_redot.setVisibility(View.GONE);
         }
 
-        final PopupWindow popWindow = new PopupWindow(view, mAllBillTv.getWidth(),
+        mPopupWindow = new PopupWindow(view, mAllBillTv.getWidth(),
                 ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
-        popWindow.setTouchable(true);
-        popWindow.setBackgroundDrawable(new ColorDrawable(0xf0848484));
-        popWindow.showAsDropDown(v, 0, 0);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0xf0848484));
+        mPopupWindow.showAsDropDown(v, 0, 0);
 
     }
 
