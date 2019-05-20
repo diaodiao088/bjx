@@ -189,10 +189,13 @@
             android:name="com.bjxapp.worker.ui.view.activity.MaintainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/XAppTheme">
+            android:theme="@style/XAppTheme"/>
 
-
-        </activity>
+        <activity
+            android:name="com.bjxapp.worker.ui.view.activity.CompleteActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XAppTheme"/>
 
         <activity
             android:name="com.bjxapp.worker.ui.view.activity.ThiActivity"

@@ -26,8 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,19 +44,12 @@ import com.bjxapp.worker.model.ThiInfoBean;
 import com.bjxapp.worker.model.ThiOtherBean;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
-import com.bjxapp.worker.ui.view.activity.widget.dialog.AddOtherPriceDialog;
-import com.bjxapp.worker.ui.view.activity.widget.dialog.ManfulDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
-import com.bjxapp.worker.ui.widget.MaintainItemLayout;
-import com.bjxapp.worker.ui.widget.MaintainItemOtherLayout;
-import com.bjxapp.worker.ui.widget.OtherPriceLayout;
 import com.bjxapp.worker.ui.widget.RoundImageView;
-import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.File;
@@ -71,81 +62,23 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.qqtheme.framework.picker.DoublePicker;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
 
-public class MaintainActivity extends Activity {
-
-    private ArrayList<String> mMalfulList = new ArrayList<>();
+public class CompleteActivity extends Activity {
 
     private ArrayList<String> mXieTiaoList = new ArrayList<>();
 
     @BindView(R.id.title_text_tv)
     TextView mTitleTv;
 
-    @BindView(R.id.tuichi_time_tv)
-    TextView mTuichiTimeTv;
-
     @OnClick(R.id.title_image_back)
     void onClickBack() {
         onBackPressed();
     }
-
-    @OnClick(R.id.order_receive_detail_save)
-    void onClickXTSuccess() {
-        startCommit(false);
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if (mContentLy.getVisibility() == View.VISIBLE) {
-            super.onBackPressed();
-        } else {
-            toDiffStatus(true);
-        }
-    }
-
-    @BindView(R.id.xietiao_ly)
-    RelativeLayout mXieTiaoLy;
-
-    @BindView(R.id.xietiao_reason_tv)
-    TextView mXieTiaoReasonTv;
-
-    String xietiaoName = "";
-
-    @OnClick(R.id.xietiao_reason_tv)
-    void onClickXieTiao() {
-        if (mXieTiaoList.size() <= 0) {
-            return;
-        }
-
-        ManfulDialog manfulDialog = new ManfulDialog(this);
-
-        manfulDialog.setData(mXieTiaoList);
-
-        manfulDialog.mTitleTv.setText("协调原因");
-
-        manfulDialog.setClickListener(new ManfulDialog.OnManClickListener() {
-            @Override
-            public void onClick(String name, int index) {
-                mXieTiaoReasonTv.setText(name);
-                xietiaoName = name;
-            }
-        });
-
-        manfulDialog.show();
-    }
-
-    @BindView(R.id.content_ly)
-    LinearLayout mContentLy;
-
-    @BindView(R.id.malfun_tv)
-    TextView mManfulTv;
 
     @BindView(R.id.scroll_view)
     ScrollView mScrollView;
@@ -153,42 +86,6 @@ public class MaintainActivity extends Activity {
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.add_other_price_ly)
-    LinearLayout mAddOtherPriceLy;
-
-    @BindView(R.id.other_price_ly)
-    LinearLayout mOtherContainerLy;
-
-    @OnClick(R.id.add_other_price_ly)
-    void onAddOtherPrice() {
-
-        final AddOtherPriceDialog otherPriceDialog = new AddOtherPriceDialog(this);
-
-        otherPriceDialog.setCancelable(true);
-
-        otherPriceDialog.setOnNegativeListener("取消", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                otherPriceDialog.dismiss();
-            }
-        }).setOnPositiveListener("确认", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!otherPriceDialog.isDataValid()) {
-                    Toast.makeText(MaintainActivity.this, "请填写完整数据", Toast.LENGTH_SHORT).show();
-                } else {
-                    OtherPriceBean validBean = otherPriceDialog.getValidBean();
-                    mOtherPriceList.add(validBean);
-                    addOtherUi(validBean);
-                    calTotalCount();
-                    otherPriceDialog.dismiss();
-                }
-            }
-        });
-
-        otherPriceDialog.show();
-
-    }
 
     private String equipId;
     private String orderId;
@@ -199,162 +96,20 @@ public class MaintainActivity extends Activity {
 
     private ArrayList<OtherPriceBean> mOtherPriceList = new ArrayList<>();
 
-    @OnClick(R.id.malfun_tv)
-    void onClickManuTv() {
 
-        if (mMalfulList.size() <= 0) {
-            return;
-        }
-
-        ManfulDialog manfulDialog = new ManfulDialog(this);
-
-        manfulDialog.setData(mMalfulList);
-
-        manfulDialog.setClickListener(new ManfulDialog.OnManClickListener() {
-            @Override
-            public void onClick(String name, int index) {
-                mManfulTv.setText(name);
-            }
-        });
-
-        manfulDialog.show();
-    }
-
-    @OnClick(R.id.add_thi_ly)
-    void onAddThiClick() {
-        ThiActivity.goToActivityForResult(this, equipId);
-    }
-
-    @BindView(R.id.change_reason_tv)
+    @BindView(R.id.change_reason_complete_tv)
     EditText mMethodTv;
 
-    @BindView(R.id.content_limit)
+    @BindView(R.id.content_complete_limit)
     TextView mLimitTv;
 
-    @BindView(R.id.main_container_ly)
-    LinearLayout mContainerLy;
-
-    @BindView(R.id.total_price_tv)
-    TextView mTotalPriceTv;
-
-    @OnClick(R.id.wait_contact_ok_btn)
-    void onClickComplete() {
-        startCommit(true);
-    }
-
-    @OnClick(R.id.wait_contact_change_btn)
-    void onClickSettle() {
-        toDiffStatus(false);
-    }
-
-    @OnClick(R.id.xietiao_time_tv)
-    void onChangeTime() {
-        changeDate();
-    }
-
-    @BindView(R.id.xietiao_time_tv)
-    TextView mTimeTv;
-
-    private ArrayList<String> getTimeList(String[] array) {
-        ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < array.length; i++) {
-            list.add(array[i]);
-        }
-        return list;
-    }
-
-    private boolean isChangeTime = false;
-
-    private String day = "";
-    private String time = "";
-
-    void changeDate() {
-        final ArrayList<String> firstData = new ArrayList<>();
-        firstData.add(DateUtils.addDay(0));
-        firstData.add(DateUtils.addDay(1));
-        firstData.add(DateUtils.addDay(2));
-        firstData.add(DateUtils.addDay(3));
-
-//        final ArrayList<String> secondData = new ArrayList<>();
-//        secondData.add("08:00:00--11:00:00");
-//        secondData.add("11:00:00--14:00:00");
-//        secondData.add("14:00:00--17:00:00");
-//        secondData.add("17:00:00--20:00:00");
-        final ArrayList<String> secondData = getTimeList(new String[]{"00:00:00-01:00:00", "01:00:00-02:00:00",
-                "02:00:00-03:00:00", "03:00:00-04:00:00",
-                "04:00:00-05:00:00", "05:00:00-06:00:00",
-                "06:00:00-07:00:00", "07:00:00-08:00:00",
-                "08:00:00-09:00:00", "09:00:00-10:00:00",
-                "11:00:00-12:00:00", "12:00:00-13:00:00",
-                "13:00:00-14:00:00", "14:00:00-15:00:00",
-                "15:00:00-16:00:00", "16:00:00-17:00:00",
-                "17:00:00-18:00:00", "18:00:00-19:00:00",
-                "19:00:00-20:00:00", "20:00:00-21:00:00",
-                "21:00:00-22:00:00", "22:00:00-23:00:00",
-                "23:00:00-24:00:00"});
-
-        final DoublePicker picker = new DoublePicker(this, firstData, secondData);
-        picker.setDividerVisible(true);
-
-        Calendar startTime = Calendar.getInstance();
-
-        int selectFirstIndex = 0;
-        int selectSecondIndex = 0;
-
-//        if (startTime.get(Calendar.HOUR_OF_DAY) < 8) {
-//            selectSecondIndex = 0;
-//        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 11) {
-//            selectSecondIndex = 1;
-//        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 14) {
-//            selectSecondIndex = 2;
-//        } else if (startTime.get(Calendar.HOUR_OF_DAY) < 17) {
-//            selectSecondIndex = 3;
-//        } else {
-//            selectFirstIndex = 1;
-//        }
-
-        picker.setSelectedIndex(selectFirstIndex, selectSecondIndex);
-        picker.setTextSize(12);
-        picker.setContentPadding(15, 10);
-        picker.setOnPickListener(new DoublePicker.OnPickListener() {
-            @Override
-            public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
-
-                isChangeTime = true;
-
-                mTimeTv.setText(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
-
-                mTuichiTimeTv.setText("协调天数" + selectedFirstIndex + "天");
-
-                day = firstData.get(selectedFirstIndex);
-                time = secondData.get(selectedSecondIndex);
-            }
-        });
-        picker.show();
-    }
-
     private XWaitingDialog mWaitingDialog;
-
-    private String plan;
-    private String fault;
-
-    private void toDiffStatus(boolean isMain) {
-        if (isMain) {
-            mContentLy.setVisibility(View.VISIBLE);
-            mXieTiaoLy.setVisibility(View.GONE);
-            mTitleTv.setText("维修项");
-        } else {
-            mContentLy.setVisibility(View.GONE);
-            mXieTiaoLy.setVisibility(View.VISIBLE);
-            mTitleTv.setText("选择协调分类");
-        }
-    }
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maintain_select);
+        setContentView(R.layout.complete_layout);
         ButterKnife.bind(this);
         initView();
         handleIntent();
@@ -362,129 +117,22 @@ public class MaintainActivity extends Activity {
     }
 
     private void initData() {
-        getDicList();
-        getDicList1();
     }
 
     private void handleIntent() {
 
         equipId = getIntent().getStringExtra("equip_id");
         orderId = getIntent().getStringExtra("order_id");
-        plan = getIntent().getStringExtra("plan");
-        fault = getIntent().getStringExtra("fault");
         mMainTainList = getIntent().getParcelableArrayListExtra("maintainList");
 
         if (mMainTainList == null) {
             mMainTainList = new ArrayList<>();
         }
-
-        refreshUi();
-    }
-
-    private void refreshUi() {
-
-        mMethodTv.setText(plan);
-        mManfulTv.setText(fault);
-
-        for (int i = 0; i < mMainTainList.size(); i++) {
-            addUi(mMainTainList.get(i));
-        }
-    }
-
-    private void getDicList() {
-
-        EnterpriseApi enterpriseApi = KHttpWorker.ins().createHttpService(LoginApi.URL, EnterpriseApi.class);
-
-        Call<JsonObject> call = null;
-
-        Map<String, String> params = new HashMap<>();
-        params.put("token", ConfigManager.getInstance(this).getUserSession());
-        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
-        params.put("type", "maintainFaultReason");
-
-        call = enterpriseApi.getDicList(params);
-
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
-                    final JsonObject object = response.body();
-
-                    final String msg = object.get("msg").getAsString();
-                    final int code = object.get("code").getAsInt();
-
-                    if (code == 0) {
-
-                        JsonArray array = object.get("list").getAsJsonArray();
-
-                        mMalfulList.clear();
-
-                        for (int i = 0; i < array.size(); i++) {
-                            JsonObject item = array.get(i).getAsJsonObject();
-                            String value = item.get("value").getAsString();
-                            mMalfulList.add(value);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-            }
-        });
-    }
-
-    private void getDicList1() {
-
-        EnterpriseApi enterpriseApi = KHttpWorker.ins().createHttpService(LoginApi.URL, EnterpriseApi.class);
-
-        Call<JsonObject> call = null;
-
-        Map<String, String> params = new HashMap<>();
-        params.put("token", ConfigManager.getInstance(this).getUserSession());
-        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
-        params.put("type", "maintainCoordinateReason");
-
-        call = enterpriseApi.getDicList(params);
-
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
-                    final JsonObject object = response.body();
-
-                    final String msg = object.get("msg").getAsString();
-                    final int code = object.get("code").getAsInt();
-
-                    if (code == 0) {
-
-                        JsonArray array = object.get("list").getAsJsonArray();
-
-                        mXieTiaoList.clear();
-
-                        for (int i = 0; i < array.size(); i++) {
-                            JsonObject item = array.get(i).getAsJsonObject();
-                            String value = item.get("value").getAsString();
-                            mXieTiaoList.add(value);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-            }
-        });
     }
 
     private GridLayoutManager mGridLayoutManager;
 
     private void initView() {
-
-        mContentLy.setVisibility(View.VISIBLE);
-        mXieTiaoLy.setVisibility(View.GONE);
 
         mWaitingDialog = new XWaitingDialog(this);
         mTitleTv.setText("维修项");
@@ -554,8 +202,6 @@ public class MaintainActivity extends Activity {
                         mMainTainList.add(mainTainBean);
                     }
 
-                    addUi(mainTainBean);
-
                     break;
             }
         }
@@ -613,94 +259,6 @@ public class MaintainActivity extends Activity {
 
     private ArrayList<String> imgList = new ArrayList<>();
 
-
-    private void addOtherUi(final OtherPriceBean otherPriceBean) {
-
-        OtherPriceLayout layout = new OtherPriceLayout(this);
-        layout.bindData(otherPriceBean, "");
-
-        layout.setOperationListener(new OtherPriceLayout.OnOperationListener() {
-            @Override
-            public void onDelete(OtherPriceBean priceBean) {
-                mOtherPriceList.remove(otherPriceBean);
-                calTotalCount();
-            }
-        });
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, DimenUtils.dp2px(10, this), 0, 0);
-        mOtherContainerLy.addView(layout, params);
-        mScrollView.fullScroll(View.FOCUS_DOWN);
-    }
-
-
-    private void addUi(MainTainBean mainTainBean) {
-
-        if (mainTainBean.isOthers()) {
-            final MaintainItemOtherLayout maintainItemLayout = new MaintainItemOtherLayout(this);
-            maintainItemLayout.bindData(mainTainBean);
-
-            maintainItemLayout.setOperationListener(new MaintainItemOtherLayout.OnOperationListener() {
-                @Override
-                public void onDelete(MainTainBean mainTainBean) {
-                    mMainTainList.remove(mainTainBean);
-                    calTotalCount();
-                }
-
-                @Override
-                public void onPriceChange() {
-                    calTotalCount();
-                }
-
-                @Override
-                public void onCountChange() {
-                    calTotalCount();
-                }
-            });
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, DimenUtils.dp2px(10, this), 0, 0);
-            mContainerLy.addView(maintainItemLayout, params);
-            mScrollView.fullScroll(View.FOCUS_DOWN);
-        } else {
-            final MaintainItemLayout maintainItemLayout = new MaintainItemLayout(this);
-            maintainItemLayout.bindData(mainTainBean);
-
-            maintainItemLayout.setOperationListener(new MaintainItemLayout.OnOperationListener() {
-                @Override
-                public void onDelete(MainTainBean mainTainBean) {
-                    mMainTainList.remove(mainTainBean);
-                    calTotalCount();
-                }
-
-                @Override
-                public void onPriceChange() {
-                    calTotalCount();
-                }
-
-                @Override
-                public void onCountChange() {
-                    calTotalCount();
-                }
-            });
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, DimenUtils.dp2px(10, this), 0, 0);
-            mContainerLy.addView(maintainItemLayout, params);
-            mScrollView.fullScroll(View.FOCUS_DOWN);
-        }
-
-
-        calTotalCount();
-    }
-
-
-    private void calTotalCount() {
-
-        mTotalPriceTv.setText("总报价：" + getTotalPrice() + "元");
-
-    }
-
     private String getTotalPrice() {
 
         double price = 0l;
@@ -740,11 +298,6 @@ public class MaintainActivity extends Activity {
 
     public void startCommit(boolean isComplete) {
 
-        if (TextUtils.isEmpty(mManfulTv.getText().toString())) {
-            Toast.makeText(this, "请先选择故障原因", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (TextUtils.isEmpty(mMethodTv.getText().toString())) {
             Toast.makeText(this, "请先填写维修方案", Toast.LENGTH_SHORT).show();
             return;
@@ -755,15 +308,6 @@ public class MaintainActivity extends Activity {
             return;
         }
 
-        if (!isComplete && TextUtils.isEmpty(xietiaoName)) {
-            Toast.makeText(this, "请先选择协调原因", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (!isComplete && !isChangeTime) {
-            Toast.makeText(this, "请先选择协调时间", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         mWaitingDialog.show("正在提交", false);
 
@@ -778,15 +322,8 @@ public class MaintainActivity extends Activity {
 
         params.put("operate", isComplete ? String.valueOf(1) : String.valueOf(0));
 
-        params.put("fault", mManfulTv.getText().toString());
         params.put("plan", mMethodTv.getText().toString());
 
-
-        if (!isComplete) {
-            params.put("coordinateReason", xietiaoName);
-            params.put("coordinateNextHandleStartTime", day + " " + time.split("-")[0]);
-            params.put("coordinateNextHandleStartTime", day + " " + time.split("")[1]);
-        }
 
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < imgList.size(); i++) {
@@ -800,10 +337,6 @@ public class MaintainActivity extends Activity {
         params.put("imgUrls", builder.toString());
 
         params.put("totalCost", getTotalPrice());
-
-        putPartialList(params);
-
-        putExtraCost(params);
 
         call = enterpriseApi.saveMainTain(params);
 
@@ -820,18 +353,18 @@ public class MaintainActivity extends Activity {
                     final int code = object.get("code").getAsInt();
 
                     if (code == 0) {
-                        MaintainActivity.this.runOnUiThread(new Runnable() {
+                        CompleteActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(MaintainActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CompleteActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
                         });
                     } else {
-                        MaintainActivity.this.runOnUiThread(new Runnable() {
+                        CompleteActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(MaintainActivity.this, msg + ":" + code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CompleteActivity.this, msg + ":" + code, Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -841,11 +374,11 @@ public class MaintainActivity extends Activity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
 
-                MaintainActivity.this.runOnUiThread(new Runnable() {
+                CompleteActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mWaitingDialog.dismiss();
-                        Toast.makeText(MaintainActivity.this, "提交失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CompleteActivity.this, "提交失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -853,89 +386,10 @@ public class MaintainActivity extends Activity {
 
     }
 
-    private boolean isDataValid() {
-
-        for (int i = 0; i < mMainTainList.size(); i++) {
-            MainTainBean item = mMainTainList.get(i);
-
-            if (TextUtils.isEmpty(item.getComponentName())
-                    || TextUtils.isEmpty(item.getCost())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void putExtraCost(Map<String, String> params) {
-
-        for (int i = 0; i < mOtherPriceList.size(); i++) {
-            OtherPriceBean otherPriceBean = mOtherPriceList.get(i);
-
-            String costName = "extraCostList[" + i + "].name";
-            String amount = "extraCostList[" + i + "].amount";
-
-            params.put(costName, otherPriceBean.getName());
-            params.put(amount, otherPriceBean.getPrice());
-
-        }
-
-    }
-
-
-    private void putPartialList(Map<String, String> params) {
-
-        for (int i = 0; i < mMainTainList.size(); i++) {
-
-            MainTainBean item = mMainTainList.get(i);
-
-            ThiOtherBean otherBean = item.getThiOtherBean();
-
-            String nameKey = "equipmentComponentList[" + i + "].name";
-            String costKey = "equipmentComponentList[" + i + "].price";
-            String quantityKey = "equipmentComponentList[" + i + "].quantity";
-            String laborCost = "equipmentComponentList[" + i + "].laborCost";
-            String remark = "equipmentComponentList[" + i + "].remark";
-            String imgUrls = "equipmentComponentList[" + i + "].imgUrls";
-
-            String modelKey = "equipmentComponentList[" + i + "].model";
-            params.put(modelKey, !item.isOthers ? String.valueOf(item.getModel()) : otherBean.getModel());
-            params.put(nameKey, !item.isOthers ? item.getComponentName() : otherBean.getName());
-            params.put(laborCost, !item.isOthers ? String.valueOf(0) : otherBean.getRenGongCost());
-            params.put(costKey, !item.isOthers ? item.getCost() : otherBean.getCost());
-            params.put(remark, !item.isOthers ? "" : otherBean.getRemark());
-            params.put(quantityKey, String.valueOf(item.getQuantity()));
-
-
-            if (item.isOthers) {
-                StringBuilder builder = new StringBuilder();
-                for (int j = 0; j < otherBean.getImgList().size(); j++) {
-                    if (i < otherBean.getImgList().size() - 1) {
-                        builder.append(otherBean.getImgList().get(j) + ",");
-                    } else {
-                        builder.append(otherBean.getImgList().get(j));
-                    }
-                }
-
-                if (!TextUtils.isEmpty(builder.toString())) {
-                    params.put(imgUrls, builder.toString());
-                }
-            }
-
-
-            if (!item.isOthers) {
-                String idKey = "equipmentComponentList[" + i + "].id";
-                params.put(idKey, String.valueOf(item.getComponentId()));
-                String unitKey = "equipmentComponentList[" + i + "].unit";
-                params.put(unitKey, item.getUnit());
-            }
-        }
-    }
-
-
     public static void goToActivity(Activity context, String equipId, String orderId, MaintainInfo maintainInfo) {
 
         Intent intent = new Intent();
-        intent.setClass(context, MaintainActivity.class);
+        intent.setClass(context, CompleteActivity.class);
         intent.putExtra("equip_id", equipId);
         intent.putExtra("order_id", orderId);
 
@@ -983,7 +437,7 @@ public class MaintainActivity extends Activity {
 
             if (holder instanceof VH_IMAGE_ITEM) {
 
-                Glide.with(MaintainActivity.this).load(bean.getUrl()).into(((VH_IMAGE_ITEM) holder).mIv);
+                Glide.with(CompleteActivity.this).load(bean.getUrl()).into(((VH_IMAGE_ITEM) holder).mIv);
 
                 ((VH_IMAGE_ITEM) holder).mDeleteIv.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1106,7 +560,7 @@ public class MaintainActivity extends Activity {
 
         @Override
         public void goToImageDetail(ImageBean bean) {
-            ImageOrderActivity.goToActivity(MaintainActivity.this, bean.getUrl());
+            ImageOrderActivity.goToActivity(CompleteActivity.this, bean.getUrl());
         }
     };
 
@@ -1129,16 +583,16 @@ public class MaintainActivity extends Activity {
                     public void onClick(DialogInterface dialog, int item) {
                         try {
                             if (!SDCardUtils.exist()) {
-                                Utils.showShortToast(MaintainActivity.this, "SD卡被占用或不存在");
+                                Utils.showShortToast(CompleteActivity.this, "SD卡被占用或不存在");
                             } else {
                                 if (item == 0) {
                                     Uri imageURI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                                     if (imageURI != null) {
                                         try {
-                                            if (ContextCompat.checkSelfPermission(MaintainActivity.this,
+                                            if (ContextCompat.checkSelfPermission(CompleteActivity.this,
                                                     Manifest.permission.READ_EXTERNAL_STORAGE)
                                                     != PackageManager.PERMISSION_GRANTED) {
-                                                ActivityCompat.requestPermissions(MaintainActivity.this,
+                                                ActivityCompat.requestPermissions(CompleteActivity.this,
                                                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
                                             } else {
                                                 Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
@@ -1149,12 +603,12 @@ public class MaintainActivity extends Activity {
                                         }
                                     }
                                 } else {
-                                    if (ContextCompat.checkSelfPermission(MaintainActivity.this,
+                                    if (ContextCompat.checkSelfPermission(CompleteActivity.this,
                                             Manifest.permission.READ_EXTERNAL_STORAGE)
-                                            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(MaintainActivity.this,
+                                            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(CompleteActivity.this,
                                             Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                             != PackageManager.PERMISSION_GRANTED) {
-                                        ActivityCompat.requestPermissions(MaintainActivity.this,
+                                        ActivityCompat.requestPermissions(CompleteActivity.this,
                                                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
                                     } else {
                                         //  Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
@@ -1172,7 +626,7 @@ public class MaintainActivity extends Activity {
                                 }
                             }
                         } catch (Exception e) {
-                            Utils.showShortToast(MaintainActivity.this, "SD卡被占用或不存在");
+                            Utils.showShortToast(CompleteActivity.this, "SD卡被占用或不存在");
                         }
                     }
                 }).create();
