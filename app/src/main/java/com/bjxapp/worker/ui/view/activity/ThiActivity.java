@@ -297,6 +297,7 @@ public class ThiActivity extends Activity {
                     intent.putExtra("bean", mInfoBean);
                     setResult(RESULT_OK, intent);
                     finish();
+
                 }
             });
 
@@ -310,10 +311,12 @@ public class ThiActivity extends Activity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.putExtra("type_other", true);
-                    setResult(RESULT_OK, intent);
-                    finish();
+//                    Intent intent = new Intent();
+//                    intent.putExtra("type_other", true);
+//                    setResult(RESULT_OK, intent);
+//                    finish();
+
+                    ThiOtherActivity.goToActivityForResult(ThiActivity.this, "");
                 }
             });
         }
