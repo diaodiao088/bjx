@@ -5,140 +5,24 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <ScrollView
-        android:id="@+id/scroll_view"
+    <include layout="@layout/layout_title" />
+
+    <LinearLayout
+        android:id="@+id/content_ly"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <include layout="@layout/layout_title" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="15dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="*"
-                    android:textColor="#ff0000"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:text="故障原因"
-                    android:textColor="@color/main_text_color"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/malfun_tv"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:drawableRight="@drawable/type_arrow"
-                    android:textColor="@color/main_text_color"
-                    android:textColorHint="#e3e0e0"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#f5f5f5" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:paddingLeft="15dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="*"
-                        android:textColor="#ff0000"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:text="维修方案"
-                        android:textColor="@color/main_text_color"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/change_reason_tv"
-                        android:layout_width="match_parent"
-                        android:layout_height="130dp"
-                        android:layout_below="@+id/layout_title"
-                        android:layout_gravity="left"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/edit_tv_bg"
-                        android:gravity="left"
-                        android:hint="请输入维修方案..."
-                        android:lineSpacingExtra="3dp"
-                        android:maxLength="200"
-                        android:paddingLeft="5dp"
-                        android:paddingTop="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="15dp"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/content_limit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignRight="@+id/change_reason_tv"
-                        android:layout_alignBottom="@+id/change_reason_tv"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="5dp"
-                        android:text="0/200"
-                        android:textColor="#B5B5B5" />
-
-                </RelativeLayout>
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@color/white"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -160,140 +44,373 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:text="添加维修照片"
-                        android:textColor="@color/black"
+                        android:text="故障原因"
+                        android:textColor="@color/main_text_color"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/malfun_tv"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="（请至少添加一张照片）"
-                        android:textColor="#a6a6a6"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:drawableRight="@drawable/type_arrow"
+                        android:textColor="@color/main_text_color"
+                        android:textColorHint="#e3e0e0"
                         android:textSize="14sp" />
 
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="1px"
+                    android:background="#f5f5f5" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="*"
+                            android:textColor="#ff0000"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:text="维修方案"
+                            android:textColor="@color/main_text_color"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/change_reason_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp"
+                            android:layout_below="@+id/layout_title"
+                            android:layout_gravity="left"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/edit_tv_bg"
+                            android:gravity="left"
+                            android:hint="请输入维修方案..."
+                            android:lineSpacingExtra="3dp"
+                            android:maxLength="200"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="15dp"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/content_limit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignRight="@+id/change_reason_tv"
+                            android:layout_alignBottom="@+id/change_reason_tv"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="5dp"
+                            android:text="0/200"
+                            android:textColor="#B5B5B5" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/white"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="*"
+                            android:textColor="#ff0000"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:text="添加维修照片"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="（请至少添加一张照片）"
+                            android:textColor="#a6a6a6"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#f5f5f5" />
+
+                <LinearLayout
+                    android:id="@+id/add_thi_ly"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/add_plus"
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
+                        android:text="添加配件"
+                        android:textColor="#00a554"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/main_container_ly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:id="@+id/add_other_price_ly"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/add_plus"
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
+                        android:text="添加其他费用"
+                        android:textColor="#00a554"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/other_price_ly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#f5f5f5" />
-
-            <LinearLayout
-                android:id="@+id/add_thi_ly"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/white"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawableLeft="@drawable/add_plus"
-                    android:drawablePadding="5dp"
-                    android:gravity="center"
-                    android:text="添加配件"
-                    android:textColor="#00a554"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/main_container_ly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
-            <LinearLayout
-                android:id="@+id/add_other_price_ly"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/white"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawableLeft="@drawable/add_plus"
-                    android:drawablePadding="5dp"
-                    android:gravity="center"
-                    android:text="添加其他费用"
-                    android:textColor="#00a554"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/other_price_ly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
-
-        </LinearLayout>
-
-    </ScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/total_price_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:text="总报价：0元"
-            android:textColor="#00a554"
-            android:textSize="14sp" />
+        </ScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="10dp">
+            android:background="@color/white"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/wait_contact_change_btn"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="30dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_background_green"
-                android:gravity="center"
-                android:text="需要协调"
-                android:textColor="@android:color/white"
+                android:id="@+id/total_price_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:text="总报价：0元"
+                android:textColor="#00a554"
                 android:textSize="14sp" />
 
-            <com.bjxapp.worker.controls.XButton
-                android:id="@+id/wait_contact_ok_btn"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_background_green"
-                android:text="直接完成"
-                android:textColor="@android:color/white" />
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginBottom="10dp">
 
+                <TextView
+                    android:id="@+id/wait_contact_change_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_background_green"
+                    android:gravity="center"
+                    android:text="需要协调"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <com.bjxapp.worker.controls.XButton
+                    android:id="@+id/wait_contact_ok_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_background_green"
+                    android:text="直接完成"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
         </LinearLayout>
 
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/xietiao_ly"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/title_content"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="*"
+                android:textColor="#ff0000"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="协调原因"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/xietiao_reason_tv"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_below="@+id/title_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/xietiao_main_bg"
+            android:gravity="center"
+            android:text="请选择协调原因" />
+
+        <LinearLayout
+            android:id="@+id/xietiao_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/xietiao_reason_tv"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="*"
+                android:textColor="#ff0000"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="协调完成时间"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/xietiao_time_tv"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_below="@+id/xietiao_title"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/xietiao_main_bg"
+            android:gravity="center"
+            android:text="请选择协调时间" />
+
+        <RelativeLayout
+            android:id="@+id/save_ly"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:visibility="visible">
+
+            <com.bjxapp.worker.controls.XButton
+                android:id="@+id/order_receive_detail_save"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/button_background_green"
+                android:text="提交"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+
 
 
 </LinearLayout>
