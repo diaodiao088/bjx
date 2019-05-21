@@ -70,7 +70,6 @@ import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
 
 public class CompleteActivity extends Activity {
 
-
     @BindView(R.id.title_text_tv)
     TextView mTitleTv;
 
@@ -92,14 +91,28 @@ public class CompleteActivity extends Activity {
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
 
-    private ArrayList<OtherPriceBean> mOtherPriceList = new ArrayList<>();
-
-
     @BindView(R.id.change_reason_complete_tv)
     EditText mMethodTv;
 
     @BindView(R.id.content_complete_limit)
     TextView mLimitTv;
+
+    @OnClick(R.id.wait_contact_change_btn)
+    void confirm() {
+
+        if (TextUtils.isEmpty(mMethodTv.getText().toString())) {
+            Toast.makeText(this, "请输入维修结果说明", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (mImageList.size() <= 1) {
+            Toast.makeText(this, "请至少添加一张照片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        startCommit();
+    }
+
 
     private XWaitingDialog mWaitingDialog;
 
@@ -222,7 +235,7 @@ public class CompleteActivity extends Activity {
     private ArrayList<String> imgList = new ArrayList<>();
 
 
-    public void startCommit(boolean isComplete) {
+    public void startCommit() {
 
         if (TextUtils.isEmpty(mMethodTv.getText().toString())) {
             Toast.makeText(this, "请先填写维修方案", Toast.LENGTH_SHORT).show();
@@ -246,10 +259,7 @@ public class CompleteActivity extends Activity {
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
         params.put("orderId", orderId);
 
-        params.put("operate", isComplete ? String.valueOf(1) : String.valueOf(0));
-
-        params.put("plan", mMethodTv.getText().toString());
-
+        params.put("maintainPlanId", mMethodTv.getText().toString());
 
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < imgList.size(); i++) {
@@ -260,8 +270,7 @@ public class CompleteActivity extends Activity {
             }
         }
 
-        params.put("imgUrls", builder.toString());
-
+        params.put("resultImgUrls", builder.toString());
 
         call = enterpriseApi.saveMainTain(params);
 
