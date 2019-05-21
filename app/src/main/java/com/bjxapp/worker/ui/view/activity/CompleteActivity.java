@@ -11,6 +11,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -26,7 +28,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,11 +38,7 @@ import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
-import com.bjxapp.worker.model.MainTainBean;
-import com.bjxapp.worker.model.MaintainInfo;
-import com.bjxapp.worker.model.OtherPriceBean;
-import com.bjxapp.worker.model.ThiInfoBean;
-import com.bjxapp.worker.model.ThiOtherBean;
+import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -52,21 +49,33 @@ import com.bjxapp.worker.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
+import static java.lang.String.valueOf;
 
 public class CompleteActivity extends Activity {
 
@@ -78,16 +87,11 @@ public class CompleteActivity extends Activity {
         onBackPressed();
     }
 
-    @BindView(R.id.scroll_view)
-    ScrollView mScrollView;
-
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.recycler_view_complete)
     RecyclerView mRecyclerView;
-
 
     private String equipId;
     private String orderId;
-
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
 
@@ -110,7 +114,7 @@ public class CompleteActivity extends Activity {
             return;
         }
 
-        startCommit();
+        commitImage();
     }
 
 
@@ -234,8 +238,9 @@ public class CompleteActivity extends Activity {
 
     private ArrayList<String> imgList = new ArrayList<>();
 
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public void startCommit() {
+    public void commitImage() {
 
         if (TextUtils.isEmpty(mMethodTv.getText().toString())) {
             Toast.makeText(this, "请先填写维修方案", Toast.LENGTH_SHORT).show();
@@ -247,8 +252,111 @@ public class CompleteActivity extends Activity {
             return;
         }
 
-
         mWaitingDialog.show("正在提交", false);
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        boolean isFileValid = false;
+
+        for (int i = 0; i < mImageList.size(); i++) {
+
+            ImageBean item = mImageList.get(i);
+
+            if (item.type == ImageBean.TYPE_ADD) {
+                File file = new File(item.getUrl());
+
+                if (!file.exists()) {
+                    break;
+                }
+
+                String targetPath = getCacheDir() + file.getName();
+
+                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
+
+                final File compressFile = new File(compressImage);
+
+                if (compressFile.exists()) {
+                    isFileValid = true;
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
+                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                }
+            }
+        }
+
+        if (!isFileValid) {
+            return;
+        }
+
+        for (Map.Entry entry : map.entrySet()) {
+            requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+        }
+
+        Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(CompleteActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000 * 100, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, final IOException e) {
+
+                CompleteActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(CompleteActivity.this, "图片上传失败！:" + e.getLocalizedMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+
+                    final ArrayList<String> list = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(str);
+                        JSONArray accessAddress = object.getJSONArray("list");
+
+                        for (int i = 0; i < accessAddress.length(); i++) {
+                            list.add(accessAddress.get(i).toString());
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            startCommit(list);
+                        }
+                    });
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(CompleteActivity.this, "图片上传失败！");
+                            Utils.finishWithoutAnim(CompleteActivity.this);
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    public void startCommit(ArrayList<String> list) {
+
 
         EnterpriseApi enterpriseApi = KHttpWorker.ins().createHttpService(LoginApi.URL, EnterpriseApi.class);
 
@@ -259,18 +367,19 @@ public class CompleteActivity extends Activity {
         params.put("userCode", ConfigManager.getInstance(this).getUserCode());
         params.put("orderId", orderId);
 
-        params.put("maintainPlanId", mMethodTv.getText().toString());
+        params.put("maintainPlanId", equipId);
 
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < imgList.size(); i++) {
-            if (i < imgList.size() - 1) {
-                builder.append(imgList.get(i) + ",");
+        for (int i = 0; i < list.size(); i++) {
+            if (i < list.size() - 1) {
+                builder.append(list.get(i) + ",");
             } else {
-                builder.append(imgList.get(i));
+                builder.append(list.get(i));
             }
         }
 
         params.put("resultImgUrls", builder.toString());
+        params.put("result", mMethodTv.getText().toString());
 
         call = enterpriseApi.saveMainTain(params);
 
@@ -320,11 +429,11 @@ public class CompleteActivity extends Activity {
 
     }
 
-    public static void goToActivity(Activity context, String equipId, String orderId, MaintainInfo maintainInfo) {
+    public static void goToActivity(Activity context, String equipId, String orderId) {
 
         Intent intent = new Intent();
         intent.setClass(context, CompleteActivity.class);
-        intent.putExtra("equip_id", equipId);
+        intent.putExtra("plan_id", equipId);
         intent.putExtra("order_id", orderId);
 
         context.startActivityForResult(intent, 0x05);

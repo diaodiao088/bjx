@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -44,6 +45,7 @@ import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.OtherPriceBean;
 import com.bjxapp.worker.model.ThiInfoBean;
 import com.bjxapp.worker.model.ThiOtherBean;
+import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.AddOtherPriceDialog;
@@ -61,22 +63,34 @@ import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.qqtheme.framework.picker.DoublePicker;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
+import static java.lang.String.valueOf;
 
 public class MaintainActivity extends Activity {
 
@@ -97,7 +111,7 @@ public class MaintainActivity extends Activity {
 
     @OnClick(R.id.order_receive_detail_save)
     void onClickXTSuccess() {
-        startCommit(false);
+        commitImage(false);
     }
 
     @Override
@@ -239,7 +253,7 @@ public class MaintainActivity extends Activity {
 
     @OnClick(R.id.wait_contact_ok_btn)
     void onClickComplete() {
-        startCommit(true);
+        commitImage(true);
     }
 
     @OnClick(R.id.wait_contact_change_btn)
@@ -737,8 +751,9 @@ public class MaintainActivity extends Activity {
         return String.format("%.2f", price);
     }
 
+    private Handler mHandler = new Handler();
 
-    public void startCommit(final boolean isComplete) {
+    public void commitImage(final boolean isComplete) {
 
         if (TextUtils.isEmpty(mManfulTv.getText().toString())) {
             Toast.makeText(this, "请先选择故障原因", Toast.LENGTH_SHORT).show();
@@ -755,17 +770,111 @@ public class MaintainActivity extends Activity {
             return;
         }
 
-        if (!isComplete && TextUtils.isEmpty(xietiaoName)) {
-            Toast.makeText(this, "请先选择协调原因", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (!isComplete && !isChangeTime) {
-            Toast.makeText(this, "请先选择协调时间", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         mWaitingDialog.show("正在提交", false);
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        boolean isFileValid = false;
+
+        for (int i = 0; i < mImageList.size(); i++) {
+
+            ImageBean item = mImageList.get(i);
+
+            if (item.type == ImageBean.TYPE_ADD) {
+                File file = new File(item.getUrl());
+
+                if (!file.exists()) {
+                    break;
+                }
+
+                String targetPath = getCacheDir() + file.getName();
+
+                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
+
+                final File compressFile = new File(compressImage);
+
+                if (compressFile.exists()) {
+                    isFileValid = true;
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
+                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                }
+            }
+        }
+
+        if (!isFileValid) {
+            return;
+        }
+
+        for (Map.Entry entry : map.entrySet()) {
+            requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+        }
+
+        Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(MaintainActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000 * 100, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, final IOException e) {
+
+                MaintainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(MaintainActivity.this, "图片上传失败！:" + e.getLocalizedMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+
+                    final ArrayList<String> list = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(str);
+                        JSONArray accessAddress = object.getJSONArray("list");
+
+                        for (int i = 0; i < accessAddress.length(); i++) {
+                            list.add(accessAddress.get(i).toString());
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            startCommit(isComplete, list);
+                        }
+                    });
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(MaintainActivity.this, "图片上传失败！");
+                            Utils.finishWithoutAnim(MaintainActivity.this);
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    public void startCommit(final boolean isComplete, ArrayList<String> list) {
+
 
         EnterpriseApi enterpriseApi = KHttpWorker.ins().createHttpService(LoginApi.URL, EnterpriseApi.class);
 
@@ -785,21 +894,19 @@ public class MaintainActivity extends Activity {
         if (!isComplete) {
             params.put("coordinateReason", xietiaoName);
             params.put("coordinateNextHandleStartTime", day + " " + time.split("-")[0]);
-            params.put("coordinateNextHandleStartTime", day + " " + time.split("")[1]);
+            params.put("coordinateNextHandleEndTime", day + " " + time.split("-")[1]);
         }
 
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < imgList.size(); i++) {
-            if (i < imgList.size() - 1) {
-                builder.append(imgList.get(i) + ",");
+        for (int i = 0; i < list.size(); i++) {
+            if (i < list.size() - 1) {
+                builder.append(list.get(i) + ",");
             } else {
-                builder.append(imgList.get(i));
+                builder.append(list.get(i));
             }
         }
 
-        params.put("imgUrls", builder.toString());
-
-        params.put("totalCost", getTotalPrice());
+        params.put("planImgUrls", builder.toString());
 
         putPartialList(params);
 
@@ -821,11 +928,15 @@ public class MaintainActivity extends Activity {
 
                     if (code == 0) {
 
-                        if (isComplete){
+                        final String mainTainPlanId = object.get("maintainPlanId").getAsString();
+
+                        if (isComplete) {
+
+                            CompleteActivity.goToActivity(MaintainActivity.this, mainTainPlanId, orderId);
 
                             // CompleteActivity.goToActivity();
 
-                        }else{
+                        } else {
                             MaintainActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
