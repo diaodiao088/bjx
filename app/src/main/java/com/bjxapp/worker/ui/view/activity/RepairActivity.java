@@ -96,7 +96,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
     private void initViews() {
         registerUpdateUIBroadcast();
         mRoot = findViewById(R.id.root);
-        mTitleTextView.setText("工作站");
+        mTitleTextView.setText("工作台");
         initVp();
         initListener();
     }
