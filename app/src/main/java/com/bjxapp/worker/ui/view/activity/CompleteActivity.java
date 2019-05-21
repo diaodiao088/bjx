@@ -70,7 +70,6 @@ import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
 
 public class CompleteActivity extends Activity {
 
-    private ArrayList<String> mXieTiaoList = new ArrayList<>();
 
     @BindView(R.id.title_text_tv)
     TextView mTitleTv;
@@ -90,7 +89,6 @@ public class CompleteActivity extends Activity {
     private String equipId;
     private String orderId;
 
-    public ArrayList<MainTainBean> mMainTainList = new ArrayList<>();
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
 
@@ -121,13 +119,8 @@ public class CompleteActivity extends Activity {
 
     private void handleIntent() {
 
-        equipId = getIntent().getStringExtra("equip_id");
+        equipId = getIntent().getStringExtra("plan_id");
         orderId = getIntent().getStringExtra("order_id");
-        mMainTainList = getIntent().getParcelableArrayListExtra("maintainList");
-
-        if (mMainTainList == null) {
-            mMainTainList = new ArrayList<>();
-        }
     }
 
     private GridLayoutManager mGridLayoutManager;
@@ -174,37 +167,6 @@ public class CompleteActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case ThiActivity.REQUEST_CODE:
-
-                    Intent intent = data;
-                    boolean isOthers = intent.getBooleanExtra("type_other", false);
-                    MainTainBean mainTainBean = new MainTainBean();
-
-                    if (!isOthers) {
-                        ThiInfoBean thiInfoBean = intent.getParcelableExtra("bean");
-                        if (thiInfoBean != null) {
-                            mainTainBean.setComponentId(thiInfoBean.getId());
-                            mainTainBean.setCost(thiInfoBean.getCost());
-                            mainTainBean.setModel(thiInfoBean.getModel());
-                            mainTainBean.setUnit(thiInfoBean.getUnit());
-                            mainTainBean.setComponentName(thiInfoBean.getName());
-                            mainTainBean.setOthers(false);
-                            mainTainBean.setQuantity(1);
-                        }
-                        mMainTainList.add(mainTainBean);
-
-                    } else {
-                        mainTainBean.setOthers(true);
-                        mainTainBean.setQuantity(1);
-                        mainTainBean.setThiOtherBean((ThiOtherBean) data.getParcelableExtra("other"));
-                        mMainTainList.add(mainTainBean);
-                    }
-
-                    break;
-            }
-        }
 
         if (requestCode == 0x02) {
             if (resultCode == RESULT_OK && data != null) {
@@ -259,42 +221,6 @@ public class CompleteActivity extends Activity {
 
     private ArrayList<String> imgList = new ArrayList<>();
 
-    private String getTotalPrice() {
-
-        double price = 0l;
-
-        for (int i = 0; i < mMainTainList.size(); i++) {
-
-            MainTainBean item = mMainTainList.get(i);
-
-            if (item.isOthers()) {
-
-                ThiOtherBean thiOtherBean = item.getThiOtherBean();
-
-                price += (item.getQuantity() * (Double.parseDouble(thiOtherBean.getRenGongCost())
-                        + Double.parseDouble(thiOtherBean.getCost())));
-
-            } else {
-                if (!TextUtils.isEmpty(item.getCost())) {
-                    price += (item.getQuantity() * Double.parseDouble(item.getCost()));
-                }
-            }
-
-        }
-
-        for (int i = 0; i < mOtherPriceList.size(); i++) {
-            price += (Double.parseDouble(mOtherPriceList.get(i).getPrice()));
-        }
-
-        return getFormatPrice(price);
-    }
-
-
-    private String getFormatPrice(double price) {
-        // DecimalFormat df = new DecimalFormat("#.00");
-        return String.format("%.2f", price);
-    }
-
 
     public void startCommit(boolean isComplete) {
 
@@ -336,7 +262,6 @@ public class CompleteActivity extends Activity {
 
         params.put("imgUrls", builder.toString());
 
-        params.put("totalCost", getTotalPrice());
 
         call = enterpriseApi.saveMainTain(params);
 

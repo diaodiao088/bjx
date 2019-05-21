@@ -29,6 +29,10 @@ public interface EnterpriseApi {
     @POST("/order/saveMaintainPlan")
     Call<JsonObject> saveMainTain(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/order/completeMaintainPlan")
+    Call<JsonObject> completePlan(@FieldMap Map<String, String> params);
+
 
 
 }
