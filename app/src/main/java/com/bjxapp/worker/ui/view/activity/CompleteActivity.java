@@ -381,7 +381,7 @@ public class CompleteActivity extends Activity {
         params.put("resultImgUrls", builder.toString());
         params.put("result", mMethodTv.getText().toString());
 
-        call = enterpriseApi.saveMainTain(params);
+        call = enterpriseApi.completePlan(params);
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
