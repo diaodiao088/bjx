@@ -128,7 +128,7 @@ public class CompleteActivity extends Activity {
     private void initView() {
 
         mWaitingDialog = new XWaitingDialog(this);
-        mTitleTv.setText("维修项");
+        mTitleTv.setText("上传维修结果照片");
 
         mGridLayoutManager = new GridLayoutManager(this, 4);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
