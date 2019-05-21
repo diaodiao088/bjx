@@ -111,16 +111,16 @@ public class ThiActivity extends Activity {
                         for (int i = 0; i < array.size(); i++) {
                             JsonObject item = array.get(i).getAsJsonObject();
 
-                            ThiInfoBean infoBean = new ThiInfoBean();
-
-                            infoBean.setCost(item.get("cost").getAsString());
-                            infoBean.setId(item.get("id").getAsInt());
-                            infoBean.setModel(item.get("model").getAsString());
-                            infoBean.setName(item.get("name").getAsString());
-                            infoBean.setUnit(item.get("unit").getAsString());
-                            infoBean.setOther(false);
-
-                            mAllList.add(infoBean);
+                            if (item.has("cost")){
+                                ThiInfoBean infoBean = new ThiInfoBean();
+                                infoBean.setCost(item.get("cost").getAsString());
+                                infoBean.setId(item.get("id").getAsInt());
+                                infoBean.setModel(item.get("model").getAsString());
+                                infoBean.setName(item.get("name").getAsString());
+                                infoBean.setUnit(item.get("unit").getAsString());
+                                infoBean.setOther(false);
+                                mAllList.add(infoBean);
+                            }
 
                         }
 

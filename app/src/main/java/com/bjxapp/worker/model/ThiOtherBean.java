@@ -2,6 +2,7 @@ package com.bjxapp.worker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 
@@ -133,7 +134,10 @@ public class ThiOtherBean implements Parcelable {
     }
 
     public void setRenGongCost(String renGongCost) {
-        this.renGongCost = renGongCost;
+
+        if (TextUtils.isEmpty(renGongCost)){
+            this.renGongCost = renGongCost;
+        }
     }
 
     @Override
