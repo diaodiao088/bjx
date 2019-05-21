@@ -33,12 +33,15 @@ import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.model.CommentBean;
 import com.bjxapp.worker.model.FollowUpBean;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.MaintainInfo;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
+import com.bjxapp.worker.model.OtherPriceBean;
+import com.bjxapp.worker.model.PlanBean;
 import com.bjxapp.worker.ui.view.activity.CheckChangeOrderTimeActivity;
 import com.bjxapp.worker.ui.view.activity.CompleteActivity;
 import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
@@ -1136,49 +1139,129 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         }
     }
 
+
     private MaintainInfo getMainTainInfoNew(JSONObject detailJson) {
 
         try {
             JSONObject detailItem = detailJson.getJSONObject("maintainDetail");
 
-            ArrayList<MainTainBean> mainTainList = new ArrayList<>();
+            JSONArray planArray = detailItem.getJSONArray("planList");
 
-            if (detailItem.has("equipmentComponentList")) {
+            ArrayList<PlanBean> planBeanList = new ArrayList<>();
 
-                JSONArray array = detailItem.getJSONArray("equipmentComponentList");
+            for (int i = 0; i < planArray.length(); i++) {
 
-                for (int i = 0; i < array.length(); i++) {
+                PlanBean planBean = new PlanBean();
+                planBeanList.add(planBean);
 
-                    JSONObject mainItem = array.getJSONObject(i);
-                    MainTainBean mainTainBean = new MainTainBean();
-                    mainTainBean.setComponentName(mainItem.getString("equipmentComponentName"));
-                    mainTainBean.setCost(mainItem.getString("equipmentComponentCost"));
-                    mainTainBean.setQuantity(mainItem.getInt("equipmentComponentQuantity"));
+                JSONObject planItem = planArray.getJSONObject(i);
+                int status = planItem.getInt("status");
+                int applicationType = planItem.getInt("applicationType");
+                int id = planItem.getInt("id");
 
-                    if (!mainItem.get("equipmentComponentId").toString().equals("null")) {
-                        mainTainBean.setComponentId(mainItem.getInt("equipmentComponentId"));
-                        mainTainBean.setOthers(false);
-                    } else {
-                        mainTainBean.setOthers(true);
-                    }
+                planBean.setStatus(status);
+                planBean.setApplicationType(applicationType);
+                planBean.setId(id);
 
-                    if (!mainItem.get("equipmentComponentModel").toString().equals("null")) {
+                JSONArray commentArray = planItem.getJSONArray("commentList");
 
-                        if (TextUtils.isEmpty(mainItem.getString("equipmentComponentModel"))) {
-                            mainTainBean.setOthers(true);
-                        } else {
-                            mainTainBean.setModel(mainItem.getString("equipmentComponentModel"));
-                        }
-                    } else {
-                        mainTainBean.setOthers(true);
-                    }
+                ArrayList<CommentBean> commentList = new ArrayList<>();
 
-                    if (!mainItem.get("equipmentComponentUnit").toString().equals("null")) {
-                        mainTainBean.setUnit(mainItem.getString("equipmentComponentUnit"));
-                    }
-
-                    mainTainList.add(mainTainBean);
+                for (int j = 0; j < commentArray.length(); j++) {
+                    JSONObject commentItem = commentArray.getJSONObject(j);
+                    CommentBean commentBean = new CommentBean();
+                    commentBean.setApplicationType(commentItem.getInt("applicationType"));
+                    commentBean.setContent(commentItem.getString("content"));
+                    commentBean.setUserName(commentItem.getString("username"));
+                    commentBean.setCreateTime(commentItem.getLong("createTime"));
+                    commentList.add(commentBean);
                 }
+
+                planBean.setmCommentList(commentList);
+
+                String coordinateNextHandleEndTime = "";
+
+                if (planItem.has("coordinateNextHandleEndTime") &&
+                        !planItem.get("coordinateNextHandleEndTime").toString().equals("null")) {
+                    coordinateNextHandleEndTime = planItem.getString("coordinateNextHandleEndTime");
+                }
+
+                String coordinateStartTime = "";
+
+                if (planItem.has("coordinateNextHandleStartTime") &&
+                        !planItem.get("coordinateNextHandleStartTime").toString().equals("null")) {
+                    coordinateStartTime = planItem.getString("coordinateNextHandleEndTime");
+                }
+
+                planBean.setCoordinateNextHandleEndTime(coordinateNextHandleEndTime);
+                planBean.setCoordinateNextHandleStartTime(coordinateStartTime);
+
+                String coordinateReason = planItem.getString("coordinateReason");
+                planBean.setCoordinateReason(coordinateReason);
+
+                ArrayList<MainTainBean> mainTainList = new ArrayList<>();
+                JSONArray maintainArray = detailItem.getJSONArray("equipmentComponentList");
+
+                for (int j = 0; j < maintainArray.length(); j++) {
+                    JSONObject maintainItem = maintainArray.getJSONObject(j);
+                    MainTainBean item = new MainTainBean();
+                    item.setComponentName(maintainItem.getString("equipmentComponentName"));
+                    item.setQuantity(maintainItem.getInt("equipmentComponentQuantity"));
+                    item.setCost(maintainItem.getString("equipmentComponentPrice"));
+                    mainTainList.add(item);
+                }
+
+                planBean.setmMaintainList(mainTainList);
+
+                String extraCost = planItem.getString("extraCost");
+
+                planBean.setExtraCost(extraCost);
+
+                JSONArray otherPriceArray = planItem.getJSONArray("extraCostList");
+                ArrayList<OtherPriceBean> otherPriceList = new ArrayList<>();
+
+                for (int j = 0; j < otherPriceArray.length(); j++) {
+                    JSONObject item = otherPriceArray.getJSONObject(j);
+                    OtherPriceBean otherPriceBean = new OtherPriceBean();
+                    otherPriceBean.setName(item.getString("name"));
+                    otherPriceBean.setPrice(item.getString("amount"));
+                    otherPriceList.add(otherPriceBean);
+                }
+
+                planBean.setmOtherPriceList(otherPriceList);
+
+                String fault = planItem.getString("fault");
+                String plan = planItem.getString("plan");
+
+                planBean.setFault(fault);
+                planBean.setPlan(plan);
+
+                JSONArray planImageArray = detailItem.getJSONArray("planImgUrls");
+
+                ArrayList<String> planImageUrlList = new ArrayList<>();
+
+                if (planImageArray != null && planImageArray.length() > 0) {
+                    for (int j = 0; j < planImageArray.length(); j++) {
+                        String itemUrl = planImageArray.get(j).toString();
+                        planImageUrlList.add(itemUrl);
+                    }
+                }
+
+                planBean.setmPlanImgList(planImageUrlList);
+
+                JSONArray resultImageArray = detailItem.getJSONArray("planImgUrls");
+
+                ArrayList<String> resultImageUrlList = new ArrayList<>();
+
+                if (resultImageArray != null && resultImageArray.length() > 0) {
+                    for (int j = 0; j < resultImageArray.length(); j++) {
+                        String itemUrl = resultImageArray.get(j).toString();
+                        resultImageUrlList.add(itemUrl);
+                    }
+                }
+
+                planBean.setmResultImgList(resultImageUrlList);
+
             }
 
             String costDetail = detailItem.getString("costDetail");
@@ -1220,8 +1303,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             maintainInfo.setOrderTime(orderTime);
             maintainInfo.setExtraCost(extraCost);
 
-            maintainInfo.setmMaintainList(mainTainList);
-
             if (!TextUtils.isEmpty(costDetailTemp)) {
                 maintainInfo.setCostDetail(costDetailTemp);
             }
@@ -1246,6 +1327,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             }
 
             maintainInfo.setPrepayImgUrls(prePayImgUrls);
+
+            maintainInfo.setPlanList(planBeanList);
 
             return maintainInfo;
 

@@ -33,11 +33,13 @@ public class MaintainInfo {
 
     private String totalCost;  // 总报价
 
-    private String extraCost="0";
+    private String extraCost = "0";
 
     private String orderTime;
 
     private ArrayList<MainTainBean> mMaintainList = new ArrayList<>();
+
+    private ArrayList<PlanBean> planList = new ArrayList<>();
 
     public MaintainInfo() {
 
@@ -183,5 +185,13 @@ public class MaintainInfo {
 
     public void setPrepayImgUrls(ArrayList<String> prepayImgUrls) {
         this.prepayImgUrls = prepayImgUrls;
+    }
+
+    public ArrayList<PlanBean> getPlanList() {
+        return planList;
+    }
+
+    public void setPlanList(ArrayList<PlanBean> planList) {
+        this.planList = planList;
     }
 }

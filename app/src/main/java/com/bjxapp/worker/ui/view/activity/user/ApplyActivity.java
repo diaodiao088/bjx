@@ -130,7 +130,7 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
                     dialog.dismiss();
                 }
 
-                if (workYearAdapter.getCheckedFeedBackBean() != null){
+                if (workYearAdapter.getCheckedFeedBackBean() != null) {
                     String workYear = workYearAdapter.getCheckedFeedBackBean().getmContextTv();
                     mUserWorkYearsEdit.setText(workYear);
                 }
@@ -152,12 +152,12 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
         dialog.show();
     }
 
-    private ArrayList<WorkYearDataBean> generateWorkYearList(){
+    private ArrayList<WorkYearDataBean> generateWorkYearList() {
 
         ArrayList<WorkYearDataBean> list = new ArrayList<>();
 
         for (int i = 1; i <= 50; i++) {
-            list.add(new WorkYearDataBean(false , String.valueOf(i)));
+            list.add(new WorkYearDataBean(false, String.valueOf(i)));
         }
 
         return list;
@@ -608,8 +608,8 @@ public class ApplyActivity extends BaseActivity implements OnClickListener {
 
         }
     }
-    
-	/*User head image setting begin*/
+
+    /*User head image setting begin*/
 
 
     private void displayIDImages() {
