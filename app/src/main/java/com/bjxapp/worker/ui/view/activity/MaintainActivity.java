@@ -738,7 +738,7 @@ public class MaintainActivity extends Activity {
     }
 
 
-    public void startCommit(boolean isComplete) {
+    public void startCommit(final boolean isComplete) {
 
         if (TextUtils.isEmpty(mManfulTv.getText().toString())) {
             Toast.makeText(this, "请先选择故障原因", Toast.LENGTH_SHORT).show();
@@ -820,13 +820,21 @@ public class MaintainActivity extends Activity {
                     final int code = object.get("code").getAsInt();
 
                     if (code == 0) {
-                        MaintainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MaintainActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                        });
+
+                        if (isComplete){
+
+                            // CompleteActivity.goToActivity();
+
+                        }else{
+                            MaintainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MaintainActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            });
+                        }
+
                     } else {
                         MaintainActivity.this.runOnUiThread(new Runnable() {
                             @Override

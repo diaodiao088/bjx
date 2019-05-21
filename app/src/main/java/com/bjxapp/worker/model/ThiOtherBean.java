@@ -135,7 +135,7 @@ public class ThiOtherBean implements Parcelable {
 
     public void setRenGongCost(String renGongCost) {
 
-        if (TextUtils.isEmpty(renGongCost)){
+        if (!TextUtils.isEmpty(renGongCost)){
             this.renGongCost = renGongCost;
         }
     }

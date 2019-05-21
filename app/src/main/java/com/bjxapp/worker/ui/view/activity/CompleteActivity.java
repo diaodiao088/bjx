@@ -393,10 +393,6 @@ public class CompleteActivity extends Activity {
         intent.putExtra("equip_id", equipId);
         intent.putExtra("order_id", orderId);
 
-        intent.putExtra("plan", maintainInfo.getPlan());
-        intent.putExtra("fault", maintainInfo.getFault());
-        intent.putParcelableArrayListExtra("maintainList", maintainInfo.getmMaintainList());
-
         context.startActivityForResult(intent, 0x05);
     }
 
