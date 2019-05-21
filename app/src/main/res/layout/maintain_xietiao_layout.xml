@@ -58,19 +58,6 @@
 
             </RelativeLayout>
 
-            <com.bjxapp.worker.controls.XButton
-                android:id="@+id/issue_edit_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/layout_textview_radius"
-                android:paddingLeft="12dp"
-                android:paddingTop="3dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="3dp"
-                android:text="编辑"
-                android:textColor="#ffffff"
-                android:textSize="14sp" />
         </RelativeLayout>
 
         <View
@@ -95,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:gravity="center_vertical"
-                android:text="故障原因："
+                android:text="协调原因："
                 android:textColor="#545454"
                 android:textSize="14sp" />
 
@@ -120,11 +107,11 @@
 
             <com.bjxapp.worker.controls.XTextView
                 android:id="@+id/strategy_tv"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:gravity="center_vertical"
-                android:text="维修方案："
+                android:text="下次处理时间："
                 android:textColor="#545454"
                 android:textSize="14sp" />
 
@@ -133,6 +120,64 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/strategy_tv"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:textColor="#545454"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp">
+
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/guzhang_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:gravity="center_vertical"
+                android:text="故障原因："
+                android:textColor="#545454"
+                android:textSize="14sp" />
+
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/guzhang_content_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/guzhang_tv"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:textColor="#545454"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp">
+
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/modify_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:gravity="center_vertical"
+                android:text="维修方案："
+                android:textColor="#545454"
+                android:textSize="14sp" />
+
+            <com.bjxapp.worker.controls.XTextView
+                android:id="@+id/modify_content_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/modify_tv"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:textColor="#545454"
@@ -151,7 +196,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="报价明细"
+                android:text="报价明细:"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp" />
 
