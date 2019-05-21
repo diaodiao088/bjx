@@ -42,6 +42,7 @@ import com.bjxapp.worker.model.OrderDetailInfo;
 import com.bjxapp.worker.ui.view.activity.CheckChangeOrderTimeActivity;
 import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
 import com.bjxapp.worker.ui.view.activity.FastJudgeActivity;
+import com.bjxapp.worker.ui.view.activity.FollowUpActivity;
 import com.bjxapp.worker.ui.view.activity.MaintainActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
@@ -92,6 +93,22 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
     @BindView(R.id.follow_size_tv)
     TextView mFollowSizeTv;
+
+    @BindView(R.id.order_receive_detail_follow)
+    RelativeLayout mFollowLy;
+
+    @OnClick(R.id.order_receive_detail_follow)
+    void onClickFollow() {
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        OrderDes order = mDetailInfo.getOrderDes();
+        ArrayList<FollowUpBean> followUpList = mDetailInfo.getmFollowUpList();
+
+        FollowUpActivity.goToActivity(this, followUpList);
+    }
 
     @OnClick(R.id.copy_tv)
     void clickCopy() {
@@ -989,7 +1006,12 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mOrderImagesLinear.setVisibility(View.GONE);
         }
 
-        mFollowSizeTv.setText(String.valueOf(followUpList.size()));
+        if (followUpList.size() > 0) {
+            mFollowLy.setVisibility(View.VISIBLE);
+            mFollowSizeTv.setText(String.valueOf(followUpList.size()));
+        } else {
+            mFollowLy.setVisibility(View.GONE);
+        }
 
         if (order.getmServiceType().equals("0")) {
             mCheckServiceLy.setVisibility(View.VISIBLE);
