@@ -1091,7 +1091,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             menDianTv.setVisibility(View.GONE);
             mendianLy.setVisibility(View.GONE);
         }
-
     }
 
 
