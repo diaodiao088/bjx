@@ -124,6 +124,10 @@ public class OrderAdapter extends BaseAdapter {
                     statusString = "待上门";
                     feeInfo = "费用：";
                     break;
+                case 43:
+                    statusString = "协调中";
+                    feeInfo = "费用：";
+                    break;
                 case 4:
                     statusString = "已上门";
                     feeInfo = "费用：";

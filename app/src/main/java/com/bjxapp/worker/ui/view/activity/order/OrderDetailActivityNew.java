@@ -40,6 +40,7 @@ import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OrderDetail;
 import com.bjxapp.worker.model.OrderDetailInfo;
 import com.bjxapp.worker.ui.view.activity.CheckChangeOrderTimeActivity;
+import com.bjxapp.worker.ui.view.activity.CompleteActivity;
 import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
 import com.bjxapp.worker.ui.view.activity.FastJudgeActivity;
 import com.bjxapp.worker.ui.view.activity.FollowUpActivity;
@@ -171,10 +172,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     XTextView mEnterRoomPrice;
     @BindView(R.id.entire_price_content_tv)
     XTextView mTotalPriceTv;
-    @BindView(R.id.total_content_tv)
-    XTextView mTotalTv;
-    @BindView(R.id.price_ready_content_tv)
-    XTextView mPrePayPriceTv;
+
     @BindView(R.id.fukuan_content_tv)
     XTextView mFuKuanContentTv;
 
@@ -224,6 +222,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
     @BindView(R.id.mendian_ly)
     RelativeLayout mendianLy;
+
+    @BindView(R.id.other_price_content_tv)
+    XTextView mOtherPriceTv;
 
     @OnClick(R.id.look_info)
     void onClickLookinfo() {
@@ -338,7 +339,19 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
      */
     @OnClick(R.id.wait_contact_ok_btn)
     void changeContactOk() {
-        toDetailStatus();
+
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null
+                || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        if (mDetailInfo.getOrderDes().getProcessStatus() == 43) {
+            MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo);
+        } else {
+            toDetailStatus();
+        }
+
     }
 
     /**
@@ -566,6 +579,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             toDetailUi();
         } else if (processStatus == 3) {
             toWaitRootStatus();
+        } else if (processStatus == 43) {
+            toXieTiaoUi();
         }
     }
 
@@ -666,7 +681,13 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 SaveOperation();
                 break;
             case R.id.wait_contact_change_btn:
-                changeDate();
+
+                if (mDetailInfo.getOrderDes().getProcessStatus() == 43) {
+                    CompleteActivity.goToActivity(this, mDetailInfo.getOrderDes().getOrderId(), mDetailInfo.getOrderDes().getOrderId());
+                } else {
+                    changeDate();
+                }
+
                 break;
             default:
                 break;
@@ -745,6 +766,45 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             }
         });
     }
+
+    private void toXieTiaoUi() {
+
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
+
+        mContactLy.setVisibility(View.VISIBLE);
+        mStatusTv.setText("协调中");
+        mStatusTv.setBackgroundResource(R.drawable.layout_textview_radius);
+        mServiceEditBtn.setEnabled(true);
+        mHourLastTv.setVisibility(View.GONE);
+        mOrderWaitLy.setVisibility(View.GONE);
+        mCancelBillTv.setVisibility(View.GONE);
+
+        mChangeDateTv.setText("直接完成");
+        mChangeDateOk.setText("创建维修方案");
+
+        modifyLy.setVisibility(View.VISIBLE);
+        mFinalMoneyLy.setVisibility(View.VISIBLE);
+
+        mSaveLy.setVisibility(View.GONE);
+        mOrderWaitLy.setVisibility(View.VISIBLE);
+
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        mOtherPriceTv.setText(mDetailInfo.getMaintainInfo().getExtraCost());
+        mTotalPriceTv.setText(mDetailInfo.getMaintainInfo().getTotalCost());
+        mFuKuanContentTv.setText(mDetailInfo.getMaintainInfo().getPayAmount());
+
+        int processStatus = mDetailInfo.getOrderDes().getProcessStatus();
+        int status = mDetailInfo.getOrderDes().getStatus();
+
+        mLookInfoTv.setVisibility(View.GONE);
+
+    }
+
 
     private void toDetailUi() {
         if (mCountDownTimer != null) {
@@ -849,8 +909,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         BigDecimal preCost = new BigDecimal(Double.parseDouble(maintainInfo.getPreCost()));
 
         maintainInfo.setTotalAmount(String.valueOf(totalCost.add(serviceCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()));
-        mTotalTv.setText(String.valueOf(totalCost.add(serviceCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())); //总计
-        mPrePayPriceTv.setText("- " + maintainInfo.getPreCost());
 
         // double payAmount = Double.parseDouble(maintainInfo.getTotalCost()) + Double.parseDouble(mDetailInfo.getOrderDes().getServiceVisitCost()) - Double.parseDouble(maintainInfo.getPreCost());
         double payAmount = totalCost.add(serviceCost).subtract(preCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -943,7 +1001,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                             mDetailInfo = new OrderDetailInfo();
                             mDetailInfo.setOrderDes(getOrderDes(detailJson));
                             mDetailInfo.setmFollowUpList(getFollowUpList(detailJson));
-                            mDetailInfo.setMaintainInfo(getMainTainInfo(detailJson));
+                            mDetailInfo.setMaintainInfo(getMainTainInfoNew(detailJson));
 
                             refreshUiSync();
                         }
@@ -1064,6 +1122,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             case 7:
                 toDetailUi();
                 break;
+            case 43:
+                toXieTiaoUi();
+                break;
         }
     }
 
@@ -1075,6 +1136,126 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mReadyTv.setText(tipsReal);
         }
     }
+
+    private MaintainInfo getMainTainInfoNew(JSONObject detailJson) {
+
+        try {
+            JSONObject detailItem = detailJson.getJSONObject("maintainDetail");
+
+            ArrayList<MainTainBean> mainTainList = new ArrayList<>();
+
+            if (detailItem.has("equipmentComponentList")) {
+
+                JSONArray array = detailItem.getJSONArray("equipmentComponentList");
+
+                for (int i = 0; i < array.length(); i++) {
+
+                    JSONObject mainItem = array.getJSONObject(i);
+                    MainTainBean mainTainBean = new MainTainBean();
+                    mainTainBean.setComponentName(mainItem.getString("equipmentComponentName"));
+                    mainTainBean.setCost(mainItem.getString("equipmentComponentCost"));
+                    mainTainBean.setQuantity(mainItem.getInt("equipmentComponentQuantity"));
+
+                    if (!mainItem.get("equipmentComponentId").toString().equals("null")) {
+                        mainTainBean.setComponentId(mainItem.getInt("equipmentComponentId"));
+                        mainTainBean.setOthers(false);
+                    } else {
+                        mainTainBean.setOthers(true);
+                    }
+
+                    if (!mainItem.get("equipmentComponentModel").toString().equals("null")) {
+
+                        if (TextUtils.isEmpty(mainItem.getString("equipmentComponentModel"))) {
+                            mainTainBean.setOthers(true);
+                        } else {
+                            mainTainBean.setModel(mainItem.getString("equipmentComponentModel"));
+                        }
+                    } else {
+                        mainTainBean.setOthers(true);
+                    }
+
+                    if (!mainItem.get("equipmentComponentUnit").toString().equals("null")) {
+                        mainTainBean.setUnit(mainItem.getString("equipmentComponentUnit"));
+                    }
+
+                    mainTainList.add(mainTainBean);
+                }
+            }
+
+            String costDetail = detailItem.getString("costDetail");
+            String fault = detailItem.getString("fault");
+            boolean paid = detailItem.getBoolean("paid");
+            String payAmount = detailItem.getString("payAmount");
+            String plan = detailItem.getString("plan");
+            boolean prePaid = detailItem.getBoolean("prepaid");
+            String preCost = detailItem.getString("prepayCost");
+            String prePayService = detailItem.getString("prepayService");
+            String totalAmount = detailItem.getString("totalAmount");
+            String totalCost = detailItem.getString("totalCost");
+            String orderTime = detailItem.getString("receiveOrderTime");
+            String extraCost = detailItem.getString("extraCost");
+
+            JSONArray urlArray = detailItem.getJSONArray("masterImgUrls");
+
+            ArrayList<String> customImgUrls = new ArrayList<>();
+            if (urlArray != null && urlArray.length() > 0) {
+                for (int i = 0; i < urlArray.length(); i++) {
+                    String itemUrl = urlArray.get(i).toString();
+                    customImgUrls.add(itemUrl);
+                }
+            }
+
+            // 预付照片
+            JSONArray prePayImgArray = detailItem.getJSONArray("prepayImgUrls");
+            ArrayList<String> prePayImgUrls = new ArrayList<>();
+            if (prePayImgArray != null && prePayImgArray.length() > 0) {
+                for (int i = 0; i < prePayImgArray.length(); i++) {
+                    String itemUrl = prePayImgArray.get(i).toString();
+                    prePayImgUrls.add(itemUrl);
+                }
+            }
+
+            MaintainInfo maintainInfo = new MaintainInfo(costDetail, fault, paid, payAmount,
+                    plan, prePaid, preCost, prePayService, totalAmount, totalCost);
+
+            maintainInfo.setOrderTime(orderTime);
+            maintainInfo.setExtraCost(extraCost);
+
+            maintainInfo.setmMaintainList(mainTainList);
+
+            if (!TextUtils.isEmpty(costDetailTemp)) {
+                maintainInfo.setCostDetail(costDetailTemp);
+            }
+
+            if (!TextUtils.isEmpty(planTemp)) {
+                maintainInfo.setPlan(planTemp);
+            }
+
+            if (!TextUtils.isEmpty(reasonTemp)) {
+                maintainInfo.setFault(reasonTemp);
+            }
+
+            if (!TextUtils.isEmpty(totalCostTemp)) {
+                maintainInfo.setTotalCost(totalCostTemp);
+            }
+
+            maintainInfo.setMasterImgUrls(customImgUrls);
+
+            if (customImgUrls.size() > 0) {
+                mImageList.clear();
+                mImageList.addAll(customImgUrls);
+            }
+
+            maintainInfo.setPrepayImgUrls(prePayImgUrls);
+
+            return maintainInfo;
+
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
 
     public String reasonTemp = "";
     public String planTemp = "";
@@ -2244,8 +2425,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         BigDecimal preCost = new BigDecimal(Double.parseDouble(maintainInfo.getPreCost()));
 
         maintainInfo.setTotalAmount(String.valueOf(totalCost.add(serviceCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()));
-        mTotalTv.setText(maintainInfo.getTotalAmount());
-        mPrePayPriceTv.setText("- " + maintainInfo.getPreCost());
 
         double payAmount = totalCost.add(serviceCost).subtract(preCost).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         payAmount = payAmount > 0 ? payAmount : 0.00;

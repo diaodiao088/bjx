@@ -33,6 +33,8 @@ public class MaintainInfo {
 
     private String totalCost;  // 总报价
 
+    private String extraCost="0";
+
     private String orderTime;
 
     private ArrayList<MainTainBean> mMaintainList = new ArrayList<>();
@@ -55,6 +57,14 @@ public class MaintainInfo {
         this.prePayService = prePayService;
         this.totalAmount = totalAmount;
         this.totalCost = totalCost;
+    }
+
+    public String getExtraCost() {
+        return extraCost;
+    }
+
+    public void setExtraCost(String extraCost) {
+        this.extraCost = extraCost;
     }
 
     public ArrayList<MainTainBean> getmMaintainList() {
