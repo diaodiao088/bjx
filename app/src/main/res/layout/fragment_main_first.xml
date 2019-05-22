@@ -90,7 +90,6 @@
             android:id="@+id/xietiao_ly"
             android:layout_width="0dp"
             android:layout_height="35dp"
-            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:background="@drawable/white_bg">
 
@@ -127,7 +126,6 @@
         android:id="@+id/main_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/call_record_tab"
-        android:layout_marginTop="5dp" />
+        android:layout_below="@+id/call_record_tab" />
 
 </LinearLayout>

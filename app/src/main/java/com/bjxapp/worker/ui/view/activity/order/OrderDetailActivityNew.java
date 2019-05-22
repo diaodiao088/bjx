@@ -729,7 +729,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                     int settleState = currentPlanBean.getStatus();
 
                     if (settleState == 3 || settleState == 9) {
-                        Toast.makeText(this, "请确认维修是已审核的状态", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "维修方案审核中，请耐心等待", Toast.LENGTH_SHORT).show();
                         return;
                     }
 

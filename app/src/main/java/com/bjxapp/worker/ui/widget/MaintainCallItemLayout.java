@@ -217,6 +217,26 @@ public class MaintainCallItemLayout extends LinearLayout {
 
         } else if (planBean.getStatus() == 9) {
             mStatusIv.setImageResource(R.drawable.no_pass);
+            mReasonTv.setVisibility(VISIBLE);
+            mNextTimeTv.setVisibility(VISIBLE);
+
+            mReasonTv.setText(planBean.getCoordinateReason());
+            try {
+                mNextTimeTv.setText(getFormatTime(Long.parseLong(planBean.getCoordinateNextHandleStartTime())));
+            } catch (Exception e) {
+
+            }
+        } else if (planBean.getStatus() == 6){
+            mStatusIv.setImageResource(R.drawable.pass);
+            mReasonTv.setVisibility(VISIBLE);
+            mNextTimeTv.setVisibility(VISIBLE);
+
+            mReasonTv.setText(planBean.getCoordinateReason());
+            try {
+                mNextTimeTv.setText(getFormatTime(Long.parseLong(planBean.getCoordinateNextHandleStartTime())));
+            } catch (Exception e) {
+
+            }
         }
 
         addPriceList();
@@ -266,7 +286,7 @@ public class MaintainCallItemLayout extends LinearLayout {
 
                 layoutParams.setMargins(0, DimenUtils.dp2px(10, getContext()), 0, 0);
 
-                mContactRecordLy.addView(leftLayout, layoutParams);
+                mContactRecordLy.addView(leftLayout, 0 , layoutParams);
 
             } else {
                 RecordRLayout rightLayout = new RecordRLayout(getContext());
@@ -277,7 +297,9 @@ public class MaintainCallItemLayout extends LinearLayout {
 
                 layoutParams.setMargins(0, DimenUtils.dp2px(10, getContext()), 0, 0);
 
-                mContactRecordLy.addView(rightLayout, layoutParams);
+                mContactRecordLy.addView(rightLayout, 0 ,layoutParams);
+
+
             }
 
         }

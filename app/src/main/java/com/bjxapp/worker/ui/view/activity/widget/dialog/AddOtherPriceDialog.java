@@ -49,6 +49,15 @@ public class AddOtherPriceDialog {
         }
     }
 
+    public void setPreviousData(OtherPriceBean otherPriceBean){
+
+        if (otherPriceBean != null){
+            mNameEv.setText(otherPriceBean.getName());
+            mPriceEv.setText(otherPriceBean.getPrice());
+        }
+
+    }
+
 
     public AddOtherPriceDialog setOnNegativeListener(int resId, View.OnClickListener listener) {
 

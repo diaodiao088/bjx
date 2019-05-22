@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.RoundImageView;
 import com.bumptech.glide.Glide;
@@ -146,8 +147,16 @@ public class ImageListActivity extends Activity {
             imgIv = itemView.findViewById(R.id.screenShotImageView);
         }
 
-        public void setData(String imgPath) {
+        public void setData(final String imgPath) {
             Glide.with(ImageListActivity.this).load(imgPath).into(imgIv);
+
+            imgIv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ImageOrderActivity.goToActivity(ImageListActivity.this , imgPath);
+                }
+            });
+
         }
     }
 

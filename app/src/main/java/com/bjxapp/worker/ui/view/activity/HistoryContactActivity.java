@@ -58,17 +58,21 @@ public class HistoryContactActivity extends Activity {
 
         for (int i = 0; i < list.size(); i++) {
             PlanBean planBean = list.get(i);
-            MaintainCallItemLayout mXieTiaoLayout = new MaintainCallItemLayout(this);
 
-            mXieTiaoLayout.bindData(null, planBean, "");
-            mXieTiaoLayout.makeUnvisible();
+            if (planBean != null){
+                MaintainCallItemLayout mXieTiaoLayout = new MaintainCallItemLayout(this);
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                mXieTiaoLayout.bindData(null, planBean, "");
+                mXieTiaoLayout.makeUnvisible();
 
-            layoutParams.setMargins(0, DimenUtils.dp2px(5, this), 0, 0);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            mContainer.addView(mXieTiaoLayout, layoutParams);
+                layoutParams.setMargins(0, DimenUtils.dp2px(5, this), 0, 0);
+
+                mContainer.addView(mXieTiaoLayout, layoutParams);
+            }
+
         }
     }
 

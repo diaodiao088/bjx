@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -390,7 +391,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         View view = LayoutInflater.from(this).inflate(R.layout.bill_state_popup_window, null, false);
 
-        TextView totalTv = view.findViewById(R.id.total_tv);
+        LinearLayout totalTv = view.findViewById(R.id.total_tv);
         TextView totalRedotTv = view.findViewById(R.id.total_redot);
         totalTv.setOnClickListener(this);
 
@@ -400,7 +401,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
             totalRedotTv.setVisibility(View.GONE);
         }
 
-        TextView waitContactTv = view.findViewById(R.id.wait_contact_tv);
+        LinearLayout waitContactTv = view.findViewById(R.id.wait_contact_tv);
         TextView waitContactRedotTv = view.findViewById(R.id.wait_contact_redot);
         waitContactTv.setOnClickListener(this);
 
@@ -411,7 +412,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
             waitContactRedotTv.setVisibility(View.GONE);
         }
 
-        TextView waitRoomTv = view.findViewById(R.id.wait_room_tv);
+        LinearLayout waitRoomTv = view.findViewById(R.id.wait_room_tv);
         TextView waitRoomRedot = view.findViewById(R.id.wait_room_redot);
         waitRoomTv.setOnClickListener(this);
 
@@ -422,7 +423,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
             waitRoomRedot.setVisibility(View.GONE);
         }
 
-        TextView already_room_tv = view.findViewById(R.id.already_room_tv);
+        LinearLayout already_room_tv = view.findViewById(R.id.already_room_tv);
         TextView already_room_redot = view.findViewById(R.id.already_room_redot);
         already_room_tv.setOnClickListener(this);
 
@@ -433,7 +434,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
             already_room_redot.setVisibility(View.GONE);
         }
 
-        TextView xietiao_tv = view.findViewById(R.id.xietiao_tv);
+        LinearLayout xietiao_tv = view.findViewById(R.id.xietiao_tv);
         TextView xietiao_redot = view.findViewById(R.id.xietiao_redot);
         xietiao_tv.setOnClickListener(this);
 
@@ -444,7 +445,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
             xietiao_redot.setVisibility(View.GONE);
         }
 
-        TextView jiesuan_tv = view.findViewById(R.id.jiesuan_tv);
+        LinearLayout jiesuan_tv = view.findViewById(R.id.jiesuan_tv);
         TextView jiesuan_redot = view.findViewById(R.id.jiesuan_redot);
         jiesuan_tv.setOnClickListener(this);
 
@@ -455,7 +456,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
             jiesuan_redot.setVisibility(View.GONE);
         }
 
-        TextView waitpay_tv = view.findViewById(R.id.waitpay_tv);
+        LinearLayout waitpay_tv = view.findViewById(R.id.waitpay_tv);
         TextView waitpay_redot = view.findViewById(R.id.waitpay_redot);
         waitpay_tv.setOnClickListener(this);
 

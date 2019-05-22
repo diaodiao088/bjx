@@ -151,6 +151,8 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
             return;
         }
 
+        mImageLy.removeAllViews();
+
         for (int i = 0; i < imgList.size(); i++) {
             ImageView imageView = new ImageView(getContext());
 

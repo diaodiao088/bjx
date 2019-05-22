@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/total_tv"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center_vertical"
@@ -13,7 +14,6 @@
         android:paddingLeft="28dp">
 
         <TextView
-            android:id="@+id/total_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="全部"
@@ -39,6 +39,7 @@
         android:background="#e5e5e5" />
 
     <LinearLayout
+        android:id="@+id/wait_contact_tv"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center_vertical"
@@ -46,7 +47,7 @@
         android:paddingLeft="28dp">
 
         <TextView
-            android:id="@+id/wait_contact_tv"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="待联系"
@@ -72,6 +73,7 @@
         android:background="#e5e5e5" />
 
     <LinearLayout
+        android:id="@+id/wait_room_tv"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center_vertical"
@@ -79,7 +81,6 @@
         android:paddingLeft="28dp">
 
         <TextView
-            android:id="@+id/wait_room_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="待上门"
@@ -106,6 +107,7 @@
 
 
     <LinearLayout
+        android:id="@+id/already_room_tv"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginLeft="28dp"
@@ -113,7 +115,6 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/already_room_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="已上门"
@@ -140,6 +141,7 @@
 
 
     <LinearLayout
+        android:id="@+id/xietiao_tv"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginLeft="28dp"
@@ -147,7 +149,6 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/xietiao_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="协调中"
@@ -173,6 +174,7 @@
         android:background="#e5e5e5" />
 
     <LinearLayout
+        android:id="@+id/jiesuan_tv"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center_vertical"
@@ -180,7 +182,6 @@
         android:paddingLeft="28dp">
 
         <TextView
-            android:id="@+id/jiesuan_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="结算待审核"
@@ -206,6 +207,7 @@
         android:background="#e5e5e5" />
 
     <LinearLayout
+        android:id="@+id/waitpay_tv"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center_vertical"
@@ -213,7 +215,6 @@
         android:paddingLeft="28dp">
 
         <TextView
-            android:id="@+id/waitpay_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="待支付"

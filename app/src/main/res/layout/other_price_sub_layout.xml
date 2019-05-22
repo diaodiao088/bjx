@@ -17,7 +17,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:drawableLeft="@drawable/close_new"
-            android:drawablePadding="3dp"
+            android:drawablePadding="7dp"
             android:text="其他费用"
             android:textColor="@color/main_text_color"
             android:textSize="12sp" />

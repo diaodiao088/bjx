@@ -59,6 +59,8 @@ public class OtherPriceLayout extends LinearLayout {
 
                 final AddOtherPriceDialog otherPriceDialog = new AddOtherPriceDialog(getContext());
 
+                otherPriceDialog.setPreviousData(itemBean);
+
                 otherPriceDialog.setCancelable(true);
 
                 otherPriceDialog.setOnNegativeListener("取消", new View.OnClickListener() {

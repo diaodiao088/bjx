@@ -114,7 +114,7 @@
                 android:paddingTop="14dp"
                 android:paddingBottom="14dp"
                 android:text="取消"
-                android:textColor="#53333333"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
