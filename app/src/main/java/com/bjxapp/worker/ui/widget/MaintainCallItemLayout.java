@@ -19,6 +19,7 @@ import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.model.CommentBean;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.PlanBean;
 import com.bjxapp.worker.ui.view.activity.MaintainActivity;
@@ -63,6 +64,9 @@ public class MaintainCallItemLayout extends LinearLayout {
 
     @BindView(R.id.edit_text)
     EditText mEditTv;
+
+    @BindView(R.id.contact_record_ly)
+    LinearLayout mContactRecordLy;
 
     @OnClick(R.id.commit_tv)
     void commit() {
@@ -154,7 +158,7 @@ public class MaintainCallItemLayout extends LinearLayout {
 
     }
 
-    public void bindData(PlanBean planBean , String orderId) {
+    public void bindData(PlanBean planBean, String orderId) {
         this.planBean = planBean;
         this.orderId = orderId;
 
@@ -178,8 +182,9 @@ public class MaintainCallItemLayout extends LinearLayout {
             }
         }
 
-
         addPriceList();
+
+        addCommentList();
 
     }
 
@@ -200,6 +205,43 @@ public class MaintainCallItemLayout extends LinearLayout {
             layoutParams.setMargins(0, DimenUtils.dp2px(10, getContext()), 0, 0);
 
             mPriceContainerLy.addView(peijianUILayout, layoutParams);
+
+        }
+    }
+
+
+    private void addCommentList() {
+
+        ArrayList<CommentBean> list = planBean.getmCommentList();
+
+        mContactRecordLy.removeAllViews();
+
+        for (int i = 0; i < list.size(); i++) {
+
+            CommentBean item = list.get(i);
+
+            if (item.getApplicationType() == 3) {
+                RecordILayout leftLayout = new RecordILayout(getContext());
+                leftLayout.bindData(list.get(i));
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                        , ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                layoutParams.setMargins(0, DimenUtils.dp2px(10, getContext()), 0, 0);
+
+                mContactRecordLy.addView(leftLayout, layoutParams);
+
+            } else {
+                RecordRLayout rightLayout = new RecordRLayout(getContext());
+                rightLayout.bindData(list.get(i));
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                        , ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                layoutParams.setMargins(0, DimenUtils.dp2px(10, getContext()), 0, 0);
+
+                mContactRecordLy.addView(rightLayout, layoutParams);
+            }
 
         }
     }
