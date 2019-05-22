@@ -53,6 +53,7 @@
 
 
         <RelativeLayout
+            android:id="@+id/feed_back_ly"
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_marginRight="10dp"
@@ -86,6 +87,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/xietiao_ly"
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_marginRight="10dp"

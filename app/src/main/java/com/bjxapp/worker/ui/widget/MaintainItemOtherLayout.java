@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.bjx.master.R;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.ThiOtherBean;
+import com.bjxapp.worker.ui.view.activity.RecordAddActivity;
+import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -96,7 +98,7 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
         mNameTv.setVisibility(VISIBLE);
         mNameTv.setText(thiOtherBean.getName());
 
-        mRealPriceTv.setText("$" + thiOtherBean.getCost());
+        mRealPriceTv.setText("¥" + thiOtherBean.getCost());
 
         if (!TextUtils.isEmpty(thiOtherBean.getModel())) {
             mTypeNameTv.setText(maintainInfo.getModel());
@@ -105,7 +107,7 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
         }
 
         if (!TextUtils.isEmpty(thiOtherBean.getRenGongCost())) {
-            mRenGongTv.setText("$" + thiOtherBean.getRenGongCost());
+            mRenGongTv.setText("¥" + thiOtherBean.getRenGongCost());
         }
 
         mRemarkTv.setText(thiOtherBean.getRemark());
@@ -117,7 +119,7 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
 
     private void addImageIfNeed(ThiOtherBean thiOtherBean) {
 
-        ArrayList<String> imgList = thiOtherBean.getImgList();
+        final ArrayList<String> imgList = thiOtherBean.getImgList();
 
         if (imgList.size() <= 0) {
             return;
@@ -127,6 +129,14 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
             ImageView imageView = new ImageView(getContext());
 
             imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+            final int finalI = i;
+            imageView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ImageOrderActivity.goToActivity(getContext(), imgList.get(finalI));
+                }
+            });
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(DimenUtils.dp2px(60, getContext()),
                     DimenUtils.dp2px(60, getContext()));

@@ -142,7 +142,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:drawableLeft="@drawable/mendian"
+                        android:drawableLeft="@drawable/bianhao"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
                         android:textColor="#545454"
@@ -193,18 +193,37 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp">
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_vertical">
 
                     <com.bjxapp.worker.controls.XTextView
                         android:id="@+id/order_receive_textview_orderdate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
                         android:drawableLeft="@drawable/order_time"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
                         android:textColor="#545454"
                         android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/gaiqi_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_toRightOf="@+id/order_receive_textview_orderdate"
+                        android:background="@drawable/layout_textview_radius"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="改期"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -422,6 +441,33 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/history_ly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/layout_radius"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="5dp"
+                    android:layout_marginRight="8dp"
+                    android:drawableRight="@drawable/right"
+                    android:paddingLeft="5dp"
+                    android:text="历史维修方案"
+                    android:textColor="@color/main_text_color" />
+
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:id="@+id/modify_strategy_ly"

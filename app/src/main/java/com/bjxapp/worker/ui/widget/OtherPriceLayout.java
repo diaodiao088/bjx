@@ -10,15 +10,20 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.OtherPriceBean;
+import com.bjxapp.worker.ui.view.activity.MaintainActivity;
 import com.bjxapp.worker.ui.view.activity.RecordAddActivity;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.AddOtherPriceDialog;
 
 public class OtherPriceLayout extends LinearLayout {
 
     private TextView mSubNameTv, mPriceTv;
+
+    private TextView mModifyTv;
 
     private View mRootView;
 
@@ -45,12 +50,51 @@ public class OtherPriceLayout extends LinearLayout {
 
         mSubNameTv = findViewById(R.id.sub_name);
         mPriceTv = findViewById(R.id.price_tv);
+
+        mModifyTv = findViewById(R.id.modify);
+
+        mModifyTv.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final AddOtherPriceDialog otherPriceDialog = new AddOtherPriceDialog(getContext());
+
+                otherPriceDialog.setCancelable(true);
+
+                otherPriceDialog.setOnNegativeListener("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        otherPriceDialog.dismiss();
+                    }
+                }).setOnPositiveListener("确认", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!otherPriceDialog.isDataValid()) {
+                            Toast.makeText(getContext(), "请填写完整数据", Toast.LENGTH_SHORT).show();
+                        } else {
+                            OtherPriceBean validBean = otherPriceDialog.getValidBean();
+
+                            itemBean.setPrice(validBean.getPrice());
+                            itemBean.setName(validBean.getName());
+
+                            mSubNameTv.setText(itemBean.getName());
+                            mPriceTv.setText("¥" + itemBean.getPrice());
+
+                            otherPriceDialog.dismiss();
+                        }
+                    }
+                });
+
+                otherPriceDialog.show();
+
+            }
+        });
     }
 
     public void bindData(final OtherPriceBean itemBean, final String shopId) {
         this.itemBean = itemBean;
         mSubNameTv.setText(itemBean.getName());
-        mPriceTv.setText("$" + itemBean.getPrice());
+        mPriceTv.setText("¥" + itemBean.getPrice());
 
         mSubNameTv.setOnClickListener(new OnClickListener() {
             @Override

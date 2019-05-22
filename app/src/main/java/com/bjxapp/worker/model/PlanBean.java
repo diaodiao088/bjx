@@ -1,9 +1,12 @@
 package com.bjxapp.worker.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class PlanBean {
+public class PlanBean implements Parcelable {
 
     private int applicationType;
 
@@ -27,6 +30,43 @@ public class PlanBean {
     private String extraCost;
 
     private String fault;
+
+    public PlanBean(){
+
+    }
+
+    protected PlanBean(Parcel in) {
+        applicationType = in.readInt();
+        id = in.readInt();
+        mCommentList = in.createTypedArrayList(CommentBean.CREATOR);
+        mOtherPriceList = in.createTypedArrayList(OtherPriceBean.CREATOR);
+        mMaintainList = in.createTypedArrayList(MainTainBean.CREATOR);
+        mPlanImgList = in.createStringArrayList();
+        mResultImgList = in.createStringArrayList();
+        coordinateNextHandleStartTime = in.readString();
+        coordinateNextHandleEndTime = in.readString();
+        coordinateReason = in.readString();
+        extraCost = in.readString();
+        fault = in.readString();
+        plan = in.readString();
+        payAmount = in.readString();
+        mPlanImgUrls = in.createStringArrayList();
+        mResultImgUrls = in.createStringArrayList();
+        status = in.readInt();
+        totalCost = in.readString();
+    }
+
+    public static final Creator<PlanBean> CREATOR = new Creator<PlanBean>() {
+        @Override
+        public PlanBean createFromParcel(Parcel in) {
+            return new PlanBean(in);
+        }
+
+        @Override
+        public PlanBean[] newArray(int size) {
+            return new PlanBean[size];
+        }
+    };
 
     public ArrayList<CommentBean> getmCommentList() {
         return mCommentList;
@@ -182,5 +222,32 @@ public class PlanBean {
 
     public void setmResultImgList(ArrayList<String> mResultImgList) {
         this.mResultImgList = mResultImgList;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(applicationType);
+        parcel.writeInt(id);
+        parcel.writeTypedList(mCommentList);
+        parcel.writeTypedList(mOtherPriceList);
+        parcel.writeTypedList(mMaintainList);
+        parcel.writeStringList(mPlanImgList);
+        parcel.writeStringList(mResultImgList);
+        parcel.writeString(coordinateNextHandleStartTime);
+        parcel.writeString(coordinateNextHandleEndTime);
+        parcel.writeString(coordinateReason);
+        parcel.writeString(extraCost);
+        parcel.writeString(fault);
+        parcel.writeString(plan);
+        parcel.writeString(payAmount);
+        parcel.writeStringList(mPlanImgUrls);
+        parcel.writeStringList(mResultImgUrls);
+        parcel.writeInt(status);
+        parcel.writeString(totalCost);
     }
 }

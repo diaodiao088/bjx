@@ -150,9 +150,10 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:background="@color/white"
                         android:gravity="center_vertical"
+                        android:layout_marginTop="10dp"
                         android:orientation="horizontal"
                         android:paddingLeft="15dp">
 
@@ -307,8 +308,8 @@
         android:id="@+id/xietiao_ly"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/title_content"
@@ -396,9 +397,9 @@
             android:id="@+id/save_ly"
             android:layout_width="match_parent"
             android:layout_height="55dp"
+            android:layout_alignParentBottom="true"
             android:background="@color/white"
             android:gravity="center"
-            android:layout_alignParentBottom="true"
             android:visibility="visible">
 
             <com.bjxapp.worker.controls.XButton
@@ -418,9 +419,6 @@
 
 
     </RelativeLayout>
-
-
-
 
 
 </LinearLayout>

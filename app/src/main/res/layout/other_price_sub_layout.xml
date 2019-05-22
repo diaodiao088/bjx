@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:drawableLeft="@drawable/type_icon"
+            android:drawableLeft="@drawable/close_new"
             android:drawablePadding="3dp"
             android:text="其他费用"
             android:textColor="@color/main_text_color"
@@ -27,6 +27,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:textColor="@color/main_text_color"
+            android:textSize="12sp" />
+
+
+        <TextView
+            android:id="@+id/modify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/maintain_item_bg"
+            android:text="修改"
+            android:padding="5dp"
             android:textColor="@color/main_text_color"
             android:textSize="12sp" />
 

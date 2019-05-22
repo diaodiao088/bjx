@@ -1,7 +1,10 @@
 package com.bjxapp.worker.model;
 
 
-public class CommentBean {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class CommentBean implements Parcelable {
 
     private int applicationType ;
 
@@ -12,6 +15,25 @@ public class CommentBean {
     private String userName;
 
     public CommentBean(){}
+
+    protected CommentBean(Parcel in) {
+        applicationType = in.readInt();
+        content = in.readString();
+        createTime = in.readLong();
+        userName = in.readString();
+    }
+
+    public static final Creator<CommentBean> CREATOR = new Creator<CommentBean>() {
+        @Override
+        public CommentBean createFromParcel(Parcel in) {
+            return new CommentBean(in);
+        }
+
+        @Override
+        public CommentBean[] newArray(int size) {
+            return new CommentBean[size];
+        }
+    };
 
     public int getApplicationType() {
         return applicationType;
@@ -43,5 +65,18 @@ public class CommentBean {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(applicationType);
+        parcel.writeString(content);
+        parcel.writeLong(createTime);
+        parcel.writeString(userName);
     }
 }

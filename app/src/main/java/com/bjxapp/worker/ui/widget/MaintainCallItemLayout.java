@@ -23,6 +23,7 @@ import com.bjxapp.worker.model.CommentBean;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.PlanBean;
 import com.bjxapp.worker.ui.view.activity.MaintainActivity;
+import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
 import com.google.gson.JsonObject;
 
 import java.text.SimpleDateFormat;
@@ -31,6 +32,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -58,6 +60,9 @@ public class MaintainCallItemLayout extends LinearLayout {
 
     @BindView(R.id.price_content)
     TextView mPriceTv;
+
+    @BindView(R.id.bottom_comit)
+    LinearLayout mBottomLy;
 
     @BindView(R.id.main_container_ly)
     LinearLayout mPriceContainerLy;
@@ -105,6 +110,9 @@ public class MaintainCallItemLayout extends LinearLayout {
                             public void run() {
                                 Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
                                 mEditTv.setText("");
+                                if (actIns != null) {
+                                    actIns.loadData(false);
+                                }
                             }
                         });
                     } else {
@@ -158,7 +166,16 @@ public class MaintainCallItemLayout extends LinearLayout {
 
     }
 
-    public void bindData(PlanBean planBean, String orderId) {
+    OrderDetailActivityNew actIns;
+
+    public void makeUnvisible(){
+        mBottomLy.setVisibility(GONE);
+    }
+
+    public void bindData(OrderDetailActivityNew act, PlanBean planBean, String orderId) {
+
+        actIns = act;
+
         this.planBean = planBean;
         this.orderId = orderId;
 
@@ -169,6 +186,8 @@ public class MaintainCallItemLayout extends LinearLayout {
         if (planBean.getStatus() == 0) {
             mReasonTv.setVisibility(GONE);
             mNextTimeTv.setVisibility(GONE);
+            mContactRecordLy.setVisibility(GONE);
+            mBottomLy.setVisibility(GONE);
 
         } else if (planBean.getStatus() == 3) {
             mReasonTv.setVisibility(VISIBLE);

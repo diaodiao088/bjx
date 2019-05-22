@@ -40,7 +40,6 @@
             android:background="@null"
             android:drawableRight="@drawable/type_arrow"
             android:drawablePadding="10dp"
-            android:text="2019-09-23"
             android:textColor="#a6a6a6"
             android:textSize="14sp" />
 

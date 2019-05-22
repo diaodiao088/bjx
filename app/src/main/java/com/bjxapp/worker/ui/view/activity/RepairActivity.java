@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.bjxapp.worker.ui.view.activity.order.OrderPaySuccessActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.view.fragment.subfragment.AlreadyRoomFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.BillAdapter;
+import com.bjxapp.worker.ui.view.fragment.subfragment.JieSuanFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.NewBillFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.TotalFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.WaitingContactFragment;
@@ -58,6 +60,21 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
     @BindView(R.id.all_bill_ly)
     RelativeLayout mAllBillTv;
 
+    @BindView(R.id.all_bill_tv)
+    TextView mAllTv;
+
+    @BindView(R.id.feed_back_ly)
+    RelativeLayout mFeedbackLy;
+
+    @BindView(R.id.enter_now_tv)
+    TextView mFeedbackTv;
+
+    @BindView(R.id.feed_back_tv)
+    TextView mXieTiaoTv;
+
+    @BindView(R.id.xietiao_ly)
+    RelativeLayout mXieTiaoLy;
+
     @BindView(R.id.all_bill_redot)
     TextView mAllBilRedotTv;
 
@@ -87,6 +104,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         mBillAdapter.addFragment(AlreadyRoomFragment.getIns());
         mBillAdapter.addFragment(WaitingPayFragment.getIns());
         mBillAdapter.addFragment(XieTiaoFragment.getIns());
+        mBillAdapter.addFragment(JieSuanFragment.getIns());
 
         mVp.setAdapter(mBillAdapter);
         mVp.setCurrentItem(0);
@@ -103,8 +121,45 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
     private void initListener() {
         findViewById(R.id.all_bill_ly).setOnClickListener(this);
-        findViewById(R.id.enter_now_tv).setOnClickListener(this);
-        findViewById(R.id.feed_back_tv).setOnClickListener(this);
+        findViewById(R.id.feed_back_ly).setOnClickListener(this);
+        findViewById(R.id.xietiao_ly).setOnClickListener(this);
+    }
+
+    private void changeState(int index) {
+        switch (index) {
+            case 0:
+
+                mAllBillTv.setBackgroundResource(R.drawable.green_bg);
+                mXieTiaoLy.setBackgroundResource(R.drawable.white_bg);
+                mFeedbackLy.setBackgroundResource(R.drawable.white_bg);
+
+                mAllTv.setTextColor(Color.WHITE);
+                mXieTiaoTv.setTextColor(Color.parseColor("#545454"));
+                mFeedbackTv.setTextColor(Color.parseColor("#545454"));
+
+                break;
+            case 1:
+
+                mAllBillTv.setBackgroundResource(R.drawable.white_bg);
+                mXieTiaoLy.setBackgroundResource(R.drawable.white_bg);
+                mFeedbackLy.setBackgroundResource(R.drawable.green_bg);
+
+                mFeedbackTv.setTextColor(Color.WHITE);
+                mXieTiaoTv.setTextColor(Color.parseColor("#545454"));
+                mAllTv.setTextColor(Color.parseColor("#545454"));
+
+                break;
+            case 2:
+
+                mAllBillTv.setBackgroundResource(R.drawable.white_bg);
+                mXieTiaoLy.setBackgroundResource(R.drawable.green_bg);
+                mFeedbackLy.setBackgroundResource(R.drawable.white_bg);
+
+                mXieTiaoTv.setTextColor(Color.WHITE);
+                mAllTv.setTextColor(Color.parseColor("#545454"));
+                mFeedbackTv.setTextColor(Color.parseColor("#545454"));
+                break;
+        }
     }
 
 
@@ -117,11 +172,18 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         switch (v.getId()) {
 
-            case R.id.enter_now_tv:
+            case R.id.feed_back_ly:
+                mVp.setCurrentItem(4, false);
+                changeState(1);
+                break;
+
             case R.id.already_room_tv:
                 mVp.setCurrentItem(4, false);
                 break;
-            case R.id.feed_back_tv:
+            case R.id.xietiao_ly:
+                mVp.setCurrentItem(6, false);
+                changeState(2);
+                break;
             case R.id.xietiao_tv:
                 mVp.setCurrentItem(6, false);
                 break;
@@ -131,6 +193,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
             case R.id.all_bill_ly:
                 showPopupWindow(v);
+                changeState(0);
                 break;
 
             case R.id.new_bill_ly:
@@ -374,9 +437,9 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         TextView xietiao_redot = view.findViewById(R.id.xietiao_redot);
         xietiao_tv.setOnClickListener(this);
 
-        if (getSpecCount(0x43, mList) > 0) {
+        if (getXieTiaoSize(mList) > 0) {
             xietiao_redot.setVisibility(View.VISIBLE);
-            xietiao_redot.setText(String.valueOf(getSpecCount(0x04, mList)));
+            xietiao_redot.setText(String.valueOf(getXieTiaoSize(mList)));
         } else {
             xietiao_redot.setVisibility(View.GONE);
         }

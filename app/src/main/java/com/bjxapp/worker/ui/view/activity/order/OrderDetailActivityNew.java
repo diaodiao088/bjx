@@ -47,6 +47,7 @@ import com.bjxapp.worker.ui.view.activity.CompleteActivity;
 import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
 import com.bjxapp.worker.ui.view.activity.FastJudgeActivity;
 import com.bjxapp.worker.ui.view.activity.FollowUpActivity;
+import com.bjxapp.worker.ui.view.activity.HistoryContactActivity;
 import com.bjxapp.worker.ui.view.activity.MaintainActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
@@ -72,6 +73,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
@@ -102,6 +104,24 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     @BindView(R.id.order_receive_detail_follow)
     RelativeLayout mFollowLy;
 
+    @BindView(R.id.history_ly)
+    RelativeLayout mHistoryLy;
+
+    @OnClick(R.id.history_ly)
+    void onClickHistory(){
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        ArrayList<PlanBean> planlist = mDetailInfo.getMaintainInfo().getPlanList();
+
+        if (planlist.size() <= 1){
+            return;
+        }
+
+        HistoryContactActivity.goToActivity(this , planlist);
+    }
+
     @OnClick(R.id.order_receive_detail_follow)
     void onClickFollow() {
 
@@ -130,6 +150,14 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     @BindView(R.id.save_ly)
     RelativeLayout mSaveLy;
 
+    @BindView(R.id.gaiqi_tv)
+    TextView mGaiQiTv;
+
+    @OnClick(R.id.gaiqi_tv)
+    void onClickGaiQi() {
+        changeDate();
+    }
+
     /* 新订单 */
     @BindView(R.id.bill_name)
     XTextView mServiceNameTv; // 维修项目
@@ -148,7 +176,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
     @BindView(R.id.wait_contact_change_btn)
     TextView mChangeDateTv;
-
 
     /* 待预约 */
     @BindView(R.id.last_hour)
@@ -456,7 +483,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 //        picker.show();
     }
 
-    private void changeDateReal(final String day, final String time, final boolean isUpdate) {
+    private void changeDateReal(final String day, final String time, final boolean isUpdate, String reason) {
 
         if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
             return;
@@ -485,6 +512,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         params.put("appointmentStartTime", day + " " + startTime);
         params.put("appointmentEndTime", day + " " + endTime);
+        params.put("reason", reason);
 
         retrofit2.Call<JsonObject> request = billApi.changeTime(params);
 
@@ -578,13 +606,14 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             toNewBillStatus();
         } else if (processStatus == 2) {
             toWaitStatus();
-        } else if (processStatus == 4 || processStatus == 5
-                || processStatus == 6 || processStatus == 7) {
+        } else if (processStatus == 4 || processStatus == 5) {
             toDetailUi();
         } else if (processStatus == 3) {
             toWaitRootStatus();
         } else if (processStatus == 43) {
             toXieTiaoUi();
+        } else if (processStatus == 6 || processStatus == 7) {
+            toSettleMentUi();
         }
     }
 
@@ -595,6 +624,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mSaveButton.setVisibility(View.VISIBLE);
         mCancelBillTv.setVisibility(View.GONE);
         mSaveLy.setVisibility(View.VISIBLE);
+
+        mGaiQiTv.setVisibility(View.VISIBLE);
 
         mFinalMoneyLy.setVisibility(View.GONE);
 
@@ -687,7 +718,19 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             case R.id.wait_contact_change_btn:
 
                 if (mDetailInfo.getOrderDes().getProcessStatus() == 43) {
-                    CompleteActivity.goToActivity(this, mDetailInfo.getOrderDes().getOrderId(), mDetailInfo.getOrderDes().getOrderId());
+
+                    if (currentPlanBean == null) {
+                        return;
+                    }
+
+                    int settleState = currentPlanBean.getStatus();
+
+                    if (settleState == 3 || settleState == 9) {
+                        Toast.makeText(this, "请确认维修是已审核的状态", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId());
                 } else {
                     changeDate();
                 }
@@ -775,6 +818,64 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     MaintainCallItemLayout mXieTiaoLayout;
 
 
+    private void toSettleMentUi() {
+
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
+
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null
+                || mDetailInfo.getMaintainInfo().getPlanList().size() <= 0) {
+            return;
+        }
+
+        int settlementState = mDetailInfo.getOrderDes().getSettleStatus();
+        int processState = mDetailInfo.getOrderDes().getProcessStatus();
+
+        mContactLy.setVisibility(View.VISIBLE);
+
+        mStatusTv.setBackgroundResource(R.drawable.layout_textview_radius);
+        mServiceEditBtn.setEnabled(true);
+        mHourLastTv.setVisibility(View.GONE);
+        mOrderWaitLy.setVisibility(View.GONE);
+        mCancelBillTv.setVisibility(View.GONE);
+
+        mChangeDateTv.setText("直接完成");
+        mChangeDateOk.setText("创建维修方案");
+
+        modifyLy.setVisibility(View.VISIBLE);
+        mFinalMoneyLy.setVisibility(View.VISIBLE);
+
+        mSaveLy.setVisibility(View.GONE);
+        mSaveButton.setVisibility(View.GONE);
+        mOrderWaitLy.setVisibility(View.GONE);
+
+        mHistoryLy.setVisibility(View.VISIBLE);
+
+        mOtherPriceTv.setText(mDetailInfo.getMaintainInfo().getExtraCost());
+        mTotalPriceTv.setText(mDetailInfo.getMaintainInfo().getTotalCost());
+        mFuKuanContentTv.setText(mDetailInfo.getMaintainInfo().getPayAmount());
+
+        mXieTiaoLayout.setVisibility(View.VISIBLE);
+
+        if (settlementState == 3) {
+            mSaveLy.setVisibility(View.VISIBLE);
+            mStatusTv.setText("结算审核中");
+            mLookInfoTv.setVisibility(View.VISIBLE);
+        } else {
+
+            if (processState == 6) {
+                mStatusTv.setText("待评价");
+            } else {
+                mStatusTv.setText("已评价");
+            }
+        }
+
+        mXieTiaoLayout.bindData(this, mDetailInfo.getMaintainInfo().getPlanList().get(0), orderId);
+
+    }
+
+
     private void toXieTiaoUi() {
 
         if (mCountDownTimer != null) {
@@ -795,6 +896,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         modifyLy.setVisibility(View.VISIBLE);
         mFinalMoneyLy.setVisibility(View.VISIBLE);
 
+        mHistoryLy.setVisibility(View.VISIBLE);
+
         mSaveLy.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.VISIBLE);
 
@@ -813,7 +916,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mLookInfoTv.setVisibility(View.GONE);
         mXieTiaoLayout.setVisibility(View.VISIBLE);
 
-        mXieTiaoLayout.bindData(mDetailInfo.getMaintainInfo().getPlanList().get(0) , orderId);
+        mXieTiaoLayout.bindData(this, mDetailInfo.getMaintainInfo().getPlanList().get(0), orderId);
 
     }
 
@@ -846,6 +949,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         int status = mDetailInfo.getOrderDes().getStatus();
 
         mLookInfoTv.setVisibility(View.GONE);
+
+        mGaiQiTv.setVisibility(View.GONE);
 
         if (processStatus == 4) {
             mStatusTv.setText("已上门");
@@ -949,7 +1054,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private void loadData(final Boolean loading) {
+    public void loadData(final Boolean loading) {
 
         if (TextUtils.isEmpty(orderId)) {
             return;
@@ -1045,10 +1150,12 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             return;
         }
 
+        mGaiQiTv.setVisibility(View.GONE);
+
         OrderDes order = mDetailInfo.getOrderDes();
         ArrayList<FollowUpBean> followUpList = mDetailInfo.getmFollowUpList();
 
-        mServiceNameTv.setText(order.getOrderNum());
+        mServiceNameTv.setText(order.getServiceName());
         mPhoneTv.setText(order.getPersonName() + "/" + order.getContactPhone());
 
         if (order.getBillType() == OrderDes.BILL_TYPE_EMERGENCY) {
@@ -1061,7 +1168,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mPriceTv.setText("费用 : " + order.getServiceVisitCost());
         mRemarkTv.setText(order.getmRemarkDes());
         mNumTv.setText(order.getOrderNum());
-
 
         mEnterRoomPrice.setText(order.getServiceVisitCost());
 
@@ -1129,9 +1235,11 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 break;
             case 4:
             case 5:
+                toDetailUi();
+                break;
             case 6:
             case 7:
-                toDetailUi();
+                toSettleMentUi();
                 break;
             case 43:
                 toXieTiaoUi();
@@ -1148,6 +1256,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         }
     }
 
+    private PlanBean currentPlanBean;
 
     private MaintainInfo getMainTainInfoNew(JSONObject detailJson) {
 
@@ -1161,6 +1270,11 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             for (int i = 0; i < planArray.length(); i++) {
 
                 PlanBean planBean = new PlanBean();
+
+                if (i == 0) {
+                    currentPlanBean = planBean;
+                }
+
                 planBeanList.add(planBean);
 
                 JSONObject planItem = planArray.getJSONObject(i);
@@ -2487,8 +2601,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                     if (resultCode == RESULT_OK) {
                         String day = data.getStringExtra(CheckChangeOrderTimeActivity.TYPE_DAY);
                         String hour = data.getStringExtra(CheckChangeOrderTimeActivity.TYPE_HOUR);
+                        String reason = data.getStringExtra("reason");
 
-                        changeDateReal(day, hour, true);
+                        changeDateReal(day, hour, true, reason);
                     }
 
                     break;

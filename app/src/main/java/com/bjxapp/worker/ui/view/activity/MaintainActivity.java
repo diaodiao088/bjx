@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,6 +24,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -253,7 +255,13 @@ public class MaintainActivity extends Activity {
 
     @OnClick(R.id.wait_contact_ok_btn)
     void onClickComplete() {
-        commitImage(true);
+
+        if (Double.parseDouble(getTotalPrice()) > 500) {
+            Toast.makeText(this, "订单金额大于500 ，请点击需要协调", Toast.LENGTH_SHORT).show();
+        } else {
+            commitImage(true);
+        }
+
     }
 
     @OnClick(R.id.wait_contact_change_btn)
@@ -337,6 +345,7 @@ public class MaintainActivity extends Activity {
                 isChangeTime = true;
 
                 mTimeTv.setText(firstData.get(selectedFirstIndex) + " " + secondData.get(selectedSecondIndex));
+                mTimeTv.setTextColor(Color.parseColor("#545454"));
 
                 mTuichiTimeTv.setText("协调天数" + selectedFirstIndex + "天");
 
@@ -513,6 +522,23 @@ public class MaintainActivity extends Activity {
         mImageList.add(bean);
         myAdapter.setList(mImageList);
         myAdapter.notifyDataSetChanged();
+
+        mMethodTv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        view.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        view.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                return false;
+            }
+        });
+
 
         mMethodTv.addTextChangedListener(new TextWatcher() {
             @Override

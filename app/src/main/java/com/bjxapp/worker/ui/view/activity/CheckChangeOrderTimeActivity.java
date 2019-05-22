@@ -20,6 +20,8 @@ import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.DateUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import butterknife.BindView;
@@ -260,20 +262,41 @@ public class CheckChangeOrderTimeActivity extends Activity {
             return;
         }
 
-
         if (TextUtils.isEmpty(mChangeReasonTv.getText().toString())) {
             Toast.makeText(this, "请输入修改原因", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        if (!isTimeValid()) {
+            Toast.makeText(this, "要修改的时间必须是未来时间", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         Intent intent = new Intent();
-        intent.putExtra(TYPE_DAY , mChangeYearTv.getText().toString());
-        intent.putExtra(TYPE_HOUR,mChangeTimeTv.getText().toString());
+        intent.putExtra(TYPE_DAY, mChangeYearTv.getText().toString());
+        intent.putExtra(TYPE_HOUR, mChangeTimeTv.getText().toString());
+        intent.putExtra("reason", mChangeReasonTv.getText().toString());
         setResult(RESULT_OK, intent);
 
         finish();
     }
 
+
+    private boolean isTimeValid() {
+
+        try {
+            String date = mChangeYearTv.getText().toString() + " " + mChangeTimeTv.getText().toString().split("-")[0];
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");//24小时制
+
+            long time2 = simpleDateFormat.parse(date).getTime();
+
+            return time2 > System.currentTimeMillis();
+        } catch (Exception e) {
+            return true;
+        }
+
+    }
 
     public static void goToActivityForResult(Activity context, String day, String hour) {
         Intent intent = new Intent();
