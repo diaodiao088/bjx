@@ -55,6 +55,7 @@ import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
+import com.bjxapp.worker.ui.widget.MaintainCallItemLayout;
 import com.bjxapp.worker.ui.widget.MaintainItemLayoutStub;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
@@ -770,6 +771,10 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         });
     }
 
+    @BindView(R.id.modify_call_ly)
+    MaintainCallItemLayout mXieTiaoLayout;
+
+
     private void toXieTiaoUi() {
 
         if (mCountDownTimer != null) {
@@ -793,7 +798,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mSaveLy.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.VISIBLE);
 
-        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null) {
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null
+                || mDetailInfo.getMaintainInfo().getPlanList().size() <= 0) {
             return;
         }
 
@@ -805,6 +811,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         int status = mDetailInfo.getOrderDes().getStatus();
 
         mLookInfoTv.setVisibility(View.GONE);
+        mXieTiaoLayout.setVisibility(View.VISIBLE);
+
+        mXieTiaoLayout.bindData(mDetailInfo.getMaintainInfo().getPlanList().get(0));
 
     }
 
@@ -1190,7 +1199,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
                 if (planItem.has("coordinateNextHandleStartTime") &&
                         !planItem.get("coordinateNextHandleStartTime").toString().equals("null")) {
-                    coordinateStartTime = planItem.getString("coordinateNextHandleEndTime");
+                    coordinateStartTime = planItem.getString("coordinateNextHandleStartTime");
                 }
 
                 planBean.setCoordinateNextHandleEndTime(coordinateNextHandleEndTime);
@@ -1200,7 +1209,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 planBean.setCoordinateReason(coordinateReason);
 
                 ArrayList<MainTainBean> mainTainList = new ArrayList<>();
-                JSONArray maintainArray = detailItem.getJSONArray("equipmentComponentList");
+                JSONArray maintainArray = planItem.getJSONArray("equipmentComponentList");
 
                 for (int j = 0; j < maintainArray.length(); j++) {
                     JSONObject maintainItem = maintainArray.getJSONObject(j);
@@ -1216,6 +1225,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 String extraCost = planItem.getString("extraCost");
 
                 planBean.setExtraCost(extraCost);
+
+                planBean.setTotalCost(planItem.getString("totalCost"));
 
                 JSONArray otherPriceArray = planItem.getJSONArray("extraCostList");
                 ArrayList<OtherPriceBean> otherPriceList = new ArrayList<>();
@@ -1236,7 +1247,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 planBean.setFault(fault);
                 planBean.setPlan(plan);
 
-                JSONArray planImageArray = detailItem.getJSONArray("planImgUrls");
+                JSONArray planImageArray = planItem.getJSONArray("planImgUrls");
 
                 ArrayList<String> planImageUrlList = new ArrayList<>();
 
@@ -1249,7 +1260,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
                 planBean.setmPlanImgList(planImageUrlList);
 
-                JSONArray resultImageArray = detailItem.getJSONArray("planImgUrls");
+                JSONArray resultImageArray = planItem.getJSONArray("resultImgUrls");
 
                 ArrayList<String> resultImageUrlList = new ArrayList<>();
 

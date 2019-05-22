@@ -420,6 +420,7 @@
                 android:id="@+id/modify_call_ly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:visibility="gone" />
 
             <LinearLayout
@@ -621,7 +622,7 @@
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/layout_radius"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="match_parent"

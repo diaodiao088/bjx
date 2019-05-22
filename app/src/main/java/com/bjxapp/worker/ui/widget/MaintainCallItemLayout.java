@@ -6,18 +6,22 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bjx.master.R;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.model.MainTainBean;
+import com.bjxapp.worker.model.PlanBean;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MaintainCallItemLayout extends LinearLayout implements View.OnClickListener {
+public class MaintainCallItemLayout extends LinearLayout {
 
     private View mRootView;
 
@@ -36,11 +40,10 @@ public class MaintainCallItemLayout extends LinearLayout implements View.OnClick
     @BindView(R.id.price_content)
     TextView mPriceTv;
 
-    private LinearLayout mOtherLy;
-    private TextView mRealPriceTv;
+    @BindView(R.id.main_container_ly)
+    LinearLayout mPriceContainerLy;
 
-    private MainTainBean maintainInfo;
-
+    private PlanBean planBean;
 
     public MaintainCallItemLayout(Context context) {
         super(context);
@@ -63,84 +66,65 @@ public class MaintainCallItemLayout extends LinearLayout implements View.OnClick
 
         ButterKnife.bind(this);
 
+    }
 
-        mOtherLy = mRootView.findViewById(R.id.other_price_ly);
+    public void bindData(PlanBean planBean) {
+        this.planBean = planBean;
 
-        mRealPriceTv = mRootView.findViewById(R.id.real_price_tv);
+        mGuZhangTv.setText(planBean.getFault());
+        mModifyTv.setText(planBean.getPlan());
+        mPriceTv.setText(planBean.getTotalCost());
 
+        if (planBean.getStatus() == 0) {
+            mReasonTv.setVisibility(GONE);
+            mNextTimeTv.setVisibility(GONE);
+
+        } else if (planBean.getStatus() == 3) {
+            mReasonTv.setVisibility(VISIBLE);
+            mNextTimeTv.setVisibility(VISIBLE);
+
+            mReasonTv.setText(planBean.getCoordinateReason());
+            try {
+                mNextTimeTv.setText(getFormatTime(Long.parseLong(planBean.getCoordinateNextHandleStartTime())));
+            } catch (Exception e) {
+
+            }
+        }
+
+
+        addPriceList();
 
     }
 
-    public void bindData(MainTainBean maintainInfo) {
-        this.maintainInfo = maintainInfo;
+    private void addPriceList() {
 
-//        if (maintainInfo.isOthers()) {
-//            mOtherLy.setVisibility(VISIBLE);
-//            mRealPriceTv.setVisibility(GONE);
-//            mNameTv.setVisibility(GONE);
-//            mNameEv.setVisibility(VISIBLE);
-//            mPriceTv.setText(maintainInfo.getCost());
-//            mNameEv.setText(maintainInfo.getComponentName());
-//        } else {
-//            mOtherLy.setVisibility(GONE);
-//            mRealPriceTv.setVisibility(VISIBLE);
-//            mNameTv.setVisibility(VISIBLE);
-//            mNameEv.setVisibility(GONE);
-//            mNameTv.setText(maintainInfo.getComponentName());
-//
-//            mRealPriceTv.setText(maintainInfo.getCost() + "/" + maintainInfo.getUnit());
-//        }
+        ArrayList<MainTainBean> list = planBean.getmMaintainList();
 
-    }
+        mPriceContainerLy.removeAllViews();
 
+        for (int i = 0; i < list.size(); i++) {
 
-    @Override
-    public void onClick(View v) {
+            PeijianUILayout peijianUILayout = new PeijianUILayout(getContext());
+            peijianUILayout.bindData(list.get(i));
 
-        switch (v.getId()) {
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                    , ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            case R.id.del_tv:
-                final ViewParent viewParent = getParent();
-                if (viewParent != null && viewParent instanceof ViewGroup) {
-                    ((ViewGroup) viewParent).removeViewInLayout(MaintainCallItemLayout.this);
+            layoutParams.setMargins(0, DimenUtils.dp2px(10, getContext()), 0, 0);
 
-                    viewParent.requestLayout();
-                }
+            mPriceContainerLy.addView(peijianUILayout, layoutParams);
 
-                if (listener != null) {
-                    listener.onDelete(maintainInfo);
-                }
-
-                break;
-
-            case R.id.less_maintain_tv:
-                int currentCount = maintainInfo.getQuantity();
-
-                if (currentCount > 1) {
-                    currentCount--;
-                }
-
-                maintainInfo.setQuantity(currentCount);
-
-                if (listener != null) {
-                    listener.onCountChange();
-                }
-
-                break;
-            case R.id.plus_maintain_tv:
-
-                int currentCountPlus = maintainInfo.getQuantity();
-                currentCountPlus++;
-
-                maintainInfo.setQuantity(currentCountPlus);
-
-                if (listener != null) {
-                    listener.onCountChange();
-                }
-
-                break;
         }
     }
+
+
+    private String getFormatTime(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/ HH:mm");
+        java.util.Date dt = new Date(time);
+        String sDateTime = sdf.format(dt);  //得到精确到秒的表示：08/31/2006 21:08:00
+        return sDateTime;
+    }
+
 
     public interface OnOperationListener {
 

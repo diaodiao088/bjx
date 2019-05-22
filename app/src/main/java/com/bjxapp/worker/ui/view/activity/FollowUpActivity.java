@@ -109,7 +109,7 @@ public class FollowUpActivity extends Activity {
         }
 
         private String getFormatTime(long time) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/ HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/ HH:mm");
             java.util.Date dt = new Date(time);
             String sDateTime = sdf.format(dt);  //得到精确到秒的表示：08/31/2006 21:08:00
             return sDateTime;
