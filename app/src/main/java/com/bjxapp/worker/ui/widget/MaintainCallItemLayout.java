@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,8 +74,12 @@ public class MaintainCallItemLayout extends LinearLayout {
     @BindView(R.id.contact_record_ly)
     LinearLayout mContactRecordLy;
 
+    @BindView(R.id.status_iv)
+    ImageView mStatusIv;
+
     @OnClick(R.id.commit_tv)
     void commit() {
+
         if (TextUtils.isEmpty(mEditTv.getText().toString())) {
             return;
         }
@@ -168,7 +173,7 @@ public class MaintainCallItemLayout extends LinearLayout {
 
     OrderDetailActivityNew actIns;
 
-    public void makeUnvisible(){
+    public void makeUnvisible() {
         mBottomLy.setVisibility(GONE);
     }
 
@@ -189,6 +194,9 @@ public class MaintainCallItemLayout extends LinearLayout {
             mContactRecordLy.setVisibility(GONE);
             mBottomLy.setVisibility(GONE);
 
+            mStatusIv.setImageResource(R.drawable.pass);
+
+
         } else if (planBean.getStatus() == 3) {
             mReasonTv.setVisibility(VISIBLE);
             mNextTimeTv.setVisibility(VISIBLE);
@@ -199,6 +207,11 @@ public class MaintainCallItemLayout extends LinearLayout {
             } catch (Exception e) {
 
             }
+
+            mStatusIv.setImageResource(R.drawable.pass_ing);
+
+        } else if (planBean.getStatus() == 9) {
+            mStatusIv.setImageResource(R.drawable.no_pass);
         }
 
         addPriceList();

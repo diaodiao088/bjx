@@ -461,7 +461,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
         if (getSpecCount(0x05, mList) > 0) {
             waitpay_redot.setVisibility(View.VISIBLE);
-            waitpay_redot.setText(String.valueOf(getSpecCount(0x04, mList)));
+            waitpay_redot.setText(String.valueOf(getSpecCount(0x05, mList)));
         } else {
             waitpay_redot.setVisibility(View.GONE);
         }
