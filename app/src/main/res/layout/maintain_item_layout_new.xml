@@ -37,14 +37,26 @@
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/modify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/maintain_item_bg"
+            android:text="修改"
+            android:padding="5dp"
+            android:textColor="@color/main_text_color"
+            android:textSize="12sp" />
+
+        <ImageView
             android:id="@+id/del_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
-            android:background="@drawable/maintain_item_bg"
             android:gravity="center"
+            android:src="@drawable/close_new"
             android:padding="6dp"
-            android:text="删除"
             android:textSize="14sp" />
 
     </LinearLayout>

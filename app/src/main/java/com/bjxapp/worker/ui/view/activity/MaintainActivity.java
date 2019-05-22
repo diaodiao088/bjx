@@ -568,6 +568,20 @@ public class MaintainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
+                case 0x10:
+
+                    ThiOtherBean otherBean = data.getParcelableExtra("other");
+
+                    if (specItem != null) {
+                        specItem.updateData(otherBean);
+                    }
+
+                    calTotalCount();
+
+
+                    break;
+
+
                 case ThiActivity.REQUEST_CODE:
 
                     Intent intent = data;
@@ -673,6 +687,7 @@ public class MaintainActivity extends Activity {
         mScrollView.fullScroll(View.FOCUS_DOWN);
     }
 
+    private MaintainItemOtherLayout specItem;
 
     private void addUi(MainTainBean mainTainBean) {
 
@@ -688,8 +703,11 @@ public class MaintainActivity extends Activity {
                 }
 
                 @Override
-                public void onPriceChange() {
-                    calTotalCount();
+                public void onUpdataUi(MaintainItemOtherLayout item, ThiOtherBean otherBean) {
+
+                    specItem = item;
+
+                    ThiOtherActivity.goToActivityForResult(MaintainActivity.this, "", true, 0x10, otherBean);
                 }
 
                 @Override

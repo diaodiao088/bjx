@@ -10,7 +10,7 @@ public class ThiOtherBean implements Parcelable {
 
     private String remark = "";
 
-    private String cost;
+    private String cost = "";
 
     private int id;
 

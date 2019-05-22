@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.ThiOtherBean;
 import com.bjxapp.worker.ui.view.activity.RecordAddActivity;
@@ -36,7 +37,7 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
 
     private TextView mRenGongTv;
 
-    private TextView mDelTv;
+    private ImageView mDelTv;
 
     private TextView mRealPriceTv;
 
@@ -47,6 +48,8 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
     private TextView mNameTv;
 
     private LinearLayout mImageLy;
+
+    private TextView mModifyTv;
 
     public MaintainItemOtherLayout(Context context) {
         super(context);
@@ -71,6 +74,8 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
         mLessTv = mRootView.findViewById(R.id.less_maintain_tv);
         mCountTv = mRootView.findViewById(R.id.count_tv);
 
+        mModifyTv = mRootView.findViewById(R.id.modify);
+
         mTypeNameTv = mRootView.findViewById(R.id.maintain_item_type_name_tv);
         mRenGongTv = mRootView.findViewById(R.id.rengong_tv);
 
@@ -86,8 +91,29 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
         mPlusTv.setOnClickListener(this);
         mLessTv.setOnClickListener(this);
         mDelTv.setOnClickListener(this);
+        mModifyTv.setOnClickListener(this);
 
     }
+
+    public void updateData(ThiOtherBean thiOtherBean){
+
+        ThiOtherBean temp = maintainInfo.getThiOtherBean();
+
+        temp.setImgList(thiOtherBean.getImgList());
+        temp.setRenGongCost(thiOtherBean.getRenGongCost());
+        temp.setModel(thiOtherBean.getModel());
+        temp.setRemark(thiOtherBean.getRemark());
+        temp.setCost(thiOtherBean.getCost());
+        temp.setName(thiOtherBean.getName());
+        temp.setId(thiOtherBean.getId());
+        temp.setNumber(thiOtherBean.getNumber());
+        temp.setOther(thiOtherBean.isOther());
+        temp.setUnit(thiOtherBean.getUnit());
+
+        bindData(maintainInfo);
+
+    }
+
 
     public void bindData(MainTainBean maintainInfo) {
         this.maintainInfo = maintainInfo;
@@ -199,6 +225,15 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
                 }
 
                 break;
+
+            case R.id.modify:
+
+                if (listener != null){
+                    listener.onUpdataUi(this , maintainInfo.getThiOtherBean());
+                }
+
+
+                break;
         }
     }
 
@@ -206,7 +241,7 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
 
         void onDelete(MainTainBean mainTainBean);
 
-        void onPriceChange();
+        void onUpdataUi(MaintainItemOtherLayout item , ThiOtherBean otherBean);
 
         void onCountChange();
 

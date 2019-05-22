@@ -73,6 +73,8 @@ public class ThiOtherActivity extends Activity {
 
     public static final String TYPE_ID = "type_id";
 
+    public static final int TYPE_FROM_SPEC = 0x02;
+
     @BindView(R.id.title_text_tv)
     TextView mTitleTv;
 
@@ -112,6 +114,11 @@ public class ThiOtherActivity extends Activity {
             return;
         }
 
+        if (getImgList().size() <= 0) {
+            Toast.makeText(this, "请至少添加一张照片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         ThiOtherBean thiOtherBean = new ThiOtherBean();
         thiOtherBean.setName(mNameTv.getText().toString());
@@ -122,9 +129,9 @@ public class ThiOtherActivity extends Activity {
         thiOtherBean.setImgList(getImgList());
 
         Intent intent = new Intent();
-        intent.putExtra("other",thiOtherBean);
+        intent.putExtra("other", thiOtherBean);
 
-        setResult(RESULT_OK , intent);
+        setResult(RESULT_OK, intent);
         finish();
     }
 
@@ -153,8 +160,11 @@ public class ThiOtherActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thi_other);
         ButterKnife.bind(this);
+        mExistBean = getIntent().getParcelableExtra("bean");
         initView();
     }
+
+    ThiOtherBean mExistBean;
 
     private void initView() {
         mTitleTv.setText("添加其他配件");
@@ -169,14 +179,34 @@ public class ThiOtherActivity extends Activity {
         mImageList.add(bean);
         myAdapter.setList(mImageList);
         myAdapter.notifyDataSetChanged();
+
+
+        if (mExistBean != null) {
+            mNameTv.setText(mExistBean.getName());
+            mPriceTv.setText(mExistBean.getCost());
+            mRenGongPriceTv.setText(mExistBean.getRenGongCost());
+            mReasonTv.setText(mExistBean.getRemark());
+        }
+
     }
 
 
     public static void goToActivityForResult(Activity context, String type_id) {
+        goToActivityForResult(context, type_id, false, REQUEST_CODE, null);
+    }
+
+    public static void goToActivityForResult(Activity context, String type_id, boolean fromSpec, int requestCode, ThiOtherBean thiOtherBean) {
         Intent intent = new Intent();
         intent.setClass(context, ThiOtherActivity.class);
         intent.putExtra(TYPE_ID, type_id);
-        context.startActivityForResult(intent, REQUEST_CODE);
+
+        intent.putExtra("from", fromSpec);
+
+        if (thiOtherBean != null) {
+            intent.putExtra("bean", thiOtherBean);
+        }
+
+        context.startActivityForResult(intent, requestCode);
     }
 
 
