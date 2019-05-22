@@ -39,6 +39,7 @@ import com.bjxapp.worker.model.AccountInfo;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.ReceiveOrder;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
+import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.utils.Logger;
 import com.bjxapp.worker.utils.Utils;
@@ -627,7 +628,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
     private void startOrderDetailActivity(OrderDes order) {
         Intent intent = new Intent();
-        intent.setClass(getActivity(), OrderDetailActivity.class);
+        intent.setClass(getActivity(), OrderDetailActivityNew.class);
         intent.putExtra("order_id", order.getOrderId());
         intent.putExtra("processStatus", order.getProcessStatus());
         startActivityForResult(intent, Constant.ACTIVITY_ORDER_DETAIL_RESULT_CODE);

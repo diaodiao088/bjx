@@ -269,12 +269,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     @OnClick(R.id.look_info)
     void onClickLookinfo() {
 
-        if (mImageList.size() > 0) {
-            FastJudgeActivity.goToActivity(this, true, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
-                    mDetailInfo.getOrderDes().getEnterpriseId(), mImageList, mDetailInfo.getOrderDes().getOrderId());
-        } else {
-            Toast.makeText(OrderDetailActivityNew.this, "请至少添加一张照片", Toast.LENGTH_SHORT).show();
-        }
+        FastJudgeActivity.goToActivity(this, true, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
+                mDetailInfo.getOrderDes().getEnterpriseId(), mImageList, mDetailInfo.getOrderDes().getOrderId());
+
     }
 
     @OnClick(R.id.check_service_ly)
@@ -387,7 +384,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         if (mDetailInfo.getOrderDes().getProcessStatus() == 43) {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
-            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo);
+            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
+                    mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed());
         } else {
             toDetailStatus();
         }
@@ -407,7 +405,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         if (mDetailInfo.getOrderDes().isBussiness()) {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
-            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo);
+
+            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
+                    mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed());
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
@@ -739,7 +739,14 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                         return;
                     }
 
-                    CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId());
+                    if (isDeviceBill && !mDetailInfo.getOrderDes().isTwiceServed()) {
+                        FastJudgeActivity.goToActivity(OrderDetailActivityNew.this, false, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
+                                mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getMaintainInfo().getPlanList().get(0).getmPlanImgList(), mDetailInfo.getOrderDes().getOrderId());
+
+                    } else {
+                        CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId());
+                    }
+
                 } else {
                     changeDate();
                 }
@@ -879,6 +886,23 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 mStatusTv.setText("已评价");
             }
         }
+
+        if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+
+            mLookInfoTv.setVisibility(View.GONE);
+
+            mSaveLy.setVisibility(View.VISIBLE);
+
+            mSaveButton.setText("设备评价");
+
+        } else if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+
+            mLookInfoTv.setVisibility(View.VISIBLE);
+        } else {
+            mLookInfoTv.setVisibility(View.GONE);
+            mSaveLy.setVisibility(View.GONE);
+        }
+
 
         mXieTiaoLayout.bindData(this, mDetailInfo.getMaintainInfo().getPlanList().get(0), orderId);
 
@@ -1646,6 +1670,12 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             String latitude = detailItem.getString("latitude");
             String lontitude = detailItem.getString("longitude");
 
+            int settleStatus = 0;
+
+            if (detailJson.has("settlementStatus")) {
+                settleStatus = detailJson.getInt("settlementStatus");
+            }
+
             boolean isTwiceServed = false;
 
             if (detailItem.has("twiceServed") && detailItem.get("twiceServed") != null && !detailItem.get("twiceServed").toString().equals("null")) {
@@ -1707,6 +1737,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 orderItem.setmShopName(detailItem.getString("shopName"));
             }
 
+            orderItem.setSettleStatus(settleStatus);
             orderItem.setContactPhone(phoneNum);
             orderItem.setmSelectTime(selectTime);
             orderItem.setmCustomImageUrls(customImgUrls);
@@ -2018,6 +2049,11 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             case 5:
                 toThirdStep(true, orderDes.getOriginType() == 2, orderDes.isFree());
                 break;
+            case 6:
+            case 7:
+
+
+                break;
         }
     }
 
@@ -2029,7 +2065,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
         if (mDetailInfo.getOrderDes().isBussiness()) {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
-            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo);
+            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
+                    mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed());
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());

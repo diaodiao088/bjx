@@ -344,7 +344,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         if (mDetailInfo.getOrderDes().isBussiness()) {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
-            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo);
+            MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo , "",
+                    isDeviceBill , mDetailInfo.getOrderDes().isTwiceServed());
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());

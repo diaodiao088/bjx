@@ -36,10 +36,12 @@ import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.EnterpriseApi;
 import com.bjxapp.worker.apinew.LoginApi;
+import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ThiInfoBean;
 import com.bjxapp.worker.model.ThiOtherBean;
+import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -51,21 +53,33 @@ import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
+import static java.lang.String.valueOf;
 
 public class ThiOtherActivity extends Activity {
 
@@ -119,20 +133,8 @@ public class ThiOtherActivity extends Activity {
             return;
         }
 
+        commitImage();
 
-        ThiOtherBean thiOtherBean = new ThiOtherBean();
-        thiOtherBean.setName(mNameTv.getText().toString());
-        thiOtherBean.setCost(mPriceTv.getText().toString());
-        thiOtherBean.setRemark(mReasonTv.getText().toString());
-        thiOtherBean.setModel(mTypeTv.getText().toString());
-        thiOtherBean.setRenGongCost(mRenGongPriceTv.getText().toString());
-        thiOtherBean.setImgList(getImgList());
-
-        Intent intent = new Intent();
-        intent.putExtra("other", thiOtherBean);
-
-        setResult(RESULT_OK, intent);
-        finish();
     }
 
     private ArrayList<String> getImgList() {
@@ -151,6 +153,128 @@ public class ThiOtherActivity extends Activity {
         return list;
     }
 
+    private XWaitingDialog mWaitingDialog;
+
+    private void commitImage() {
+
+        if (mWaitingDialog != null) {
+            mWaitingDialog.show("正在提交...", false);
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        boolean isFileValid = false;
+
+        for (int i = 0; i < mImageList.size(); i++) {
+
+            ImageBean item = mImageList.get(i);
+
+            if (item.type == ImageBean.TYPE_ADD) {
+                File file = new File(item.getUrl());
+
+                if (!file.exists()) {
+                    break;
+                }
+
+                String targetPath = getCacheDir() + file.getName();
+
+                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
+
+                final File compressFile = new File(compressImage);
+
+                if (compressFile.exists()) {
+                    isFileValid = true;
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
+                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                }
+            }
+        }
+
+        if (!isFileValid) {
+            return;
+        }
+
+        for (Map.Entry entry : map.entrySet()) {
+            requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+        }
+
+        Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(ThiOtherActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000 * 100, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, final IOException e) {
+
+                ThiOtherActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(ThiOtherActivity.this, "图片上传失败！:" + e.getLocalizedMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+
+                    final ArrayList<String> list = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(str);
+                        JSONArray accessAddress = object.getJSONArray("list");
+
+                        for (int i = 0; i < accessAddress.length(); i++) {
+                            list.add(accessAddress.get(i).toString());
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ThiOtherBean thiOtherBean = new ThiOtherBean();
+                            thiOtherBean.setName(mNameTv.getText().toString());
+                            thiOtherBean.setCost(mPriceTv.getText().toString());
+                            thiOtherBean.setRemark(mReasonTv.getText().toString());
+                            thiOtherBean.setModel(mTypeTv.getText().toString());
+                            thiOtherBean.setRenGongCost(mRenGongPriceTv.getText().toString());
+                            thiOtherBean.setImgList(getImgList());
+
+                            Intent intent = new Intent();
+                            intent.putExtra("other", thiOtherBean);
+
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    });
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(ThiOtherActivity.this, "图片上传失败！");
+                            Utils.finishWithoutAnim(ThiOtherActivity.this);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
 
     private ArrayList<ThiInfoBean> mSelectedList = new ArrayList<>();
@@ -168,6 +292,7 @@ public class ThiOtherActivity extends Activity {
 
     private void initView() {
         mTitleTv.setText("添加其他配件");
+        mWaitingDialog = new XWaitingDialog(this);
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 4);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, true));

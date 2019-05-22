@@ -49,6 +49,7 @@ import com.bjxapp.worker.model.ThiInfoBean;
 import com.bjxapp.worker.model.ThiOtherBean;
 import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
+import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.AddOtherPriceDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ManfulDialog;
@@ -99,6 +100,7 @@ public class MaintainActivity extends Activity {
     private ArrayList<String> mMalfulList = new ArrayList<>();
 
     private ArrayList<String> mXieTiaoList = new ArrayList<>();
+
 
     @BindView(R.id.title_text_tv)
     TextView mTitleTv;
@@ -208,6 +210,7 @@ public class MaintainActivity extends Activity {
 
     private String equipId;
     private String orderId;
+    private String enterPriseOrderId;
 
     public ArrayList<MainTainBean> mMainTainList = new ArrayList<>();
 
@@ -396,6 +399,9 @@ public class MaintainActivity extends Activity {
         plan = getIntent().getStringExtra("plan");
         fault = getIntent().getStringExtra("fault");
         mMainTainList = getIntent().getParcelableArrayListExtra("maintainList");
+        enterPriseOrderId = getIntent().getStringExtra("enter_order_id");
+
+
 
         if (mMainTainList == null) {
             mMainTainList = new ArrayList<>();
@@ -984,8 +990,13 @@ public class MaintainActivity extends Activity {
 
                         if (isComplete) {
 
-                            CompleteActivity.goToActivity(MaintainActivity.this, mainTainPlanId, orderId);
+                            // CompleteActivity.goToActivity(MaintainActivity.this, mainTainPlanId, orderId);
                             finish();
+
+                            if (isDeviceBill_static && !isFinised_static){
+                                FastJudgeActivity.goToActivity(MaintainActivity.this, false, enterPriseOrderId,
+                                        equipId, imgList, orderId);
+                            }
 
                             // CompleteActivity.goToActivity();
 
@@ -1087,17 +1098,24 @@ public class MaintainActivity extends Activity {
         }
     }
 
+    public static boolean isDeviceBill_static = false;
+    public static boolean isFinised_static = false;
 
-    public static void goToActivity(Activity context, String equipId, String orderId, MaintainInfo maintainInfo) {
+    public static void goToActivity(Activity context, String equipId, String orderId, MaintainInfo maintainInfo, String enterpriseOrderId,
+                                    boolean isDeviceBill , boolean isFinised) {
 
         Intent intent = new Intent();
         intent.setClass(context, MaintainActivity.class);
         intent.putExtra("equip_id", equipId);
         intent.putExtra("order_id", orderId);
+        intent.putExtra("enter_order_id", enterpriseOrderId);
 
         intent.putExtra("plan", maintainInfo.getPlan());
         intent.putExtra("fault", maintainInfo.getFault());
         intent.putParcelableArrayListExtra("maintainList", maintainInfo.getmMaintainList());
+
+        isDeviceBill_static = isDeviceBill;
+        isFinised_static = isFinised;
 
         context.startActivityForResult(intent, 0x05);
     }

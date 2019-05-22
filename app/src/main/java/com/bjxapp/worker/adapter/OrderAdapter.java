@@ -145,6 +145,7 @@ public class OrderAdapter extends BaseAdapter {
             }
         }
 
+
         if ("待支付".equals(statusString) || "待评价".equals(statusString) || "已评价".equals(statusString)) {
             String money = aInfo.get(position).getPayAmount();
             if (TextUtils.isEmpty(money)) {
@@ -155,6 +156,12 @@ public class OrderAdapter extends BaseAdapter {
 
         } else {
             holder.textViewMoney.setText(feeInfo + aInfo.get(position).getServiceVisitCost() + "元");
+        }
+
+        if ("待评价".equals(statusString) || "已评价".equals(statusString)) {
+            if (aInfo.get(position).getSettleStatus() == 3) {
+                statusString = "结算审核中";
+            }
         }
 
         if (type == 1) {
