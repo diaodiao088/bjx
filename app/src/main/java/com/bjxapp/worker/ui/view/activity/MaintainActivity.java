@@ -592,7 +592,10 @@ public class MaintainActivity extends Activity {
                         ThiInfoBean thiInfoBean = intent.getParcelableExtra("bean");
                         if (thiInfoBean != null) {
                             mainTainBean.setComponentId(thiInfoBean.getId());
-                            mainTainBean.setCost(thiInfoBean.getCost());
+                            double costReal = Double.parseDouble(thiInfoBean.getPrice()) + Double.parseDouble(thiInfoBean.getLaborCost());
+                            mainTainBean.setCost(String.valueOf(costReal));
+                            mainTainBean.setLaborCost(thiInfoBean.getLaborCost());
+                            mainTainBean.setRengongCost(thiInfoBean.getPrice());
                             mainTainBean.setModel(thiInfoBean.getModel());
                             mainTainBean.setUnit(thiInfoBean.getUnit());
                             mainTainBean.setComponentName(thiInfoBean.getName());
@@ -804,7 +807,7 @@ public class MaintainActivity extends Activity {
             return;
         }
 
-        if (!isChangeTime) {
+        if (!isChangeTime && !isComplete) {
             Toast.makeText(this, "请先选择时间修改", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -1018,20 +1021,6 @@ public class MaintainActivity extends Activity {
                 });
             }
         });
-
-    }
-
-    private boolean isDataValid() {
-
-        for (int i = 0; i < mMainTainList.size(); i++) {
-            MainTainBean item = mMainTainList.get(i);
-
-            if (TextUtils.isEmpty(item.getComponentName())
-                    || TextUtils.isEmpty(item.getCost())) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void putExtraCost(Map<String, String> params) {

@@ -35,6 +35,8 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
 
     private MainTainBean maintainInfo;
 
+    private TextView mRenGongTv;
+
     private TextView mNameTv;
     private EditText mNameEv;
 
@@ -70,6 +72,8 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
 
         mNameEv = mRootView.findViewById(R.id.name_ev);
         mNameTv = mRootView.findViewById(R.id.name);
+
+        mRenGongTv = mRootView.findViewById(R.id.rengong_price_tv);
 
         mPlusTv.setOnClickListener(this);
         mLessTv.setOnClickListener(this);
@@ -138,7 +142,8 @@ public class MaintainItemLayout extends LinearLayout implements View.OnClickList
             mNameEv.setVisibility(GONE);
             mNameTv.setText(maintainInfo.getComponentName());
 
-            mRealPriceTv.setText(maintainInfo.getCost() + "/" + maintainInfo.getUnit());
+            mRenGongTv.setText("¥" + maintainInfo.getLaborCost() + "/" + maintainInfo.getUnit());
+            mRealPriceTv.setText("¥" + maintainInfo.getRengongCost() + "/" + maintainInfo.getUnit());
         }
 
         mTypeNameTv.setText(maintainInfo.getModel());

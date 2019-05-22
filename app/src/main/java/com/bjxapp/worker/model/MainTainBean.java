@@ -3,7 +3,7 @@ package com.bjxapp.worker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MainTainBean implements Parcelable{
+public class MainTainBean implements Parcelable {
 
     public String cost;
 
@@ -21,10 +21,62 @@ public class MainTainBean implements Parcelable{
 
     public boolean isOthers;
 
+    private String laborCost;
+
+    private String rengongCost;
+
     private ThiOtherBean thiOtherBean;
 
     public MainTainBean() {
 
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(cost);
+        dest.writeInt(componentId);
+        dest.writeString(model);
+        dest.writeString(componentName);
+        dest.writeInt(quantity);
+        dest.writeString(unit);
+        dest.writeInt(id);
+        dest.writeByte((byte) (isOthers ? 1 : 0));
+        dest.writeString(laborCost);
+        dest.writeString(rengongCost);
+        dest.writeParcelable(thiOtherBean, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<MainTainBean> CREATOR = new Creator<MainTainBean>() {
+        @Override
+        public MainTainBean createFromParcel(Parcel in) {
+            return new MainTainBean(in);
+        }
+
+        @Override
+        public MainTainBean[] newArray(int size) {
+            return new MainTainBean[size];
+        }
+    };
+
+    public String getLaborCost() {
+        return laborCost;
+    }
+
+    public void setLaborCost(String laborCost) {
+        this.laborCost = laborCost;
+    }
+
+    public String getRengongCost() {
+        return rengongCost;
+    }
+
+    public void setRengongCost(String rengongCost) {
+        this.rengongCost = rengongCost;
     }
 
     public ThiOtherBean getThiOtherBean() {
@@ -47,17 +99,6 @@ public class MainTainBean implements Parcelable{
         thiOtherBean = in.readParcelable(ThiOtherBean.class.getClassLoader());
     }
 
-    public static final Creator<MainTainBean> CREATOR = new Creator<MainTainBean>() {
-        @Override
-        public MainTainBean createFromParcel(Parcel in) {
-            return new MainTainBean(in);
-        }
-
-        @Override
-        public MainTainBean[] newArray(int size) {
-            return new MainTainBean[size];
-        }
-    };
 
     public boolean isOthers() {
         return isOthers;
@@ -123,21 +164,4 @@ public class MainTainBean implements Parcelable{
         this.id = id;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(cost);
-        parcel.writeInt(componentId);
-        parcel.writeString(model);
-        parcel.writeString(componentName);
-        parcel.writeInt(quantity);
-        parcel.writeString(unit);
-        parcel.writeInt(id);
-        parcel.writeByte((byte) (isOthers ? 1 : 0));
-        parcel.writeParcelable(thiOtherBean, i);
-    }
 }

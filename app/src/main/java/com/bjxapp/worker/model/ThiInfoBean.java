@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public class ThiInfoBean implements Parcelable {
+public class ThiInfoBean implements Parcelable{
 
     private String remark;
 
@@ -25,9 +25,10 @@ public class ThiInfoBean implements Parcelable {
 
     private boolean isOther;
 
-    public ThiInfoBean(){
+    private String laborCost;
 
-    }
+    private String price;
+
 
     protected ThiInfoBean(Parcel in) {
         remark = in.readString();
@@ -39,6 +40,8 @@ public class ThiInfoBean implements Parcelable {
         unit = in.readString();
         imgList = in.createStringArrayList();
         isOther = in.readByte() != 0;
+        laborCost = in.readString();
+        price = in.readString();
     }
 
     public static final Creator<ThiInfoBean> CREATOR = new Creator<ThiInfoBean>() {
@@ -52,6 +55,26 @@ public class ThiInfoBean implements Parcelable {
             return new ThiInfoBean[size];
         }
     };
+
+    public String getLaborCost() {
+        return laborCost;
+    }
+
+    public void setLaborCost(String laborCost) {
+        this.laborCost = laborCost;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public ThiInfoBean(){
+
+    }
 
     public boolean isOther() {
         return isOther;
@@ -130,22 +153,23 @@ public class ThiInfoBean implements Parcelable {
         return super.toString();
     }
 
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(remark);
-        dest.writeString(cost);
-        dest.writeInt(id);
-        dest.writeString(model);
-        dest.writeString(name);
-        dest.writeString(number);
-        dest.writeString(unit);
-        dest.writeStringList(imgList);
-        dest.writeByte((byte) (isOther ? 1 : 0));
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(remark);
+        parcel.writeString(cost);
+        parcel.writeInt(id);
+        parcel.writeString(model);
+        parcel.writeString(name);
+        parcel.writeString(number);
+        parcel.writeString(unit);
+        parcel.writeStringList(imgList);
+        parcel.writeByte((byte) (isOther ? 1 : 0));
+        parcel.writeString(laborCost);
+        parcel.writeString(price);
     }
 }

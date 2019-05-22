@@ -111,16 +111,18 @@ public class ThiActivity extends Activity {
                         for (int i = 0; i < array.size(); i++) {
                             JsonObject item = array.get(i).getAsJsonObject();
 
-                            if (item.has("cost")){
-                                ThiInfoBean infoBean = new ThiInfoBean();
-                                infoBean.setCost(item.get("cost").getAsString());
-                                infoBean.setId(item.get("id").getAsInt());
-                                infoBean.setModel(item.get("model").getAsString());
-                                infoBean.setName(item.get("name").getAsString());
-                                infoBean.setUnit(item.get("unit").getAsString());
-                                infoBean.setOther(false);
-                                mAllList.add(infoBean);
-                            }
+                            ThiInfoBean infoBean = new ThiInfoBean();
+
+                            infoBean.setId(item.get("id").getAsInt());
+                            infoBean.setModel(item.get("model").getAsString());
+                            infoBean.setName(item.get("name").getAsString());
+                            infoBean.setUnit(item.get("unit").getAsString());
+                            infoBean.setPrice(item.get("price").getAsString());
+                            infoBean.setLaborCost(item.get("laborCost").getAsString());
+
+
+                            infoBean.setOther(false);
+                            mAllList.add(infoBean);
 
                         }
 
@@ -269,9 +271,9 @@ public class ThiActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 0x01 && resultCode == RESULT_OK){
+        if (requestCode == 0x01 && resultCode == RESULT_OK) {
             data.putExtra("type_other", true);
-            setResult(RESULT_OK , data);
+            setResult(RESULT_OK, data);
             finish();
         }
 
