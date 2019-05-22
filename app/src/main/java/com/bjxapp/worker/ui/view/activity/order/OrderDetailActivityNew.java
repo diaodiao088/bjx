@@ -813,7 +813,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mLookInfoTv.setVisibility(View.GONE);
         mXieTiaoLayout.setVisibility(View.VISIBLE);
 
-        mXieTiaoLayout.bindData(mDetailInfo.getMaintainInfo().getPlanList().get(0));
+        mXieTiaoLayout.bindData(mDetailInfo.getMaintainInfo().getPlanList().get(0) , orderId);
 
     }
 

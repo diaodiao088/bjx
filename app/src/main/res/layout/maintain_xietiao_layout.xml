@@ -303,14 +303,18 @@
             android:paddingBottom="10dp">
 
             <EditText
+                android:id="@+id/edit_text"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="@drawable/login_main_bg"
                 android:gravity="center_horizontal|left"
-                android:paddingLeft="5dp" />
+                android:textSize="14sp"
+                android:textColor="@color/main_text_color"
+                android:padding="5dp" />
 
             <TextView
+                android:id="@+id/commit_tv"
                 android:layout_width="80dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="20dp"

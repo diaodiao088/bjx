@@ -34,5 +34,10 @@ public interface EnterpriseApi {
     Call<JsonObject> completePlan(@FieldMap Map<String, String> params);
 
 
+    @FormUrlEncoded
+    @POST("/order/commentMaintainPlan")
+    Call<JsonObject> commentPlan(@FieldMap Map<String, String> params);
+
+
 
 }

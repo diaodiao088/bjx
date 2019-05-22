@@ -2,28 +2,46 @@ package com.bjxapp.worker.ui.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.api.APIConstants;
+import com.bjxapp.worker.apinew.EnterpriseApi;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.PlanBean;
+import com.bjxapp.worker.ui.view.activity.MaintainActivity;
+import com.google.gson.JsonObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MaintainCallItemLayout extends LinearLayout {
 
     private View mRootView;
+
+    private String orderId;
 
     @BindView(R.id.issue_reason_tv)
     XTextView mReasonTv;
@@ -42,6 +60,74 @@ public class MaintainCallItemLayout extends LinearLayout {
 
     @BindView(R.id.main_container_ly)
     LinearLayout mPriceContainerLy;
+
+    @BindView(R.id.edit_text)
+    EditText mEditTv;
+
+    @OnClick(R.id.commit_tv)
+    void commit() {
+        if (TextUtils.isEmpty(mEditTv.getText().toString())) {
+            return;
+        }
+
+
+        EnterpriseApi enterpriseApi = KHttpWorker.ins().createHttpService(LoginApi.URL, EnterpriseApi.class);
+
+        Call<JsonObject> call = null;
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(getContext()).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(getContext()).getUserCode());
+        params.put("orderId", orderId);
+        params.put("maintainPlanId", String.valueOf(planBean.getId()));
+        params.put("content", mEditTv.getText().toString());
+
+        call = enterpriseApi.commentPlan(params);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        mReasonTv.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
+                                mEditTv.setText("");
+                            }
+                        });
+                    } else {
+                        mReasonTv.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), msg + ":" + code, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                mReasonTv.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "提交失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+
+    }
 
     private PlanBean planBean;
 
@@ -68,8 +154,9 @@ public class MaintainCallItemLayout extends LinearLayout {
 
     }
 
-    public void bindData(PlanBean planBean) {
+    public void bindData(PlanBean planBean , String orderId) {
         this.planBean = planBean;
+        this.orderId = orderId;
 
         mGuZhangTv.setText(planBean.getFault());
         mModifyTv.setText(planBean.getPlan());
