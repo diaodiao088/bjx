@@ -42,9 +42,13 @@ public class HistoryContactActivity extends Activity {
         setContentView(R.layout.history_contact_activity);
         ButterKnife.bind(this);
 
+        mTitleTextView.setText("历史维修方案");
+
         list = getIntent().getParcelableArrayListExtra(TYPE_LIST);
 
-        if (list.size() > 0) {
+        if (list != null && list.size() > 0) {
+
+            list.remove(0);
             addUi();
         }
 

@@ -394,6 +394,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.bjxapp.worker.ui.view.activity.ImageListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.bjxapp.worker.ui.view.activity.HistoryContactActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />

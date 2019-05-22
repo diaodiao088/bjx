@@ -786,6 +786,11 @@ public class MaintainActivity extends Activity {
             return;
         }
 
+        if (!isChangeTime) {
+            Toast.makeText(this, "请先选择时间修改", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (TextUtils.isEmpty(mMethodTv.getText().toString())) {
             Toast.makeText(this, "请先填写维修方案", Toast.LENGTH_SHORT).show();
             return;
@@ -1023,9 +1028,7 @@ public class MaintainActivity extends Activity {
             params.put(amount, otherPriceBean.getPrice());
 
         }
-
     }
-
 
     private void putPartialList(Map<String, String> params) {
 

@@ -23,6 +23,7 @@ import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.CommentBean;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.PlanBean;
+import com.bjxapp.worker.ui.view.activity.ImageListActivity;
 import com.bjxapp.worker.ui.view.activity.MaintainActivity;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
 import com.google.gson.JsonObject;
@@ -77,13 +78,17 @@ public class MaintainCallItemLayout extends LinearLayout {
     @BindView(R.id.status_iv)
     ImageView mStatusIv;
 
+    @OnClick(R.id.photo_look_tv)
+    void onCliKPhoto() {
+        ImageListActivity.goToActivity(getContext(), planBean.getmPlanImgList(), planBean.getmResultImgList());
+    }
+
     @OnClick(R.id.commit_tv)
     void commit() {
 
         if (TextUtils.isEmpty(mEditTv.getText().toString())) {
             return;
         }
-
 
         EnterpriseApi enterpriseApi = KHttpWorker.ins().createHttpService(LoginApi.URL, EnterpriseApi.class);
 

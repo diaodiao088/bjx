@@ -108,18 +108,21 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     RelativeLayout mHistoryLy;
 
     @OnClick(R.id.history_ly)
-    void onClickHistory(){
+    void onClickHistory() {
         if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
             return;
         }
 
         ArrayList<PlanBean> planlist = mDetailInfo.getMaintainInfo().getPlanList();
 
-        if (planlist.size() <= 1){
+        if (planlist.size() <= 1) {
+
+            Toast.makeText(this, "暂无历史维修方案", Toast.LENGTH_SHORT).show();
+
             return;
         }
 
-        HistoryContactActivity.goToActivity(this , planlist);
+        HistoryContactActivity.goToActivity(this, planlist);
     }
 
     @OnClick(R.id.order_receive_detail_follow)
