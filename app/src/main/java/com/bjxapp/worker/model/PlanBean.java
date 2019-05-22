@@ -31,9 +31,10 @@ public class PlanBean implements Parcelable {
 
     private String fault;
 
-    public PlanBean(){
+    public PlanBean() {
 
     }
+
 
     protected PlanBean(Parcel in) {
         applicationType = in.readInt();

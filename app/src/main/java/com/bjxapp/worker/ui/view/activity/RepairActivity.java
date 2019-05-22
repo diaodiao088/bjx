@@ -180,15 +180,46 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
 
             case R.id.already_room_tv:
                 mVp.setCurrentItem(4, false);
+
+                if (getSpecCount(4, mList) > 0) {
+                    mAllBilRedotTv.setText(String.valueOf(getSpecCount(4, mList)));
+                    mAllBilRedotTv.setVisibility(View.VISIBLE);
+                } else {
+                    mAllBilRedotTv.setVisibility(View.GONE);
+                }
+
+
+                mAllTv.setText("已上门");
+
                 break;
             case R.id.xietiao_ly:
                 mVp.setCurrentItem(6, false);
                 changeState(2);
                 break;
             case R.id.xietiao_tv:
+
+                if (getXieTiaoSize(mList) > 0) {
+                    mAllBilRedotTv.setText(String.valueOf(getXieTiaoSize(mList)));
+                    mAllBilRedotTv.setVisibility(View.VISIBLE);
+                } else {
+                    mAllBilRedotTv.setVisibility(View.GONE);
+                }
+
+                mAllTv.setText("协调中");
+
                 mVp.setCurrentItem(6, false);
                 break;
             case R.id.total_tv:
+
+                if (mList.size() > 0) {
+                    mAllBilRedotTv.setText(String.valueOf(mList.size()));
+                    mAllBilRedotTv.setVisibility(View.VISIBLE);
+                } else {
+                    mAllBilRedotTv.setVisibility(View.GONE);
+                }
+
+                mAllTv.setText("全部工单");
+
                 mVp.setCurrentItem(0, false);
                 break;
 
@@ -198,22 +229,64 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
                 break;
 
             case R.id.new_bill_ly:
+
+                mAllTv.setText("新订单");
+
                 mVp.setCurrentItem(1, false);
                 break;
 
             case R.id.wait_room_tv:
+
+                mAllTv.setText("待上门");
+
+                if (getSpecCount(3, mList) > 0) {
+                    mAllBilRedotTv.setText(String.valueOf(getSpecCount(3, mList)));
+                    mAllBilRedotTv.setVisibility(View.VISIBLE);
+                } else {
+                    mAllBilRedotTv.setVisibility(View.GONE);
+                }
+
                 mVp.setCurrentItem(3, false);
                 break;
 
             case R.id.wait_contact_tv:
+
+                if (getSpecCount(2, mList) > 0) {
+                    mAllBilRedotTv.setText(String.valueOf(getSpecCount(2, mList)));
+                    mAllBilRedotTv.setVisibility(View.VISIBLE);
+                } else {
+                    mAllBilRedotTv.setVisibility(View.GONE);
+                }
+
+                mAllTv.setText("待联系");
                 mVp.setCurrentItem(2, false);
                 break;
 
             case R.id.waitpay_tv:
+
+                if (getSpecCount(5, mList) > 0) {
+                    mAllBilRedotTv.setText(String.valueOf(getSpecCount(2, mList)));
+                    mAllBilRedotTv.setVisibility(View.VISIBLE);
+                } else {
+                    mAllBilRedotTv.setVisibility(View.GONE);
+                }
+
+                mAllTv.setText("待支付");
+
                 mVp.setCurrentItem(5, false);
                 break;
 
             case R.id.jiesuan_tv:
+
+                if (getJieSuanSize(mList) > 0) {
+                    mAllBilRedotTv.setText(String.valueOf(getJieSuanSize(mList)));
+                    mAllBilRedotTv.setVisibility(View.VISIBLE);
+                } else {
+                    mAllBilRedotTv.setVisibility(View.GONE);
+                }
+
+                mAllTv.setText("结算审核");
+
                 mVp.setCurrentItem(7, false);
                 break;
 

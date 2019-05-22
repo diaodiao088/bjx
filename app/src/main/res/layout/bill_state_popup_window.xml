@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="全部"
             android:textColor="@color/main_text_color"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/total_redot"
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:text="待联系"
             android:textColor="@color/main_text_color"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/wait_contact_redot"
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:text="待上门"
             android:textColor="@color/main_text_color"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/wait_room_redot"
@@ -119,7 +119,7 @@
             android:layout_height="wrap_content"
             android:text="已上门"
             android:textColor="@color/main_text_color"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/already_room_redot"
@@ -153,7 +153,7 @@
             android:layout_height="wrap_content"
             android:text="协调中"
             android:textColor="@color/main_text_color"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/xietiao_redot"
@@ -186,7 +186,7 @@
             android:layout_height="wrap_content"
             android:text="结算待审核"
             android:textColor="@color/main_text_color"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/jiesuan_redot"
@@ -219,7 +219,7 @@
             android:layout_height="wrap_content"
             android:text="待支付"
             android:textColor="@color/main_text_color"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/waitpay_redot"

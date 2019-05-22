@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="全部工单"
+                android:gravity="center"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />

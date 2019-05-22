@@ -985,6 +985,7 @@ public class MaintainActivity extends Activity {
                         if (isComplete) {
 
                             CompleteActivity.goToActivity(MaintainActivity.this, mainTainPlanId, orderId);
+                            finish();
 
                             // CompleteActivity.goToActivity();
 
