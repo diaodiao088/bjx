@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import com.bjx.master.R;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.model.PlanBean;
+import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
+import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.MaintainCallItemLayout;
 
@@ -44,11 +46,11 @@ public class HistoryContactActivity extends Activity {
 
         mTitleTextView.setText("历史维修方案");
 
-        list = getIntent().getParcelableArrayListExtra(TYPE_LIST);
+        list = OrderDetailActivityNew.planList_static;
 
         if (list != null && list.size() > 0) {
 
-            list.remove(0);
+           // list.remove(0);
             addUi();
         }
 

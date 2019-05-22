@@ -122,8 +122,14 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             return;
         }
 
+        for (int i = 1; i < planlist.size(); i++) {
+            planList_static.add(planlist.get(i));
+        }
+
         HistoryContactActivity.goToActivity(this, planlist);
     }
+
+    public static ArrayList<PlanBean> planList_static = new ArrayList<>();
 
     @OnClick(R.id.order_receive_detail_follow)
     void onClickFollow() {
