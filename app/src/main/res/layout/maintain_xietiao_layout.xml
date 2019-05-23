@@ -232,7 +232,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:gravity="center_vertical"
-                android:text="总报价："
+                android:text="配件总价："
                 android:textColor="#545454"
                 android:textSize="14sp" />
 
