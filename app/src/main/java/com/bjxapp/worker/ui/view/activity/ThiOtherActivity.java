@@ -41,6 +41,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ThiInfoBean;
 import com.bjxapp.worker.model.ThiOtherBean;
+import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
 import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
@@ -161,14 +162,36 @@ public class ThiOtherActivity extends Activity {
             mWaitingDialog.show("正在提交...", false);
         }
 
+
+        if (isAllHttp()) {
+
+            ThiOtherBean thiOtherBean = new ThiOtherBean();
+            thiOtherBean.setName(mNameTv.getText().toString());
+            thiOtherBean.setCost(mPriceTv.getText().toString());
+            thiOtherBean.setRemark(mReasonTv.getText().toString());
+            thiOtherBean.setModel(mTypeTv.getText().toString());
+            thiOtherBean.setRenGongCost(mRenGongPriceTv.getText().toString());
+            thiOtherBean.setImgList(getImgList());
+
+            Intent intent = new Intent();
+            intent.putExtra("other", thiOtherBean);
+
+            setResult(RESULT_OK, intent);
+
+
+            mWaitingDialog.dismiss();
+            finish();
+
+
+            return;
+        }
+
         OkHttpClient client = new OkHttpClient();
         MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
         Map<String, String> map = new HashMap<>();
         map.put("userCode", ConfigManager.getInstance(this).getUserCode());
         map.put("token", ConfigManager.getInstance(this).getUserSession());
-
-        boolean isFileValid = false;
 
         for (int i = 0; i < mImageList.size(); i++) {
 
@@ -188,16 +211,12 @@ public class ThiOtherActivity extends Activity {
                 final File compressFile = new File(compressImage);
 
                 if (compressFile.exists()) {
-                    isFileValid = true;
                     RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
                     requestBody.addFormDataPart("files", compressFile.getName(), body);
                 }
             }
         }
 
-        if (!isFileValid) {
-            return;
-        }
 
         for (Map.Entry entry : map.entrySet()) {
             requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
@@ -251,7 +270,8 @@ public class ThiOtherActivity extends Activity {
                             thiOtherBean.setRemark(mReasonTv.getText().toString());
                             thiOtherBean.setModel(mTypeTv.getText().toString());
                             thiOtherBean.setRenGongCost(mRenGongPriceTv.getText().toString());
-                            thiOtherBean.setImgList(getImgList());
+                            updateImageList(list);
+                            thiOtherBean.setImgList(list);
 
                             Intent intent = new Intent();
                             intent.putExtra("other", thiOtherBean);
@@ -300,17 +320,37 @@ public class ThiOtherActivity extends Activity {
         myAdapter = new MyAdapter();
         mRecyclerView.setAdapter(myAdapter);
 
-        ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
-        mImageList.add(bean);
-        myAdapter.setList(mImageList);
-        myAdapter.notifyDataSetChanged();
-
-
         if (mExistBean != null) {
             mNameTv.setText(mExistBean.getName());
             mPriceTv.setText(mExistBean.getCost());
             mRenGongPriceTv.setText(mExistBean.getRenGongCost());
             mReasonTv.setText(mExistBean.getRemark());
+
+
+            if (mExistBean.getImgList() != null && mExistBean.getImgList().size() > 0) {
+                // mList.addAll(0 , mlist);
+                ArrayList<ImageBean> temList = new ArrayList<>();
+                for (int i = 0; i < mExistBean.getImgList().size(); i++) {
+                    ImageBean item = new ImageBean(ImageBean.TYPE_ADD, mExistBean.getImgList().get(i));
+                    temList.add(item);
+                }
+                mImageList.addAll(0, temList);
+
+                if (mImageList.size() < 5) {
+                    ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
+                    mImageList.add(bean);
+                }
+
+                myAdapter.setList(mImageList);
+
+                myAdapter.notifyDataSetChanged();
+
+            }
+        } else {
+            ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
+            mImageList.add(bean);
+            myAdapter.setList(mImageList);
+            myAdapter.notifyDataSetChanged();
         }
 
     }
@@ -551,12 +591,12 @@ public class ThiOtherActivity extends Activity {
 
         @Override
         public int getItemCount() {
-            return mList.size();
+            return mImageList.size();
         }
 
         @Override
         public int getItemViewType(int position) {
-            return mList.get(position).getType();
+            return mImageList.get(position).getType();
         }
 
     }
@@ -628,6 +668,33 @@ public class ThiOtherActivity extends Activity {
             }
         }
 
+    }
+
+    private boolean isAllHttp() {
+        for (int i = 0; i < mImageList.size(); i++) {
+
+            String item = mImageList.get(i).getUrl();
+            if (!item.startsWith("http")) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    private void updateImageList(ArrayList<String> imageList) {
+
+        if (mImageList.size() <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < mImageList.size(); i++) {
+            String item = mImageList.get(i).getUrl();
+            if (item.startsWith("http")) {
+                imageList.add(item);
+            }
+        }
     }
 
     public void insertImg(Bitmap bitmap, final String imagePath,

@@ -244,6 +244,7 @@ public class MaintainCallItemLayout extends LinearLayout {
             mBottomLy.setVisibility(GONE);
         }
 
+
         addPriceList();
 
         addOtherPriceList();

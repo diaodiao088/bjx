@@ -122,6 +122,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             return;
         }
 
+        planList_static.clear();
+
         for (int i = 1; i < planlist.size(); i++) {
             planList_static.add(planlist.get(i));
         }
@@ -383,6 +385,18 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         }
 
         if (mDetailInfo.getOrderDes().getProcessStatus() == 43) {
+
+            if (currentPlanBean == null) {
+                return;
+            }
+
+            int settleState = currentPlanBean.getStatus();
+
+            if (settleState == 3 || settleState == 9) {
+                Toast.makeText(this, "维修方案审核中，请耐心等待", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed());
@@ -618,7 +632,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         } else if (processStatus == 4 || processStatus == 5) {
             toDetailUi();
         } else if (processStatus == 3) {
-            toWaitRootStatus();
+            toWaitRootStatus(false);
         } else if (processStatus == 43) {
             toXieTiaoUi();
         } else if (processStatus == 6 || processStatus == 7) {
@@ -626,7 +640,10 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         }
     }
 
-    private void toWaitRootStatus() {
+    /**
+     * @param flag show expired redot .
+     */
+    private void toWaitRootStatus(boolean flag) {
 
         mHourLastTv.setVisibility(View.GONE);
         mOrderWaitLy.setVisibility(View.GONE);
@@ -647,11 +664,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         mHourLastTv.setVisibility(View.GONE);
 
         if (mDetailInfo != null) {
-            if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
-            }
 
-            if (mDetailInfo.getOrderDes().getStatus() == 2) {
+            if (mDetailInfo.getOrderDes().getStatus() == 2 && !flag) {
                 mHourLastTv.setVisibility(View.VISIBLE);
                 mHourLastTv.setText("超时");
                 mHourLastTv.setBackgroundResource(R.drawable.time_out_radius);
@@ -659,9 +673,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             } else {
                 mHourLastTv.setVisibility(View.GONE);
             }
-
         }
-
     }
 
     private void initTitle() {
@@ -801,7 +813,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                             @Override
                             public void run() {
                                 orderDes.setProcessStatus(3);
-                                toWaitRootStatus();
+                                toWaitRootStatus(true);
                             }
                         });
                     } else {
@@ -840,8 +852,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mCountDownTimer.cancel();
         }
 
-        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null
-                || mDetailInfo.getMaintainInfo().getPlanList().size() <= 0) {
+        if (mDetailInfo == null || mDetailInfo.getMaintainInfo() == null || mDetailInfo.getOrderDes() == null) {
             return;
         }
 
@@ -902,9 +913,11 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mSaveLy.setVisibility(View.GONE);
         }
 
-
-        mXieTiaoLayout.bindData(this, mDetailInfo.getMaintainInfo().getPlanList().get(0), orderId);
-
+        if (mDetailInfo.getMaintainInfo().getPlanList().size() <= 0) {
+            mXieTiaoLayout.setVisibility(View.GONE);
+        } else {
+            mXieTiaoLayout.bindData(this, mDetailInfo.getMaintainInfo().getPlanList().get(0), orderId);
+        }
     }
 
 
@@ -1263,7 +1276,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 toWaitStatus();
                 break;
             case 3:
-                toWaitRootStatus();
+                toWaitRootStatus(false);
                 break;
             case 4:
             case 5:

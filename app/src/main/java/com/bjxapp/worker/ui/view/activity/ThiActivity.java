@@ -287,6 +287,10 @@ public class ThiActivity extends Activity {
 
         private TextView mTypeTv;
 
+        private TextView mCaiGouTv;
+
+        private TextView mLaborCostTv;
+
         private View mRootView;
 
         public MyHolder(View itemView) {
@@ -294,6 +298,10 @@ public class ThiActivity extends Activity {
             this.mRootView = itemView;
             this.mNameTv = mRootView.findViewById(R.id.type_name_tv);
             this.mTypeTv = mRootView.findViewById(R.id.type_tv);
+
+            this.mCaiGouTv = mRootView.findViewById(R.id.caigou_tv);
+            this.mLaborCostTv = mRootView.findViewById(R.id.labor_cost_tv);
+
         }
 
         public void setData(ThiInfoBean infoBean) {
@@ -301,6 +309,9 @@ public class ThiActivity extends Activity {
 
             mNameTv.setText(infoBean.getName());
             mTypeTv.setText(infoBean.getModel());
+
+            this.mCaiGouTv.setText(infoBean.getPrice());
+            this.mLaborCostTv.setText(infoBean.getLaborCost());
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

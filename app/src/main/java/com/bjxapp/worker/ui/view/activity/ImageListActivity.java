@@ -58,6 +58,8 @@ public class ImageListActivity extends Activity {
         setContentView(R.layout.image_list_activity);
         ButterKnife.bind(this);
 
+        mTitleTextView.setText("维修照片");
+
         planList = getIntent().getStringArrayListExtra(TYPE_LIST);
         resultList = getIntent().getStringArrayListExtra(TYPE_RESULT);
 

@@ -265,7 +265,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
             case R.id.waitpay_tv:
 
                 if (getSpecCount(5, mList) > 0) {
-                    mAllBilRedotTv.setText(String.valueOf(getSpecCount(2, mList)));
+                    mAllBilRedotTv.setText(String.valueOf(getSpecCount(5, mList)));
                     mAllBilRedotTv.setVisibility(View.VISIBLE);
                 } else {
                     mAllBilRedotTv.setVisibility(View.GONE);
@@ -363,6 +363,7 @@ public class RepairActivity extends FragmentActivity implements View.OnClickList
         this.mList = list;
 
         if (!isFinishing() && list.size() > 0) {
+
             mAllBilRedotTv.setVisibility(View.VISIBLE);
             mAllBilRedotTv.setText(String.valueOf(list.size()));
 

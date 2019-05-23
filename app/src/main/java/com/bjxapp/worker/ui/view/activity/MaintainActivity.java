@@ -152,6 +152,7 @@ public class MaintainActivity extends Activity {
             @Override
             public void onClick(String name, int index) {
                 mXieTiaoReasonTv.setText(name);
+                mXieTiaoReasonTv.setTextColor(Color.parseColor("#545454"));
                 xietiaoName = name;
             }
         });
@@ -293,6 +294,10 @@ public class MaintainActivity extends Activity {
     private String day = "";
     private String time = "";
 
+    private String startTime = "";
+    private String endTime = "";
+
+
     void changeDate() {
         final ArrayList<String> firstData = new ArrayList<>();
         firstData.add(DateUtils.addDay(0));
@@ -305,23 +310,22 @@ public class MaintainActivity extends Activity {
 //        secondData.add("11:00:00--14:00:00");
 //        secondData.add("14:00:00--17:00:00");
 //        secondData.add("17:00:00--20:00:00");
-        final ArrayList<String> secondData = getTimeList(new String[]{"00:00:00-01:00:00", "01:00:00-02:00:00",
-                "02:00:00-03:00:00", "03:00:00-04:00:00",
-                "04:00:00-05:00:00", "05:00:00-06:00:00",
-                "06:00:00-07:00:00", "07:00:00-08:00:00",
-                "08:00:00-09:00:00", "09:00:00-10:00:00",
-                "11:00:00-12:00:00", "12:00:00-13:00:00",
-                "13:00:00-14:00:00", "14:00:00-15:00:00",
-                "15:00:00-16:00:00", "16:00:00-17:00:00",
-                "17:00:00-18:00:00", "18:00:00-19:00:00",
-                "19:00:00-20:00:00", "20:00:00-21:00:00",
-                "21:00:00-22:00:00", "22:00:00-23:00:00",
-                "23:00:00-24:00:00"});
+        final ArrayList<String> secondData = getTimeList(new String[]{"00:00-01:00", "01:00-02:00",
+                "02:00-03:00", "03:00-04:00",
+                "04:00-05:00", "05:00-06:00",
+                "06:00-07:00", "07:00-08:00",
+                "08:00-09:00", "09:00-10:00",
+                "11:00-12:00", "12:00-13:00",
+                "13:00-14:00", "14:00-15:00",
+                "15:00-16:00", "16:00-17:00",
+                "17:00-18:00", "18:00-19:00",
+                "19:00-20:00", "20:00-21:00",
+                "21:00-22:00", "22:00-23:00",
+                "23:00-24:00"});
 
         final DoublePicker picker = new DoublePicker(this, firstData, secondData);
-        picker.setDividerVisible(true);
 
-        Calendar startTime = Calendar.getInstance();
+        picker.setDividerVisible(true);
 
         int selectFirstIndex = 0;
         int selectSecondIndex = 0;
@@ -341,6 +345,7 @@ public class MaintainActivity extends Activity {
         picker.setSelectedIndex(selectFirstIndex, selectSecondIndex);
         picker.setTextSize(12);
         picker.setContentPadding(15, 10);
+
         picker.setOnPickListener(new DoublePicker.OnPickListener() {
             @Override
             public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
@@ -354,6 +359,10 @@ public class MaintainActivity extends Activity {
 
                 day = firstData.get(selectedFirstIndex);
                 time = secondData.get(selectedSecondIndex);
+
+                startTime = time.split("-")[0] + ":00";
+                endTime = time.split("-")[1] + ":00";
+
             }
         });
         picker.show();
@@ -400,7 +409,6 @@ public class MaintainActivity extends Activity {
         fault = getIntent().getStringExtra("fault");
         mMainTainList = getIntent().getParcelableArrayListExtra("maintainList");
         enterPriseOrderId = getIntent().getStringExtra("enter_order_id");
-
 
 
         if (mMainTainList == null) {
@@ -950,8 +958,8 @@ public class MaintainActivity extends Activity {
 
         if (!isComplete) {
             params.put("coordinateReason", xietiaoName);
-            params.put("coordinateNextHandleStartTime", day + " " + time.split("-")[0]);
-            params.put("coordinateNextHandleEndTime", day + " " + time.split("-")[1]);
+            params.put("coordinateNextHandleStartTime", day + " " + startTime);
+            params.put("coordinateNextHandleEndTime", day + " " + endTime);
         }
 
         StringBuilder builder = new StringBuilder();
@@ -992,7 +1000,7 @@ public class MaintainActivity extends Activity {
                             // CompleteActivity.goToActivity(MaintainActivity.this, mainTainPlanId, orderId);
                             finish();
 
-                            if (isDeviceBill_static && !isFinised_static){
+                            if (isDeviceBill_static && !isFinised_static) {
                                 FastJudgeActivity.goToActivity(MaintainActivity.this, false, enterPriseOrderId,
                                         equipId, imgList, orderId);
                             }
@@ -1101,7 +1109,7 @@ public class MaintainActivity extends Activity {
     public static boolean isFinised_static = false;
 
     public static void goToActivity(Activity context, String equipId, String orderId, MaintainInfo maintainInfo, String enterpriseOrderId,
-                                    boolean isDeviceBill , boolean isFinised) {
+                                    boolean isDeviceBill, boolean isFinised) {
 
         Intent intent = new Intent();
         intent.setClass(context, MaintainActivity.class);

@@ -151,9 +151,9 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:background="@color/white"
                         android:gravity="center_vertical"
-                        android:layout_marginTop="10dp"
                         android:orientation="horizontal"
                         android:paddingLeft="15dp">
 
@@ -345,7 +345,8 @@
             android:layout_marginRight="15dp"
             android:background="@drawable/xietiao_main_bg"
             android:gravity="center"
-            android:text="请选择协调原因" />
+            android:text="请选择协调原因"
+            android:textColor="#ababab" />
 
         <LinearLayout
             android:id="@+id/xietiao_title"
@@ -391,7 +392,8 @@
             android:layout_marginRight="15dp"
             android:background="@drawable/xietiao_main_bg"
             android:gravity="center"
-            android:text="请选择协调时间" />
+            android:text="请选择协调时间"
+            android:textColor="#ababab" />
 
         <RelativeLayout
             android:id="@+id/save_ly"
