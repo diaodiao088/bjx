@@ -128,7 +128,7 @@
                 android:paddingTop="14dp"
                 android:paddingBottom="14dp"
                 android:text="确定"
-                android:textColor="#65D1D7"
+                android:textColor="#ffffff"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

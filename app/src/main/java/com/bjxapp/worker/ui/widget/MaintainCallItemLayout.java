@@ -195,7 +195,7 @@ public class MaintainCallItemLayout extends LinearLayout {
 
         mGuZhangTv.setText(planBean.getFault());
         mModifyTv.setText(planBean.getPlan());
-        mPriceTv.setText(planBean.getTotalCost());
+        mPriceTv.setText("¥" + planBean.getTotalCost());
 
         if (planBean.getStatus() == 0) {
             mReasonTv.setVisibility(GONE);
@@ -241,11 +241,12 @@ public class MaintainCallItemLayout extends LinearLayout {
             } catch (Exception e) {
 
             }
+            mBottomLy.setVisibility(GONE);
         }
 
         addPriceList();
 
-     //   addOtherPriceList();
+        addOtherPriceList();
 
         addCommentList();
 

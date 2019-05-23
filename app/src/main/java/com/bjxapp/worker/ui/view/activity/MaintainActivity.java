@@ -584,7 +584,6 @@ public class MaintainActivity extends Activity {
 
                     calTotalCount();
 
-
                     break;
 
 

@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginLeft="10dp"
-        android:paddingTop="10dp">
+        android:gravity="center_vertical"
+        android:paddingTop="5dp">
 
         <TextView
             android:id="@+id/name_tv"
@@ -22,13 +23,11 @@
             android:textColor="#545454"
             android:textSize="14sp" />
 
-
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
             android:text="2018/3/24 17:24"
             android:layout_marginLeft="10dp"
             android:textColor="#ababab"
@@ -37,12 +36,13 @@
     </LinearLayout>
 
 
+
     <TextView
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:background="#eeeeee"
+        android:background="@drawable/shape_chat_bubble"
         android:paddingLeft="11dp"
         android:paddingTop="11dp"
         android:paddingRight="11dp"
