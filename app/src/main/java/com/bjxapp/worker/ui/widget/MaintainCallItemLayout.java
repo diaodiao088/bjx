@@ -22,6 +22,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.CommentBean;
 import com.bjxapp.worker.model.MainTainBean;
+import com.bjxapp.worker.model.OtherPriceBean;
 import com.bjxapp.worker.model.PlanBean;
 import com.bjxapp.worker.ui.view.activity.ImageListActivity;
 import com.bjxapp.worker.ui.view.activity.MaintainActivity;
@@ -77,6 +78,9 @@ public class MaintainCallItemLayout extends LinearLayout {
 
     @BindView(R.id.status_iv)
     ImageView mStatusIv;
+
+    @BindView(R.id.other_price_ly)
+    LinearLayout otherPriceLy;
 
     @OnClick(R.id.photo_look_tv)
     void onCliKPhoto() {
@@ -226,7 +230,7 @@ public class MaintainCallItemLayout extends LinearLayout {
             } catch (Exception e) {
 
             }
-        } else if (planBean.getStatus() == 6){
+        } else if (planBean.getStatus() == 6) {
             mStatusIv.setImageResource(R.drawable.pass);
             mReasonTv.setVisibility(VISIBLE);
             mNextTimeTv.setVisibility(VISIBLE);
@@ -241,9 +245,33 @@ public class MaintainCallItemLayout extends LinearLayout {
 
         addPriceList();
 
+     //   addOtherPriceList();
+
         addCommentList();
 
     }
+
+
+    private void addOtherPriceList() {
+
+        ArrayList<OtherPriceBean> list = planBean.getmOtherPriceList();
+
+        otherPriceLy.removeAllViews();
+
+        for (int i = 0; i < list.size(); i++) {
+            OtherPriceUILayout peijianUILayout = new OtherPriceUILayout(getContext());
+            peijianUILayout.bindData(list.get(i));
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                    , ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            layoutParams.setMargins(0, DimenUtils.dp2px(10, getContext()), 0, 0);
+
+            otherPriceLy.addView(peijianUILayout, layoutParams);
+        }
+
+    }
+
 
     private void addPriceList() {
 
@@ -286,7 +314,7 @@ public class MaintainCallItemLayout extends LinearLayout {
 
                 layoutParams.setMargins(0, DimenUtils.dp2px(10, getContext()), 0, 0);
 
-                mContactRecordLy.addView(leftLayout, 0 , layoutParams);
+                mContactRecordLy.addView(leftLayout, 0, layoutParams);
 
             } else {
                 RecordRLayout rightLayout = new RecordRLayout(getContext());
@@ -297,7 +325,7 @@ public class MaintainCallItemLayout extends LinearLayout {
 
                 layoutParams.setMargins(0, DimenUtils.dp2px(10, getContext()), 0, 0);
 
-                mContactRecordLy.addView(rightLayout, 0 ,layoutParams);
+                mContactRecordLy.addView(rightLayout, 0, layoutParams);
 
 
             }

@@ -888,15 +888,14 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         }
 
         if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-
             mLookInfoTv.setVisibility(View.GONE);
-
             mSaveLy.setVisibility(View.VISIBLE);
-
             mSaveButton.setText("设备评价");
-
+            mSaveButton.setEnabled(true);
+            mSaveButton.setVisibility(View.VISIBLE);
         } else if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-
+            mSaveButton.setVisibility(View.GONE);
+            mSaveLy.setVisibility(View.VISIBLE);
             mLookInfoTv.setVisibility(View.VISIBLE);
         } else {
             mLookInfoTv.setVisibility(View.GONE);
@@ -1364,6 +1363,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                     item.setComponentName(maintainItem.getString("equipmentComponentName"));
                     item.setQuantity(maintainItem.getInt("equipmentComponentQuantity"));
                     item.setCost(maintainItem.getString("equipmentComponentPrice"));
+                    item.setModel(maintainItem.getString("equipmentComponentModel"));
                     mainTainList.add(item);
                 }
 
@@ -2052,6 +2052,17 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             case 6:
             case 7:
 
+                if (currentPlanBean == null) {
+                    return;
+                }
+
+                if (isDeviceBill && !mDetailInfo.getOrderDes().isTwiceServed()) {
+                    FastJudgeActivity.goToActivity(OrderDetailActivityNew.this, false, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
+                            mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getMaintainInfo().getPlanList().get(0).getmPlanImgList(), mDetailInfo.getOrderDes().getOrderId());
+
+                } else {
+                    CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId());
+                }
 
                 break;
         }
