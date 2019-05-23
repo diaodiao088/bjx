@@ -27,6 +27,7 @@ import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.ui.view.activity.RepairActivity;
+import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -160,6 +161,10 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+
+
                 OrderDes order = (OrderDes) mListView.getItemAtPosition(position);
                 startOrderDetailActivity(order);
             }
@@ -273,6 +278,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         orderItem.setEsCost(serviceEsCost);
 
                         orderItem.setBusinessType(bussinessType);
+                        orderItem.setBussiness(bussinessType == 1);
 
                         list.add(orderItem);
                     }
@@ -298,7 +304,13 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
 
     private void startOrderDetailActivity(OrderDes order) {
         Intent intent = new Intent();
-        intent.setClass(getActivity(), OrderDetailActivityNew.class);
+
+        if (order.getBusinessType() == 1){
+            intent.setClass(getActivity(), OrderDetailActivityNew.class);
+        }else{
+            intent.setClass(getActivity() , OrderDetailActivity.class);
+        }
+
         intent.putExtra("order_id", order.getOrderId());
         intent.putExtra("processStatus", order.getProcessStatus());
         startActivityForResult(intent, Constant.ACTIVITY_ORDER_DETAIL_RESULT_CODE);

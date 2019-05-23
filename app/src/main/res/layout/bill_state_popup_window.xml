@@ -9,6 +9,7 @@
         android:id="@+id/total_tv"
         android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:background="@drawable/main_bg"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="28dp">

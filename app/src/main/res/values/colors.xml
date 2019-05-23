@@ -6,6 +6,8 @@
     <color name="greeny">#00A551</color>
     <color name="gray">#ff808080</color>
     <color name="black">#ff000000</color>
+
+    <color name="f8">#f8f8f8</color>
     
     <!-- 透明 -->
 	<color name="transparent">#00000000</color>

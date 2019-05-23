@@ -130,11 +130,25 @@ public class ThiOtherActivity extends Activity {
         }
 
         if (getImgList().size() <= 0) {
-            Toast.makeText(this, "请至少添加一张照片", Toast.LENGTH_SHORT).show();
-            return;
-        }
+            ThiOtherBean thiOtherBean = new ThiOtherBean();
+            thiOtherBean.setName(mNameTv.getText().toString());
+            thiOtherBean.setCost(mPriceTv.getText().toString());
+            thiOtherBean.setRemark(mReasonTv.getText().toString());
+            thiOtherBean.setModel(mTypeTv.getText().toString());
+            thiOtherBean.setRenGongCost(mRenGongPriceTv.getText().toString());
+            thiOtherBean.setImgList(getImgList());
 
-        commitImage();
+            Intent intent = new Intent();
+            intent.putExtra("other", thiOtherBean);
+
+            setResult(RESULT_OK, intent);
+
+
+            mWaitingDialog.dismiss();
+            finish();
+        } else {
+            commitImage();
+        }
 
     }
 

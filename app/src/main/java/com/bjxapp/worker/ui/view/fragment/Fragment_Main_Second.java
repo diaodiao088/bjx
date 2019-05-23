@@ -590,6 +590,7 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
                                         locationAddress, serviceVisitCost);
 
                                 orderItem.setBusinessType(bussinessType);
+                                orderItem.setBussiness(bussinessType == 1);
 
                                 orderItem.setmShopName(shopName);
                                 orderItem.setmEnterpriseName(enterpriseName);
@@ -628,7 +629,14 @@ public class Fragment_Main_Second extends BaseFragment implements OnClickListene
 
     private void startOrderDetailActivity(OrderDes order) {
         Intent intent = new Intent();
-        intent.setClass(getActivity(), OrderDetailActivityNew.class);
+
+        if (order.getBusinessType() == 1) {
+            intent.setClass(getActivity(), OrderDetailActivityNew.class);
+        } else {
+            intent.setClass(getActivity(), OrderDetailActivity.class);
+        }
+
+
         intent.putExtra("order_id", order.getOrderId());
         intent.putExtra("processStatus", order.getProcessStatus());
         startActivityForResult(intent, Constant.ACTIVITY_ORDER_DETAIL_RESULT_CODE);

@@ -703,7 +703,7 @@
                             android:layout_toRightOf="@+id/money_divider"
                             android:gravity="center_vertical"
                             android:paddingLeft="3dp"
-                            android:text="本单收入总计"
+                            android:text="本单金额总计"
                             android:textColor="#545454"
                             android:textSize="14sp" />
 
@@ -762,7 +762,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:gravity="center_vertical"
-                        android:text="总报价："
+                        android:text="配件总价："
                         android:textColor="#545454"
                         android:textSize="14sp" />
 

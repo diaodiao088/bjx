@@ -71,14 +71,14 @@ public class ImageListActivity extends Activity {
         if (planList != null && planList.size() > 0) {
             GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 4);
             mPlanRecyclerView.setLayoutManager(mGridLayoutManager);
-            mPlanRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, true));
+            mPlanRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, false));
             mPlanRecyclerView.setAdapter(new MyAdapter());
         }
 
         if (resultList != null && resultList.size() > 0) {
             GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 4);
             mResultRecyclerView.setLayoutManager(mGridLayoutManager);
-            mResultRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, true));
+            mResultRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, false));
             mResultRecyclerView.setAdapter(new MyAdapterResult());
         }
 

@@ -468,6 +468,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mRightImageView = (XImageView) findViewById(R.id.title_image_right);
         mTitleTv.setText("首页");
+        mTitleRightTv.setVisibility(View.GONE);
         mTitleRightTv.setText("邀请关注");
     }
 
@@ -700,37 +701,43 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
     private void showExpiredDialog() {
 
-        // 如果正在展示 ： 那么什么都不做
-        if (mExpiredDialog != null && mExpiredDialog.isShowing()) {
-            return;
-        }
+//        // 如果正在展示 ： 那么什么都不做
+//        if (mExpiredDialog != null && mExpiredDialog.isShowing()) {
+//            return;
+//        }
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//        builder.setIcon(android.R.drawable.ic_dialog_info);
+//        builder.setTitle("师傅注册通知");
+//        builder.setMessage("登录已过期，请重新登录");
+//        builder.setCancelable(false);
+//        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                ActivitiesManager.getInstance().finishAllActivities();
+//            }
+//        });
+//
+//        builder.setNeutralButton("重新登录", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // callService();
+//                // ActivitiesManager.getInstance().finishAllActivities();
+//                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//                intent.putExtra("from", 0x01);
+//                MainActivity.this.startActivity(intent);
+//                finish();
+//            }
+//        });
+//        mExpiredDialog = null;
+//        mExpiredDialog = builder.create();
+//        mExpiredDialog.show();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setIcon(android.R.drawable.ic_dialog_info);
-        builder.setTitle("师傅注册通知");
-        builder.setMessage("登录已过期，请重新登录");
-        builder.setCancelable(false);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ActivitiesManager.getInstance().finishAllActivities();
-            }
-        });
 
-        builder.setNeutralButton("重新登录", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // callService();
-                // ActivitiesManager.getInstance().finishAllActivities();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                intent.putExtra("from", 0x01);
-                MainActivity.this.startActivity(intent);
-                finish();
-            }
-        });
-        mExpiredDialog = null;
-        mExpiredDialog = builder.create();
-        mExpiredDialog.show();
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.putExtra("from", 0x01);
+        MainActivity.this.startActivity(intent);
+        finish();
     }
 
     private void showStatusDialog(String msg, int status) {
