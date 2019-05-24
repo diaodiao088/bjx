@@ -922,6 +922,9 @@ public class MaintainActivity extends Activity {
                         @Override
                         public void run() {
                             startCommit(isComplete, list);
+
+                            realList = list;
+
                         }
                     });
                 } else {
@@ -935,8 +938,9 @@ public class MaintainActivity extends Activity {
                 }
             }
         });
-
     }
+
+    private ArrayList<String> realList = new ArrayList<>();
 
     public void startCommit(final boolean isComplete, ArrayList<String> list) {
 
@@ -1002,7 +1006,7 @@ public class MaintainActivity extends Activity {
 
                             if (isDeviceBill_static && !isFinised_static) {
                                 FastJudgeActivity.goToActivity(MaintainActivity.this, false, enterPriseOrderId,
-                                        equipId, imgList, orderId);
+                                        equipId, realList, orderId);
                             }
 
                             // CompleteActivity.goToActivity();

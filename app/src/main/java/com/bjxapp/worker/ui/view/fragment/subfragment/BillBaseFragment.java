@@ -124,7 +124,7 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         mOrderAdapter.setReceiverInfo(getOrderArray());
                         mOrderAdapter.notifyDataSetChanged();
 
-                        if (getOrderArray().size() <= 0){
+                        if (getOrderArray().size() <= 0) {
                             mLoadAgainLayout.setVisibility(View.VISIBLE);
                         }
 
@@ -161,8 +161,6 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
 
 
                 OrderDes order = (OrderDes) mListView.getItemAtPosition(position);
@@ -241,7 +239,14 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         String locationAddress = detailItem.get("locationAddress").getAsString();
                         String serviceVisitCost = detailItem.get("serviceVisitCost").getAsString();
                         String serviceEsCost = detailItem.get("serviceVisitCost").getAsString();
-                        String selectTime = detailItem.get("selectMasterTime").getAsString();
+                        String selectTime = "";
+
+                        try {
+                            selectTime = detailItem.get("selectMasterTime").getAsString();
+                        } catch (Exception e) {
+
+                        }
+
                         String type = detailItem.get("type").getAsString();
 
                         String shopName = detailItem.get("shopName").getAsString();
@@ -305,10 +310,10 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
     private void startOrderDetailActivity(OrderDes order) {
         Intent intent = new Intent();
 
-        if (order.getBusinessType() == 1){
+        if (order.getBusinessType() == 1) {
             intent.setClass(getActivity(), OrderDetailActivityNew.class);
-        }else{
-            intent.setClass(getActivity() , OrderDetailActivity.class);
+        } else {
+            intent.setClass(getActivity(), OrderDetailActivity.class);
         }
 
         intent.putExtra("order_id", order.getOrderId());
@@ -415,9 +420,9 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
         mOrderAdapter.notifyDataSetChanged();
         mListView.setAdapter(mOrderAdapter);
 
-        if (getOrderArray().size() <= 0){
+        if (getOrderArray().size() <= 0) {
             mLoadAgainLayout.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mLoadAgainLayout.setVisibility(View.GONE);
         }
 
