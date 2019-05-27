@@ -217,6 +217,7 @@ public class MaintainActivity extends Activity {
     public ArrayList<MainTainBean> mMainTainList = new ArrayList<>();
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
+    private ArrayList<String> realList = new ArrayList<>();
 
     private ArrayList<OtherPriceBean> mOtherPriceList = new ArrayList<>();
 
@@ -917,6 +918,8 @@ public class MaintainActivity extends Activity {
                         for (int i = 0; i < accessAddress.length(); i++) {
                             list.add(accessAddress.get(i).toString());
                         }
+
+                        realList = list;
 
                     } catch (JSONException e) {
                         e.printStackTrace();

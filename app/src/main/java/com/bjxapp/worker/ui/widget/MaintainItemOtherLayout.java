@@ -129,7 +129,7 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
         if (!TextUtils.isEmpty(thiOtherBean.getModel())) {
             mTypeNameTv.setText(maintainInfo.getModel());
         } else {
-            mTypeNameTv.setText(maintainInfo.getModel());
+            mTypeNameTv.setText("其他");
         }
 
         if (!TextUtils.isEmpty(thiOtherBean.getRenGongCost())) {

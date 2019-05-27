@@ -339,6 +339,7 @@ public class ThiOtherActivity extends Activity {
             mPriceTv.setText(mExistBean.getCost());
             mRenGongPriceTv.setText(mExistBean.getRenGongCost());
             mReasonTv.setText(mExistBean.getRemark());
+            mTypeTv.setText(mExistBean.getModel());
 
 
             if (mExistBean.getImgList() != null && mExistBean.getImgList().size() > 0) {
@@ -359,6 +360,11 @@ public class ThiOtherActivity extends Activity {
 
                 myAdapter.notifyDataSetChanged();
 
+            }else{
+                ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
+                mImageList.add(bean);
+                myAdapter.setList(mImageList);
+                myAdapter.notifyDataSetChanged();
             }
         } else {
             ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
