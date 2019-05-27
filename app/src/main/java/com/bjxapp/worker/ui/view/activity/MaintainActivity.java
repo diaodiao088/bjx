@@ -62,6 +62,7 @@ import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
+import com.bjxapp.worker.utils.mask.MaskFile;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -679,6 +680,9 @@ public class MaintainActivity extends Activity {
         mImageList.add(0, bean);
         imgList.add(imagePath);
         myAdapter.notifyDataSetChanged();
+
+        MaskFile.addMask(imagePath);
+
     }
 
     private ArrayList<String> imgList = new ArrayList<>();
