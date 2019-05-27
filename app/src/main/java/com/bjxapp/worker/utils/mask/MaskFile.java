@@ -44,7 +44,7 @@ public class MaskFile {
 
                     //中间高度位置添加水印文字。
                     Bitmap bitmap2 = addTextWatermark(bitmap1, "blog.csdn.net/zhangphil", textSize,
-                            Color.RED, 0, bitmap1.getHeight() / 2, true, degree);
+                            Color.WHITE, 0, bitmap1.getHeight() / 2, true, degree);
                     save(bitmap2, new File(imagePath), Bitmap.CompressFormat.JPEG, true);
                 } catch (Exception e) {
                     e.printStackTrace();
