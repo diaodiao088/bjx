@@ -116,4 +116,5 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.0.0-rc01'
     api deps.zxing
     compile 'com.android.support:multidex:1.0.3'
+    compile "com.android.support:exifinterface:25.3.1"
 }

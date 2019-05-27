@@ -4,8 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.ExifInterface;
 import android.os.Environment;
 
 import java.io.BufferedOutputStream;
@@ -32,14 +34,17 @@ public class MaskFile {
                 try {
                     Bitmap bitmap1 = BitmapFactory.decodeStream(new FileInputStream(imagePath));
 
-                    File zhangphil = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "zhangphil.jpg");
-                    if (!zhangphil.exists())
-                        zhangphil.createNewFile();
+                    int degree = readPictureDegree(imagePath);
+//
+//                    File zhangphil = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "zhangphil.jpg");
+//                    if (!zhangphil.exists())
+//                        zhangphil.createNewFile();
 
                     int textSize = 60;
 
                     //中间高度位置添加水印文字。
-                    Bitmap bitmap2 = addTextWatermark(bitmap1, "blog.csdn.net/zhangphil", textSize, Color.RED, 0, bitmap1.getHeight() / 2, true);
+                    Bitmap bitmap2 = addTextWatermark(bitmap1, "blog.csdn.net/zhangphil", textSize,
+                            Color.RED, 0, bitmap1.getHeight() / 2, true, degree);
                     save(bitmap2, new File(imagePath), Bitmap.CompressFormat.JPEG, true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -68,12 +73,29 @@ public class MaskFile {
     }
 
 
-    public static Bitmap addTextWatermark(Bitmap src, String content, int textSize, int color, float x, float y, boolean recycle) {
+    public static Bitmap addTextWatermark(Bitmap src, String content, int textSize,
+                                          int color, float x, float y, boolean recycle, int degree) {
         if (isEmptyBitmap(src) || content == null)
             return null;
+
+
         Bitmap ret = src.copy(src.getConfig(), true);
+
+        Bitmap degreeBM;
+
+        if (degree != 0) {
+            //旋转图片 动作
+            Matrix matrix = new Matrix();
+            matrix.postRotate(degree);
+            // 创建新的图片
+            degreeBM = Bitmap.createBitmap(ret, 0, 0,
+                    ret.getWidth(), ret.getHeight(), matrix, true);
+        }else{
+            degreeBM = ret;
+        }
+
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        Canvas canvas = new Canvas(ret);
+        Canvas canvas = new Canvas(degreeBM);
         paint.setColor(color);
         paint.setTextSize(textSize);
         Rect bounds = new Rect();
@@ -81,11 +103,35 @@ public class MaskFile {
         canvas.drawText(content, x, y, paint);
         if (recycle && !src.isRecycled())
             src.recycle();
-        return ret;
+        return degreeBM;
     }
 
     public static boolean isEmptyBitmap(Bitmap src) {
         return src == null || src.getWidth() == 0 || src.getHeight() == 0;
+    }
+
+
+    public static int readPictureDegree(String path) {
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return degree;
+        }
+        return degree;
     }
 
 

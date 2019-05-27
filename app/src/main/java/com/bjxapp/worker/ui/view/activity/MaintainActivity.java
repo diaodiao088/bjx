@@ -644,10 +644,10 @@ public class MaintainActivity extends Activity {
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         final String imagePath = cursor.getString(columnIndex);
                         //根据手机屏幕设置图片宽度
-                        Bitmap bitmap = UploadFile.createImageThumbnail(imagePath, getScreenShotWidth(), true);
-                        if (bitmap != null) {
-                            insertImg(bitmap, imagePath, true);
-                        }
+                      //  Bitmap bitmap = UploadFile.createImageThumbnail(imagePath, getScreenShotWidth(), true);
+                      //  if (bitmap != null) {
+                            insertImg(null, imagePath, true);
+                       // }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -947,7 +947,6 @@ public class MaintainActivity extends Activity {
         });
     }
 
-    private ArrayList<String> realList = new ArrayList<>();
 
     public void startCommit(final boolean isComplete, ArrayList<String> list) {
 
