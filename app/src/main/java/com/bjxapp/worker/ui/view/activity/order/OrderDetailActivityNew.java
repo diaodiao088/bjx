@@ -398,8 +398,10 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             }
 
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
+
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
-                    mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed());
+                    mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
+                    mDetailInfo.getOrderDes() , currentAddress);
         } else {
             toDetailStatus();
         }
@@ -421,7 +423,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
 
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
-                    mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed());
+                    mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
+                    mDetailInfo.getOrderDes() , currentAddress);
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
@@ -2090,7 +2093,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         if (mDetailInfo.getOrderDes().isBussiness()) {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
-                    mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed());
+                    mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
+                    mDetailInfo.getOrderDes() , currentAddress);
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());

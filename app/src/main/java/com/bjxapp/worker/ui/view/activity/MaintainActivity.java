@@ -44,6 +44,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.MainTainBean;
 import com.bjxapp.worker.model.MaintainInfo;
+import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.model.OtherPriceBean;
 import com.bjxapp.worker.model.ThiInfoBean;
 import com.bjxapp.worker.model.ThiOtherBean;
@@ -644,10 +645,10 @@ public class MaintainActivity extends Activity {
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         final String imagePath = cursor.getString(columnIndex);
                         //根据手机屏幕设置图片宽度
-                      //  Bitmap bitmap = UploadFile.createImageThumbnail(imagePath, getScreenShotWidth(), true);
-                      //  if (bitmap != null) {
-                            insertImg(null, imagePath, true);
-                       // }
+                        //  Bitmap bitmap = UploadFile.createImageThumbnail(imagePath, getScreenShotWidth(), true);
+                        //  if (bitmap != null) {
+                        insertImg(null, imagePath, true);
+                        // }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -682,7 +683,7 @@ public class MaintainActivity extends Activity {
         imgList.add(imagePath);
         myAdapter.notifyDataSetChanged();
 
-        MaskFile.addMask(imagePath);
+        MaskFile.addMask(imagePath , currentAddress_static , shopAddress_static , enterpriseAddress_static, modelName_static);
 
     }
 
@@ -1118,8 +1119,14 @@ public class MaintainActivity extends Activity {
     public static boolean isDeviceBill_static = false;
     public static boolean isFinised_static = false;
 
+    public static String currentAddress_static;
+    public static String shopAddress_static;
+    public static String enterpriseAddress_static;
+    public static String modelName_static;
+
+
     public static void goToActivity(Activity context, String equipId, String orderId, MaintainInfo maintainInfo, String enterpriseOrderId,
-                                    boolean isDeviceBill, boolean isFinised) {
+                                    boolean isDeviceBill, boolean isFinised, OrderDes orderDes, String currentAddress) {
 
         Intent intent = new Intent();
         intent.setClass(context, MaintainActivity.class);
@@ -1133,6 +1140,12 @@ public class MaintainActivity extends Activity {
 
         isDeviceBill_static = isDeviceBill;
         isFinised_static = isFinised;
+
+        currentAddress_static = currentAddress;
+        shopAddress_static = orderDes.getmShopName();
+        enterpriseAddress_static  = orderDes.getmEnterpriseName();
+        modelName_static = orderDes.getServiceName();
+
 
         context.startActivityForResult(intent, 0x05);
     }

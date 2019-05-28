@@ -24,5 +24,13 @@ public class DimenUtils {
         return width;
     }
 
+    public static int getScreenHeight(Context ctx) {
+        WindowManager wm = (WindowManager) ctx
+                .getSystemService(Context.WINDOW_SERVICE);
+        int width = wm.getDefaultDisplay().getHeight();
+
+        return width;
+    }
+
 
 }
