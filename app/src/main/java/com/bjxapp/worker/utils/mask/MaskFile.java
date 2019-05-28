@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.media.ExifInterface;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -101,6 +102,9 @@ public class MaskFile {
         int left = DimenUtils.dp2px(20, App.getInstance()) * ratio;
         int bottom_1 = (int) ((y - left) * ratio);
         int textSize = DimenUtils.dp2px(20, App.getInstance()) * ratio;
+        int small_textSize = DimenUtils.dp2px(15, App.getInstance()) * ratio;
+        int large_textSize = DimenUtils.dp2px(23, App.getInstance()) * ratio;
+
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         Canvas canvas = new Canvas(degreeBM);
@@ -110,18 +114,24 @@ public class MaskFile {
 
         Rect boundsBottom_add = new Rect();
         paint.getTextBounds(currentAddress, 0, currentAddress.length(), boundsBottom_add);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
         canvas.drawText(currentAddress, left, bottom_1, paint);
 
         Rect boundsBottom = new Rect();
         String bottomStr = enterpriseName + "-" + shopName;
         paint.getTextBounds(bottomStr, 0, bottomStr.length(), boundsBottom);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
         canvas.drawText(bottomStr, left, bottom_1 - textSize - left, paint);
 
         Rect boundsBottom_time = new Rect();
+        paint.setTextSize(small_textSize);
+        paint.setTypeface(Typeface.DEFAULT);
         paint.getTextBounds(getFormatedTime(), 0, getFormatedTime().length(), boundsBottom_time);
         canvas.drawText(getFormatedTime(), left, bottom_1 - textSize * 2 - left * 2, paint);
 
         Rect boundsBottom_model = new Rect();
+        paint.setTextSize(large_textSize);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.getTextBounds(modelName, 0, modelName.length(), boundsBottom_model);
         canvas.drawText(modelName, left, bottom_1 - textSize * 3 - left * 3, paint);
 
