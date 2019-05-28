@@ -759,7 +759,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                                 mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getMaintainInfo().getPlanList().get(0).getmPlanImgList(), mDetailInfo.getOrderDes().getOrderId());
 
                     } else {
-                        CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId());
+                        CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId(),
+                                mDetailInfo.getOrderDes() , currentAddress);
                     }
 
                 } else {
@@ -2077,7 +2078,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                             mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getMaintainInfo().getPlanList().get(0).getmPlanImgList(), mDetailInfo.getOrderDes().getOrderId());
 
                 } else {
-                    CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId());
+                    CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId(),
+                            mDetailInfo.getOrderDes() , currentAddress);
                 }
 
                 break;

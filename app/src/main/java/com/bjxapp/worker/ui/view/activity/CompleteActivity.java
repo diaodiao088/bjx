@@ -38,6 +38,7 @@ import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.model.OrderDes;
 import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
@@ -46,6 +47,7 @@ import com.bjxapp.worker.ui.widget.RoundImageView;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
+import com.bjxapp.worker.utils.mask.MaskFile;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 
@@ -196,11 +198,9 @@ public class CompleteActivity extends Activity {
                         cursor.moveToFirst();
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         final String imagePath = cursor.getString(columnIndex);
-                        //根据手机屏幕设置图片宽度
-                        Bitmap bitmap = UploadFile.createImageThumbnail(imagePath, getScreenShotWidth(), true);
-                        if (bitmap != null) {
-                            insertImg(bitmap, imagePath, true);
-                        }
+
+                        insertImg(null, imagePath, true);
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -216,10 +216,8 @@ public class CompleteActivity extends Activity {
 
                 try {
                     String filePath = PATH + "/" + name;
-                    Bitmap bitmap = UploadFile.createImageThumbnail(filePath, getScreenShotWidth(), true);
-                    if (bitmap != null) {
-                        insertImg(bitmap, filePath, true);
-                    }
+
+                    insertImg(null, filePath, true);
                 } catch (Exception e) {
 
                 }
@@ -227,13 +225,29 @@ public class CompleteActivity extends Activity {
         }
     }
 
+    public static String currentAddress_static;
+    public static String shopAddress_static;
+    public static String enterpriseAddress_static;
+    public static String modelName_static;
+
     public void insertImg(Bitmap bitmap, final String imagePath,
                           boolean showDelImg) {
 
-        ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, imagePath);
+        String targetPath = getCacheDir() + new File(imagePath).getName();
+
+        final String compressImage = CompressUtil.compressImage(imagePath, targetPath, 30);
+
+        ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, compressImage);
         mImageList.add(0, bean);
-        imgList.add(imagePath);
+        imgList.add(compressImage);
         myAdapter.notifyDataSetChanged();
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MaskFile.addMask(compressImage, currentAddress_static, shopAddress_static, enterpriseAddress_static, modelName_static);
+            }
+        }, 300);
     }
 
     private ArrayList<String> imgList = new ArrayList<>();
@@ -274,16 +288,10 @@ public class CompleteActivity extends Activity {
                     break;
                 }
 
-                String targetPath = getCacheDir() + file.getName();
-
-                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
-
-                final File compressFile = new File(compressImage);
-
-                if (compressFile.exists()) {
+                if (file.exists()) {
                     isFileValid = true;
-                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
-                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+                    requestBody.addFormDataPart("files", file.getName(), body);
                 }
             }
         }
@@ -429,12 +437,17 @@ public class CompleteActivity extends Activity {
 
     }
 
-    public static void goToActivity(Activity context, String equipId, String orderId) {
+    public static void goToActivity(Activity context, String equipId, String orderId , OrderDes orderDes , String address) {
 
         Intent intent = new Intent();
         intent.setClass(context, CompleteActivity.class);
         intent.putExtra("plan_id", equipId);
         intent.putExtra("order_id", orderId);
+
+        currentAddress_static = address;
+        shopAddress_static = orderDes.getmShopName();
+        enterpriseAddress_static = orderDes.getmEnterpriseName();
+        modelName_static = orderDes.getServiceName();
 
         context.startActivityForResult(intent, 0x05);
     }
