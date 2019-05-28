@@ -677,14 +677,19 @@ public class MaintainActivity extends Activity {
 
         String targetPath = getCacheDir() + new File(imagePath).getName();
 
-        String compressImage = CompressUtil.compressImage(imagePath, targetPath, 30);
+        final String compressImage = CompressUtil.compressImage(imagePath, targetPath, 30);
 
         ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, compressImage);
         mImageList.add(0, bean);
         imgList.add(compressImage);
         myAdapter.notifyDataSetChanged();
 
-        MaskFile.addMask(compressImage, currentAddress_static, shopAddress_static, enterpriseAddress_static, modelName_static);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MaskFile.addMask(compressImage, currentAddress_static, shopAddress_static, enterpriseAddress_static, modelName_static);
+            }
+        }, 300);
 
     }
 
