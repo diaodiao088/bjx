@@ -81,6 +81,10 @@ public class MaskFile {
         if (isEmptyBitmap(src))
             return null;
 
+        if (TextUtils.isEmpty(modelName)){
+            modelName = "";
+        }
+
 
         Bitmap ret = src.copy(src.getConfig(), true);
 
