@@ -664,10 +664,7 @@ public class MaintainActivity extends Activity {
 
                 try {
                     String filePath = PATH + "/" + name;
-                    Bitmap bitmap = UploadFile.createImageThumbnail(filePath, getScreenShotWidth(), true);
-                    if (bitmap != null) {
-                        insertImg(bitmap, filePath, true);
-                    }
+                    insertImg(null, filePath, true);
                 } catch (Exception e) {
 
                 }
@@ -683,7 +680,7 @@ public class MaintainActivity extends Activity {
         imgList.add(imagePath);
         myAdapter.notifyDataSetChanged();
 
-        MaskFile.addMask(imagePath , currentAddress_static , shopAddress_static , enterpriseAddress_static, modelName_static);
+        MaskFile.addMask(imagePath, currentAddress_static, shopAddress_static, enterpriseAddress_static, modelName_static);
 
     }
 
@@ -1143,7 +1140,7 @@ public class MaintainActivity extends Activity {
 
         currentAddress_static = currentAddress;
         shopAddress_static = orderDes.getmShopName();
-        enterpriseAddress_static  = orderDes.getmEnterpriseName();
+        enterpriseAddress_static = orderDes.getmEnterpriseName();
         modelName_static = orderDes.getServiceName();
 
 

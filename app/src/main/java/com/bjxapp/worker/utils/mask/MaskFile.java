@@ -103,18 +103,21 @@ public class MaskFile {
 
         int ratio = ret.getHeight() / DimenUtils.getScreenHeight(App.getInstance());
 
-        int left = DimenUtils.dp2px(20, App.getInstance()) * ratio;
-        int bottom_1 = (int) ((y - left) * ratio);
-        int textSize = DimenUtils.dp2px(20, App.getInstance()) * ratio;
-        int small_textSize = DimenUtils.dp2px(15, App.getInstance()) * ratio;
-        int large_textSize = DimenUtils.dp2px(23, App.getInstance()) * ratio;
+        if (ratio <= 0){
+            ratio = 1;
+        }
+
+        int left = DimenUtils.dp2px(17, App.getInstance()) * ratio;
+        int bottom_1 = (int) (y - left * ratio);
+        int textSize = DimenUtils.dp2px(14, App.getInstance()) * ratio;
+        int small_textSize = DimenUtils.dp2px(12, App.getInstance()) * ratio;
+        int large_textSize = DimenUtils.dp2px(18, App.getInstance()) * ratio;
 
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         Canvas canvas = new Canvas(degreeBM);
         paint.setColor(Color.WHITE);
         paint.setTextSize(textSize);
-
 
         Rect boundsBottom_add = new Rect();
         paint.getTextBounds(currentAddress, 0, currentAddress.length(), boundsBottom_add);
