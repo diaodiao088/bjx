@@ -675,12 +675,16 @@ public class MaintainActivity extends Activity {
     public void insertImg(Bitmap bitmap, final String imagePath,
                           boolean showDelImg) {
 
-        ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, imagePath);
+        String targetPath = getCacheDir() + new File(imagePath).getName();
+
+        String compressImage = CompressUtil.compressImage(imagePath, targetPath, 30);
+
+        ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, compressImage);
         mImageList.add(0, bean);
-        imgList.add(imagePath);
+        imgList.add(compressImage);
         myAdapter.notifyDataSetChanged();
 
-        MaskFile.addMask(imagePath, currentAddress_static, shopAddress_static, enterpriseAddress_static, modelName_static);
+        MaskFile.addMask(compressImage, currentAddress_static, shopAddress_static, enterpriseAddress_static, modelName_static);
 
     }
 
@@ -860,16 +864,11 @@ public class MaintainActivity extends Activity {
                     break;
                 }
 
-                String targetPath = getCacheDir() + file.getName();
 
-                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
-
-                final File compressFile = new File(compressImage);
-
-                if (compressFile.exists()) {
+                if (file.exists()) {
                     isFileValid = true;
-                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
-                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+                    requestBody.addFormDataPart("files", file.getName(), body);
                 }
             }
         }
