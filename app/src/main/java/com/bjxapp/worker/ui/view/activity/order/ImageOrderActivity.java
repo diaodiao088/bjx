@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bjx.master.R;;
+import com.bjxapp.worker.controls.XTextView;
 import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
@@ -24,6 +25,9 @@ public class ImageOrderActivity extends Activity {
 
     @BindView(R.id.image_iv)
     ImageView mIv;
+
+    @BindView(R.id.title_text_tv)
+    XTextView mTitleTv;
 
     @OnClick(R.id.title_image_back)
     void onBack() {
@@ -51,6 +55,9 @@ public class ImageOrderActivity extends Activity {
     }
 
     private void initView() {
+
+        mTitleTv.setText("照片详情");
+
         if (TextUtils.isEmpty(mImagePath)) {
             return;
         }

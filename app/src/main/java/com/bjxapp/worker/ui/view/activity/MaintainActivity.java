@@ -949,6 +949,15 @@ public class MaintainActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mHandler != null){
+            mHandler.removeCallbacksAndMessages(null);
+        }
+
+    }
 
     public void startCommit(final boolean isComplete, ArrayList<String> list) {
 
