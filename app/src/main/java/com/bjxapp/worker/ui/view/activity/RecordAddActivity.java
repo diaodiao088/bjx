@@ -45,6 +45,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.view.activity.bean.FragileBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
+import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
 import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
@@ -54,6 +55,7 @@ import com.bjxapp.worker.utils.DateUtils;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
+import com.bjxapp.worker.utils.mask.MaskFile;
 import com.bumptech.glide.Glide;
 import com.dothantech.lpapi.LPAPI;
 import com.dothantech.printer.IDzPrinter;
@@ -458,12 +460,14 @@ public class RecordAddActivity extends Activity {
         mWaitingDialog = new XWaitingDialog(this);
     }
 
+    String nameReal = "";
+
     private void initData() {
 
         mRecordDeviceNameTv.setFocusable(false);
         mRecordDeviceNameTv.setFocusableInTouchMode(false);
 
-        String nameReal = mName;
+        nameReal = mName;
         if (mIndex > 0) {
             nameReal = nameReal + "-" + mIndex;
         }
@@ -503,7 +507,7 @@ public class RecordAddActivity extends Activity {
     }
 
 
-    private void startChangeStatus(){
+    private void startChangeStatus() {
         mIsAdd = false;
         mTitleRightTv.setVisibility(View.VISIBLE);
         mPrintBtn.setVisibility(View.VISIBLE);
@@ -547,9 +551,9 @@ public class RecordAddActivity extends Activity {
 
         String id = "";
 
-        if (mRecordItemBean != null ) {
+        if (mRecordItemBean != null) {
             id = mRecordItemBean.getId();
-        }else {
+        } else {
             id = String.valueOf(this.id);
         }
 
@@ -655,7 +659,7 @@ public class RecordAddActivity extends Activity {
         updateUi();
     }
 
-    int id ;
+    int id;
 
     private void updateUi() {
         mHandler.post(new Runnable() {
@@ -1040,11 +1044,8 @@ public class RecordAddActivity extends Activity {
                         cursor.moveToFirst();
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         final String imagePath = cursor.getString(columnIndex);
-                        //根据手机屏幕设置图片宽度
-                        Bitmap bitmap = UploadFile.createImageThumbnail(imagePath, getScreenShotWidth(), true);
-                        if (bitmap != null) {
-                            insertImg(bitmap, imagePath, true);
-                        }
+
+                        insertImg(imagePath, true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1060,10 +1061,8 @@ public class RecordAddActivity extends Activity {
 
                 try {
                     String filePath = PATH + "/" + name;
-                    Bitmap bitmap = UploadFile.createImageThumbnail(filePath, getScreenShotWidth(), true);
-                    if (bitmap != null) {
-                        insertImg(bitmap, filePath, true);
-                    }
+
+                    insertImg(filePath, true);
                 } catch (Exception e) {
 
                 }
@@ -1075,12 +1074,27 @@ public class RecordAddActivity extends Activity {
         }
     }
 
-    public void insertImg(Bitmap bitmap, final String imagePath,
+    public void insertImg(final String imagePath,
                           boolean showDelImg) {
 
-        ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, imagePath);
+        String targetPath = getCacheDir() + new File(imagePath).getName();
+
+        final String compressImage = CompressUtil.compressImage(imagePath, targetPath, 30);
+
+        ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, compressImage);
         mImageList.add(0, bean);
         mAdapter.notifyDataSetChanged();
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                MaskFile.addMask(compressImage, RecordDetailActivity.address_static, RecordDetailActivity.shop_add_static,
+                        RecordDetailActivity.enter_static, nameReal);
+
+
+            }
+        }, 300);
     }
 
     private String mName;
@@ -1131,8 +1145,9 @@ public class RecordAddActivity extends Activity {
         intent.putExtra(TYPE_SHOP_ID, shopId);
         intent.putExtra(TYPE_CATEGORY_ID, categoryId);
         intent.putExtra(TYPE_PARENT_ID, parentId);
-        intent.putExtra(TYPE_ENTER_ID, enterId);
         intent.putExtra(TYPE_IS_ADD, true);
+        intent.putExtra(TYPE_ENTER_ID, enterId);
+        ;
         intent.putExtra(TYPE_INDEX, index);
 
         context.startActivityForResult(intent, REQUEST_CODE_ADD_DEVICE);
@@ -1277,16 +1292,11 @@ public class RecordAddActivity extends Activity {
                     break;
                 }
 
-                String targetPath = getCacheDir() + file.getName();
 
-                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
-
-                final File compressFile = new File(compressImage);
-
-                if (compressFile.exists()) {
+                if (file.exists()) {
                     isFileValid = true;
-                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
-                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+                    requestBody.addFormDataPart("files", file.getName(), body);
                 }
             }
         }
@@ -1472,7 +1482,6 @@ public class RecordAddActivity extends Activity {
     }
 
 
-
     private void realStartCommit(ArrayList<String> imageList) {
 
         RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
@@ -1531,7 +1540,7 @@ public class RecordAddActivity extends Activity {
                             @Override
                             public void run() {
                                 Utils.showShortToast(RecordAddActivity.this, "添加成功");
-                               // finish();
+                                // finish();
                                 startChangeStatus();
                             }
                         });

@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
 import com.bjx.master.R;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
@@ -31,6 +32,7 @@ import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.category.CategoryDataManager;
+import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RecordItemLayout;
 import com.bjxapp.worker.utils.Utils;
@@ -112,7 +114,26 @@ public class RecordDetailActivity extends Activity {
         ButterKnife.bind(this);
         initView();
         handleIntent();
+        initAddress();
         bindData();
+    }
+
+    private void initAddress() {
+        MapPositioning mMapPositioning = MapPositioning.getInstance();
+        mMapPositioning.setmLocation(new MapPositioning.XbdLocation() {
+
+            @Override
+            public void locSuccess(BDLocation location) {
+                address_static = location.getAddrStr() + location.getLocationDescribe();
+            }
+
+
+            @Override
+            public void locFailure(int errorType, String errorString) {
+
+            }
+        });
+        mMapPositioning.start();
     }
 
     private void handleIntent() {
@@ -125,6 +146,10 @@ public class RecordDetailActivity extends Activity {
 
     }
 
+    public static String shop_add_static = "";
+    public static String enter_static = "";
+    public static String address_static = "";
+
     private void bindData() {
 
         if (shopInfoBean == null) {
@@ -132,6 +157,10 @@ public class RecordDetailActivity extends Activity {
         }
 
         mRecordNameTv.setText("门店：" + shopInfoBean.getEnterpriseName() + shopInfoBean.getName());
+
+        shop_add_static = shopInfoBean.getName();
+        enter_static = shopInfoBean.getEnterpriseName();
+
         mRecordAddrTv.setText("地址：" + shopInfoBean.getLocationAddress() + shopInfoBean.getDetailAddress());
         mRecordPhoneTv.setText(shopInfoBean.getContactPerson() + "/" + shopInfoBean.getContactNumber());
     }
