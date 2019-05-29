@@ -75,6 +75,11 @@ public class CheckOrderDetailActivity extends Activity {
     @BindView(R.id.phone)
     TextView mPhoneTv;
 
+    public static String currentAddress_static;
+    public static String shopAddress_static;
+    public static String enterpriseAddress_static;
+
+
     @OnClick(R.id.phone)
     void onClickPhone() {
         if (checkDetailBean == null) {
@@ -334,6 +339,10 @@ public class CheckOrderDetailActivity extends Activity {
                         + "/" + checkDetailBean.getShopInfoBean().getContactNumber());
                 mShopTv.setText(checkDetailBean.getShopInfoBean().getEnterpriseName()
                         + checkDetailBean.getShopInfoBean().getName());
+
+                shopAddress_static = checkDetailBean.getShopInfoBean().getName();
+                enterpriseAddress_static = checkDetailBean.getShopInfoBean().getEnterpriseName();
+
                 recordAdapter.setItems(checkDetailBean.getCategoryList());
 
                 if (checkDetailBean.getProcessState() >= 3) {
@@ -734,6 +743,7 @@ public class CheckOrderDetailActivity extends Activity {
             @Override
             public void locSuccess(BDLocation location) {
                 currentAddress = location.getAddrStr() + location.getLocationDescribe();
+                currentAddress_static = location.getAddrStr() + location.getLocationDescribe();
             }
 
 

@@ -30,12 +30,16 @@ import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.global.ConfigManager;
+import com.bjxapp.worker.ui.view.activity.CheckOrderDetailActivity;
+import com.bjxapp.worker.ui.view.activity.DeviceInfoActivity;
+import com.bjxapp.worker.ui.view.activity.MaintainActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RoundImageView;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
+import com.bjxapp.worker.utils.mask.MaskFile;
 import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
@@ -119,10 +123,10 @@ public class AddImageActivity extends Activity {
     }
 
     private void initData() {
-        if (!isFinishedBill){
+        if (!isFinishedBill) {
             ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
             mList.add(bean);
-        }else{
+        } else {
             mConfirmBtn.setVisibility(View.GONE);
         }
 
@@ -334,10 +338,8 @@ public class AddImageActivity extends Activity {
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         final String imagePath = cursor.getString(columnIndex);
                         //根据手机屏幕设置图片宽度
-                        Bitmap bitmap = UploadFile.createImageThumbnail(imagePath, getScreenShotWidth(), true);
-                        if (bitmap != null) {
-                            insertImg(bitmap, imagePath, true);
-                        }
+
+                        insertImg(imagePath, true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -353,10 +355,9 @@ public class AddImageActivity extends Activity {
 
                 try {
                     String filePath = PATH + "/" + name;
-                    Bitmap bitmap = UploadFile.createImageThumbnail(filePath, getScreenShotWidth(), true);
-                    if (bitmap != null) {
-                        insertImg(bitmap, filePath, true);
-                    }
+
+                    insertImg(filePath, true);
+
                 } catch (Exception e) {
 
                 }
@@ -392,13 +393,29 @@ public class AddImageActivity extends Activity {
         }
     }
 
-    public void insertImg(Bitmap bitmap, final String imagePath,
+    public void insertImg(final String imagePath,
                           boolean showDelImg) {
 
-        ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, imagePath);
+        String targetPath = getCacheDir() + new File(imagePath).getName();
+
+        final String compressImage = CompressUtil.compressImage(imagePath, targetPath, 30);
+
+        ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, compressImage);
         mList.add(0, bean);
-        mAdapter.setList(mList);
         mAdapter.notifyDataSetChanged();
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                if (from_static) {
+                    MaskFile.addMask(compressImage, CheckOrderDetailActivity.currentAddress_static, CheckOrderDetailActivity.shopAddress_static,
+                            CheckOrderDetailActivity.enterpriseAddress_static, DeviceInfoActivity.model_static);
+                }
+
+            }
+        }, 300);
+
     }
 
 
@@ -487,13 +504,17 @@ public class AddImageActivity extends Activity {
     }
 
 
+    public static boolean from_static = false;
 
-    public static void goToActivity(Activity ctx, int code, ArrayList<String> mImgList , boolean isHistoryBill) {
+    public static void goToActivity(Activity ctx, int code, ArrayList<String> mImgList, boolean isHistoryBill, boolean fromDeviceInfo) {
 
         Intent intent = new Intent();
         intent.setClass(ctx, AddImageActivity.class);
         intent.putStringArrayListExtra("img_list", mImgList);
-        intent.putExtra("isHistoryBill",isHistoryBill);
+        intent.putExtra("isHistoryBill", isHistoryBill);
+
+        from_static = fromDeviceInfo;
+
         //ctx.startactivityfor(intent);
         ctx.startActivityForResult(intent, code);
     }
@@ -544,15 +565,9 @@ public class AddImageActivity extends Activity {
                     break;
                 }
 
-                String targetPath = getCacheDir() + file.getName();
-
-                final String compressImage = CompressUtil.compressImage(item.getUrl(), targetPath, 30);
-
-                final File compressFile = new File(compressImage);
-
-                if (compressFile.exists()) {
-                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), compressFile);
-                    requestBody.addFormDataPart("files", compressFile.getName(), body);
+                if (file.exists()) {
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+                    requestBody.addFormDataPart("files", file.getName(), body);
                 }
             }
         }

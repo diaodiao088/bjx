@@ -1118,7 +1118,6 @@ public class RecordAddActivity extends Activity {
             mIndex = intent.getIntExtra(TYPE_INDEX, 0);
             mRecordItemBean = intent.getParcelableExtra(TYPE_BEAN);
         }
-
     }
 
     public static void goToActivityForResult(Activity context, String name, String parentId, String enterId,

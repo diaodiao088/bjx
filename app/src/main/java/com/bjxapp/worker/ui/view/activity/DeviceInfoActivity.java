@@ -86,9 +86,12 @@ public class DeviceInfoActivity extends Activity {
         startCommit();
     }
 
+    public static String model_static = "";
+
     @OnClick(R.id.add_img_ly)
     void onAddImage() {
-        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImgList, !isNeedMod);
+
+        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImgList, !isNeedMod , true);
     }
 
 
@@ -473,6 +476,8 @@ public class DeviceInfoActivity extends Activity {
         if (!TextUtils.isEmpty(deviceName)) {
             mInfoTv.setText(deviceName + " " + "设备信息");
         }
+
+        model_static = deviceName;
 
         if (!TextUtils.isEmpty(remark)) {
             mReasonTv.setText(remark);

@@ -368,7 +368,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             }
         }
 
-        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImageList, isBillFinished);
+        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImageList, isBillFinished , false);
     }
 
     @OnClick(R.id.order_bill_btn)
