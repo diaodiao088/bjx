@@ -127,7 +127,7 @@ public class ImageListActivity extends Activity {
         @Override
         public void onBindViewHolder(MyHolder holder, int position) {
 
-            holder.setData(planList.get(position));
+            holder.setData(resultList.get(position));
 
         }
 
