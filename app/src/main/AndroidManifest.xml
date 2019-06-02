@@ -547,6 +547,7 @@
 
         <activity
             android:name="com.bjxapp.worker.imagelist.imgsel.ui.ISListActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
              />
 
         <activity

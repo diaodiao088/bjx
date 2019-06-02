@@ -13,7 +13,7 @@ public class ImageSelectUtil {
 
     public static ISListConfig config = new ISListConfig.Builder()
             // 是否多选, 默认true
-            .multiSelect(false)
+            .multiSelect(true)
             // 是否记住上次选中记录, 仅当multiSelect为true的时候配置，默认为true
             .rememberSelected(false)
             // “确定”按钮背景色
@@ -32,14 +32,14 @@ public class ImageSelectUtil {
             .titleBgColor(Color.parseColor("#3F51B5"))
             // 裁剪大小。needCrop为true的时候配置
             .cropSize(1, 1, 200, 200)
-            .needCrop(true)
+            .needCrop(false)
             // 第一个是否显示相机，默认true
             .needCamera(false)
             // 最大选择图片数量，默认9
             .maxNum(9)
             .build();
 
-    public static void goToImageListActivity(Activity act){
+    public static void goToImageListActivity(Activity act , int size){
         ISNav.getInstance().toListActivity(act, config, REQUEST_LIST_CODE);
     }
 

@@ -19,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,8 @@ import com.bjxapp.worker.global.ActivitiesManager;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
+import com.bjxapp.worker.imagelist.imgsel.ISNav;
+import com.bjxapp.worker.imagelist.imgsel.common.ImageLoader;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.RedDot;
 import com.bjxapp.worker.push.BJXPushService;
@@ -59,6 +62,7 @@ import com.bjxapp.worker.utils.ACache;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.VersionUtils;
 import com.bjxapp.worker.utils.zxing.CaptureActivity;
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 import com.igexin.sdk.PushManager;
 
@@ -138,6 +142,13 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         initTabView();
         setOnListener();
         initPopWindow();
+
+        ISNav.getInstance().init(new ImageLoader() {
+            @Override
+            public void displayImage(Context context, String path, ImageView imageView) {
+                Glide.with(context).load(path).into(imageView);
+            }
+        });
 
         mDbManager = new DBManager(this);
 
