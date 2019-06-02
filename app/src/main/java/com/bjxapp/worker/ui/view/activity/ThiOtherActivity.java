@@ -50,6 +50,7 @@ import com.bjxapp.worker.ui.widget.RoundImageView;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.UploadFile;
 import com.bjxapp.worker.utils.Utils;
+import com.bjxapp.worker.utils.mask.ImageSelectUtil;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -63,6 +64,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -479,8 +481,9 @@ public class ThiOtherActivity extends Activity {
                                                 ActivityCompat.requestPermissions(ThiOtherActivity.this,
                                                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
                                             } else {
-                                                Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
-                                                startActivityForResult(intent, 0x02);
+//                                                Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
+//                                                startActivityForResult(intent, 0x02);
+                                                ImageSelectUtil.goToImageListActivity(ThiOtherActivity.this ,0);
                                             }
                                         } catch (Exception e) {
                                             Log.w("FeedbackPresenter", "loadImages: " + e.getMessage());
@@ -647,32 +650,46 @@ public class ThiOtherActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 0x02) {
+        if (requestCode == ImageSelectUtil.REQUEST_LIST_CODE) {
+//            if (resultCode == RESULT_OK && data != null) {
+//                Uri selectedImage = data.getData();
+//                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//                Cursor cursor = null;
+//                try {
+//                    cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+//                    if (cursor != null) {
+//                        cursor.moveToFirst();
+//                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//                        final String imagePath = cursor.getString(columnIndex);
+//                        //根据手机屏幕设置图片宽度
+//                        Bitmap bitmap = UploadFile.createImageThumbnail(imagePath, getScreenShotWidth(), true);
+//                        if (bitmap != null) {
+//                            insertImg(bitmap, imagePath, true);
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    //KLog.error(KLog.KLogFeature.toulan,"load image failed, msg:"+e.getMessage());
+//                } finally {
+//                    if (cursor != null) {
+//                        cursor.close();
+//                    }
+//                }
+//            }
+
             if (resultCode == RESULT_OK && data != null) {
-                Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = null;
-                try {
-                    cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                    if (cursor != null) {
-                        cursor.moveToFirst();
-                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                        final String imagePath = cursor.getString(columnIndex);
-                        //根据手机屏幕设置图片宽度
-                        Bitmap bitmap = UploadFile.createImageThumbnail(imagePath, getScreenShotWidth(), true);
-                        if (bitmap != null) {
-                            insertImg(bitmap, imagePath, true);
-                        }
+
+                List<String> pathList = data.getStringArrayListExtra("result");
+                for (String path : pathList) {
+
+                    if (mImageList.size() <= 5){
+                        insertImg(null ,path, true);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    //KLog.error(KLog.KLogFeature.toulan,"load image failed, msg:"+e.getMessage());
-                } finally {
-                    if (cursor != null) {
-                        cursor.close();
-                    }
+
                 }
+
             }
+
         } else if (requestCode == REQUEST_CODE_CLOCK_TAKE_PHOTO) {
             if (resultCode == RESULT_OK) {
 
