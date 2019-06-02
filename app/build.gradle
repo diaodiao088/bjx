@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.bjx.master"
         minSdkVersion 15
@@ -86,9 +86,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
     testImplementation 'junit:junit:4.12'
     compile 'com.github.bumptech.glide:glide:4.0.0'
     annotationProcessor "com.github.bumptech.glide:compiler:4.0.0"
@@ -117,4 +117,5 @@ dependencies {
     api deps.zxing
     compile 'com.android.support:multidex:1.0.3'
     compile "com.android.support:exifinterface:25.3.1"
+    compile 'com.yuyh.easyadapter:library:1.2.0'
 }

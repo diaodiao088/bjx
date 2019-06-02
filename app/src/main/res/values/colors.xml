@@ -47,6 +47,11 @@
     <color name="main_text_green">#00a551</color>
 
     <color name="main_text_hint_color">#A6A6A6</color>
+    <color name="bottom_bg">#aaaaaa</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
 
     
 </resources>

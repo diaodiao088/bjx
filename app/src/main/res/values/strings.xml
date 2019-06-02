@@ -43,4 +43,21 @@
     <string name="ready_tips">到位平台订单--客户已经在到位支付%s元，如有增项报价请让客户在到位进行补差价</string>
     <string name="img_count"><Data><![CDATA[已添加<font color="#ff0000"><b>%1$s</b></font>张照片]]></Data></string>
 
+    <string name="minnum">最少选择一张图片</string>
+    <string name="maxnum">最多选择%1$d张图片</string>
+    <string name="all_images">所有图片</string>
+    <string name="sd_disable">SD卡不可用</string>
+
+    <string name="image">图片</string>
+    <string name="takephoto">拍照</string>
+
+    <string name="confirm_format">%1$s(%2$d/%3$d)</string>
+    <string name="confirm">确定</string>
+
+    <string name="open_camera_failure">打开相机失败</string>
+
+    <string name="permission_storage_denied">请打开存储空间权限</string>
+
+    <string name="permission_camera_denied">请打开相关权限</string>
+
 </resources>
