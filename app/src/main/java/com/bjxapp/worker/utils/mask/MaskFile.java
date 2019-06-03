@@ -45,7 +45,7 @@ public class MaskFile {
                     int degree = readPictureDegree(imagePath);
 
                     //中间高度位置添加水印文字。
-                    Bitmap bitmap2 = addTextWatermark(bitmap1,
+                    Bitmap bitmap2 = addTextWatermarkNew(bitmap1,
                             0, bitmap1.getHeight(), true, degree,
                             currentAddress, shopName, enterpriseName, modelName);
                     save(bitmap2, new File(imagePath), Bitmap.CompressFormat.JPEG, true);
@@ -81,10 +81,9 @@ public class MaskFile {
         if (isEmptyBitmap(src))
             return null;
 
-        if (TextUtils.isEmpty(modelName)){
+        if (TextUtils.isEmpty(modelName)) {
             modelName = "";
         }
-
 
         Bitmap ret = src.copy(src.getConfig(), true);
 
@@ -101,14 +100,17 @@ public class MaskFile {
             degreeBM = ret;
         }
 
-        float ratio = (float)ret.getHeight() / DimenUtils.getScreenHeight(App.getInstance());
+        float heightRatio = (float) ret.getHeight() / DimenUtils.getScreenHeight(App.getInstance());
 
-        if (degree == 90 || degree == 270){
-            ratio = (float)ret.getWidth() / DimenUtils.getScreenWidth(App.getInstance());
+        float widthRatio = (float) ret.getWidth() / DimenUtils.getScreenWidth(App.getInstance());
+
+        float ratio = heightRatio > widthRatio ? heightRatio : widthRatio;
+
+        if (degree == 90 || degree == 270) {
+            ratio = (float) ret.getWidth() / DimenUtils.getScreenWidth(App.getInstance());
         }
 
-
-        if (ratio <= 0){
+        if (ratio <= 0) {
             ratio = 1;
         }
 
@@ -119,36 +121,59 @@ public class MaskFile {
         int large_textSize = (int) (DimenUtils.dp2px(20, App.getInstance()) * ratio);
 
 
+        int specPart = textSize + left;
+
+
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        paint.setShadowLayer(2,1,1, Color.parseColor("#70000000"));
+        paint.setShadowLayer(2, 1, 1, Color.parseColor("#70000000"));
 
         Canvas canvas = new Canvas(degreeBM);
         paint.setColor(Color.WHITE);
         paint.setTextSize(textSize);
 
+        String currentAddr_part1 = "";
+        String currentAddr_part2 = "";
+
+        if (currentAddress.length() > 20) {
+            currentAddr_part1 = currentAddress.substring(0, 20);
+            currentAddr_part2 = currentAddress.substring(20);
+        } else {
+            currentAddr_part1 = currentAddress;
+            specPart = 0;
+        }
+
+        if (!TextUtils.isEmpty(currentAddr_part2)) {
+
+            Rect boundsBottom_add = new Rect();
+            paint.getTextBounds(currentAddr_part2, 0, currentAddr_part2.length(), boundsBottom_add);
+            paint.setTypeface(Typeface.DEFAULT_BOLD);
+            canvas.drawText(currentAddr_part2, left, bottom_1, paint);
+        }
+
+
         Rect boundsBottom_add = new Rect();
-        paint.getTextBounds(currentAddress, 0, currentAddress.length(), boundsBottom_add);
+        paint.getTextBounds(currentAddr_part1, 0, currentAddr_part1.length(), boundsBottom_add);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
-        canvas.drawText(currentAddress, left, bottom_1, paint);
+        canvas.drawText(currentAddr_part1, left, bottom_1 - specPart, paint);
 
         Rect boundsBottom = new Rect();
         String bottomStr = enterpriseName + "-" + shopName;
         paint.getTextBounds(bottomStr, 0, bottomStr.length(), boundsBottom);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
-        canvas.drawText(bottomStr, left, bottom_1 - textSize - left, paint);
+        canvas.drawText(bottomStr, left, bottom_1 - textSize - left - specPart, paint);
 
         Rect boundsBottom_time = new Rect();
         paint.setTextSize(small_textSize);
         paint.setTypeface(Typeface.DEFAULT);
-        paint.getTextBounds(getFormatedTime(), 0, getFormatedTime().length(), boundsBottom_time);
-        canvas.drawText(getFormatedTime(), left, bottom_1 - textSize * 2 - left * 2, paint);
+        paint.getTextBounds(getFormatedYear(), 0, getFormatedYear().length(), boundsBottom_time);
+        canvas.drawText(getFormatedYear(), left, bottom_1 - textSize * 2 - left * 2 - specPart, paint);
 
         Rect boundsBottom_model = new Rect();
         paint.setTextSize(large_textSize);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.getTextBounds(modelName, 0, modelName.length(), boundsBottom_model);
-        canvas.drawText(modelName, left, bottom_1 - textSize * 3 - left * 3, paint);
+        canvas.drawText(modelName, left, bottom_1 - textSize * 3 - left * 3 - specPart, paint);
 
 //        Rect bounds = new Rect();
 //        paint.getTextBounds(modelName, 0, modelName.length(), bounds);
@@ -160,12 +185,133 @@ public class MaskFile {
         return degreeBM;
     }
 
-    private static String getFormatedTime() {
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static Bitmap addTextWatermarkNew(Bitmap src, float x, float y, boolean recycle, int degree,
+                                             String currentAddress, final String shopName, final String enterpriseName, String modelName) {
+        if (isEmptyBitmap(src))
+            return null;
+
+        if (TextUtils.isEmpty(modelName)) {
+            modelName = "";
+        }
+
+        Bitmap ret = src.copy(src.getConfig(), true);
+
+        Bitmap degreeBM;
+
+        if (degree != 0) {
+            //旋转图片 动作
+            Matrix matrix = new Matrix();
+            matrix.postRotate(degree);
+            // 创建新的图片
+            degreeBM = Bitmap.createBitmap(ret, 0, 0,
+                    ret.getWidth(), ret.getHeight(), matrix, true);
+        } else {
+            degreeBM = ret;
+        }
+
+        float heightRatio = (float) ret.getHeight() / DimenUtils.getScreenHeight(App.getInstance());
+
+        float widthRatio = (float) ret.getWidth() / DimenUtils.getScreenWidth(App.getInstance());
+
+        float ratio = heightRatio > widthRatio ? heightRatio : widthRatio;
+
+        if (degree == 90 || degree == 270) {
+            ratio = (float) ret.getWidth() / DimenUtils.getScreenWidth(App.getInstance());
+        }
+
+        if (ratio <= 0) {
+            ratio = 1;
+        }
+
+        int left = (int) (DimenUtils.dp2px(10, App.getInstance()) * ratio);
+        int bottom_1 = (int) (y - left * ratio);
+        int textSize = (int) (DimenUtils.dp2px(16, App.getInstance()) * ratio);
+        int small_textSize = (int) (DimenUtils.dp2px(14, App.getInstance()) * ratio);
+        int large_textSize = (int) (DimenUtils.dp2px(20, App.getInstance()) * ratio);
+
+        int margin_top = (int) (DimenUtils.dp2px(25, App.getInstance()) * ratio);
+        int text_margin = (int) (DimenUtils.dp2px(14, App.getInstance()) * ratio);
+
+        int specPart = textSize + left;
+
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        paint.setShadowLayer(2, 1, 1, Color.parseColor("#70000000"));
+
+        Canvas canvas = new Canvas(degreeBM);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(textSize);
+
+        String currentAddr_part1 = "";
+        String currentAddr_part2 = "";
+
+        if (currentAddress.length() > 15) {
+            currentAddr_part1 = currentAddress.substring(0, 15);
+            currentAddr_part2 = currentAddress.substring(15);
+        } else {
+            currentAddr_part1 = currentAddress;
+            specPart = 0;
+        }
+
+
+        Rect boundsBottom_model = new Rect();
+        paint.setTextSize(large_textSize);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        paint.getTextBounds(modelName, 0, modelName.length(), boundsBottom_model);
+        canvas.drawText(modelName, left, margin_top, paint);
+
+        Rect boundsBottom = new Rect();
+        String bottomStr = enterpriseName + "-" + shopName;
+        paint.setTextSize(textSize);
+        paint.getTextBounds(bottomStr, 0, bottomStr.length(), boundsBottom);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        canvas.drawText(bottomStr, left, text_margin * 2 + large_textSize, paint);
+
+
+        if (!TextUtils.isEmpty(currentAddr_part2)) {
+
+            Rect boundsBottom_add = new Rect();
+            paint.getTextBounds(currentAddr_part2, 0, currentAddr_part2.length(), boundsBottom_add);
+            paint.setTypeface(Typeface.DEFAULT_BOLD);
+
+            canvas.drawText(currentAddr_part2, (ret.getWidth() - boundsBottom_add.right) / 2, bottom_1, paint);
+        }
+
+        currentAddr_part1 = getFormatedYear() + "  " + currentAddr_part1;
+
+        Rect boundsBottom_add = new Rect();
+        paint.getTextBounds(currentAddr_part1, 0, currentAddr_part1.length(), boundsBottom_add);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        canvas.drawText(currentAddr_part1, (ret.getWidth() - boundsBottom_add.right) / 2, bottom_1 - specPart, paint);
+
+        Rect boundsBottom_time = new Rect();
+        paint.setTextSize(small_textSize * 3);
+        paint.setTypeface(Typeface.DEFAULT);
+        paint.getTextBounds(getFormatedHour(), 0, getFormatedHour().length(), boundsBottom_time);
+        canvas.drawText(getFormatedHour(), (ret.getWidth() - boundsBottom_time.right) / 2, bottom_1 - textSize - left - specPart, paint);
+
+
+        if (recycle && !src.isRecycled())
+            src.recycle();
+        return degreeBM;
+    }
+
+    private static String getFormatedYear() {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
         return format.format(new Date());
     }
+
+    private static String getFormatedHour() {
+
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+
+        return format.format(new Date());
+    }
+
 
     public static boolean isEmptyBitmap(Bitmap src) {
         return src == null || src.getWidth() == 0 || src.getHeight() == 0;
