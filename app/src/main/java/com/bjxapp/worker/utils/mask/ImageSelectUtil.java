@@ -17,19 +17,19 @@ public class ImageSelectUtil {
             // 是否记住上次选中记录, 仅当multiSelect为true的时候配置，默认为true
             .rememberSelected(false)
             // “确定”按钮背景色
-            .btnBgColor(Color.GRAY)
+            .btnBgColor(Color.parseColor("#00a551"))
             // “确定”按钮文字颜色
-            .btnTextColor(Color.BLUE)
+            .btnTextColor(Color.parseColor("#ffffff"))
             // 使用沉浸式状态栏
-            .statusBarColor(Color.parseColor("#3F51B5"))
+            .statusBarColor(Color.parseColor("#ffffff"))
             // 返回图标ResId
             .backResId(R.drawable.back)
             // 标题
             .title("图片")
             // 标题文字颜色
-            .titleColor(Color.WHITE)
+            .titleColor(Color.parseColor("#545454"))
             // TitleBar背景色
-            .titleBgColor(Color.parseColor("#3F51B5"))
+            .titleBgColor(Color.parseColor("#f5f5f5"))
             // 裁剪大小。needCrop为true的时候配置
             .cropSize(1, 1, 200, 200)
             .needCrop(false)

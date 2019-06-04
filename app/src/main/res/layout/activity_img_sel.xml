@@ -9,7 +9,7 @@
         android:id="@+id/rlTitleBar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary">
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/ivBack"
@@ -18,7 +18,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:padding="5dp"
-            android:src="@drawable/ic_back" />
+            android:src="@drawable/back" />
 
         <TextView
             android:id="@+id/tvTitle"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="图片"
-            android:textColor="@android:color/white"
+            android:textColor="#545454"
             android:textSize="18sp" />
 
         <Button
