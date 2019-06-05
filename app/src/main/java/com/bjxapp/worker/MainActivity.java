@@ -57,6 +57,7 @@ import com.bjxapp.worker.ui.view.base.BaseFragmentActivity;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Fourth;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Second;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Third;
+import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Third_New;
 import com.bjxapp.worker.ui.view.fragment.Fragment_main_first_new;
 import com.bjxapp.worker.utils.ACache;
 import com.bjxapp.worker.utils.Utils;

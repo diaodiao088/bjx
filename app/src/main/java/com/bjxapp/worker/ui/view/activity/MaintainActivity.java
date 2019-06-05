@@ -864,7 +864,7 @@ public class MaintainActivity extends Activity {
             return;
         }
 
-        if (TextUtils.isEmpty(xietiaoName)){
+        if (TextUtils.isEmpty(xietiaoName) && !isComplete){
             Toast.makeText(this, "请先选择协调原因", Toast.LENGTH_SHORT).show();
             return;
         }
