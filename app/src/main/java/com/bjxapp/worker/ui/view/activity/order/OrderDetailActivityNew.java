@@ -392,7 +392,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
             int settleState = currentPlanBean.getStatus();
 
-            if (settleState == 3 || settleState == 9) {
+            if (settleState == 3) {
                 Toast.makeText(this, "维修方案审核中，请耐心等待", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -401,7 +401,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
-                    mDetailInfo.getOrderDes() , currentAddress);
+                    mDetailInfo.getOrderDes(), currentAddress);
         } else {
             toDetailStatus();
         }
@@ -424,7 +424,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
-                    mDetailInfo.getOrderDes() , currentAddress);
+                    mDetailInfo.getOrderDes(), currentAddress);
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
@@ -749,7 +749,13 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
                     int settleState = currentPlanBean.getStatus();
 
-                    if (settleState == 3 || settleState == 9) {
+
+                    if (settleState == 9) {
+                        Toast.makeText(this, "维修方案未通过，请重新创建维修方案", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (settleState == 3) {
                         Toast.makeText(this, "维修方案审核中，请耐心等待", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -760,7 +766,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
                     } else {
                         CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId(),
-                                mDetailInfo.getOrderDes() , currentAddress);
+                                mDetailInfo.getOrderDes(), currentAddress);
                     }
 
                 } else {
@@ -2079,7 +2085,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
                 } else {
                     CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId(),
-                            mDetailInfo.getOrderDes() , currentAddress);
+                            mDetailInfo.getOrderDes(), currentAddress);
                 }
 
                 break;
@@ -2096,7 +2102,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
-                    mDetailInfo.getOrderDes() , currentAddress);
+                    mDetailInfo.getOrderDes(), currentAddress);
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());

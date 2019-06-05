@@ -42,6 +42,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.ImageInfo;
+import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -173,12 +174,16 @@ public class PublicImagesActivity extends BaseActivity implements OnClickListene
         mXListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                ImageInfo imageInfo = (ImageInfo) mXListView.getItemAtPosition(position);
+//                File file = new File(imageInfo.getUrl());
+//                Intent intent = new Intent();
+//                intent.setAction(Intent.ACTION_VIEW);
+//                intent.setDataAndType(Uri.fromFile(file), "image/*");
+//                startActivity(intent);
+
                 ImageInfo imageInfo = (ImageInfo) mXListView.getItemAtPosition(position);
-                File file = new File(imageInfo.getUrl());
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(file), "image/*");
-                startActivity(intent);
+                ImageOrderActivity.goToActivity(PublicImagesActivity.this, imageInfo.getUrl());
+
             }
         });
 

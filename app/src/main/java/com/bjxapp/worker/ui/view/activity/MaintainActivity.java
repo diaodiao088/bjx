@@ -864,6 +864,11 @@ public class MaintainActivity extends Activity {
             return;
         }
 
+        if (TextUtils.isEmpty(xietiaoName)){
+            Toast.makeText(this, "请先选择协调原因", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         mWaitingDialog.show("正在提交", false);
 
         OkHttpClient client = new OkHttpClient();
