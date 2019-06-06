@@ -91,7 +91,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private Fragment[] mFragments;
     public Fragment_main_first_new mMainFirstFragment;
     private Fragment_Main_Second mMainSecondFragment;
-    private Fragment_Main_Third mMainThirdFragment;
+    private Fragment_Main_Third_New mMainThirdFragment;
     private Fragment_Main_Fourth mMainFourthFragment;
     private XImageView[] mImageButtons;
     private XTextView[] mTextViews;
@@ -283,7 +283,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private void initTabView() {
         mMainFirstFragment = new Fragment_main_first_new();
         mMainSecondFragment = new Fragment_Main_Second();
-        mMainThirdFragment = new Fragment_Main_Third();
+        mMainThirdFragment = new Fragment_Main_Third_New();
         mMainFourthFragment = new Fragment_Main_Fourth();
         mFragments = new Fragment[]{mMainFirstFragment, mMainSecondFragment, mMainThirdFragment, mMainFourthFragment};
         mImageButtons = new XImageView[4];
