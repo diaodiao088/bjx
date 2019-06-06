@@ -22,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
-import com.bjxapp.worker.adapter.MessageAdapter;
 import com.bjxapp.worker.adapter.OrderAdapter;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.BillApi;

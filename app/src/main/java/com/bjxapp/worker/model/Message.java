@@ -6,6 +6,8 @@ public class Message {
     private String title;
     private String content;
 
+    private boolean isRead;
+
     public int getId() {
         return id;
     }
@@ -38,4 +40,11 @@ public class Message {
         this.content = content;
     }
 
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
 }

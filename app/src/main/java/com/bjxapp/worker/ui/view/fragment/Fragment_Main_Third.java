@@ -76,7 +76,6 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Message message = (Message) mXListView.getItemAtPosition(position);
-                //  Utils.startActivity(getActivity(), MessageDetailActivity.class, new BasicNameValuePair("message_id", String.valueOf(message.getId())));
 
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MessageDetailActivity.class);
@@ -91,7 +90,6 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
 
         mWaitingDialog = new XWaitingDialog(mActivity);
 
-        setOnListener();
         onFirstLoadData(false);
     }
 
@@ -110,10 +108,6 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
         if (enterType != 0) {
             onFirstLoadData(false);
         }
-    }
-
-    private void setOnListener() {
-
     }
 
     @Override
