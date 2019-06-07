@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bjx.master.R;
+import com.bjxapp.worker.db.DBManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.ui.view.fragment.subfragment.BillBaseFragment;
@@ -42,12 +43,14 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
     @Override
     protected void initView() {
 
+        dbManager = new DBManager(getContext());
+
         mViewPager = (BlockableViewPager) findViewById(R.id.main_viewpager);
         mViewPager.setOffscreenPageLimit(2);
 
         mAdapter = new NotifyAdapter(getChildFragmentManager());
-        mAdapter.addFragment(new Fragment_Main_Bill());
-        mAdapter.addFragment(new Fragment_Main_Third());
+        mAdapter.addFragment(new Fragment_Main_Bill().setParentFragment(this));
+        mAdapter.addFragment(new Fragment_Main_Third().setParentFragment(this));
 
         mViewPager.setAdapter(mAdapter);
 
@@ -64,6 +67,12 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
 
         changeState(false);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateRedot();
     }
 
     private void changeState(boolean isCompany) {
@@ -127,7 +136,39 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
         super.onDestroy();
     }
 
-    public void updateData(){
+    public void updateData() {
+
+        if (!getActivity().isFinishing()){
+            updateRedot();
+        }
+
+    }
+
+    DBManager dbManager;
+
+    public void updateRedot() {
+
+        try {
+            final int billCount = (int) dbManager.getBillRedotNum();
+            int companyCount = (int) dbManager.getCompanyRedotNum();
+
+            if (billCount > 0) {
+                mBillRedotTv.setVisibility(View.VISIBLE);
+                mBillRedotTv.setText(String.valueOf(billCount));
+            } else {
+                mBillRedotTv.setVisibility(View.GONE);
+            }
+
+            if (companyCount > 0) {
+                mCompanyRedotTv.setVisibility(View.VISIBLE);
+                mCompanyRedotTv.setText(String.valueOf(companyCount));
+            } else {
+                mCompanyRedotTv.setVisibility(View.GONE);
+            }
+
+
+        } catch (Exception e) {
+        }
 
 
     }

@@ -1,57 +1,39 @@
 package com.bjxapp.worker.ui.view.fragment;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.RelativeLayout;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.RelativeLayout;
 
+import com.bjx.master.R;
 import com.bjxapp.worker.adapter.MessageAdapter;
-import com.bjxapp.worker.api.APIConstants;
-import com.bjxapp.worker.apinew.LoginApi;
-import com.bjxapp.worker.apinew.NotificationApi;
-import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.controls.listview.XListView.IXListViewListener;
 import com.bjxapp.worker.db.BjxInfo;
 import com.bjxapp.worker.db.DBManager;
-import com.bjxapp.worker.global.ConfigManager;
-import com.bjxapp.worker.global.Constant;
-import com.bjxapp.worker.http.httpcore.KHttpWorker;
-import com.bjxapp.worker.model.Message;
 import com.bjxapp.worker.ui.view.activity.MessageDetailActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.LogUtils;
-import com.bjxapp.worker.utils.Utils;
-import com.bjx.master.R;;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class Fragment_Main_Third extends BaseFragment implements OnClickListener, IXListViewListener {
     protected static final String TAG = "通知";
     private RelativeLayout mLoadAgainLayout;
     private XWaitingDialog mWaitingDialog;
     private ArrayList<BjxInfo> mMessagesArray = new ArrayList<BjxInfo>();
+
+    private Fragment_Main_Third_New mParentFragment;
 
     private MessageAdapter mMessageAdapter;
     private XListView mXListView;
@@ -99,6 +81,9 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
                 mMessageAdapter.notifyDataSetChanged();
                 dbManager.updateAsRead(message.getId());
                 mActivity.updateRedotCount();
+                if (mParentFragment != null){
+                    mParentFragment.updateRedot();
+                }
 
                 getActivity().startActivity(intent);
 
@@ -298,6 +283,11 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
         }
 
         super.onDestroy();
+    }
+
+    public Fragment_Main_Third setParentFragment(Fragment_Main_Third_New fragment){
+        this.mParentFragment = fragment;
+        return this;
     }
 
 

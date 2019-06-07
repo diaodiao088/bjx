@@ -50,9 +50,9 @@ public class DBManager {
         }
     }
 
-    public List<BjxInfo> queryCompany(int limit, int offset) {
+    public List<BjxInfo> queryBill(int limit, int offset) {
         ArrayList<BjxInfo> list = new ArrayList<BjxInfo>();
-        Cursor c = queryTheCursor(limit, offset);
+        Cursor c = queryBillCursor(limit, offset);
         while (c.moveToNext()) {
             BjxInfo item = new BjxInfo();
             item.setContent(c.getString(c.getColumnIndex("content")));
@@ -152,6 +152,16 @@ public class DBManager {
      */
     public Cursor queryTheCursor(int limit, int offset) {
         Cursor c = db.rawQuery("SELECT * FROM bjx_new where type=70 order by _id desc limit " + limit + " offset " + offset, null);
+        return c;
+    }
+
+    /**
+     * query all persons, return cursor
+     *
+     * @return Cursor
+     */
+    public Cursor queryBillCursor(int limit, int offset) {
+        Cursor c = db.rawQuery("SELECT * FROM bjx_new where type not in (70) order by _id desc limit " + limit + " offset " + offset, null);
         return c;
     }
 

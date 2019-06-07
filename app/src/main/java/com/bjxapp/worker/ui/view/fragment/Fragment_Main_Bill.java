@@ -22,6 +22,7 @@ import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.controls.listview.XListView.IXListViewListener;
 import com.bjxapp.worker.db.BjxInfo;
+import com.bjxapp.worker.db.DBManager;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
@@ -29,6 +30,7 @@ import com.bjxapp.worker.model.Message;
 import com.bjxapp.worker.ui.view.activity.MessageDetailActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.ui.widget.DimenUtils;
+import com.bjxapp.worker.utils.LogUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -53,15 +55,21 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
     private XListView mXListView;
     private int mCurrentBatch = 0;
 
+    private Fragment_Main_Third_New mParentFragment;
+
+    private DBManager dbManager;
+
+    public static final int BATCH_SIZE = 200;
+
     @Override
     protected void initView() {
-        registerUpdateUIBroadcast();
+        dbManager = new DBManager(getActivity());
         mLoadAgainLayout = (RelativeLayout) findViewById(R.id.message_list_load_again);
         mLoadAgainLayout.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                onFirstLoadData(true);
+                onFirstLoadData();
             }
         });
 
@@ -85,6 +93,15 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
                 intent.putExtra(MessageDetailActivity.MSG_TIME, message.getDate());
                 intent.putExtra(MessageDetailActivity.MSG_TITLE, message.getTitle());
 
+                message.setRead(true);
+                mMessageAdapter.notifyDataSetChanged();
+                dbManager.updateAsRead(message.getId());
+                mActivity.updateRedotCount();
+
+                if (mParentFragment != null){
+                    mParentFragment.updateRedot();
+                }
+
                 getActivity().startActivity(intent);
 
             }
@@ -92,7 +109,7 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
 
         mWaitingDialog = new XWaitingDialog(mActivity);
 
-        onFirstLoadData(false);
+        onFirstLoadData();
     }
 
     @Override
@@ -108,7 +125,7 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
     @Override
     public void refresh(int enterType) {
         if (enterType != 0) {
-            onFirstLoadData(false);
+            onFirstLoadData();
         }
     }
 
@@ -148,301 +165,118 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
         return mCreateTime;
     }
 
-    private AsyncTask<Void, Void, List<Message>> mFirstLoadTask;
+    private AsyncTask<Void, Void, List<BjxInfo>> mFirstLoadTask;
 
-    private void onFirstLoadData(final Boolean loading) {
+    private void onFirstLoadData() {
 
-        if (!Utils.isNetworkAvailable(mActivity)) {
-            Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
-            return;
-        }
-
-        if (loading && mWaitingDialog != null) {
-            mWaitingDialog.show("正在加载中，请稍候...", false);
-        }
-
-        NotificationApi notificationApi = KHttpWorker.ins().createHttpService(LoginApi.URL, NotificationApi.class);
-
-        Map<String, String> params = new HashMap<>();
-        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
-        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
-        params.put("pageNum", String.valueOf(1));
-        params.put("pageSize", String.valueOf(20));
-        params.put("endCreateTime", getFormatedTime());
-
-        Call<JsonObject> call = notificationApi.getNoticeList(params);
-
-        call.enqueue(new Callback<JsonObject>() {
+        mFirstLoadTask = new AsyncTask<Void, Void, List<BjxInfo>>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            protected List<BjxInfo> doInBackground(Void... voids) {
 
-                if (loading) {
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mWaitingDialog != null) {
-                                mWaitingDialog.dismiss();
-                            }
-                        }
-                    });
-                }
+                ArrayList<BjxInfo> list = (ArrayList<BjxInfo>) dbManager.queryBill(BATCH_SIZE, 0 * BATCH_SIZE);
 
-                JsonObject jsonObject = response.body();
-
-                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
-                    String msg = jsonObject.get("msg").getAsString();
-                    int code = jsonObject.get("code").getAsInt();
-
-                    if (code == 0) {
-                        JsonObject pageObject = jsonObject.getAsJsonObject("page");
-                        JsonArray itemArray = pageObject.getAsJsonArray("list");
-
-                        if (itemArray != null && itemArray.size() > 0) {
-                            mMessagesArray.clear();
-                            for (int i = 0; i < itemArray.size(); i++) {
-                                JsonObject item = (JsonObject) itemArray.get(i);
-                                /*WithdrawInfo withdrawInfoItem = new WithdrawInfo();
-                                withdrawInfoItem.setDate(item.get("createTime").getAsString());
-                                withdrawInfoItem.setMoney(item.get("amount").getAsString());
-                                withdrawInfoItem.setStatus(item.get("status").getAsInt());
-                                mMessagesArray.add(withdrawInfoItem);*/
-                                BjxInfo messageItem = new BjxInfo();
-                                messageItem.setTitle(item.get("title").getAsString());
-                                messageItem.setContent(item.get("content").getAsString());
-                                messageItem.setCreateTime(item.get("createTime").getAsString());
-
-                                mMessagesArray.add(messageItem);
-                            }
-                        }
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                mCurrentBatch = 1;
-                                mMessageAdapter = new PushBillAdapter(mActivity, mMessagesArray);
-                                mXListView.setAdapter(mMessageAdapter);
-                                mCurrentBatch++;
-
-                                if (mMessagesArray.size() > 0) {
-                                    //  ConfigManager.getInstance(mActivity).setDesktopMessagesDot(ConfigManager.getInstance(mActivity).getDesktopMessagesDotServer());
-                                    mLoadAgainLayout.setVisibility(View.GONE);
-                                    mXListView.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        });
-
-                    } else {
-
-                    }
-                }
-
+                return list;
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                if (loading) {
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mWaitingDialog != null) {
-                                mWaitingDialog.dismiss();
-                            }
-                        }
-                    });
+            protected void onPostExecute(List<BjxInfo> bjxInfos) {
+
+                if (bjxInfos == null || bjxInfos.size() == 0) {
+                    return;
                 }
+
+                LogUtils.log(bjxInfos.toString());
+
+                mCurrentBatch = 0;
+
+                mMessagesArray.clear();
+                mMessagesArray.addAll(bjxInfos);
+                mMessageAdapter.notifyDataSetChanged();
+                mCurrentBatch++;
+
+                if (mMessagesArray.size() > 0) {
+                    //  ConfigManager.getInstance(mActivity).setDesktopMessagesDot(ConfigManager.getInstance(mActivity).getDesktopMessagesDotServer());
+                    mLoadAgainLayout.setVisibility(View.GONE);
+                    mXListView.setVisibility(View.VISIBLE);
+                }
+
             }
-        });
+        };
+
+        mFirstLoadTask.execute();
     }
 
-    private AsyncTask<Void, Void, List<Message>> mRefreshTask;
+    private AsyncTask<Void, Void, List<BjxInfo>> mRefreshTask;
 
     @Override
     public void onRefresh() {
-        /*mRefreshTask = new AsyncTask<Void, Void, List<Message>>() {
+
+        mRefreshTask = new AsyncTask<Void, Void, List<BjxInfo>>() {
             @Override
-            protected List<Message> doInBackground(Void... params) {
-                return LogicFactory.getMessageLogic(mActivity).getMessages(0);
+            protected List<BjxInfo> doInBackground(Void... voids) {
+
+                ArrayList<BjxInfo> list = (ArrayList<BjxInfo>) dbManager.queryBill(BATCH_SIZE, 0 * BATCH_SIZE);
+
+                return list;
             }
 
             @Override
-            protected void onPostExecute(List<Message> result) {
-                if (result == null) {
-                    try {
-                        onLoadFinished();
-                    } catch (Exception e) {
-                        Logger.i(e.getMessage());
-                    }
+            protected void onPostExecute(List<BjxInfo> bjxInfos) {
+
+                if (bjxInfos == null) {
                     return;
                 }
 
                 mCurrentBatch = 0;
+
                 mMessagesArray.clear();
-                mMessagesArray.addAll(result);
-                mMessageAdapter = new MessageAdapter(mActivity, mMessagesArray);
-                mXListView.setAdapter(mMessageAdapter);
-                onLoadFinished();
+                mMessagesArray.addAll(bjxInfos);
+                mMessageAdapter.notifyDataSetChanged();
                 mCurrentBatch++;
-            }
-        };
-        mRefreshTask.execute();*/
 
-
-        if (!Utils.isNetworkAvailable(mActivity)) {
-            Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
-            return;
-        }
-
-        NotificationApi notificationApi = KHttpWorker.ins().createHttpService(LoginApi.URL, NotificationApi.class);
-
-        Map<String, String> params = new HashMap<>();
-        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
-        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
-        params.put("pageNum", String.valueOf(1));
-        params.put("pageSize", String.valueOf(20));
-        params.put("endCreateTime", updateFormatedTime());
-
-        Call<JsonObject> call = notificationApi.getNoticeList(params);
-
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
-                JsonObject jsonObject = response.body();
-
-                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
-                    String msg = jsonObject.get("msg").getAsString();
-                    int code = jsonObject.get("code").getAsInt();
-
-                    if (code == 0) {
-                        JsonObject pageObject = jsonObject.getAsJsonObject("page");
-                        JsonArray itemArray = pageObject.getAsJsonArray("list");
-
-                        if (itemArray != null && itemArray.size() > 0) {
-                            mMessagesArray.clear();
-                            for (int i = 0; i < itemArray.size(); i++) {
-                                JsonObject item = (JsonObject) itemArray.get(i);
-
-                                BjxInfo messageItem = new BjxInfo();
-                                messageItem.setTitle(item.get("title").getAsString());
-                                messageItem.setContent(item.get("content").getAsString());
-                                messageItem.setCreateTime(item.get("createTime").getAsString());
-
-                                mMessagesArray.add(messageItem);
-                            }
-                        }
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                mCurrentBatch = 1;
-
-                                mMessageAdapter = new PushBillAdapter(mActivity, mMessagesArray);
-                                mXListView.setAdapter(mMessageAdapter);
-
-                                mCurrentBatch++;
-
-                                onLoadFinished();
-
-                            }
-                        });
-
-                    } else {
-
-                    }
+                if (mMessagesArray.size() > 0) {
+                    //  ConfigManager.getInstance(mActivity).setDesktopMessagesDot(ConfigManager.getInstance(mActivity).getDesktopMessagesDotServer());
+                    mLoadAgainLayout.setVisibility(View.GONE);
+                    mXListView.setVisibility(View.VISIBLE);
                 }
 
+                onLoadFinished();
             }
+        };
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-            }
-        });
-
+        mRefreshTask.execute();
     }
+
+    private AsyncTask<Void, Void, List<BjxInfo>> mLoadMoreTask;
+
 
     @Override
     public void onLoadMore() {
 
-        if (!Utils.isNetworkAvailable(mActivity)) {
-            Utils.showShortToast(mActivity, getString(R.string.common_no_network_message));
-        }
-
-        NotificationApi notificationApi = KHttpWorker.ins().createHttpService(LoginApi.URL, NotificationApi.class);
-
-        Map<String, String> params = new HashMap<>();
-        params.put("token", ConfigManager.getInstance(getActivity()).getUserSession());
-        params.put("userCode", ConfigManager.getInstance(getActivity()).getUserCode());
-        params.put("pageNum", String.valueOf(mCurrentBatch));
-        params.put("pageSize", String.valueOf(20));
-        params.put("endCreateTime", getFormatedTime());
-
-        Call<JsonObject> call = notificationApi.getNoticeList(params);
-
-        call.enqueue(new Callback<JsonObject>() {
+        mLoadMoreTask = new AsyncTask<Void, Void, List<BjxInfo>>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            protected List<BjxInfo> doInBackground(Void... voids) {
 
-                JsonObject jsonObject = response.body();
+                ArrayList<BjxInfo> list = (ArrayList<BjxInfo>) dbManager.queryBill(BATCH_SIZE, mCurrentBatch * BATCH_SIZE);
 
-                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
-                    String msg = jsonObject.get("msg").getAsString();
-                    int code = jsonObject.get("code").getAsInt();
+                return list;
+            }
 
-                    if (code == 0) {
-                        JsonObject pageObject = jsonObject.getAsJsonObject("page");
-                        JsonArray itemArray = pageObject.getAsJsonArray("list");
+            @Override
+            protected void onPostExecute(List<BjxInfo> bjxInfos) {
 
-                        final ArrayList<BjxInfo> list = new ArrayList<>();
-                        if (itemArray != null && itemArray.size() > 0) {
-
-                            for (int i = 0; i < itemArray.size(); i++) {
-                                JsonObject item = (JsonObject) itemArray.get(i);
-
-                                BjxInfo messageItem = new BjxInfo();
-                                messageItem.setTitle(item.get("title").getAsString());
-                                messageItem.setContent(item.get("content").getAsString());
-                                messageItem.setCreateTime(item.get("createTime").getAsString());
-
-                                list.add(messageItem);
-                            }
-                        } else {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Utils.showShortToast(mActivity, getString(R.string.common_no_more_data_message));
-                                    onLoadFinished();
-                                }
-                            });
-                            return;
-                        }
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                mMessagesArray.addAll(list);
-                                mMessageAdapter.notifyDataSetChanged();
-                                onLoadFinished();
-                                mCurrentBatch++;
-                            }
-                        });
-
-                    } else {
-
-                    }
+                if (bjxInfos == null) {
+                    return;
                 }
 
+                mCurrentBatch++;
+                mMessagesArray.addAll(bjxInfos);
+                mMessageAdapter.notifyDataSetChanged();
+                onLoadFinished();
             }
+        };
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-            }
-        });
-
-
+        mLoadMoreTask.execute();
     }
 
     @Override
@@ -459,38 +293,16 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
             if (mRefreshTask != null) {
                 mRefreshTask.cancel(true);
             }
-            //注销广播
-            mActivity.unregisterReceiver(broadcastReceiver);
         } catch (Exception e) {
         }
 
         super.onDestroy();
     }
 
-    /**
-     * 定义广播接收器（内部类）
-     *
-     * @author Jason
-     */
-    private UpdateUIBroadcastReceiver broadcastReceiver;
-
-    private class UpdateUIBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Utils.showLongToast(mActivity, "您有新通知，请查看！");
-            onFirstLoadData(false);
-        }
+    public Fragment_Main_Bill setParentFragment(Fragment_Main_Third_New fragment){
+        this.mParentFragment = fragment;
+        return this;
     }
 
-    /**
-     * 动态注册广播
-     */
-    private void registerUpdateUIBroadcast() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constant.PUSH_ACTION_MESSAGE_MODIFIED);
-        broadcastReceiver = new UpdateUIBroadcastReceiver();
-        mActivity.registerReceiver(broadcastReceiver, filter);
-    }
 
 }

@@ -68,6 +68,12 @@ public class PushBillAdapter extends BaseAdapter {
         holder.contentTv.setText(item.getContent());
         holder.titleTv.setText(item.getTitle());
 
+        if (item.isRead()){
+            holder.redotView.setVisibility(View.INVISIBLE);
+        }else{
+            holder.redotView.setVisibility(View.VISIBLE);
+        }
+
 
         return convertView;
     }
