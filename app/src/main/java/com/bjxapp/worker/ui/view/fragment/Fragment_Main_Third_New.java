@@ -47,7 +47,7 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
         mViewPager.setOffscreenPageLimit(2);
 
         mAdapter = new NotifyAdapter(getChildFragmentManager());
-        mAdapter.addFragment(new Fragment_Main_Third());
+        mAdapter.addFragment(new Fragment_Main_Bill());
         mAdapter.addFragment(new Fragment_Main_Third());
 
         mViewPager.setAdapter(mAdapter);
@@ -59,6 +59,11 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
         mCompanyRedotTv = (TextView) findViewById(R.id.company_redot);
         mCompanyTv = (TextView) findViewById(R.id.title_company_tv);
         mCompanyView = findViewById(R.id.company_divider);
+
+        findViewById(R.id.company_ly).setOnClickListener(this);
+        findViewById(R.id.bill_ly).setOnClickListener(this);
+
+        changeState(false);
 
     }
 
@@ -98,7 +103,13 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case 0:
+            case R.id.bill_ly:
+                changeState(false);
+                mViewPager.setCurrentItem(0);
+                break;
+            case R.id.company_ly:
+                changeState(true);
+                mViewPager.setCurrentItem(1);
                 break;
             default:
                 break;
@@ -147,7 +158,6 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
         broadcastReceiver = new UpdateUIBroadcastReceiver();
         mActivity.registerReceiver(broadcastReceiver, filter);
     }
-
 
 
     class NotifyAdapter extends FragmentPagerAdapter {

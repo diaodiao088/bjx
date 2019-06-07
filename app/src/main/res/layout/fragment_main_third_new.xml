@@ -13,6 +13,7 @@
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/bill_ly"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
@@ -39,16 +40,17 @@
                 android:gravity="center"
                 android:text="2"
                 android:textColor="#FFFFFF"
-                android:textSize="9sp" />
-            
-            
+                android:textSize="9sp"
+                android:visibility="gone" />
+
+
             <View
                 android:id="@+id/bill_divider"
                 android:layout_width="55dp"
                 android:layout_height="2dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:background="#00a551"/>
+                android:background="#00a551" />
 
 
         </RelativeLayout>
@@ -59,6 +61,7 @@
             android:background="#f5f5f5" />
 
         <RelativeLayout
+            android:id="@+id/company_ly"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
@@ -85,7 +88,8 @@
                 android:gravity="center"
                 android:text="2"
                 android:textColor="#FFFFFF"
-                android:textSize="9sp" />
+                android:textSize="9sp"
+                android:visibility="gone" />
 
             <View
                 android:id="@+id/company_divider"
@@ -93,7 +97,7 @@
                 android:layout_height="2dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:background="#00a551"/>
+                android:background="#00a551" />
 
         </RelativeLayout>
 
@@ -102,9 +106,9 @@
 
     <com.bjxapp.worker.ui.widget.BlockableViewPager
         android:id="@+id/main_viewpager"
-        android:layout_below="@+id/history_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/history_title" />
 
 
 </RelativeLayout>

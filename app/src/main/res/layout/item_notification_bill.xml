@@ -21,13 +21,13 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="3dp"
-            android:layout_toRightOf="@+id/redot"
             android:text="维修订单"
             android:textColor="@color/main_text_color"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/push_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -36,6 +36,7 @@
             android:textSize="12sp" />
 
         <View
+            android:id="@+id/redot"
             android:layout_width="5dp"
             android:layout_height="5dp"
             android:layout_marginLeft="3dp"
@@ -59,6 +60,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/look_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/content"

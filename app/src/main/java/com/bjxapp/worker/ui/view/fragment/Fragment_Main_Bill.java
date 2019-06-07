@@ -1,12 +1,5 @@
 package com.bjxapp.worker.ui.view.fragment;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,17 +10,18 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.RelativeLayout;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.RelativeLayout;
 
-import com.bjxapp.worker.adapter.MessageAdapter;
+import com.bjx.master.R;
+import com.bjxapp.worker.adapter.PushBillAdapter;
 import com.bjxapp.worker.api.APIConstants;
 import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.apinew.NotificationApi;
-import com.bjxapp.worker.apinew.ProfileApi;
 import com.bjxapp.worker.controls.XWaitingDialog;
 import com.bjxapp.worker.controls.listview.XListView;
 import com.bjxapp.worker.controls.listview.XListView.IXListViewListener;
+import com.bjxapp.worker.db.BjxInfo;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
@@ -36,20 +30,26 @@ import com.bjxapp.worker.ui.view.activity.MessageDetailActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.Utils;
-import com.bjx.master.R;;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Fragment_Main_Third extends BaseFragment implements OnClickListener, IXListViewListener {
+public class Fragment_Main_Bill extends BaseFragment implements OnClickListener, IXListViewListener {
     protected static final String TAG = "通知";
     private RelativeLayout mLoadAgainLayout;
     private XWaitingDialog mWaitingDialog;
-    private ArrayList<Message> mMessagesArray = new ArrayList<Message>();
-    private MessageAdapter mMessageAdapter;
+    private ArrayList<BjxInfo> mMessagesArray = new ArrayList<BjxInfo>();
+    private PushBillAdapter mMessageAdapter;
     private XListView mXListView;
     private int mCurrentBatch = 0;
 
@@ -66,7 +66,7 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
         });
 
         mXListView = (XListView) findViewById(R.id.message_list_listview);
-        mMessageAdapter = new MessageAdapter(mActivity, mMessagesArray);
+        mMessageAdapter = new PushBillAdapter(mActivity, mMessagesArray);
         mXListView.setAdapter(mMessageAdapter);
         mXListView.setCacheColorHint(Color.TRANSPARENT);
         mXListView.setPullLoadEnable(true);
@@ -206,11 +206,10 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
                                 withdrawInfoItem.setMoney(item.get("amount").getAsString());
                                 withdrawInfoItem.setStatus(item.get("status").getAsInt());
                                 mMessagesArray.add(withdrawInfoItem);*/
-
-                                Message messageItem = new Message();
+                                BjxInfo messageItem = new BjxInfo();
                                 messageItem.setTitle(item.get("title").getAsString());
                                 messageItem.setContent(item.get("content").getAsString());
-                                messageItem.setDate(item.get("createTime").getAsString());
+                                messageItem.setCreateTime(item.get("createTime").getAsString());
 
                                 mMessagesArray.add(messageItem);
                             }
@@ -221,7 +220,7 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
                             public void run() {
 
                                 mCurrentBatch = 1;
-                                mMessageAdapter = new MessageAdapter(mActivity, mMessagesArray);
+                                mMessageAdapter = new PushBillAdapter(mActivity, mMessagesArray);
                                 mXListView.setAdapter(mMessageAdapter);
                                 mCurrentBatch++;
 
@@ -324,10 +323,10 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
                             for (int i = 0; i < itemArray.size(); i++) {
                                 JsonObject item = (JsonObject) itemArray.get(i);
 
-                                Message messageItem = new Message();
+                                BjxInfo messageItem = new BjxInfo();
                                 messageItem.setTitle(item.get("title").getAsString());
                                 messageItem.setContent(item.get("content").getAsString());
-                                messageItem.setDate(item.get("createTime").getAsString());
+                                messageItem.setCreateTime(item.get("createTime").getAsString());
 
                                 mMessagesArray.add(messageItem);
                             }
@@ -339,7 +338,7 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
 
                                 mCurrentBatch = 1;
 
-                                mMessageAdapter = new MessageAdapter(mActivity, mMessagesArray);
+                                mMessageAdapter = new PushBillAdapter(mActivity, mMessagesArray);
                                 mXListView.setAdapter(mMessageAdapter);
 
                                 mCurrentBatch++;
@@ -395,16 +394,16 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
                         JsonObject pageObject = jsonObject.getAsJsonObject("page");
                         JsonArray itemArray = pageObject.getAsJsonArray("list");
 
-                        final ArrayList<Message> list = new ArrayList<>();
+                        final ArrayList<BjxInfo> list = new ArrayList<>();
                         if (itemArray != null && itemArray.size() > 0) {
 
                             for (int i = 0; i < itemArray.size(); i++) {
                                 JsonObject item = (JsonObject) itemArray.get(i);
 
-                                Message messageItem = new Message();
+                                BjxInfo messageItem = new BjxInfo();
                                 messageItem.setTitle(item.get("title").getAsString());
                                 messageItem.setContent(item.get("content").getAsString());
-                                messageItem.setDate(item.get("createTime").getAsString());
+                                messageItem.setCreateTime(item.get("createTime").getAsString());
 
                                 list.add(messageItem);
                             }

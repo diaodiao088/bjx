@@ -1,26 +1,30 @@
 package com.bjxapp.worker.adapter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bjxapp.worker.model.Message;
-import com.bjx.master.R;;
+import com.bjx.master.R;
+import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.db.BjxInfo;
 
-public class MessageAdapter extends BaseAdapter {
+import org.w3c.dom.Text;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+;
+
+public class PushBillAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
-    private ArrayList<Message> aInfo;
+    private ArrayList<BjxInfo> aInfo;
 
-    public MessageAdapter(Context context, ArrayList<Message> info) {
+    public PushBillAdapter(Context context, ArrayList<BjxInfo> info) {
         mInflater = LayoutInflater.from(context);
         aInfo = info;
     }
@@ -43,19 +47,27 @@ public class MessageAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.item_notification, parent ,false);
+            convertView = mInflater.inflate(R.layout.item_notification_bill, null);
+
             holder = new ViewHolder();
-            holder.mTitleTv = convertView.findViewById(R.id.title);
-            holder.mContentTv = convertView.findViewById(R.id.content);
-            holder.mRedotView = convertView.findViewById(R.id.redot);
-            holder.mArrowIv = convertView.findViewById(R.id.arrow);
+            holder.dateTv = (TextView) convertView.findViewById(R.id.push_date);
+            holder.titleTv = (TextView) convertView.findViewById(R.id.title);
+            holder.contentTv = convertView.findViewById(R.id.content);
+
+            holder.redotView = convertView.findViewById(R.id.redot);
+            holder.mLookTv = convertView.findViewById(R.id.look_tv);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.mContentTv.setText(getFormatDateString(aInfo.get(position).getDate()));
-        holder.mTitleTv.setText(aInfo.get(position).getTitle());
+        BjxInfo item = aInfo.get(position);
+
+        holder.dateTv.setText(getFormatDateString(item.getCreateTime()));
+        holder.contentTv.setText(item.getContent());
+        holder.titleTv.setText(item.getTitle());
+
 
         return convertView;
     }
@@ -69,12 +81,11 @@ public class MessageAdapter extends BaseAdapter {
         }
     }
 
-
     class ViewHolder {
-        View mRedotView;
-        TextView mTitleTv;
-        TextView mContentTv;
-        ImageView mArrowIv;
-
+        TextView dateTv;
+        TextView mLookTv;
+        View redotView;
+        TextView titleTv;
+        TextView contentTv;
     }
 }
