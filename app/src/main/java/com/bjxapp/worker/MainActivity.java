@@ -170,6 +170,10 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         // getCache();
     }
 
+    public void updateRedotCount(){
+        checkRingRedot();
+    }
+
     private void checkRingRedot() {
 
         new Thread(new Runnable() {
@@ -185,6 +189,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                             public void run() {
                                 //  mRingView.setVisibility(View.VISIBLE);
                                 mThirdReminder.setVisibility(View.VISIBLE);
+                                mThirdReminder.setText(String.valueOf(allCount));
                             }
                         });
                     } else {

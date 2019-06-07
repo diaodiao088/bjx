@@ -58,7 +58,7 @@ public class MessageDetailActivity extends BaseActivity implements OnClickListen
 
         WebSettings wSet = mMessageDetailContent.getSettings();
         wSet.setJavaScriptEnabled(true);
-        wSet.setDefaultTextEncodingName("utf-8") ;
+        wSet.setDefaultTextEncodingName("utf-8");
 
         //	mMessageDetailContent.setMovementMethod(ScrollingMovementMethod.getInstance());
 

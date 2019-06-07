@@ -1,5 +1,6 @@
 package com.bjxapp.worker.ui.view.base;
 
+import com.bjxapp.worker.MainActivity;
 import com.bjxapp.worker.dataupload.Uploader;
 
 import android.app.Activity;
@@ -14,7 +15,7 @@ import butterknife.ButterKnife;
 
 public abstract class BaseFragment extends Fragment {
     protected View mRoot;
-    protected Activity mActivity;
+    protected MainActivity mActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void setActivity() {
-        mActivity = getActivity();
+        mActivity = (MainActivity) getActivity();
     }
 
     protected void initView() {

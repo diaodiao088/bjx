@@ -37,7 +37,7 @@ public class DBManager {
 
         db.beginTransaction();    //开始事务
         try {
-            db.execSQL("INSERT INTO bjx ( content , createTime , title , type ,read , orderId , noticeId ) VALUES (? , ? , ? , ? , ? , ? , ?)", new Object[]{info.getContent(), info.getCreateTime(),
+            db.execSQL("INSERT INTO bjx_new ( content , createTime , title , type ,read , orderId , noticeId ) VALUES (? , ? , ? , ? , ? , ? , ?)", new Object[]{info.getContent(), info.getCreateTime(),
                     info.getTitle(), info.getType(), 0, info.getOrderId(), info.getNoticeId()});
             db.setTransactionSuccessful();    //设置事务成功完成
 
@@ -78,6 +78,7 @@ public class DBManager {
             item.setTitle(c.getString(c.getColumnIndex("title")));
             item.setCreateTime(c.getString(c.getColumnIndex("createTime")));
             int isRead = c.getInt(c.getColumnIndex("read"));
+            item.setId(c.getInt(c.getColumnIndex("_id")));
             item.setOrderId(c.getString(c.getColumnIndex("orderId")));
             item.setNoticeId(c.getString(c.getColumnIndex("noticeId")));
             item.setRead(isRead == 1);
@@ -88,7 +89,7 @@ public class DBManager {
     }
 
 
-    public void updateAsRead() {
+    public void updateAsRead(int id) {
 
        /* Cursor c = null;
         try {
@@ -106,7 +107,7 @@ public class DBManager {
         try {
             ContentValues cv = new ContentValues();
             cv.put("read", 1);
-            db.update("bjx", cv, "_id > 0", null);
+            db.update("bjx_new", cv, "_id = " + id, null);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

@@ -111,17 +111,6 @@ public class PushDetailActivity extends Activity implements XListView.IXListView
 
     private void markAllAsRead(){
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                try{
-                    dbManager.updateAsRead();
-                }catch (Exception e){
-
-                }
-            }
-        }).run();
     }
 
 

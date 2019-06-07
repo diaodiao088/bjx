@@ -8,6 +8,8 @@ package com.bjxapp.worker.db;
 
 public class BjxInfo {
 
+    private int id;
+
     private boolean isVoice;
 
     private int type;
@@ -107,6 +109,14 @@ public class BjxInfo {
 
     public void setNoticeId(String noticeId) {
         this.noticeId = noticeId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

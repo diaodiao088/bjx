@@ -36,7 +36,6 @@ public class PushParser {
             JSONObject jsonObject = new JSONObject(content);
 
             int type = jsonObject.getInt("type");
-            boolean isVoice = jsonObject.getBoolean("isVoice");
             String contentStr = jsonObject.getString("content");
             String title = jsonObject.getString("title");
             String remark = jsonObject.getString("remark");

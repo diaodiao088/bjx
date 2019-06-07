@@ -87,13 +87,18 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
         mXListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Message message = (Message) mXListView.getItemAtPosition(position);
+                BjxInfo message = (BjxInfo) mXListView.getItemAtPosition(position);
 
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MessageDetailActivity.class);
                 intent.putExtra(MessageDetailActivity.MSG_CONTENT, message.getContent());
-                intent.putExtra(MessageDetailActivity.MSG_TIME, message.getDate());
+                intent.putExtra(MessageDetailActivity.MSG_TIME, message.getCreateTime());
                 intent.putExtra(MessageDetailActivity.MSG_TITLE, message.getTitle());
+
+                message.setRead(true);
+                mMessageAdapter.notifyDataSetChanged();
+                dbManager.updateAsRead(message.getId());
+                mActivity.updateRedotCount();
 
                 getActivity().startActivity(intent);
 
