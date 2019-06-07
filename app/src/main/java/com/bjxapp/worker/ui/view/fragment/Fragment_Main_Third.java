@@ -55,7 +55,6 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
 
     @Override
     protected void initView() {
-        registerUpdateUIBroadcast();
         mLoadAgainLayout = (RelativeLayout) findViewById(R.id.message_list_load_again);
         mLoadAgainLayout.setOnClickListener(new OnClickListener() {
 
@@ -460,38 +459,13 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
             if (mRefreshTask != null) {
                 mRefreshTask.cancel(true);
             }
-            //注销广播
-            mActivity.unregisterReceiver(broadcastReceiver);
+
         } catch (Exception e) {
         }
 
         super.onDestroy();
     }
 
-    /**
-     * 定义广播接收器（内部类）
-     *
-     * @author Jason
-     */
-    private UpdateUIBroadcastReceiver broadcastReceiver;
 
-    private class UpdateUIBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Utils.showLongToast(mActivity, "您有新通知，请查看！");
-            onFirstLoadData(false);
-        }
-    }
-
-    /**
-     * 动态注册广播
-     */
-    private void registerUpdateUIBroadcast() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constant.PUSH_ACTION_MESSAGE_MODIFIED);
-        broadcastReceiver = new UpdateUIBroadcastReceiver();
-        mActivity.registerReceiver(broadcastReceiver, filter);
-    }
 
 }

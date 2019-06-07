@@ -37,8 +37,8 @@ public class DBManager {
 
         db.beginTransaction();    //开始事务
         try {
-            db.execSQL("INSERT INTO bjx ( content , createTime , title , type ,read ) VALUES (? , ? , ? , ? , ?)", new Object[]{info.getContent(), info.getCreateTime(),
-                    info.getTitle(), info.getType(), 0});
+            db.execSQL("INSERT INTO bjx ( content , createTime , title , type ,read , orderId , noticeId ) VALUES (? , ? , ? , ? , ? , ? , ?)", new Object[]{info.getContent(), info.getCreateTime(),
+                    info.getTitle(), info.getType(), 0, info.getOrderId(), info.getNoticeId()});
             db.setTransactionSuccessful();    //设置事务成功完成
 
             LogUtils.log("add to db success ");

@@ -41,7 +41,6 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
 
     @Override
     protected void initView() {
-        registerUpdateUIBroadcast();
 
         mViewPager = (BlockableViewPager) findViewById(R.id.main_viewpager);
         mViewPager.setOffscreenPageLimit(2);
@@ -124,39 +123,12 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
 
     @Override
     public void onDestroy() {
-        try {
-
-            //注销广播
-            mActivity.unregisterReceiver(broadcastReceiver);
-        } catch (Exception e) {
-        }
 
         super.onDestroy();
     }
 
-    /**
-     * 定义广播接收器（内部类）
-     *
-     * @author Jason
-     */
-    private UpdateUIBroadcastReceiver broadcastReceiver;
+    public void updateData(){
 
-    private class UpdateUIBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Utils.showLongToast(mActivity, "您有新通知，请查看！");
-        }
-    }
-
-    /**
-     * 动态注册广播
-     */
-    private void registerUpdateUIBroadcast() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constant.PUSH_ACTION_MESSAGE_MODIFIED);
-        broadcastReceiver = new UpdateUIBroadcastReceiver();
-        mActivity.registerReceiver(broadcastReceiver, filter);
     }
 
 

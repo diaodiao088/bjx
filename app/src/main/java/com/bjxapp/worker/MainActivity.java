@@ -129,6 +129,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerUpdateUIBroadcast();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -160,9 +161,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         //获取用户注册状态
         getUserStatus();
 
-        //显示红点
-        displayRedDot();
-
         //注册推送ID
         initPush();
 
@@ -179,17 +177,28 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             public void run() {
                 try {
                     ArrayList<BjxInfo> list = (ArrayList<BjxInfo>) mDbManager.query(1, 0);
-                    if (list != null && list.size() > 0) {
-                        BjxInfo info = list.get(0);
-                        if (!info.isRead()) {
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mRingView.setVisibility(View.VISIBLE);
-                                }
-                            });
-                        }
+
+                    final int allCount = (int) mDbManager.getAllRedotNum();
+
+                    if (allCount > 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //  mRingView.setVisibility(View.VISIBLE);
+                                mThirdReminder.setVisibility(View.GONE);
+                                mThirdReminder.setText(String.valueOf(allCount));
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //  mRingView.setVisibility(View.VISIBLE);
+                                mThirdReminder.setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
+
                 } catch (Exception e) {
 
                 }
@@ -348,7 +357,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 }
                 mRingView.setVisibility(View.GONE);
                 mBackIv.setVisibility(View.GONE);
-                mThirdReminder.setVisibility(View.GONE);
                 break;
             case R.id.main_tab_fourth:
                 mIndex = 3;
@@ -457,6 +465,37 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         }
     }
 
+    /**
+     * 定义广播接收器（内部类）
+     *
+     * @author Jason
+     */
+    private UpdateUIBroadcastReceiver broadcastReceiver;
+
+    private class UpdateUIBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            checkRingRedot();
+
+            if (mMainThirdFragment != null){
+                mMainThirdFragment.updateData();
+            }
+
+        }
+    }
+
+    /**
+     * 动态注册广播
+     */
+    private void registerUpdateUIBroadcast() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constant.PUSH_ACTION_MESSAGE_MODIFIED);
+        broadcastReceiver = new UpdateUIBroadcastReceiver();
+        registerReceiver(broadcastReceiver, filter);
+    }
+
 
     @Override
     protected void onPause() {
@@ -489,29 +528,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         mRightImageView.setOnClickListener(this);
     }
 
-    private AsyncTask<Void, Void, RedDot> mDisplayRedDotTask;
-
-    private void displayRedDot() {
-        if (!Utils.isNetworkAvailable(MainActivity.this)) {
-            Utils.showShortToast(MainActivity.this, getString(R.string.common_no_network_message));
-            return;
-        }
-
-        mDisplayRedDotTask = new AsyncTask<Void, Void, RedDot>() {
-            @Override
-            protected RedDot doInBackground(Void... params) {
-                return LogicFactory.getDesktopLogic(MainActivity.this).getRedDots();
-            }
-
-            @Override
-            protected void onPostExecute(RedDot result) {
-                if (result == null) {
-                    return;
-                }
-            }
-        };
-        mDisplayRedDotTask.execute();
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -890,14 +906,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
     @Override
     protected void onDestroy() {
-        try {
-            if (mDisplayRedDotTask != null) {
-                mDisplayRedDotTask.cancel(true);
-            }
-
-        } catch (Exception e) {
-        }
-
         super.onDestroy();
     }
 }	

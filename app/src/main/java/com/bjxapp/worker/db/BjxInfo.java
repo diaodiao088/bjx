@@ -22,6 +22,9 @@ public class BjxInfo {
 
     private boolean isRead;
 
+    private String orderId = "";
+    private String noticeId = "";
+
     public BjxInfo() {
 
     }
@@ -88,6 +91,22 @@ public class BjxInfo {
 
     public void setRead(boolean read) {
         isRead = read;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getNoticeId() {
+        return noticeId;
+    }
+
+    public void setNoticeId(String noticeId) {
+        this.noticeId = noticeId;
     }
 
     @Override

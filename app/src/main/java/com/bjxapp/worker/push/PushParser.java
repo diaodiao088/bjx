@@ -39,10 +39,30 @@ public class PushParser {
             boolean isVoice = jsonObject.getBoolean("isVoice");
             String contentStr = jsonObject.getString("content");
             String title = jsonObject.getString("title");
-            //   String remark = jsonObject.getString("remark");
+            String remark = jsonObject.getString("remark");
             String createTime = jsonObject.getString("createTime");
 
+            BjxInfo info = new BjxInfo(type, contentStr, title, remark, createTime);
+
+            if (jsonObject.has("orderId")) {
+                String orderId = jsonObject.getString("orderId");
+                info.setOrderId(orderId);
+            }
+
+            mDbManager.add(info);
+
+            setNotifyBroadCast();
+
             switch (type) {
+
+                // 新订单到来
+                case 0:
+                    newBillCome(0, contentStr, title, "", createTime);
+                    break;
+                // 新订单到来
+                case 2:
+                    newBillTimeout();
+                    break;
 
                 // 付款成功
                 case 11:
@@ -54,10 +74,7 @@ public class PushParser {
                     sendSuccBroadcast(type);
                     getMoneySuccess(10, contentStr, title, "", createTime);
                     break;
-                // 新订单到来
-                case 0:
-                    newBillCome(0, contentStr, title, "", createTime);
-                    break;
+
                 // 提现成功
                 case 20:
                     withDrawSuccess(20, contentStr, title, "", createTime);
@@ -72,12 +89,19 @@ public class PushParser {
                 case 3:
                     onEmergencyBillCome(0, contentStr, title, "", createTime);
                     break;
+                case 55:
+                    startJudge();
+                    break;
+                case 37:
+                    newBillTimeout();
+                    break;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     private static void onEmergencyBillCome(int type, String contentStr, String title, String remark, String createTime) {
         MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.new_bill_emergency);
@@ -92,14 +116,10 @@ public class PushParser {
         }
 
         mediaPlayer.start();
-
-        BjxInfo info = new BjxInfo(type, contentStr, title, remark, createTime);
-
-        mDbManager.add(info);
     }
 
     private static void newBillTimeout() {
-        MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.new_bill_timeout);
+        MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.time_out);
 
         try {
             mediaPlayer.prepare();
@@ -112,6 +132,24 @@ public class PushParser {
 
         mediaPlayer.start();
     }
+
+    private static void startJudge() {
+
+        MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.judge);
+
+        try {
+            mediaPlayer.prepare();
+        } catch (IllegalStateException e) {
+
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.start();
+
+    }
+
 
     private static void getMoneySuccess(int type, String contentStr, String title, String remark, String createTime) {
 
@@ -127,10 +165,6 @@ public class PushParser {
         }
 
         mediaPlayer.start();
-
-        BjxInfo info = new BjxInfo(type, contentStr, title, remark, createTime);
-
-        mDbManager.add(info);
 
     }
 
@@ -148,10 +182,6 @@ public class PushParser {
         }
 
         mediaPlayer.start();
-
-        BjxInfo info = new BjxInfo(type, contentStr, title, remark, createTime);
-
-        mDbManager.add(info);
     }
 
 
@@ -162,16 +192,11 @@ public class PushParser {
 
     private static void withDrawSuccess(int type, String contentStr, String title, String remark, String createTime) {
 
-        BjxInfo info = new BjxInfo(type, contentStr, title, remark, createTime);
 
-        mDbManager.add(info);
     }
 
     private static void withDrawFailed(int type, String contentStr, String title, String remark, String createTime) {
 
-        BjxInfo info = new BjxInfo(type, contentStr, title, remark, createTime);
-
-        mDbManager.add(info);
     }
 
 
@@ -185,6 +210,12 @@ public class PushParser {
         intent.setAction(Constant.PUSH_ACTION_ORDER_MODIFIED);
         intent.putExtra("push_type", Constant.PUSH_TYPE_ORDER_PAY);
         intent.putExtra("pay_type", type);
+        App.getInstance().sendBroadcast(intent);
+    }
+
+    private static void setNotifyBroadCast() {
+        Intent intent = new Intent();
+        intent.setAction(Constant.PUSH_ACTION_MESSAGE_MODIFIED);
         App.getInstance().sendBroadcast(intent);
     }
 

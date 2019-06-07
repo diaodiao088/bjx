@@ -155,15 +155,14 @@
 
                 <com.bjxapp.worker.controls.XTextView
                     android:id="@+id/main_tab_third_reminder"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="8dp"
                     android:background="@drawable/reminder"
                     android:gravity="center"
-                    android:text=""
                     android:textColor="@android:color/white"
-                    android:textSize="12sp"
+                    android:textSize="9sp"
                     android:visibility="gone" />
             </RelativeLayout>
         </RelativeLayout>
