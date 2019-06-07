@@ -176,7 +176,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             @Override
             public void run() {
                 try {
-                    ArrayList<BjxInfo> list = (ArrayList<BjxInfo>) mDbManager.query(1, 0);
 
                     final int allCount = (int) mDbManager.getAllRedotNum();
 
@@ -185,16 +184,17 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                             @Override
                             public void run() {
                                 //  mRingView.setVisibility(View.VISIBLE);
-                                mThirdReminder.setVisibility(View.GONE);
-                                mThirdReminder.setText(String.valueOf(allCount));
+                                mThirdReminder.setVisibility(View.VISIBLE);
                             }
                         });
                     } else {
+
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 //  mRingView.setVisibility(View.VISIBLE);
-                                mThirdReminder.setVisibility(View.VISIBLE);
+                                mThirdReminder.setVisibility(View.GONE);
+                                mThirdReminder.setText(String.valueOf(allCount));
                             }
                         });
                     }
@@ -479,7 +479,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 
             checkRingRedot();
 
-            if (mMainThirdFragment != null){
+            if (mMainThirdFragment != null) {
                 mMainThirdFragment.updateData();
             }
 

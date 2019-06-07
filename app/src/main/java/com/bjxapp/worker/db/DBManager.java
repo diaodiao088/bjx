@@ -50,6 +50,24 @@ public class DBManager {
         }
     }
 
+    public List<BjxInfo> queryCompany(int limit, int offset) {
+        ArrayList<BjxInfo> list = new ArrayList<BjxInfo>();
+        Cursor c = queryTheCursor(limit, offset);
+        while (c.moveToNext()) {
+            BjxInfo item = new BjxInfo();
+            item.setContent(c.getString(c.getColumnIndex("content")));
+            item.setTitle(c.getString(c.getColumnIndex("title")));
+            item.setCreateTime(c.getString(c.getColumnIndex("createTime")));
+            int isRead = c.getInt(c.getColumnIndex("read"));
+            item.setOrderId(c.getString(c.getColumnIndex("orderId")));
+            item.setNoticeId(c.getString(c.getColumnIndex("noticeId")));
+            item.setRead(isRead == 1);
+            list.add(item);
+        }
+        c.close();
+        return list;
+    }
+
 
     public List<BjxInfo> query(int limit, int offset) {
         ArrayList<BjxInfo> list = new ArrayList<BjxInfo>();
@@ -60,6 +78,8 @@ public class DBManager {
             item.setTitle(c.getString(c.getColumnIndex("title")));
             item.setCreateTime(c.getString(c.getColumnIndex("createTime")));
             int isRead = c.getInt(c.getColumnIndex("read"));
+            item.setOrderId(c.getString(c.getColumnIndex("orderId")));
+            item.setNoticeId(c.getString(c.getColumnIndex("noticeId")));
             item.setRead(isRead == 1);
             list.add(item);
         }
@@ -130,7 +150,7 @@ public class DBManager {
      * @return Cursor
      */
     public Cursor queryTheCursor(int limit, int offset) {
-        Cursor c = db.rawQuery("SELECT * FROM bjx order by _id desc limit " + limit + " offset " + offset, null);
+        Cursor c = db.rawQuery("SELECT * FROM bjx_new where type=70 order by _id desc limit " + limit + " offset " + offset, null);
         return c;
     }
 
