@@ -50,6 +50,7 @@ public class DBManager {
         }
     }
 
+
     public List<BjxInfo> query(int limit, int offset) {
         ArrayList<BjxInfo> list = new ArrayList<BjxInfo>();
         Cursor c = queryTheCursor(limit, offset);
@@ -92,6 +93,36 @@ public class DBManager {
 
         }
     }
+
+
+    public long getAllRedotNum() {
+        String sql = "select count(*) from bjx_new where read = 0";
+        Cursor cursor = db.rawQuery(sql, null);
+        cursor.moveToFirst();
+        long count = cursor.getLong(0);
+        cursor.close();
+        return count;
+    }
+
+
+    public long getCompanyRedotNum() {
+        String sql = "select count(*) from bjx_new where read = 0 and type=70";
+        Cursor cursor = db.rawQuery(sql, null);
+        cursor.moveToFirst();
+        long count = cursor.getLong(0);
+        cursor.close();
+        return count;
+    }
+
+    public long getBillRedotNum() {
+        String sql = "select count(*) from bjx_new where read = 0 and type not in (70)";
+        Cursor cursor = db.rawQuery(sql, null);
+        cursor.moveToFirst();
+        long count = cursor.getLong(0);
+        cursor.close();
+        return count;
+    }
+
 
     /**
      * query all persons, return cursor

@@ -49,17 +49,14 @@ import com.bjxapp.worker.ui.titlemenu.TitlePopup;
 import com.bjxapp.worker.ui.titlemenu.TitlePopup.OnItemOnClickListener;
 import com.bjxapp.worker.ui.view.activity.JoinUsActivity;
 import com.bjxapp.worker.ui.view.activity.PushDetailActivity;
-import com.bjxapp.worker.ui.view.activity.RecordActivity;
 import com.bjxapp.worker.ui.view.activity.user.ApplyActivity;
 import com.bjxapp.worker.ui.view.activity.user.LoginActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseFragmentActivity;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Fourth;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Second;
-import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Third;
 import com.bjxapp.worker.ui.view.fragment.Fragment_Main_Third_New;
 import com.bjxapp.worker.ui.view.fragment.Fragment_main_first_new;
-import com.bjxapp.worker.utils.ACache;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.VersionUtils;
 import com.bjxapp.worker.utils.zxing.CaptureActivity;
@@ -172,7 +169,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         //检查最新APK版本
         checkNewVersion();
 
-       // getCache();
+        // getCache();
     }
 
     private void checkRingRedot() {
@@ -248,13 +245,9 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         });
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
-
-        //检查是否有红点显示
-        setRedDotState();
 
         int index = getIntent().getIntExtra(Constant.LOCATE_MAIN_ACTIVITY_INDEX, -1);
         getIntent().removeExtra(Constant.LOCATE_MAIN_ACTIVITY_INDEX);
@@ -515,21 +508,9 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 if (result == null) {
                     return;
                 }
-
-                setRedDotState();
             }
         };
         mDisplayRedDotTask.execute();
-    }
-
-    private void setRedDotState() {
-        if (ConfigManager.getInstance(MainActivity.this).getDesktopOrdersDot() < ConfigManager.getInstance(MainActivity.this).getDesktopOrdersDotServer()) {
-            //此功能保留，因为主页每次进来都会刷新，所以此功能暂不需要
-            //mFirstReminder.setVisibility(View.VISIBLE);
-        }
-        if (ConfigManager.getInstance(MainActivity.this).getDesktopMessagesDot() < ConfigManager.getInstance(MainActivity.this).getDesktopMessagesDotServer()) {
-            mThirdReminder.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
