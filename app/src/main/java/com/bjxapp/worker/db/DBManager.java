@@ -61,6 +61,7 @@ public class DBManager {
             int isRead = c.getInt(c.getColumnIndex("read"));
             item.setOrderId(c.getString(c.getColumnIndex("orderId")));
             item.setNoticeId(c.getString(c.getColumnIndex("noticeId")));
+            item.setId(c.getInt(c.getColumnIndex("_id")));
             item.setRead(isRead == 1);
             list.add(item);
         }

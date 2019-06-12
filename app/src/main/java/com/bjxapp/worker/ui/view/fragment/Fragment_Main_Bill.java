@@ -27,7 +27,10 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.Message;
+import com.bjxapp.worker.ui.view.activity.CheckOrderDetailActivity;
 import com.bjxapp.worker.ui.view.activity.MessageDetailActivity;
+import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
+import com.bjxapp.worker.ui.view.activity.user.BalanceWithdrawHistoryActivity;
 import com.bjxapp.worker.ui.view.base.BaseFragment;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.LogUtils;
@@ -85,20 +88,43 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
         mXListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Message message = (Message) mXListView.getItemAtPosition(position);
+                BjxInfo message = (BjxInfo) mXListView.getItemAtPosition(position);
+
+                String orderId = message.getOrderId();
+                int type = message.getType();
 
                 Intent intent = new Intent();
-                intent.setClass(getActivity(), MessageDetailActivity.class);
-                intent.putExtra(MessageDetailActivity.MSG_CONTENT, message.getContent());
-                intent.putExtra(MessageDetailActivity.MSG_TIME, message.getDate());
-                intent.putExtra(MessageDetailActivity.MSG_TITLE, message.getTitle());
+
+                switch (type) {
+
+                    case 0:
+                    case 10:
+                    case 11:
+                    case 53:
+                    case 7:
+                    case 54:
+                    case 55:
+                        intent.putExtra("order_id", orderId);
+                        intent.putExtra("processStatus", 0);
+                        intent.setClass(getActivity(), OrderDetailActivityNew.class);
+                        break;
+
+                    case 20:
+                    case 21:
+                        Utils.startActivity(getActivity(), BalanceWithdrawHistoryActivity.class);
+                        break;
+                        default:
+                            CheckOrderDetailActivity.goToActivity(getActivity() , orderId , 0);
+                            break;
+                }
+
 
                 message.setRead(true);
                 mMessageAdapter.notifyDataSetChanged();
                 dbManager.updateAsRead(message.getId());
                 mActivity.updateRedotCount();
 
-                if (mParentFragment != null){
+                if (mParentFragment != null) {
                     mParentFragment.updateRedot();
                 }
 
@@ -299,7 +325,7 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
         super.onDestroy();
     }
 
-    public Fragment_Main_Bill setParentFragment(Fragment_Main_Third_New fragment){
+    public Fragment_Main_Bill setParentFragment(Fragment_Main_Third_New fragment) {
         this.mParentFragment = fragment;
         return this;
     }
