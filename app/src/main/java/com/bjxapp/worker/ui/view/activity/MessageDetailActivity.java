@@ -95,9 +95,8 @@ public class MessageDetailActivity extends BaseActivity implements OnClickListen
         Map<String, String> params = new HashMap<>();
         params.put("token", ConfigManager.getInstance(MessageDetailActivity.this).getUserSession());
         params.put("userCode", ConfigManager.getInstance(MessageDetailActivity.this).getUserCode());
-        params.put("noticeId", notice_id);
 
-        retrofit2.Call<JsonObject> request = billApi.getNoticeInfo(params);
+        retrofit2.Call<JsonObject> request = billApi.getNoticeInfo(notice_id ,params);
 
         request.enqueue(new Callback<JsonObject>() {
             @Override

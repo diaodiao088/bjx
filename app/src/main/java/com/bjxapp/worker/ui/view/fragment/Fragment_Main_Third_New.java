@@ -39,6 +39,9 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
 
     private NotifyAdapter mAdapter;
 
+    Fragment_Main_Bill fragment_main_bill;
+    Fragment_Main_Third fragment_main_third;
+
 
     @Override
     protected void initView() {
@@ -48,9 +51,12 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
         mViewPager = (BlockableViewPager) findViewById(R.id.main_viewpager);
         mViewPager.setOffscreenPageLimit(2);
 
+        fragment_main_bill = new Fragment_Main_Bill();
+        fragment_main_third = new Fragment_Main_Third();
+
         mAdapter = new NotifyAdapter(getChildFragmentManager());
-        mAdapter.addFragment(new Fragment_Main_Bill().setParentFragment(this));
-        mAdapter.addFragment(new Fragment_Main_Third().setParentFragment(this));
+        mAdapter.addFragment(fragment_main_bill.setParentFragment(this));
+        mAdapter.addFragment(fragment_main_third.setParentFragment(this));
 
         mViewPager.setAdapter(mAdapter);
 
@@ -140,6 +146,8 @@ public class Fragment_Main_Third_New extends BaseFragment implements OnClickList
 
         if (!getActivity().isFinishing()){
             updateRedot();
+            fragment_main_third.onFirstLoadData();
+            fragment_main_bill.onFirstLoadData();
         }
 
     }

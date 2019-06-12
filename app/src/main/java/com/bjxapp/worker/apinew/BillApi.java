@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by zhangdan on 2018/11/6.
@@ -79,7 +80,7 @@ public interface BillApi {
     Call<JsonObject> signBill(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST("/notice/info/1")
-    Call<JsonObject> getNoticeInfo(@FieldMap Map<String, String> params);
+    @POST("/notice/info/{shopNo}")
+    Call<JsonObject> getNoticeInfo(@Path("shopNo") String shopNum, @FieldMap Map<String, String> params);
 
 }

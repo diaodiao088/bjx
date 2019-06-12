@@ -193,7 +193,7 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
 
     private AsyncTask<Void, Void, List<BjxInfo>> mFirstLoadTask;
 
-    private void onFirstLoadData() {
+    public void onFirstLoadData() {
 
         mFirstLoadTask = new AsyncTask<Void, Void, List<BjxInfo>>() {
             @Override
