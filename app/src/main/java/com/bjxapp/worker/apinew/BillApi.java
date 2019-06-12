@@ -78,4 +78,8 @@ public interface BillApi {
     @POST("/order/visit")
     Call<JsonObject> signBill(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("/notice/info/1")
+    Call<JsonObject> getNoticeInfo(@FieldMap Map<String, String> params);
+
 }

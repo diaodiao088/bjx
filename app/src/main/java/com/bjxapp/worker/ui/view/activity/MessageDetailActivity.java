@@ -3,24 +3,39 @@ package com.bjxapp.worker.ui.view.activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.bjxapp.worker.apinew.BillApi;
+import com.bjxapp.worker.apinew.LoginApi;
 import com.bjxapp.worker.controls.XImageView;
 import com.bjxapp.worker.controls.XTextView;
+import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.global.Constant;
+import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.logic.LogicFactory;
 import com.bjxapp.worker.model.Message;
+import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivity;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.utils.Utils;
-import com.bjx.master.R;;
+import com.bjx.master.R;
+import com.google.gson.JsonObject;;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MessageDetailActivity extends BaseActivity implements OnClickListener {
     protected static final String TAG = "消息详情界面";
@@ -38,6 +53,8 @@ public class MessageDetailActivity extends BaseActivity implements OnClickListen
     private String title = "";
     private String content = "";
     private String time = "";
+
+    private String notice_id = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +81,54 @@ public class MessageDetailActivity extends BaseActivity implements OnClickListen
 
         handleIntent();
 
+        getContent();
+
+    }
+
+
+    private Handler mHandler = new Handler(Looper.myLooper());
+
+
+    private void getContent() {
+
+        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(MessageDetailActivity.this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(MessageDetailActivity.this).getUserCode());
+        params.put("noticeId", notice_id);
+
+        retrofit2.Call<JsonObject> request = billApi.getNoticeInfo(params);
+
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                JsonObject object = response.body();
+                final String msg = object.get("msg").getAsString();
+                final int code = object.get("code").getAsInt();
+
+                if (code == 0) {
+
+                    JsonObject noticeContent = object.getAsJsonObject("notice");
+
+
+                    final String content = noticeContent.get("content").getAsString();
+                    if (!TextUtils.isEmpty(content)) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMessageDetailContent.loadData(content, "text/html; charset=UTF-8", null);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void handleIntent() {
@@ -76,10 +141,11 @@ public class MessageDetailActivity extends BaseActivity implements OnClickListen
             content = intent.getStringExtra(MSG_CONTENT);
             title = intent.getStringExtra(MSG_TITLE);
 
-            mMessageDetailContent.loadData(content, "text/html; charset=UTF-8", null);
+            notice_id = intent.getStringExtra("notice_id");
+
+            //  mMessageDetailContent.loadData(content, "text/html; charset=UTF-8", null);
             mMessageDetailTitle.setText(title);
             mMessageDetialDate.setText(getFormatDateString(time));
-
         }
     }
 
@@ -131,30 +197,7 @@ public class MessageDetailActivity extends BaseActivity implements OnClickListen
     private AsyncTask<String, Void, Message> mLoadDataTask;
 
     private void loadData() {
-        String messageID = getIntent().getStringExtra("message_id");
-        if (!Utils.isNotEmpty(messageID)) {
-            return;
-        }
 
-        mLoadDataTask = new AsyncTask<String, Void, Message>() {
-            @Override
-            protected Message doInBackground(String... params) {
-                int id = Integer.valueOf(params[0]);
-                return LogicFactory.getMessageLogic(context).getMessageDetail(id);
-            }
-
-            @Override
-            protected void onPostExecute(Message result) {
-                if (result == null) {
-                    return;
-                }
-
-                mMessageDetialDate.setText(result.getDate());
-                mMessageDetailTitle.setText(result.getTitle());
-                //	mMessageDetailContent.setText(result.getContent());
-            }
-        };
-        mLoadDataTask.execute(messageID);
     }
 
     @Override

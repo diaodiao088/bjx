@@ -48,6 +48,12 @@ public class PushParser {
                 info.setOrderId(orderId);
             }
 
+            if (jsonObject.has("noticeId")){
+                String noticeId = jsonObject.getString("noticeId");
+                info.setNoticeId(noticeId);
+            }
+
+
             mDbManager.add(info);
 
             setNotifyBroadCast();

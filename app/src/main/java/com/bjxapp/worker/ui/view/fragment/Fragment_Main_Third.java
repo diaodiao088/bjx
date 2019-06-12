@@ -76,6 +76,7 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
                 intent.putExtra(MessageDetailActivity.MSG_CONTENT, message.getContent());
                 intent.putExtra(MessageDetailActivity.MSG_TIME, message.getCreateTime());
                 intent.putExtra(MessageDetailActivity.MSG_TITLE, message.getTitle());
+                intent.putExtra("notice_id",message.getNoticeId());
 
                 message.setRead(true);
                 mMessageAdapter.notifyDataSetChanged();
