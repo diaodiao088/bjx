@@ -104,9 +104,6 @@ public class ThiOtherActivity extends Activity {
     @BindView(R.id.price_tv)
     EditText mPriceTv;
 
-    @BindView(R.id.rengong_price_tv)
-    EditText mRenGongPriceTv;
-
     @BindView(R.id.change_reason_tv)
     EditText mReasonTv;
 
@@ -131,13 +128,17 @@ public class ThiOtherActivity extends Activity {
             return;
         }
 
+        if (TextUtils.isEmpty(mTypeTv.getText().toString())) {
+            Toast.makeText(this, "请先填写规格型号", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (getImgList().size() <= 0) {
             ThiOtherBean thiOtherBean = new ThiOtherBean();
             thiOtherBean.setName(mNameTv.getText().toString());
             thiOtherBean.setCost(mPriceTv.getText().toString());
             thiOtherBean.setRemark(mReasonTv.getText().toString());
             thiOtherBean.setModel(mTypeTv.getText().toString());
-            thiOtherBean.setRenGongCost(mRenGongPriceTv.getText().toString());
             thiOtherBean.setImgList(getImgList());
 
             Intent intent = new Intent();
@@ -186,7 +187,6 @@ public class ThiOtherActivity extends Activity {
             thiOtherBean.setCost(mPriceTv.getText().toString());
             thiOtherBean.setRemark(mReasonTv.getText().toString());
             thiOtherBean.setModel(mTypeTv.getText().toString());
-            thiOtherBean.setRenGongCost(mRenGongPriceTv.getText().toString());
             thiOtherBean.setImgList(getImgList());
 
             Intent intent = new Intent();
@@ -285,7 +285,6 @@ public class ThiOtherActivity extends Activity {
                             thiOtherBean.setCost(mPriceTv.getText().toString());
                             thiOtherBean.setRemark(mReasonTv.getText().toString());
                             thiOtherBean.setModel(mTypeTv.getText().toString());
-                            thiOtherBean.setRenGongCost(mRenGongPriceTv.getText().toString());
                             updateImageList(list);
                             thiOtherBean.setImgList(list);
 
@@ -339,7 +338,6 @@ public class ThiOtherActivity extends Activity {
         if (mExistBean != null) {
             mNameTv.setText(mExistBean.getName());
             mPriceTv.setText(mExistBean.getCost());
-            mRenGongPriceTv.setText(mExistBean.getRenGongCost());
             mReasonTv.setText(mExistBean.getRemark());
             mTypeTv.setText(mExistBean.getModel());
 
@@ -362,7 +360,7 @@ public class ThiOtherActivity extends Activity {
 
                 myAdapter.notifyDataSetChanged();
 
-            }else{
+            } else {
                 ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
                 mImageList.add(bean);
                 myAdapter.setList(mImageList);
@@ -483,7 +481,7 @@ public class ThiOtherActivity extends Activity {
                                             } else {
 //                                                Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
 //                                                startActivityForResult(intent, 0x02);
-                                                ImageSelectUtil.goToImageListActivity(ThiOtherActivity.this ,0);
+                                                ImageSelectUtil.goToImageListActivity(ThiOtherActivity.this, 0);
                                             }
                                         } catch (Exception e) {
                                             Log.w("FeedbackPresenter", "loadImages: " + e.getMessage());
@@ -682,8 +680,8 @@ public class ThiOtherActivity extends Activity {
                 List<String> pathList = data.getStringArrayListExtra("result");
                 for (String path : pathList) {
 
-                    if (mImageList.size() <= 5){
-                        insertImg(null ,path, true);
+                    if (mImageList.size() <= 5) {
+                        insertImg(null, path, true);
                     }
 
                 }

@@ -120,7 +120,6 @@ public class ThiActivity extends Activity {
                             infoBean.setPrice(item.get("price").getAsString());
                             infoBean.setLaborCost(item.get("laborCost").getAsString());
 
-
                             infoBean.setOther(false);
                             mAllList.add(infoBean);
 
@@ -289,7 +288,6 @@ public class ThiActivity extends Activity {
 
         private TextView mCaiGouTv;
 
-        private TextView mLaborCostTv;
 
         private View mRootView;
 
@@ -300,7 +298,6 @@ public class ThiActivity extends Activity {
             this.mTypeTv = mRootView.findViewById(R.id.type_tv);
 
             this.mCaiGouTv = mRootView.findViewById(R.id.caigou_tv);
-            this.mLaborCostTv = mRootView.findViewById(R.id.labor_cost_tv);
 
         }
 
@@ -310,8 +307,9 @@ public class ThiActivity extends Activity {
             mNameTv.setText(infoBean.getName());
             mTypeTv.setText(infoBean.getModel());
 
-            this.mCaiGouTv.setText(infoBean.getPrice());
-            this.mLaborCostTv.setText(infoBean.getLaborCost());
+            double realCost = Double.parseDouble(infoBean.getPrice()) + Double.parseDouble(infoBean.getLaborCost());
+
+            this.mCaiGouTv.setText(String.valueOf(realCost));
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -35,7 +35,6 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
 
     private TextView mTypeNameTv;
 
-    private TextView mRenGongTv;
 
     private ImageView mDelTv;
 
@@ -77,7 +76,6 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
         mModifyTv = mRootView.findViewById(R.id.modify);
 
         mTypeNameTv = mRootView.findViewById(R.id.maintain_item_type_name_tv);
-        mRenGongTv = mRootView.findViewById(R.id.rengong_tv);
 
         mRemarkTv = mRootView.findViewById(R.id.remark_tv);
 
@@ -130,10 +128,6 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
             mTypeNameTv.setText(maintainInfo.getModel());
         } else {
             mTypeNameTv.setText("其他");
-        }
-
-        if (!TextUtils.isEmpty(thiOtherBean.getRenGongCost())) {
-            mRenGongTv.setText("¥" + thiOtherBean.getRenGongCost());
         }
 
         mRemarkTv.setText(thiOtherBean.getRemark());
