@@ -462,10 +462,11 @@ public class RecordDetailActivity extends Activity {
         picker.setTitleTextColor(0xFF545454);
         picker.setTitleTextSize(14);
         picker.setCancelTextColor(0xFF545454);
-        picker.setCancelTextSize(12);
+        picker.setCancelTextSize(14);
         picker.setSubmitTextColor(0xFF00a551);
-        picker.setSubmitTextSize(12);
+        picker.setSubmitTextSize(14);
         picker.setTextColor(0xFF545454, 0x99545454);
+        picker.setTextSize(20);
         WheelView.DividerConfig config = new WheelView.DividerConfig();
         config.setColor(0xFff5f5f5);//线颜色
         config.setAlpha(250);//线透明度
