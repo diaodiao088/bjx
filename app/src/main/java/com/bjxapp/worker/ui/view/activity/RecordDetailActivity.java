@@ -451,11 +451,14 @@ public class RecordDetailActivity extends Activity {
 
         OptionPicker picker = new OptionPicker(this,
                 CategoryDataManager.getIns().getTypeString(itemList));
+
+        picker.setHeight(DimenUtils.getScreenHeight(this) / 2);
+
         picker.setTopBackgroundColor(0xFFffffff);
         picker.setTopHeight(30);
         picker.setTopLineColor(0xdfdfdf);
         picker.setTopLineHeight(3);
-        picker.setTitleText("设备分类");
+        picker.setTitleText(recordBean.getTypeName());
         picker.setTitleTextColor(0xFF545454);
         picker.setTitleTextSize(14);
         picker.setCancelTextColor(0xFF545454);
