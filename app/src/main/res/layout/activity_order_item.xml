@@ -8,16 +8,16 @@
         android:id="@+id/order_receive_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:orientation="vertical">
+        android:paddingRight="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp">
 
             <com.bjxapp.worker.controls.XTextView
                 android:id="@+id/order_receive_textview_service"
@@ -27,6 +27,17 @@
                 android:paddingLeft="0dp"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/xietiao_status_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@+id/order_receive_textview_service"
+                android:layout_centerVertical="true"
+                android:padding="2dp"
+                android:textSize="12sp" />
+
 
             <com.bjxapp.worker.controls.XTextView
                 android:id="@+id/order_receive_textview_status"
@@ -42,14 +53,13 @@
                 android:id="@+id/emergency_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/order_receive_textview_status"
-                android:padding="4dp"
-                android:background="@drawable/layout_textview_red_radius"
                 android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/order_receive_textview_status"
+                android:background="@drawable/layout_textview_red_radius"
+                android:padding="4dp"
                 android:text="紧急订单"
                 android:textColor="@color/white"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
 
         </RelativeLayout>
@@ -65,8 +75,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp">
 
             <com.bjxapp.worker.controls.XTextView
                 android:id="@+id/shop_tv"
@@ -84,8 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp">
 
             <com.bjxapp.worker.controls.XTextView
                 android:id="@+id/order_receive_textview_orderdate"
@@ -103,8 +113,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp">
 
             <com.bjxapp.worker.controls.XTextView
                 android:id="@+id/order_receive_textview_address"
@@ -122,19 +132,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp">
 
             <com.bjxapp.worker.controls.XTextView
                 android:id="@+id/order_receive_textview_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_marginBottom="7dp"
                 android:drawableLeft="@drawable/order_money"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/main_text_color"
-                android:layout_marginBottom="7dp"
                 android:textSize="14sp" />
         </RelativeLayout>
     </LinearLayout>
@@ -143,12 +153,11 @@
         android:id="@+id/out_time_iv"
         android:layout_width="70dp"
         android:layout_height="90dp"
-        android:paddingTop="20dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
+        android:paddingTop="20dp"
         android:src="@drawable/out_time"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 </RelativeLayout>

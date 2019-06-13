@@ -76,6 +76,8 @@ public class OrderDes {
     private String mShopName = "";
     private String mEnterpriseName = "";
 
+    private int xietiaoStatus;
+
     public String getDetailId() {
         return detailId;
     }
@@ -375,5 +377,13 @@ public class OrderDes {
 
     public void setTwiceServed(boolean twiceServed) {
         isTwiceServed = twiceServed;
+    }
+
+    public int getXietiaoStatus() {
+        return xietiaoStatus;
+    }
+
+    public void setXietiaoStatus(int xietiaoStatus) {
+        this.xietiaoStatus = xietiaoStatus;
     }
 }

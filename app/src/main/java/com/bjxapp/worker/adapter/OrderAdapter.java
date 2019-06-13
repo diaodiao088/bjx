@@ -1,6 +1,7 @@
 package com.bjxapp.worker.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,7 @@ public class OrderAdapter extends BaseAdapter {
             holder.textViewAddress = (XTextView) convertView.findViewById(R.id.order_receive_textview_address);
             holder.textViewMoney = (XTextView) convertView.findViewById(R.id.order_receive_textview_money);
             holder.mOutTimeIv = convertView.findViewById(R.id.out_time_iv);
+            holder.mXietiaoStatusTv = convertView.findViewById(R.id.xietiao_status_tv);
             holder.emergencyTv = convertView.findViewById(R.id.emergency_tv);
             holder.mShopLy = convertView.findViewById(R.id.shop_ly);
             holder.shopTv = convertView.findViewById(R.id.shop_tv);
@@ -207,6 +209,24 @@ public class OrderAdapter extends BaseAdapter {
             holder.mOutTimeIv.setVisibility(View.GONE);
         }
 
+
+        if (aInfo.get(position).getXietiaoStatus() == 6){
+            holder.mXietiaoStatusTv.setVisibility(View.VISIBLE);
+            holder.mXietiaoStatusTv.setBackgroundResource(R.drawable.xietiao_selected);
+            holder.mXietiaoStatusTv.setText("方案通过");
+            holder.mXietiaoStatusTv.setTextColor(Color.parseColor("#00a551"));
+
+        }else if (aInfo.get(position).getXietiaoStatus() == 9){
+            holder.mXietiaoStatusTv.setVisibility(View.VISIBLE);
+            holder.mXietiaoStatusTv.setBackgroundResource(R.drawable.xietiao_unselected);
+            holder.mXietiaoStatusTv.setTextColor(Color.parseColor("#ff0000"));
+            holder.mXietiaoStatusTv.setText("方案不通过");
+
+        }else{
+            holder.mXietiaoStatusTv.setVisibility(View.GONE);
+        }
+
+
         return convertView;
     }
 
@@ -217,6 +237,7 @@ public class OrderAdapter extends BaseAdapter {
         XTextView textViewAddress;
         XTextView textViewMoney;
         XTextView shopTv;
+        TextView mXietiaoStatusTv;
         ImageView mOutTimeIv;
         TextView emergencyTv;
         RelativeLayout mShopLy;

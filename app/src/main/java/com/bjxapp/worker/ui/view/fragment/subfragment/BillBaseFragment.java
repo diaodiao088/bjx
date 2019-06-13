@@ -36,6 +36,9 @@ import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -266,6 +269,19 @@ public abstract class BillBaseFragment extends Fragment implements XListView.IXL
                         orderItem.setSettleStatus(settleStatus);
 
                         JsonObject maintainItem = item.getAsJsonObject("maintainDetail");
+
+                        JsonArray planArray = maintainItem.getAsJsonArray("planList");
+
+                        if (planArray.size() > 0) {
+
+                            JsonObject planItem = planArray.get(0).getAsJsonObject();
+                            int plan_status = planItem.get("status").getAsInt();
+
+                            orderItem.setXietiaoStatus(plan_status);
+
+                        }
+
+
                         String orderTime = "";
 
                         try {
