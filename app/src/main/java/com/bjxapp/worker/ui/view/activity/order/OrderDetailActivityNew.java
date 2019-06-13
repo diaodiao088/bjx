@@ -60,6 +60,9 @@ import com.bjxapp.worker.ui.widget.MaintainCallItemLayout;
 import com.bjxapp.worker.ui.widget.MaintainItemLayoutStub;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -268,6 +271,10 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     @BindView(R.id.other_price_content_tv)
     XTextView mOtherPriceTv;
 
+    @BindView(R.id.refresh_view)
+    SmartRefreshLayout mRefreshLy;
+
+
     @OnClick(R.id.look_info)
     void onClickLookinfo() {
 
@@ -343,6 +350,17 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         handleIntent();
         DataManagerCtrl.getIns().markDataDirty(true);
         super.onCreate(savedInstanceState);
+
+
+        mRefreshLy.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                loadData(false);
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+            }
+        });
+
+
     }
 
     @OnClick(R.id.order_receive_detail_images)
