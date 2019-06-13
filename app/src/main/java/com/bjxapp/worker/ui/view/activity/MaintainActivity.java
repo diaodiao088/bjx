@@ -53,6 +53,7 @@ import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.order.OrderDetailActivityNew;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.AddOtherPriceDialog;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.CompleteConfirmDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ManfulDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.MaintainItemLayout;
@@ -268,10 +269,60 @@ public class MaintainActivity extends Activity {
         if (Double.parseDouble(getTotalPrice()) > 500) {
             Toast.makeText(this, "订单金额大于500 ，请点击需要协调", Toast.LENGTH_SHORT).show();
         } else {
-            commitImage(true);
-        }
 
+            if (mImageList.size() <= 2) {
+                Toast.makeText(this, "请添加维修前，维修后的照片", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (TextUtils.isEmpty(mManfulTv.getText().toString())) {
+                Toast.makeText(this, "请先选择故障原因", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (TextUtils.isEmpty(mMethodTv.getText().toString())) {
+                Toast.makeText(this, "请先填写维修方案", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (mImageList.size() <= 1) {
+                Toast.makeText(this, "请至少添加一张维修照片", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            showCompleteConfirmDialog();
+        }
     }
+
+
+    private void showCompleteConfirmDialog() {
+
+        final CompleteConfirmDialog dialog = new CompleteConfirmDialog(this);
+
+        dialog.setOnNegativeListener(-1, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dialog != null && dialog.isShow()) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        dialog.setOnPositiveListener(-1, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (dialog != null && dialog.isShow()) {
+                    dialog.dismiss();
+                }
+
+                commitImage(true);
+            }
+        });
+
+        dialog.show();
+    }
+
 
     @OnClick(R.id.wait_contact_change_btn)
     void onClickSettle() {
@@ -667,7 +718,7 @@ public class MaintainActivity extends Activity {
                 List<String> pathList = data.getStringArrayListExtra("result");
                 for (String path : pathList) {
 
-                    if (mImageList.size() <= 20){
+                    if (mImageList.size() <= 20) {
                         insertImg(null, path, true);
                     }
 
@@ -864,7 +915,7 @@ public class MaintainActivity extends Activity {
             return;
         }
 
-        if (TextUtils.isEmpty(xietiaoName) && !isComplete){
+        if (TextUtils.isEmpty(xietiaoName) && !isComplete) {
             Toast.makeText(this, "请先选择协调原因", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -975,7 +1026,7 @@ public class MaintainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if (mHandler != null){
+        if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
 
@@ -1384,7 +1435,7 @@ public class MaintainActivity extends Activity {
 //                                            Log.w("FeedbackPresenter", "loadImages: " + e.getMessage());
 //                                        }
 //                                    }
-                                    ImageSelectUtil.goToImageListActivity(MaintainActivity.this , mImageList.size());
+                                    ImageSelectUtil.goToImageListActivity(MaintainActivity.this, mImageList.size());
                                 } else {
                                     if (ContextCompat.checkSelfPermission(MaintainActivity.this,
                                             Manifest.permission.READ_EXTERNAL_STORAGE)

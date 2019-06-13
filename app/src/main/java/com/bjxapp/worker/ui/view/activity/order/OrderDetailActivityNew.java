@@ -51,7 +51,9 @@ import com.bjxapp.worker.ui.view.activity.HistoryContactActivity;
 import com.bjxapp.worker.ui.view.activity.MaintainActivity;
 import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.CompleteConfirmDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.SignConfirmDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
 import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
@@ -1951,11 +1953,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
     private void showConfirmDialog() {
 
-        final SimpleConfirmDialog dialog = new SimpleConfirmDialog(this);
+        final SignConfirmDialog dialog = new SignConfirmDialog(this);
 
-        dialog.setTitleVisible(View.GONE);
-
-        dialog.setContent("确定给用户发送短信");
 
         dialog.setOnNegativeListener(-1, new OnClickListener() {
             @Override
@@ -1974,82 +1973,11 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                     dialog.dismiss();
                 }
 
-                sendMessageToCustomer();
+                startSign();
             }
         });
 
         dialog.show();
-    }
-
-    private void sendMessageToCustomer() {
-
-        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
-            return;
-        }
-
-        OrderDes orderDes = mDetailInfo.getOrderDes();
-
-        mWaitingDialog.show("正在发送短信，请稍候...", false);
-
-        BillApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, BillApi.class);
-        Map<String, String> params = new HashMap<>();
-        params.put("token", ConfigManager.getInstance(this).getUserSession());
-        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
-        params.put("orderId", String.valueOf(orderDes.getOrderId()));
-
-        final retrofit2.Call<JsonObject> request = billApi.sendMessage(params);
-
-        request.enqueue(new retrofit2.Callback<JsonObject>() {
-            @Override
-            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mWaitingDialog != null) {
-                            mWaitingDialog.dismiss();
-                        }
-                    }
-                });
-
-
-                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
-
-                    JsonObject jsonObject = response.body();
-
-                    final String msg = jsonObject.get("msg").getAsString();
-                    final int code = jsonObject.get("code").getAsInt();
-
-                    if (code == 0) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Utils.showShortToast(context, "短信发送成功.");
-                            }
-                        });
-                    } else {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Utils.showShortToast(context, msg + " : " + code);
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mWaitingDialog != null) {
-                            mWaitingDialog.dismiss();
-                        }
-                    }
-                });
-            }
-        });
     }
 
 
@@ -2085,7 +2013,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
                 break;
             case 3:
-                startSign();
+                showConfirmDialog();
+
                 break;
             case 5:
                 toThirdStep(true, orderDes.getOriginType() == 2, orderDes.isFree());

@@ -33,6 +33,7 @@ import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.SignConfirmDialog;
 import com.bjxapp.worker.ui.widget.CheckOrderItemLayout;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.utils.Utils;
@@ -105,14 +106,44 @@ public class CheckOrderDetailActivity extends Activity {
     void onConfirm() {
 
         if (checkDetailBean != null && checkDetailBean.getProcessState() == 0) {
-            startSign();
-        } else if(checkDetailBean != null && checkDetailBean.getProcessState() == -3){
+            showConfirmDialog();
+        } else if (checkDetailBean != null && checkDetailBean.getProcessState() == -3) {
             startContact();
-        }else {
+        } else {
             startConfirm();
         }
 
     }
+
+
+    private void showConfirmDialog() {
+
+        final SignConfirmDialog dialog = new SignConfirmDialog(this);
+
+        dialog.setOnNegativeListener(-1, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dialog != null && dialog.isShow()) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        dialog.setOnPositiveListener(-1, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (dialog != null && dialog.isShow()) {
+                    dialog.dismiss();
+                }
+
+                startSign();
+            }
+        });
+
+        dialog.show();
+    }
+
 
     @BindView(R.id.add_confirm_btn)
     XButton mConfirmBtn;
@@ -494,7 +525,7 @@ public class CheckOrderDetailActivity extends Activity {
         }
     }
 
-    private void startContact(){
+    private void startContact() {
         RecordApi billApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
         Map<String, String> params = new HashMap<>();
         params.put("token", ConfigManager.getInstance(CheckOrderDetailActivity.this).getUserSession());
