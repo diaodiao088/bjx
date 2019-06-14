@@ -53,6 +53,7 @@ import com.bjxapp.worker.ui.view.activity.PublicImagesActivity;
 import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.CompleteConfirmDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.ICFunSimpleAlertDialog;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.PermissionAlertDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SignConfirmDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SimpleConfirmDialog;
 import com.bjxapp.worker.ui.view.base.BaseActivity;
@@ -60,6 +61,7 @@ import com.bjxapp.worker.ui.view.fragment.ctrl.DataManagerCtrl;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.MaintainCallItemLayout;
 import com.bjxapp.worker.ui.widget.MaintainItemLayoutStub;
+import com.bjxapp.worker.utils.LocationUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.google.gson.JsonObject;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -363,13 +365,13 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     }
 
     @OnClick(R.id.fuwu_img_ly)
-    void onClickFuwu(){
+    void onClickFuwu() {
 
         if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
             return;
         }
 
-        ImageOrderActivity.goToActivity(this , mDetailInfo.getOrderDes().getShopServiceImgUrl());
+        ImageOrderActivity.goToActivity(this, mDetailInfo.getOrderDes().getShopServiceImgUrl());
 
     }
 
@@ -429,7 +431,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
-                    mDetailInfo.getOrderDes(), currentAddress , false);
+                    mDetailInfo.getOrderDes(), currentAddress, false);
         } else {
             toDetailStatus();
         }
@@ -452,7 +454,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
-                    mDetailInfo.getOrderDes(), currentAddress , false);
+                    mDetailInfo.getOrderDes(), currentAddress, false);
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
@@ -1965,8 +1967,46 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
     private void showConfirmDialog() {
 
-        final SignConfirmDialog dialog = new SignConfirmDialog(this);
+        if (TextUtils.isEmpty(currentAddress)) {
 
+            if (!LocationUtils.isLocServiceEnable(this)) {
+
+                final PermissionAlertDialog permissionAlertDialog = new PermissionAlertDialog(this);
+
+                permissionAlertDialog.setOnPositiveListener(-1, new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (permissionAlertDialog != null && permissionAlertDialog.isShow()) {
+                            permissionAlertDialog.dismiss();
+                        }
+                    }
+                });
+
+                permissionAlertDialog.show();
+
+                return;
+            }
+
+            if (!LocationUtils.isLocServiceEnable(this)) {
+                final PermissionAlertDialog permissionAlertDialog = new PermissionAlertDialog(this);
+
+                permissionAlertDialog.setOnPositiveListener(-1, new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (permissionAlertDialog != null && permissionAlertDialog.isShow()) {
+                            permissionAlertDialog.dismiss();
+                        }
+                    }
+                });
+
+                permissionAlertDialog.setContent("请打开应用定位权限");
+                permissionAlertDialog.show();
+
+                return;
+            }
+        }
+
+        final SignConfirmDialog dialog = new SignConfirmDialog(this);
 
         dialog.setOnNegativeListener(-1, new OnClickListener() {
             @Override
@@ -2061,7 +2101,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
-                    mDetailInfo.getOrderDes(), currentAddress , true);
+                    mDetailInfo.getOrderDes(), currentAddress, true);
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());

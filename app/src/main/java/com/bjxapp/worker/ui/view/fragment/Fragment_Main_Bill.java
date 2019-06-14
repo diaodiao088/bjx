@@ -107,6 +107,7 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
                         intent.putExtra("order_id", orderId);
                         intent.putExtra("processStatus", 0);
                         intent.setClass(getActivity(), OrderDetailActivityNew.class);
+                        getActivity().startActivity(intent);
                         break;
 
                     case 20:
@@ -128,7 +129,7 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
                     mParentFragment.updateRedot();
                 }
 
-                getActivity().startActivity(intent);
+
 
             }
         });

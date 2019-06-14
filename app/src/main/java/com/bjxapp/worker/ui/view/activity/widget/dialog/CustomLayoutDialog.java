@@ -173,7 +173,7 @@ public class CustomLayoutDialog implements DialogInterface {
 
         @Override
         public void show(CustomLayoutDialog dialog, View view) {
-            showAtPosition(dialog, view, Gravity.CENTER, 0, 0, DimenUtils.dp2px(20, App.getInstance()));
+            showAtPosition(dialog, view, Gravity.CENTER, 0, 0, 44);
         }
 
         protected ShowDialog createDialog(Context context, int theme, View view, boolean isDismiss) {
