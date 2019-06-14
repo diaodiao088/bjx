@@ -117,6 +117,11 @@ public class RecordActivity extends Activity {
                         String name = shopInfo.get("name").getAsString();
                         String shopNum = shopInfo.get("shopNo").getAsString();
                         String locationAddress = shopInfo.get("locationAddress").getAsString();
+                        String serviceImgUrl = "";
+                        try{
+                            serviceImgUrl = shopInfo.get("serviceImgUrl").getAsString();
+                        }catch (Exception e){}
+
 
                         String contactPerson = shopInfo.get("contactPerson").getAsString();
                         String contactNumber = shopInfo.get("contactPhone").getAsString();
@@ -126,6 +131,7 @@ public class RecordActivity extends Activity {
 
                         shopInfoBean.setContactNumber(contactNumber);
                         shopInfoBean.setContactPerson(contactPerson);
+                        shopInfoBean.setServiceImgUrl(serviceImgUrl);
 
                         RecordDetailActivity.gotoActivity(RecordActivity.this, shopInfoBean);
 

@@ -276,7 +276,6 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
     @BindView(R.id.refresh_view)
     SmartRefreshLayout mRefreshLy;
 
-
     @OnClick(R.id.look_info)
     void onClickLookinfo() {
 
@@ -361,7 +360,16 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                 refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
             }
         });
+    }
 
+    @OnClick(R.id.fuwu_img_ly)
+    void onClickFuwu(){
+
+        if (mDetailInfo == null || mDetailInfo.getOrderDes() == null) {
+            return;
+        }
+
+        ImageOrderActivity.goToActivity(this , mDetailInfo.getOrderDes().getShopServiceImgUrl());
 
     }
 
@@ -421,7 +429,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
-                    mDetailInfo.getOrderDes(), currentAddress);
+                    mDetailInfo.getOrderDes(), currentAddress , false);
         } else {
             toDetailStatus();
         }
@@ -444,7 +452,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
 
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
-                    mDetailInfo.getOrderDes(), currentAddress);
+                    mDetailInfo.getOrderDes(), currentAddress , false);
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());
@@ -1710,6 +1718,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             String personName = detailItem.getString("contactPerson");
             String billType = detailItem.getString("type");
 
+            String shopServiceImgUrl = detailItem.getString("shopServiceImgUrl");
+
             String latitude = detailItem.getString("latitude");
             String lontitude = detailItem.getString("longitude");
 
@@ -1779,6 +1789,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             if (detailItem.has("shopName")) {
                 orderItem.setmShopName(detailItem.getString("shopName"));
             }
+
+            orderItem.setShopServiceImgUrl(shopServiceImgUrl);
 
             orderItem.setSettleStatus(settleStatus);
             orderItem.setContactPhone(phoneNum);
@@ -2049,7 +2061,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             MaintainActivity.goToActivity(this, mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getOrderDes().getOrderId(), maintainInfo,
                     mDetailInfo.getOrderDes().getEnterpriseOrderId(), isDeviceBill, mDetailInfo.getOrderDes().isTwiceServed(),
-                    mDetailInfo.getOrderDes(), currentAddress);
+                    mDetailInfo.getOrderDes(), currentAddress , true);
         } else {
             MaintainInfo maintainInfo = mDetailInfo.getMaintainInfo();
             ServiceBillActivity.goToActivity(this, ServiceBillActivity.SERVICE_BILL_CODE, maintainInfo, mDetailInfo.getOrderDes().getOrderId());

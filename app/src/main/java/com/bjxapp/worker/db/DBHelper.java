@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "bjx.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DBHelper(Context context) {
         //CursorFactory设置为null,使用默认值
@@ -37,7 +37,15 @@ public class DBHelper extends SQLiteOpenHelper {
     //如果DATABASE_VERSION值被改为2,系统发现现有数据库版本不同,即会调用onUpgrade
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO: 2018/11/9
+        db.execSQL("CREATE TABLE IF NOT EXISTS bjx_new" +
+                "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " content VARCHAR, " +
+                "createTime VARCHAR, " +
+                "title VARCHAR , " +
+                "type INTEGER , " +
+                "orderId VARCHAR , " +
+                "noticeId VARCHAR ," +
+                "read INTEGER)");
     }
 
 

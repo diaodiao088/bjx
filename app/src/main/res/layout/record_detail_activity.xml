@@ -75,6 +75,35 @@
     </LinearLayout>
 
 
+    <RelativeLayout
+        android:id="@+id/fuwu_img_ly"
+        android:layout_below="@+id/tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/layout_radius"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp"
+            android:layout_marginRight="8dp"
+            android:drawableRight="@drawable/right"
+            android:paddingLeft="5dp"
+            android:text="服务项目列表"
+            android:textColor="@color/main_text_color" />
+
+    </RelativeLayout>
+
+
     <com.bjxapp.worker.controls.XButton
         android:id="@+id/add_confirm_btn"
         android:layout_width="match_parent"
@@ -94,7 +123,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/add_confirm_btn"
-        android:layout_below="@+id/tips"
+        android:layout_below="@+id/fuwu_img_ly"
         android:background="#f5f5f5" />
 
 

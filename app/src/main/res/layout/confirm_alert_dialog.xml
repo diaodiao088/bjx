@@ -30,8 +30,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:background="#dfdfdf"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:background="#dfdfdf" />
 
         <!-- content layout -->
         <LinearLayout
@@ -45,10 +45,10 @@
                 android:id="@+id/content_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:gravity="center"
-                android:text="确定维修方案报价无误，可以直接完成订单？"
-                android:layout_marginBottom="30dp"
+                android:text="确定维修方案,报价无误，\n可以直接完成订单？"
                 android:textColor="#666666"
                 android:textSize="16sp"
                 android:visibility="visible" />
@@ -72,8 +72,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_background_grey"
                 android:gravity="center"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:text="取消"
                 android:textColor="#ffffff"
                 android:textSize="16sp"
@@ -87,8 +87,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_background_green"
                 android:gravity="center"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:text="确定"
                 android:textColor="@color/white"
                 android:textSize="16sp"

@@ -33,6 +33,7 @@ import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
+import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SignConfirmDialog;
 import com.bjxapp.worker.ui.widget.CheckOrderItemLayout;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -75,6 +76,13 @@ public class CheckOrderDetailActivity extends Activity {
 
     @BindView(R.id.phone)
     TextView mPhoneTv;
+
+    @OnClick(R.id.fuwu_img_ly)
+    void onClickFuwu() {
+        if (!TextUtils.isEmpty(imageUrl)) {
+            ImageOrderActivity.goToActivity(this, imageUrl);
+        }
+    }
 
     public static String currentAddress_static;
     public static String shopAddress_static;
@@ -349,6 +357,11 @@ public class CheckOrderDetailActivity extends Activity {
 
         String contactPerson = shopItem.get("contactPerson").getAsString();
         String contactNumber = shopItem.get("contactPhone").getAsString();
+        try {
+            imageUrl = shopItem.get("serviceImgUrl").getAsString();
+        } catch (Exception e) {
+        }
+
 
         shopInfoBean.setContactPerson(contactPerson);
         shopInfoBean.setContactNumber(contactNumber);
@@ -357,6 +370,8 @@ public class CheckOrderDetailActivity extends Activity {
 
         notifyDataChanged();
     }
+
+    String imageUrl = "";
 
     private void notifyDataChanged() {
 

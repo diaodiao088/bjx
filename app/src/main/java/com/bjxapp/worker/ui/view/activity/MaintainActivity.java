@@ -270,7 +270,7 @@ public class MaintainActivity extends Activity {
             Toast.makeText(this, "订单金额大于500 ，请点击需要协调", Toast.LENGTH_SHORT).show();
         } else {
 
-            if (mImageList.size() <= 2) {
+            if (mImageList.size() <= 2 && isFirst_static) {
                 Toast.makeText(this, "请添加维修前，维修后的照片", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -1206,10 +1206,11 @@ public class MaintainActivity extends Activity {
     public static String shopAddress_static;
     public static String enterpriseAddress_static;
     public static String modelName_static;
+    public static boolean isFirst_static;
 
 
     public static void goToActivity(Activity context, String equipId, String orderId, MaintainInfo maintainInfo, String enterpriseOrderId,
-                                    boolean isDeviceBill, boolean isFinised, OrderDes orderDes, String currentAddress) {
+                                    boolean isDeviceBill, boolean isFinised, OrderDes orderDes, String currentAddress, boolean isFirst) {
 
         Intent intent = new Intent();
         intent.setClass(context, MaintainActivity.class);
@@ -1229,6 +1230,7 @@ public class MaintainActivity extends Activity {
         enterpriseAddress_static = orderDes.getmEnterpriseName();
         modelName_static = orderDes.getServiceName();
 
+        isFirst_static = isFirst;
 
         context.startActivityForResult(intent, 0x05);
     }

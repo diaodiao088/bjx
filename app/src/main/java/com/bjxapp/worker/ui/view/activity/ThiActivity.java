@@ -309,7 +309,7 @@ public class ThiActivity extends Activity {
 
             double realCost = Double.parseDouble(infoBean.getPrice()) + Double.parseDouble(infoBean.getLaborCost());
 
-            this.mCaiGouTv.setText(String.valueOf(realCost));
+            this.mCaiGouTv.setText("¥" + String.valueOf(realCost) + "/" + infoBean.getUnit());
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

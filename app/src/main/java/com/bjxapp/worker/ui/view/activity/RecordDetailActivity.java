@@ -33,6 +33,7 @@ import com.bjxapp.worker.ui.view.activity.bean.RecordBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.category.CategoryDataManager;
 import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
+import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.widget.DimenUtils;
 import com.bjxapp.worker.ui.widget.RecordItemLayout;
 import com.bjxapp.worker.utils.Utils;
@@ -82,6 +83,13 @@ public class RecordDetailActivity extends Activity {
         intent.setAction(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + mobile));
         startActivity(intent);
+    }
+
+    @OnClick(R.id.fuwu_img_ly)
+    void onClickFuwu() {
+        if (shopInfoBean != null) {
+            ImageOrderActivity.goToActivity(this, shopInfoBean.getServiceImgUrl());
+        }
     }
 
     @BindView(R.id.record_address)

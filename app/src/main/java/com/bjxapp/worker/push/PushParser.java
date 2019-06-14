@@ -48,7 +48,7 @@ public class PushParser {
                 info.setOrderId(orderId);
             }
 
-            if (jsonObject.has("noticeId")){
+            if (jsonObject.has("noticeId")) {
                 String noticeId = jsonObject.getString("noticeId");
                 info.setNoticeId(noticeId);
             }
@@ -100,11 +100,31 @@ public class PushParser {
                 case 37:
                     newBillTimeout();
                     break;
+                default:
+                    defaultSound();
+                    break;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void defaultSound(){
+
+        MediaPlayer mediaPlayer = MediaPlayer.create(App.getInstance(), R.raw.default_sound);
+
+        try {
+            mediaPlayer.prepare();
+        } catch (IllegalStateException e) {
+
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.start();
+
     }
 
 

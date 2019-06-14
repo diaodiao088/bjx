@@ -148,7 +148,7 @@
                         android:layout_marginLeft="20dp"
                         android:layout_weight="1"
                         android:background="@drawable/login_main_bg"
-                        android:hint="请输入采购价格"
+                        android:hint="请输入配件价格"
                         android:inputType="phone"
                         android:paddingLeft="15dp"
                         android:textColor="@color/main_text_color"

@@ -125,7 +125,7 @@ public class MaintainItemOtherLayout extends LinearLayout implements View.OnClic
         mRealPriceTv.setText("¥" + thiOtherBean.getCost());
 
         if (!TextUtils.isEmpty(thiOtherBean.getModel())) {
-            mTypeNameTv.setText(maintainInfo.getModel());
+            mTypeNameTv.setText(thiOtherBean.getModel());
         } else {
             mTypeNameTv.setText("其他");
         }

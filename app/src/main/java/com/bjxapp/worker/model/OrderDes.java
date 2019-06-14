@@ -67,6 +67,8 @@ public class OrderDes {
     private String enterpriseId;
     private String enterpriseOrderId;
 
+    private String shopServiceImgUrl;
+
     String detailId;
 
     private boolean isBussiness;
@@ -385,5 +387,13 @@ public class OrderDes {
 
     public void setXietiaoStatus(int xietiaoStatus) {
         this.xietiaoStatus = xietiaoStatus;
+    }
+
+    public String getShopServiceImgUrl() {
+        return shopServiceImgUrl;
+    }
+
+    public void setShopServiceImgUrl(String shopServiceImgUrl) {
+        this.shopServiceImgUrl = shopServiceImgUrl;
     }
 }

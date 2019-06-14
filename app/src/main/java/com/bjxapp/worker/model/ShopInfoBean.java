@@ -3,7 +3,7 @@ package com.bjxapp.worker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ShopInfoBean implements Parcelable {
+public class ShopInfoBean implements Parcelable{
 
     private String detailAddress;
 
@@ -27,6 +27,8 @@ public class ShopInfoBean implements Parcelable {
 
     private String contactPerson;
 
+    private String serviceImgUrl;
+
     public ShopInfoBean() {
 
     }
@@ -43,6 +45,39 @@ public class ShopInfoBean implements Parcelable {
         this.shopNum = shopNum;
         this.locationAddress = locationAddress;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(detailAddress);
+        dest.writeString(enterpriseId);
+        dest.writeString(enterpriseName);
+        dest.writeString(id);
+        dest.writeString(latitude);
+        dest.writeString(longitude);
+        dest.writeString(name);
+        dest.writeString(shopNum);
+        dest.writeString(locationAddress);
+        dest.writeString(contactNumber);
+        dest.writeString(contactPerson);
+        dest.writeString(serviceImgUrl);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ShopInfoBean> CREATOR = new Creator<ShopInfoBean>() {
+        @Override
+        public ShopInfoBean createFromParcel(Parcel in) {
+            return new ShopInfoBean(in);
+        }
+
+        @Override
+        public ShopInfoBean[] newArray(int size) {
+            return new ShopInfoBean[size];
+        }
+    };
 
     public String getContactNumber() {
         return contactNumber;
@@ -146,36 +181,11 @@ public class ShopInfoBean implements Parcelable {
         contactPerson = in.readString();
     }
 
-
-    public static final Creator<ShopInfoBean> CREATOR = new Creator<ShopInfoBean>() {
-        @Override
-        public ShopInfoBean createFromParcel(Parcel in) {
-            return new ShopInfoBean(in);
-        }
-
-        @Override
-        public ShopInfoBean[] newArray(int size) {
-            return new ShopInfoBean[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getServiceImgUrl() {
+        return serviceImgUrl;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(detailAddress);
-        dest.writeString(enterpriseId);
-        dest.writeString(enterpriseName);
-        dest.writeString(id);
-        dest.writeString(latitude);
-        dest.writeString(longitude);
-        dest.writeString(name);
-        dest.writeString(shopNum);
-        dest.writeString(locationAddress);
-        dest.writeString(contactNumber);
-        dest.writeString(contactPerson);
+    public void setServiceImgUrl(String serviceImgUrl) {
+        this.serviceImgUrl = serviceImgUrl;
     }
 }

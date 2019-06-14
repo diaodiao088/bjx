@@ -55,6 +55,7 @@ public class DBManager {
         Cursor c = queryBillCursor(limit, offset);
         while (c.moveToNext()) {
             BjxInfo item = new BjxInfo();
+            item.setType(c.getInt(c.getColumnIndex("type")));
             item.setContent(c.getString(c.getColumnIndex("content")));
             item.setTitle(c.getString(c.getColumnIndex("title")));
             item.setCreateTime(c.getString(c.getColumnIndex("createTime")));
@@ -75,6 +76,7 @@ public class DBManager {
         Cursor c = queryTheCursor(limit, offset);
         while (c.moveToNext()) {
             BjxInfo item = new BjxInfo();
+            item.setType(c.getInt(c.getColumnIndex("type")));
             item.setContent(c.getString(c.getColumnIndex("content")));
             item.setTitle(c.getString(c.getColumnIndex("title")));
             item.setCreateTime(c.getString(c.getColumnIndex("createTime")));
