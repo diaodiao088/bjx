@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.bjx.master.R;;
 import com.bjxapp.worker.controls.XTextView;
+import com.bm.library.PhotoView;
 import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
@@ -24,7 +25,7 @@ import butterknife.OnClick;
 public class ImageOrderActivity extends Activity {
 
     @BindView(R.id.image_iv)
-    ImageView mIv;
+    PhotoView mIv;
 
     @BindView(R.id.title_text_tv)
     XTextView mTitleTv;
@@ -61,6 +62,7 @@ public class ImageOrderActivity extends Activity {
         if (TextUtils.isEmpty(mImagePath)) {
             return;
         }
+        mIv.enable();
         Glide.with(this).load(mImagePath).into(mIv);
     }
 

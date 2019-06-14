@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.bjx.master.R;;
+import com.bjx.master.R;
+import com.bjxapp.worker.App;
+import com.bjxapp.worker.ui.widget.DimenUtils;;
 
 /**
  * Created by zi on 15/6/8.
@@ -25,25 +27,39 @@ public class CustomLayoutDialog implements DialogInterface {
 
     public interface ShowingStrategy {
         void show(CustomLayoutDialog dialog, View view);
+
         // margin means left and right margin
         void showAtPosition(CustomLayoutDialog dialog, View view, int gravity, int offsetX, int offsetY, int margin);
+
         void showFullScreenLayer(int backgroundColor, View view);
+
         void dismiss(CustomLayoutDialog dialog);
+
         boolean isShowing();
+
         void setOnShowListener(OnShowListener listener);
+
         void setOnCancelListener(OnCancelListener listener);
+
         void setOnDismissListener(OnDismissListener listener);
-		void setOnKeyListener(OnKeyListener listener);
-		void setWindowType(int windowType);
+
+        void setOnKeyListener(OnKeyListener listener);
+
+        void setWindowType(int windowType);
+
         void setOnClickListener(DialogInterface.OnClickListener listener);
+
         void setCanceledOnTouchOutside(boolean cancel);
+
         void setCancelable(boolean cancelable);
+
         void setOrientation(int orientation);
+
         Dialog getDialog(View view);
     }
 
     public static final ShowingStrategy USE_FLOATING_WINDOW = new ShowingStrategy() {
-		private OnKeyListener mOnKeyListener;
+        private OnKeyListener mOnKeyListener;
 
         @Override
         public void show(final CustomLayoutDialog dialog, View view) {
@@ -56,11 +72,11 @@ public class CustomLayoutDialog implements DialogInterface {
             view.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if(keyCode == KeyEvent.KEYCODE_BACK &&  event.getAction() == KeyEvent.ACTION_UP) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
                         dismiss(dialog);
-						if (null != mOnKeyListener) {
-							mOnKeyListener.onKey(dialog, keyCode, event);
-						}
+                        if (null != mOnKeyListener) {
+                            mOnKeyListener.onKey(dialog, keyCode, event);
+                        }
                         return true;
                     }
                     return false;
@@ -90,7 +106,7 @@ public class CustomLayoutDialog implements DialogInterface {
 
         @Override
         public void setOnKeyListener(OnKeyListener listener) {
-			mOnKeyListener = listener;
+            mOnKeyListener = listener;
         }
 
         @Override
@@ -132,11 +148,11 @@ public class CustomLayoutDialog implements DialogInterface {
     public static class DialogShowingStrategy implements ShowingStrategy {
         private ShowDialog mDialog = null;
         private Context mContext;
-		private int mWindowType = -1;
+        private int mWindowType = -1;
         private OnShowListener mOnShowListener;
         private OnCancelListener mOnCancelListener;
         private OnDismissListener mOnDismissListener;
-		private OnKeyListener mOnKeyListener;
+        private OnKeyListener mOnKeyListener;
         private DialogInterface.OnClickListener mClickListener;
         private boolean mCanceledOnTouchOutside;
         private boolean mCancelable = true;
@@ -145,10 +161,10 @@ public class CustomLayoutDialog implements DialogInterface {
             mContext = context;
         }
 
-		@Override
-		public void setWindowType(int windowType) {
-			mWindowType = windowType;
-		}
+        @Override
+        public void setWindowType(int windowType) {
+            mWindowType = windowType;
+        }
 
         @Override
         public void setOnClickListener(DialogInterface.OnClickListener listener) {
@@ -157,7 +173,7 @@ public class CustomLayoutDialog implements DialogInterface {
 
         @Override
         public void show(CustomLayoutDialog dialog, View view) {
-            showAtPosition(dialog, view, Gravity.CENTER, 0, 0, 20);
+            showAtPosition(dialog, view, Gravity.CENTER, 0, 0, DimenUtils.dp2px(20, App.getInstance()));
         }
 
         protected ShowDialog createDialog(Context context, int theme, View view, boolean isDismiss) {
@@ -173,9 +189,9 @@ public class CustomLayoutDialog implements DialogInterface {
             mDialog.setPosition(gravity, offsetX, offsetY);
 
             if (-1 != mWindowType) {
-                try{
+                try {
                     mDialog.setWindowType(mWindowType);
-                }catch(IllegalArgumentException e){
+                } catch (IllegalArgumentException e) {
                     return;
                 }
             }
@@ -256,11 +272,11 @@ public class CustomLayoutDialog implements DialogInterface {
             if (null != mDialog) mDialog.setOnDismissListener(listener);
         }
 
-		@Override
-		public void setOnKeyListener(OnKeyListener listener) {
+        @Override
+        public void setOnKeyListener(OnKeyListener listener) {
             if (mDialog != null) mDialog.setOnKeyListener(listener);
-			mOnKeyListener = listener;
-		}
+            mOnKeyListener = listener;
+        }
 
         @Override
         public void setCanceledOnTouchOutside(boolean cancel) {
@@ -331,11 +347,12 @@ public class CustomLayoutDialog implements DialogInterface {
     }
 
     public void show() {
-        if(isActivityFinishing()){
+        if (isActivityFinishing()) {
             return;
         }
         mStrategy.show(this, mView);
     }
+
     protected boolean isActivityFinishing() {
         if (mContext instanceof Activity) {
             Activity activity = (Activity) mContext;
@@ -344,6 +361,7 @@ public class CustomLayoutDialog implements DialogInterface {
 
         return false;
     }
+
     public void showAtPosition(int gravity, int offsetX, int offsetY, int margin) {
         mStrategy.showAtPosition(this, mView, gravity, offsetX, offsetY, margin);
     }
@@ -368,9 +386,9 @@ public class CustomLayoutDialog implements DialogInterface {
         mStrategy.setOnDismissListener(listener);
     }
 
-	public void setOnKeyListener(OnKeyListener listener) {
-		mStrategy.setOnKeyListener(listener);
-	}
+    public void setOnKeyListener(OnKeyListener listener) {
+        mStrategy.setOnKeyListener(listener);
+    }
 
     public void setOnCancelListener(OnCancelListener listener) {
         mStrategy.setOnCancelListener(listener);
@@ -380,9 +398,9 @@ public class CustomLayoutDialog implements DialogInterface {
         mStrategy.setOnShowListener(listener);
     }
 
-	public void setWindowType(int windowType) {
-		mStrategy.setWindowType(windowType);
-	}
+    public void setWindowType(int windowType) {
+        mStrategy.setWindowType(windowType);
+    }
 
     public void setCanceledOnTouchOutside(boolean cancel) {
         mStrategy.setCanceledOnTouchOutside(cancel);
@@ -394,7 +412,7 @@ public class CustomLayoutDialog implements DialogInterface {
 
     public Window getWindow() {
         Dialog dig = getDialog();
-        if(dig != null) {
+        if (dig != null) {
             return dig.getWindow();
         }
         return null;

@@ -124,5 +124,6 @@ dependencies {
     compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-28'//没有使用特殊Header，可以不加这行
     compile 'com.android.support:appcompat-v7:25.3.1'//版本 23以上（必须）
 
+    compile 'com.bm.photoview:library:1.4.1'
 
 }

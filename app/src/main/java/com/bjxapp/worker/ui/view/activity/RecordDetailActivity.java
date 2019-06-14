@@ -482,6 +482,7 @@ public class RecordDetailActivity extends Activity {
         picker.setDividerConfig(config);
         picker.setBackgroundColor(0xFFffffff);
         picker.setCanceledOnTouchOutside(true);
+        picker.setOffset(4);
         picker.setOnOptionPickListener(new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {

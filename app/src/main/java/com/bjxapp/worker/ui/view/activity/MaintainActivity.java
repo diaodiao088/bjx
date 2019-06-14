@@ -257,6 +257,12 @@ public class MaintainActivity extends Activity {
     @BindView(R.id.content_limit)
     TextView mLimitTv;
 
+    @BindView(R.id.change_reason_tv_1)
+    EditText mReasonTv;
+
+    @BindView(R.id.content_limit_1)
+    TextView mLimitTv_reason;
+
     @BindView(R.id.main_container_ly)
     LinearLayout mContainerLy;
 
@@ -287,6 +293,11 @@ public class MaintainActivity extends Activity {
 
             if (mImageList.size() <= 1) {
                 Toast.makeText(this, "请至少添加一张维修照片", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (mMainTainList.size() <= 0) {
+                Toast.makeText(this, "请添加配件", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -433,7 +444,7 @@ public class MaintainActivity extends Activity {
         if (isMain) {
             mContentLy.setVisibility(View.VISIBLE);
             mXieTiaoLy.setVisibility(View.GONE);
-            mTitleTv.setText("维修项");
+            mTitleTv.setText("创建维修方案");
         } else {
             mContentLy.setVisibility(View.GONE);
             mXieTiaoLy.setVisibility(View.VISIBLE);
@@ -580,7 +591,7 @@ public class MaintainActivity extends Activity {
         mXieTiaoLy.setVisibility(View.GONE);
 
         mWaitingDialog = new XWaitingDialog(this);
-        mTitleTv.setText("维修项");
+        mTitleTv.setText("创建维修方案");
 
         mGridLayoutManager = new GridLayoutManager(this, 4);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
@@ -630,6 +641,28 @@ public class MaintainActivity extends Activity {
                 }
             }
         });
+
+        mReasonTv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int textSum = s.toString().length();
+
+                if (textSum <= 200) {
+                    mLimitTv_reason.setText(textSum + "/200");
+                }
+            }
+        });
+
     }
 
 
@@ -910,6 +943,11 @@ public class MaintainActivity extends Activity {
             return;
         }
 
+        if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
+            Toast.makeText(this, "请先填写故障原因", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (mImageList.size() <= 1) {
             Toast.makeText(this, "请至少添加一张维修照片", Toast.LENGTH_SHORT).show();
             return;
@@ -917,6 +955,11 @@ public class MaintainActivity extends Activity {
 
         if (TextUtils.isEmpty(xietiaoName) && !isComplete) {
             Toast.makeText(this, "请先选择协调原因", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (mMainTainList.size() <= 0) {
+            Toast.makeText(this, "请添加配件", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -1047,6 +1090,7 @@ public class MaintainActivity extends Activity {
         params.put("operate", isComplete ? String.valueOf(1) : String.valueOf(0));
 
         params.put("fault", mManfulTv.getText().toString());
+        params.put("faultDescription", mReasonTv.getText().toString());
         params.put("plan", mMethodTv.getText().toString());
 
 

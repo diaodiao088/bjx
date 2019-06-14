@@ -46,20 +46,19 @@ public class ShopInfoBean implements Parcelable{
         this.locationAddress = locationAddress;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(detailAddress);
-        dest.writeString(enterpriseId);
-        dest.writeString(enterpriseName);
-        dest.writeString(id);
-        dest.writeString(latitude);
-        dest.writeString(longitude);
-        dest.writeString(name);
-        dest.writeString(shopNum);
-        dest.writeString(locationAddress);
-        dest.writeString(contactNumber);
-        dest.writeString(contactPerson);
-        dest.writeString(serviceImgUrl);
+    protected ShopInfoBean(Parcel in) {
+        detailAddress = in.readString();
+        enterpriseId = in.readString();
+        enterpriseName = in.readString();
+        id = in.readString();
+        latitude = in.readString();
+        longitude = in.readString();
+        name = in.readString();
+        shopNum = in.readString();
+        locationAddress = in.readString();
+        contactNumber = in.readString();
+        contactPerson = in.readString();
+        serviceImgUrl = in.readString();
     }
 
     @Override
@@ -78,6 +77,24 @@ public class ShopInfoBean implements Parcelable{
             return new ShopInfoBean[size];
         }
     };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(detailAddress);
+        dest.writeString(enterpriseId);
+        dest.writeString(enterpriseName);
+        dest.writeString(id);
+        dest.writeString(latitude);
+        dest.writeString(longitude);
+        dest.writeString(name);
+        dest.writeString(shopNum);
+        dest.writeString(locationAddress);
+        dest.writeString(contactNumber);
+        dest.writeString(contactPerson);
+        dest.writeString(serviceImgUrl);
+    }
+
+
 
     public String getContactNumber() {
         return contactNumber;
@@ -167,19 +184,6 @@ public class ShopInfoBean implements Parcelable{
         this.locationAddress = locationAddress;
     }
 
-    protected ShopInfoBean(Parcel in) {
-        detailAddress = in.readString();
-        enterpriseId = in.readString();
-        enterpriseName = in.readString();
-        id = in.readString();
-        latitude = in.readString();
-        longitude = in.readString();
-        name = in.readString();
-        shopNum = in.readString();
-        locationAddress = in.readString();
-        contactNumber = in.readString();
-        contactPerson = in.readString();
-    }
 
     public String getServiceImgUrl() {
         return serviceImgUrl;
