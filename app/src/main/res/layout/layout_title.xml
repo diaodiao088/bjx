@@ -30,16 +30,6 @@
         android:src="@drawable/back"
         android:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/main_ring"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:paddingRight="6dp"
-        android:paddingBottom="6dp"
-        android:layout_alignBottom="@+id/title_image_back"
-        android:layout_alignRight="@+id/title_image_back"
-        android:visibility="gone"
-        android:src="@drawable/ring_bg" />
 
     <com.bjxapp.worker.controls.XTextView
         android:id="@+id/title_text_tv"

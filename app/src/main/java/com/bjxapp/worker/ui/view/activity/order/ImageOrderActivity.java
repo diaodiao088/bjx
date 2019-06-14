@@ -36,8 +36,10 @@ public class ImageOrderActivity extends Activity {
     }
 
     public static final String URL_IMAGE_PATH = "url_image_path";
+    public static final String FROM_SERVICE = "from_service";
 
     private String mImagePath;
+    private boolean mFromService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,12 +54,19 @@ public class ImageOrderActivity extends Activity {
         Intent intent = getIntent();
         if (intent != null) {
             mImagePath = intent.getStringExtra(URL_IMAGE_PATH);
+            mFromService = intent.getBooleanExtra(FROM_SERVICE , false);
         }
     }
 
     private void initView() {
 
-        mTitleTv.setText("照片详情");
+        if (mFromService){
+            mTitleTv.setText("照片详情");
+        }else{
+            mTitleTv.setText("服务项目列表");
+        }
+
+
 
         if (TextUtils.isEmpty(mImagePath)) {
             return;
@@ -67,9 +76,14 @@ public class ImageOrderActivity extends Activity {
     }
 
     public static void goToActivity(Context ctx, String url) {
+       goToActivity(ctx , url , false);
+    }
+
+    public static void goToActivity(Context ctx, String url , boolean fromService) {
         Intent intent = new Intent();
         intent.setClass(ctx, ImageOrderActivity.class);
         intent.putExtra(URL_IMAGE_PATH, url);
+        intent.putExtra(FROM_SERVICE , fromService);
         ctx.startActivity(intent);
     }
 

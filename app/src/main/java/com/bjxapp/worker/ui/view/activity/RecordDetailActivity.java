@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,10 +86,13 @@ public class RecordDetailActivity extends Activity {
         startActivity(intent);
     }
 
+    @BindView(R.id.fuwu_img_ly)
+    RelativeLayout mFuwuImgLy;
+
     @OnClick(R.id.fuwu_img_ly)
     void onClickFuwu() {
         if (shopInfoBean != null) {
-            ImageOrderActivity.goToActivity(this, shopInfoBean.getServiceImgUrl());
+            ImageOrderActivity.goToActivity(this, shopInfoBean.getServiceImgUrl(), true);
         }
     }
 
@@ -151,6 +155,10 @@ public class RecordDetailActivity extends Activity {
         ShopInfoBean shopInfoBean = intent.getParcelableExtra(SHOP_INFO);
 
         this.shopInfoBean = shopInfoBean;
+
+        if (shopInfoBean != null && TextUtils.isEmpty(shopInfoBean.getServiceImgUrl())) {
+            mFuwuImgLy.setVisibility(View.GONE);
+        }
 
     }
 
@@ -468,11 +476,11 @@ public class RecordDetailActivity extends Activity {
         picker.setTopLineHeight(3);
         picker.setTitleText(recordBean.getTypeName());
         picker.setTitleTextColor(0xFF545454);
-        picker.setTitleTextSize(14);
+        picker.setTitleTextSize(16);
         picker.setCancelTextColor(0xFF545454);
-        picker.setCancelTextSize(14);
+        picker.setCancelTextSize(16);
         picker.setSubmitTextColor(0xFF00a551);
-        picker.setSubmitTextSize(14);
+        picker.setSubmitTextSize(16);
         picker.setTextColor(0xFF545454, 0x99545454);
         picker.setTextSize(20);
         WheelView.DividerConfig config = new WheelView.DividerConfig();

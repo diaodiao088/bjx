@@ -77,10 +77,13 @@ public class CheckOrderDetailActivity extends Activity {
     @BindView(R.id.phone)
     TextView mPhoneTv;
 
+    @BindView(R.id.fuwu_img_ly)
+    RelativeLayout mFuwuImgLy;
+
     @OnClick(R.id.fuwu_img_ly)
     void onClickFuwu() {
         if (!TextUtils.isEmpty(imageUrl)) {
-            ImageOrderActivity.goToActivity(this, imageUrl);
+            ImageOrderActivity.goToActivity(this, imageUrl , true);
         }
     }
 
@@ -378,6 +381,10 @@ public class CheckOrderDetailActivity extends Activity {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+
+                if (TextUtils.isEmpty(imageUrl)){
+                    mFuwuImgLy.setVisibility(View.GONE);
+                }
 
                 mTimeTv.setText(checkDetailBean.getActualTime());
                 mAddressTv.setText(checkDetailBean.getShopInfoBean().getDetailAddress());

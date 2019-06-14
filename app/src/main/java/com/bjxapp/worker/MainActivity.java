@@ -109,13 +109,9 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     @BindView(R.id.title_image_back)
     XImageView mBackIv;
 
-    @BindView(R.id.main_ring)
-    View mRingView;
-
 
     @OnClick(R.id.title_image_back)
     void onRing() {
-        mRingView.setVisibility(View.GONE);
         Intent intent = new Intent();
         intent.setClass(this, PushDetailActivity.class);
         startActivity(intent);
@@ -335,10 +331,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 }
                 mFirstReminder.setVisibility(View.GONE);
                 mTitleTextView.setText(getString(R.string.main_tab_first_text));
-                mTitleRightTv.setVisibility(View.VISIBLE);
 
-                // mRingView.setVisibility(View.VISIBLE);
-                mBackIv.setVisibility(View.VISIBLE);
 
                 mRightImageView.setImageResource(R.drawable.icon_menu_add);
                 mRightImageView.setPadding(0, 0, 0, 0);
@@ -347,7 +340,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 mIndex = 1;
                 mTitleRightTv.setVisibility(View.GONE);
                 mTitleTextView.setText(getString(R.string.main_tab_second_text));
-                mRingView.setVisibility(View.GONE);
                 mBackIv.setVisibility(View.GONE);
                 if (mMainSecondFragment != null) {
                     mMainSecondFragment.refresh(enterType);
@@ -360,14 +352,12 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 if (mMainThirdFragment != null) {
                     mMainThirdFragment.refresh(enterType);
                 }
-                mRingView.setVisibility(View.GONE);
                 mBackIv.setVisibility(View.GONE);
                 break;
             case R.id.main_tab_fourth:
                 mIndex = 3;
                 mTitleTextView.setText(getString(R.string.main_tab_fourth_text));
                 mTitleRightTv.setVisibility(View.GONE);
-                mRingView.setVisibility(View.GONE);
                 mBackIv.setVisibility(View.GONE);
                 if (mMainFourthFragment != null) {
                     mMainFourthFragment.refresh(enterType);
@@ -517,16 +507,11 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         mTitleTextView = (XTextView) findViewById(R.id.title_text_tv);
         mRightImageView = (XImageView) findViewById(R.id.title_image_right);
         mTitleTv.setText("首页");
-        mTitleRightTv.setVisibility(View.GONE);
-        mTitleRightTv.setText("邀请关注");
     }
 
     private void initViews() {
         mRightImageView.setVisibility(View.GONE);
         mRightImageView.setImageResource(R.drawable.icon_menu_main);
-        mBackIv.setVisibility(View.VISIBLE);
-        mBackIv.setImageResource(R.drawable.ring);
-        mTitleRightTv.setVisibility(View.VISIBLE);
     }
 
     private void setOnListener() {

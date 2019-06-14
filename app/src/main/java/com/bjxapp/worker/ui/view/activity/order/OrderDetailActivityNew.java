@@ -364,6 +364,10 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         });
     }
 
+
+    @BindView(R.id.fuwu_img_ly)
+    RelativeLayout mFuwuImgLy;
+
     @OnClick(R.id.fuwu_img_ly)
     void onClickFuwu() {
 
@@ -371,7 +375,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             return;
         }
 
-        ImageOrderActivity.goToActivity(this, mDetailInfo.getOrderDes().getShopServiceImgUrl());
+        ImageOrderActivity.goToActivity(this, mDetailInfo.getOrderDes().getShopServiceImgUrl() , true);
 
     }
 
@@ -1265,6 +1269,10 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mImgSizetTv.setText(imgList.size() + "张");
         } else {
             mOrderImagesLinear.setVisibility(View.GONE);
+        }
+
+        if (TextUtils.isEmpty(mDetailInfo.getOrderDes().getShopServiceImgUrl())){
+            mFuwuImgLy.setVisibility(View.GONE);
         }
 
         if (followUpList.size() > 0) {
