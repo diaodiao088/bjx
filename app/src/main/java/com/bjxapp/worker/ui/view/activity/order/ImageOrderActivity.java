@@ -60,7 +60,7 @@ public class ImageOrderActivity extends Activity {
 
     private void initView() {
 
-        if (mFromService){
+        if (!mFromService){
             mTitleTv.setText("照片详情");
         }else{
             mTitleTv.setText("服务项目列表");

@@ -375,7 +375,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             return;
         }
 
-        ImageOrderActivity.goToActivity(this, mDetailInfo.getOrderDes().getShopServiceImgUrl() , true);
+        ImageOrderActivity.goToActivity(this, mDetailInfo.getOrderDes().getShopServiceImgUrl(), true);
 
     }
 
@@ -1271,7 +1271,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mOrderImagesLinear.setVisibility(View.GONE);
         }
 
-        if (TextUtils.isEmpty(mDetailInfo.getOrderDes().getShopServiceImgUrl())){
+        if (TextUtils.isEmpty(mDetailInfo.getOrderDes().getShopServiceImgUrl()) ||
+                "null".equals(mDetailInfo.getOrderDes().getShopServiceImgUrl())) {
             mFuwuImgLy.setVisibility(View.GONE);
         }
 

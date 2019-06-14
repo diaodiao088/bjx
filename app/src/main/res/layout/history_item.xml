@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:drawableLeft="@drawable/order_time"
+        android:drawableLeft="@drawable/mendian"
         android:drawablePadding="8dp"
         android:gravity="center"
         android:text="这是地址"
