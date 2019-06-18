@@ -1140,15 +1140,7 @@ public class MaintainActivity extends Activity {
 
                         if (isComplete) {
 
-                            // CompleteActivity.goToActivity(MaintainActivity.this, mainTainPlanId, orderId);
                             finish();
-
-                            if (isDeviceBill_static && !isFinised_static) {
-                                FastJudgeActivity.goToActivity(MaintainActivity.this, false, enterPriseOrderId,
-                                        equipId, realList, orderId);
-                            }
-
-                            // CompleteActivity.goToActivity();
 
                         } else {
                             MaintainActivity.this.runOnUiThread(new Runnable() {

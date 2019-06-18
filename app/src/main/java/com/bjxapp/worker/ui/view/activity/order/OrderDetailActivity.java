@@ -584,7 +584,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         if (mDetailInfo != null) {
             if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
 
             if (mDetailInfo.getOrderDes().getStatus() == 2) {
@@ -783,7 +783,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
 
             if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
 
 
@@ -796,7 +796,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             }
 
             if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
 
 
@@ -807,7 +807,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mServiceEditBtn.setVisibility(View.GONE);
 
             if (isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
 
         } else if (processStatus == 6) {
@@ -817,7 +817,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mSaveButton.setVisibility(View.GONE);
 
             if (isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
 
         } else if (processStatus == 7) {
@@ -827,7 +827,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             mSaveButton.setVisibility(View.GONE);
 
             if (isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
         }
 

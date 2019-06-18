@@ -103,6 +103,8 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
                     case 53:
                     case 7:
                     case 54:
+                    case 51:
+                    case 52:
                     case 55:
                         intent.putExtra("order_id", orderId);
                         intent.putExtra("processStatus", 0);
@@ -114,9 +116,9 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
                     case 21:
                         Utils.startActivity(getActivity(), BalanceWithdrawHistoryActivity.class);
                         break;
-                        default:
-                            CheckOrderDetailActivity.goToActivity(getActivity() , orderId , 0);
-                            break;
+                    default:
+                        CheckOrderDetailActivity.goToActivity(getActivity(), orderId, 0);
+                        break;
                 }
 
 
@@ -128,7 +130,6 @@ public class Fragment_Main_Bill extends BaseFragment implements OnClickListener,
                 if (mParentFragment != null) {
                     mParentFragment.updateRedot();
                 }
-
 
 
             }

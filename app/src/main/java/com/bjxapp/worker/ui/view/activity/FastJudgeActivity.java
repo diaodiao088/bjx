@@ -607,15 +607,15 @@ public class FastJudgeActivity extends Activity {
 
     public static void goToActivity(Context context, boolean isFinished, String orderId, String equipId, ArrayList<String> imgList, String orderIdReal) {
 
-        Intent intent = new Intent();
-
-        intent.setClass(context, FastJudgeActivity.class);
-        intent.putExtra(IS_FINISHED, isFinished);
-        intent.putExtra(ORDER_ID, orderId);
-        intent.putExtra(EQUIP_ID, equipId);
-        intent.putExtra(IMG_LIST, imgList);
-        intent.putExtra(ORDER_ID_REAL, orderIdReal);
-
-        context.startActivity(intent);
+//        Intent intent = new Intent();
+//
+//        intent.setClass(context, FastJudgeActivity.class);
+//        intent.putExtra(IS_FINISHED, isFinished);
+//        intent.putExtra(ORDER_ID, orderId);
+//        intent.putExtra(EQUIP_ID, equipId);
+//        intent.putExtra(IMG_LIST, imgList);
+//        intent.putExtra(ORDER_ID_REAL, orderIdReal);
+//
+//        context.startActivity(intent);
     }
 }

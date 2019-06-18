@@ -794,14 +794,8 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                         return;
                     }
 
-                    if (isDeviceBill && !mDetailInfo.getOrderDes().isTwiceServed()) {
-                        FastJudgeActivity.goToActivity(OrderDetailActivityNew.this, false, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
-                                mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getMaintainInfo().getPlanList().get(0).getmPlanImgList(), mDetailInfo.getOrderDes().getOrderId());
-
-                    } else {
-                        CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId(),
-                                mDetailInfo.getOrderDes(), currentAddress);
-                    }
+                    CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId(),
+                            mDetailInfo.getOrderDes(), currentAddress);
 
                 } else {
                     changeDate();
@@ -932,7 +926,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         if (settlementState == 3) {
             mSaveLy.setVisibility(View.VISIBLE);
             mStatusTv.setText("结算审核中");
-            mLookInfoTv.setVisibility(View.VISIBLE);
+            mLookInfoTv.setVisibility(View.GONE);
         } else {
 
             if (processState == 6) {
@@ -951,7 +945,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
         } else if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
             mSaveButton.setVisibility(View.GONE);
             mSaveLy.setVisibility(View.VISIBLE);
-            mLookInfoTv.setVisibility(View.VISIBLE);
+            mLookInfoTv.setVisibility(View.GONE);
         } else {
             mLookInfoTv.setVisibility(View.GONE);
             mSaveLy.setVisibility(View.GONE);
@@ -1047,7 +1041,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mSaveButton.setText("创建维修方案");
 
             if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
 
             modifyLy.setVisibility(View.GONE);
@@ -1059,7 +1053,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mServiceEditBtn.setVisibility(View.GONE);
 
             if (isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
 
         } else if (processStatus == 6) {
@@ -1068,7 +1062,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mSaveButton.setVisibility(View.GONE);
 
             if (isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
 
         } else if (processStatus == 7) {
@@ -1077,7 +1071,7 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             mSaveButton.setVisibility(View.GONE);
 
             if (isDeviceBill) {
-                mLookInfoTv.setVisibility(View.VISIBLE);
+                mLookInfoTv.setVisibility(View.GONE);
             }
         }
 
@@ -2093,14 +2087,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                     return;
                 }
 
-                if (isDeviceBill && !mDetailInfo.getOrderDes().isTwiceServed()) {
-                    FastJudgeActivity.goToActivity(OrderDetailActivityNew.this, false, mDetailInfo.getOrderDes().getEnterpriseOrderId(),
-                            mDetailInfo.getOrderDes().getEnterpriseId(), mDetailInfo.getMaintainInfo().getPlanList().get(0).getmPlanImgList(), mDetailInfo.getOrderDes().getOrderId());
 
-                } else {
-                    CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId(),
-                            mDetailInfo.getOrderDes(), currentAddress);
-                }
+                CompleteActivity.goToActivity(this, String.valueOf(currentPlanBean.getId()), mDetailInfo.getOrderDes().getOrderId(),
+                        mDetailInfo.getOrderDes(), currentAddress);
 
                 break;
         }
