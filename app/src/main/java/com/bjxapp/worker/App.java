@@ -5,6 +5,9 @@ import com.bjx.master.R;
 import com.bjxapp.worker.dataupload.Uploader;
 import com.bjxapp.worker.exception.MyCrashHandler;
 import com.bjxapp.worker.http.keyboard.commonutils.CommonUtilsEnv;
+import com.bjxapp.worker.imagelist.imgsel.ISNav;
+import com.bjxapp.worker.imagelist.imgsel.common.ImageLoader;
+import com.bumptech.glide.Glide;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
@@ -15,6 +18,7 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.multidex.MultiDexApplication;
+import android.widget.ImageView;
 
 public class App extends MultiDexApplication {
 
@@ -31,6 +35,13 @@ public class App extends MultiDexApplication {
                 layout.setPrimaryColorsId(R.color.white, android.R.color.white);//全局设置主题颜色
 
                 return new ClassicsHeader(context).setAccentColor(Color.parseColor("#545454"));//.setTimeFormat(new DynamicTimeFormat("更新于 %s"));//指定为经典Header，默认是 贝塞尔雷达Header
+            }
+        });
+
+        ISNav.getInstance().init(new ImageLoader() {
+            @Override
+            public void displayImage(Context context, String path, ImageView imageView) {
+                Glide.with(context).load(path).into(imageView);
             }
         });
 

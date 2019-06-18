@@ -138,13 +138,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
         setOnListener();
         initPopWindow();
 
-        ISNav.getInstance().init(new ImageLoader() {
-            @Override
-            public void displayImage(Context context, String path, ImageView imageView) {
-                Glide.with(context).load(path).into(imageView);
-            }
-        });
-
         mDbManager = new DBManager(this);
 
         mWaitingDialog = new XWaitingDialog(MainActivity.this);
