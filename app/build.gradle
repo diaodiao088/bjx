@@ -15,8 +15,18 @@ android {
             abiFilters "armeabi", "armeabi-v7a", "x86_64", "x86"
         }
 
-
     }
+
+    signingConfigs {
+        release {
+            storeFile file("../bjx.jks")
+            storePassword "892408"
+            keyAlias "bjx100"
+            keyPassword '892408'
+            v2SigningEnabled true
+        }
+    }
+
 
     lintOptions {
         checkReleaseBuilds false
@@ -29,7 +39,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             multiDexEnabled true
+            signingConfig signingConfigs.release
         }
+
     }
 
     sourceSets {
