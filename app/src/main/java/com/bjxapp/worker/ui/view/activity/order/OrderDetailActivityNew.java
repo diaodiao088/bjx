@@ -1424,7 +1424,13 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
                     MainTainBean item = new MainTainBean();
                     item.setComponentName(maintainItem.getString("equipmentComponentName"));
                     item.setQuantity(maintainItem.getInt("equipmentComponentQuantity"));
-                    item.setCost(maintainItem.getString("equipmentComponentPrice"));
+
+                    String laborCost = maintainItem.getString("equipmentComponentLaborCost");
+                    String price = maintainItem.getString("equipmentComponentPrice");
+
+                    double realPrice = Double.parseDouble(laborCost) + Double.parseDouble(price);
+
+                    item.setCost(String.valueOf(realPrice));
                     item.setModel(maintainItem.getString("equipmentComponentModel"));
                     mainTainList.add(item);
                 }

@@ -98,6 +98,7 @@ public class PushParser {
                     startJudge();
                     break;
                 case 37:
+                case 7:
                     newBillTimeout();
                     break;
                 default:

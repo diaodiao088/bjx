@@ -301,6 +301,11 @@ public class MaintainActivity extends Activity {
                 return;
             }
 
+            if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
+                Toast.makeText(this, "请先填写故障描述", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             showCompleteConfirmDialog();
         }
     }
@@ -944,7 +949,7 @@ public class MaintainActivity extends Activity {
         }
 
         if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
-            Toast.makeText(this, "请先填写故障原因", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "请先填写故障描述", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -1212,8 +1217,8 @@ public class MaintainActivity extends Activity {
             String modelKey = "equipmentComponentList[" + i + "].model";
             params.put(modelKey, !item.isOthers ? String.valueOf(item.getModel()) : otherBean.getModel());
             params.put(nameKey, !item.isOthers ? item.getComponentName() : otherBean.getName());
-            params.put(laborCost, !item.isOthers ? String.valueOf(0) : otherBean.getRenGongCost());
-            params.put(costKey, !item.isOthers ? item.getCost() : otherBean.getCost());
+            params.put(laborCost, !item.isOthers ? item.getLaborCost() : otherBean.getRenGongCost());
+            params.put(costKey, !item.isOthers ? item.getRengongCost() : otherBean.getCost());
             params.put(remark, !item.isOthers ? "" : otherBean.getRemark());
             params.put(quantityKey, String.valueOf(item.getQuantity()));
 

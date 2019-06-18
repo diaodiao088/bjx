@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/money"
             android:drawablePadding="7dp"
-            android:text="采购价格："
+            android:text="配件价格："
             android:textColor="@color/main_text_color"
             android:textSize="14sp" />
 

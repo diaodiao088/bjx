@@ -331,7 +331,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
                 }
                 mFirstReminder.setVisibility(View.GONE);
                 mTitleTextView.setText(getString(R.string.main_tab_first_text));
-
+                mBackIv.setVisibility(View.GONE);
 
                 mRightImageView.setImageResource(R.drawable.icon_menu_add);
                 mRightImageView.setPadding(0, 0, 0, 0);
