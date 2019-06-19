@@ -936,15 +936,9 @@ public class OrderDetailActivityNew extends BaseActivity implements OnClickListe
             }
         }
 
-        if (!mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
-            mLookInfoTv.setVisibility(View.GONE);
-            mSaveLy.setVisibility(View.VISIBLE);
-            mSaveButton.setText("设备评价");
-            mSaveButton.setEnabled(true);
-            mSaveButton.setVisibility(View.VISIBLE);
-        } else if (mDetailInfo.getOrderDes().isTwiceServed() && isDeviceBill) {
+        if (isDeviceBill) {
             mSaveButton.setVisibility(View.GONE);
-            mSaveLy.setVisibility(View.VISIBLE);
+            mSaveLy.setVisibility(View.GONE);
             mLookInfoTv.setVisibility(View.GONE);
         } else {
             mLookInfoTv.setVisibility(View.GONE);

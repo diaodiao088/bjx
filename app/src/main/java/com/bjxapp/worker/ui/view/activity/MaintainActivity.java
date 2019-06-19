@@ -211,8 +211,35 @@ public class MaintainActivity extends Activity {
         });
 
         otherPriceDialog.show();
-
     }
+
+
+    private boolean hasOtherPrice() {
+        if (mOtherPriceList == null || mOtherPriceList.size() <= 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private boolean hasOtherMaintain() {
+
+        if (mMainTainList == null || mMainTainList.size() <= 0) {
+            return false;
+        }
+
+        for (int i = 0; i < mMainTainList.size(); i++) {
+
+            if (mMainTainList.get(i).isOthers) {
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
 
     private String equipId;
     private String orderId;
@@ -271,6 +298,17 @@ public class MaintainActivity extends Activity {
 
     @OnClick(R.id.wait_contact_ok_btn)
     void onClickComplete() {
+
+        if (hasOtherMaintain()){
+            Toast.makeText(this, "已添加其他配件 ，请点击需要协调", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (hasOtherPrice()){
+            Toast.makeText(this, "已添加其他费用 ，请点击需要协调", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         if (Double.parseDouble(getTotalPrice()) > 500) {
             Toast.makeText(this, "订单金额大于500 ，请点击需要协调", Toast.LENGTH_SHORT).show();
