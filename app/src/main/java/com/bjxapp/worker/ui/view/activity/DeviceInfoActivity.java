@@ -1,23 +1,36 @@
 package com.bjxapp.worker.ui.view.activity;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -36,16 +49,25 @@ import com.bjxapp.worker.ui.expandablelayout.ExpandableLayout;
 import com.bjxapp.worker.ui.expandablelayout.Section;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
+import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
+import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.DeviceConfirmDialog;
 import com.bjxapp.worker.ui.widget.DimenUtils;
+import com.bjxapp.worker.ui.widget.RoundImageView;
 import com.bjxapp.worker.ui.widget.ServiceItemLayout;
+import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.Utils;
+import com.bjxapp.worker.utils.mask.ImageSelectUtil;
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -54,6 +76,8 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
 
 public class DeviceInfoActivity extends Activity {
 
@@ -64,6 +88,9 @@ public class DeviceInfoActivity extends Activity {
 
     @BindView(R.id.title_text_tv)
     XTextView mTitleTextView;
+
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
 
     @OnClick(R.id.device_info_tv)
     void onClickInfo() {
@@ -94,7 +121,9 @@ public class DeviceInfoActivity extends Activity {
 //        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImgList, !isNeedMod , true);
 //    }
 
+    private ArrayList<ImageBean> mImageList = new ArrayList<>();
 
+    private MyAdapter myAdapter;
 
 
     private String id;
@@ -197,6 +226,13 @@ public class DeviceInfoActivity extends Activity {
         } else {
             mExpandLayout.setVisibility(View.VISIBLE);
         }
+
+        GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 4);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, true));
+        mAdapter = new RecordAddActivity.MyAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+
 
         mReasonTv.addTextChangedListener(new TextWatcher() {
             @Override
@@ -323,11 +359,6 @@ public class DeviceInfoActivity extends Activity {
                 wSet.setDefaultTextEncodingName("utf-8");
 
                 webView.loadData(model.getServiceDes(), "text/html; charset=UTF-8", null);
-
-                // ((HtmlTextView) view.findViewById(R.id.tvChild)).setHtml(model.getServiceDes());
-
-
-                // ((TextView) view.findViewById(R.id.tvChild)).setText(Html.fromHtml("交易明细：<font color= '#564978'>"+"姓名：" + "<big>"+"hhh" +"</big></font> "+"日期：17-01-06  20:00"));
 
             }
         });
@@ -939,6 +970,260 @@ public class DeviceInfoActivity extends Activity {
             this.serviceDes = serviceDes;
         }
     }
+
+
+
+    private class MyAdapter extends RecyclerView.Adapter {
+
+        private ArrayList<ImageBean> mList = new ArrayList<>();
+
+        public MyAdapter() {
+
+        }
+
+        public void setList(ArrayList<ImageBean> imageBean) {
+            this.mList = imageBean;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            RecyclerView.ViewHolder mHolder = null;
+
+            if (viewType == ImageBean.TYPE_ADD) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_image_item, parent, false);
+                mHolder = new VH_IMAGE_ITEM(view);
+            } else if (viewType == ImageBean.TYPE_IMAGE) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_image_item_cl, parent, false);
+                mHolder = new VH_DELETE_ITEM(view);
+            }
+
+            return mHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+
+            final ImageBean bean = mList.get(position);
+
+            if (holder instanceof VH_IMAGE_ITEM) {
+
+                Glide.with(DeviceInfoActivity.this).load(bean.getUrl()).into(((VH_IMAGE_ITEM) holder).mIv);
+
+                if (isFinished) {
+                    ((VH_IMAGE_ITEM) holder).mDeleteIv.setVisibility(View.GONE);
+                }
+
+                ((VH_IMAGE_ITEM) holder).mDeleteIv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mListener != null) {
+                            mListener.deleteImage(position);
+                        }
+                    }
+                });
+
+                ((VH_IMAGE_ITEM) holder).mIv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mListener != null) {
+                            mListener.goToImageDetail(bean);
+                        }
+                    }
+                });
+
+            } else if (holder instanceof VH_DELETE_ITEM) {
+
+                if (mList.size() >= 20 || isFinished) {
+                    holder.itemView.setVisibility(View.GONE);
+                } else {
+                    holder.itemView.setVisibility(View.VISIBLE);
+                }
+
+                ((VH_DELETE_ITEM) holder).mDeleteIv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mListener != null) {
+                            mListener.addImage();
+                        }
+                    }
+                });
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return mList.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return mList.get(position).getType();
+        }
+
+    }
+
+    private class VH_IMAGE_ITEM extends RecyclerView.ViewHolder {
+
+        private RoundImageView mIv;
+        private ImageView mDeleteIv;
+
+        public VH_IMAGE_ITEM(View itemView) {
+            super(itemView);
+            mDeleteIv = itemView.findViewById(R.id.deleteImageView);
+            mIv = itemView.findViewById(R.id.screenShotImageView);
+        }
+    }
+
+    private class VH_DELETE_ITEM extends RecyclerView.ViewHolder {
+
+        private ImageView mDeleteIv;
+
+        public VH_DELETE_ITEM(View itemView) {
+            super(itemView);
+            mDeleteIv = itemView.findViewById(R.id.screenShotImageView);
+        }
+    }
+
+
+    private class ImageBean {
+
+        private int type;
+        private String url;
+
+        public static final int TYPE_ADD = 0x01;
+        public static final int TYPE_IMAGE = 0x02;
+
+        public ImageBean() {
+
+        }
+
+        public ImageBean(int type, String url) {
+            this.type = type;
+            this.url = url;
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
+
+    public RecordAddActivity.OnOperationListener mListener = new OnOperationListener() {
+        @Override
+        public void addImage() {
+            loadImages();
+        }
+
+        @Override
+        public void deleteImage(int position) {
+            mImageList.remove(position);
+            mAdapter.setList(mImageList);
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void goToImageDetail(ImageBean bean) {
+            ImageOrderActivity.goToActivity(DeviceInfoActivity.this, bean.getUrl());
+        }
+    };
+
+    private static final String PATH = Environment
+            .getExternalStorageDirectory() + "/DCIM";
+
+    protected void loadImages() {
+
+        final CharSequence[] items = getResources().getStringArray(R.array.user_select_image_items);
+        AlertDialog dlg = new AlertDialog.Builder(this)
+                .setTitle("选取照片")
+                .setNegativeButton("取消", null)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        try {
+                            if (!SDCardUtils.exist()) {
+                                Utils.showShortToast(DeviceInfoActivity.this, "SD卡被占用或不存在");
+                            } else {
+                                if (item == 0) {
+                                    Uri imageURI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                                    if (imageURI != null) {
+                                        try {
+                                            if (ContextCompat.checkSelfPermission(DeviceInfoActivity.this,
+                                                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                                                    != PackageManager.PERMISSION_GRANTED) {
+                                                ActivityCompat.requestPermissions(DeviceInfoActivity.this,
+                                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+                                            } else {
+//                                                Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
+//                                                startActivityForResult(intent, FEEDBACK_LOAD_IMAGES_RESULT);
+                                                ImageSelectUtil.goToImageListActivity(DeviceInfoActivity .this , 0);
+                                            }
+                                        } catch (Exception e) {
+                                            Log.w("FeedbackPresenter", "loadImages: " + e.getMessage());
+                                        }
+                                    }
+                                } else {
+                                    if (ContextCompat.checkSelfPermission(DeviceInfoActivity.this,
+                                            Manifest.permission.READ_EXTERNAL_STORAGE)
+                                            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(DeviceInfoActivity.this,
+                                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                            != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(DeviceInfoActivity.this,
+                                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                                    } else {
+                                        //  Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
+                                        //   startActivityForResult(intent, FEEDBACK_LOAD_IMAGES_RESULT);
+                                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 调用系统相机
+                                        name = android.text.format.DateFormat.format("yyyyMMdd_hhmmss",
+                                                Calendar.getInstance(Locale.CHINA))
+                                                + ".jpg";//以当前时间作为文件名
+                                        Uri imageUri = Uri.fromFile(new File(PATH, name));
+
+                                        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+                                        startActivityForResult(intent, REQUEST_CODE_CLOCK_TAKE_PHOTO);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            Utils.showShortToast(DeviceInfoActivity.this, "SD卡被占用或不存在");
+                        }
+                    }
+                }).create();
+        dlg.show();
+
+    }
+
+    String name;
+
+    public interface OnOperationListener {
+
+        void addImage();
+
+
+        void deleteImage(int position);
+
+
+        void goToImageDetail(ImageBean bean);
+
+    }
+
+
+
+
+
+
+
 
 
 }

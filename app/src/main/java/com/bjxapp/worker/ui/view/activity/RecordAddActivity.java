@@ -948,12 +948,6 @@ public class RecordAddActivity extends Activity {
         }
     };
 
-    private int getScreenShotWidth() {
-        int screenWidth = DimenUtils.getScreenWidth(this);
-        screenWidth = screenWidth - (int) (screenWidth * 1.0 / 9); // 除掉边框
-        return screenWidth / 4;
-    }
-
     private static final String PATH = Environment
             .getExternalStorageDirectory() + "/DCIM";
 
@@ -1038,26 +1032,6 @@ public class RecordAddActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ImageSelectUtil.REQUEST_LIST_CODE) {
             if (resultCode == RESULT_OK && data != null) {
-//                Uri selectedImage = data.getData();
-////                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-////                Cursor cursor = null;
-////                try {
-////                    cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-////                    if (cursor != null) {
-////                        cursor.moveToFirst();
-////                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-////                        final String imagePath = cursor.getString(columnIndex);
-////
-////                        insertImg(imagePath, true);
-////                    }
-////                } catch (Exception e) {
-////                    e.printStackTrace();
-////                    //KLog.error(KLog.KLogFeature.toulan,"load image failed, msg:"+e.getMessage());
-////                } finally {
-////                    if (cursor != null) {
-////                        cursor.close();
-////                    }
-////                }
 
                 List<String> pathList = data.getStringArrayListExtra("result");
                 for (String path : pathList) {
@@ -1067,8 +1041,6 @@ public class RecordAddActivity extends Activity {
                     }
 
                 }
-
-
 
             }
         } else if (requestCode == REQUEST_CODE_CLOCK_TAKE_PHOTO) {
