@@ -123,7 +123,7 @@ public class DeviceInfoActivity extends Activity {
 
     private ArrayList<ImageBean> mImageList = new ArrayList<>();
 
-    private MyAdapter myAdapter;
+    private MyAdapter mAdapter;
 
 
     private String id;
@@ -230,7 +230,7 @@ public class DeviceInfoActivity extends Activity {
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 4);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(4, 50, true));
-        mAdapter = new RecordAddActivity.MyAdapter();
+        mAdapter = new MyAdapter();
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -1085,6 +1085,8 @@ public class DeviceInfoActivity extends Activity {
         }
     }
 
+    private boolean isFinished = false;
+
 
     private class ImageBean {
 
@@ -1120,7 +1122,7 @@ public class DeviceInfoActivity extends Activity {
         }
     }
 
-    public RecordAddActivity.OnOperationListener mListener = new OnOperationListener() {
+    public OnOperationListener mListener = new OnOperationListener() {
         @Override
         public void addImage() {
             loadImages();
