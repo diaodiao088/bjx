@@ -88,11 +88,13 @@ public class DeviceInfoActivity extends Activity {
 
     public static String model_static = "";
 
-    @OnClick(R.id.add_img_ly)
-    void onAddImage() {
+//    @OnClick(R.id.add_img_ly)
+//    void onAddImage() {
+//
+//        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImgList, !isNeedMod , true);
+//    }
 
-        AddImageActivity.goToActivity(this, AddImageActivity.OP_ADD, mImgList, !isNeedMod , true);
-    }
+
 
 
     private String id;
@@ -149,9 +151,6 @@ public class DeviceInfoActivity extends Activity {
 
     @BindView(R.id.process_sit_ly)
     LinearLayout mProcessSitLy;
-
-    @BindView(R.id.record_status_tv)
-    TextView mRecordStatusTv;
 
 
     @OnClick(R.id.process_status_tv)
@@ -525,17 +524,6 @@ public class DeviceInfoActivity extends Activity {
             mServiceLy.setVisibility(View.GONE);
         }
 
-        if (mImgList.size() > 0) {
-
-            String imgCountStr = getResources().getString(R.string.img_count, String.valueOf(mImgList.size()));
-            mRecordStatusTv.setText(Html.fromHtml(imgCountStr));
-
-        } else {
-            if (mAddImgTv.getText().toString().equals("查看照片")) {
-                mRecordStatusTv.setTextColor(Color.TRANSPARENT);
-            }
-        }
-
         insertObj();
     }
 
@@ -654,7 +642,6 @@ public class DeviceInfoActivity extends Activity {
 
                         if (mImgList.size() > 0) {
                             String imgCountStr = getResources().getString(R.string.img_count, String.valueOf(mImgList.size()));
-                            mRecordStatusTv.setText(Html.fromHtml(imgCountStr));
                         }
 
                     }
