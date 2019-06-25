@@ -49,6 +49,7 @@ import com.bjxapp.worker.ui.expandablelayout.ExpandableLayout;
 import com.bjxapp.worker.ui.expandablelayout.Section;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
+import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
 import com.bjxapp.worker.ui.view.activity.widget.SpaceItemDecoration;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.DeviceConfirmDialog;
@@ -58,6 +59,7 @@ import com.bjxapp.worker.ui.widget.ServiceItemLayout;
 import com.bjxapp.worker.utils.SDCardUtils;
 import com.bjxapp.worker.utils.Utils;
 import com.bjxapp.worker.utils.mask.ImageSelectUtil;
+import com.bjxapp.worker.utils.mask.MaskFile;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
@@ -67,6 +69,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -223,8 +226,10 @@ public class DeviceInfoActivity extends Activity {
 
         if (isCheck) {
             mExpandLayout.setVisibility(View.GONE);
+            mBtn.setText("巡检完成");
         } else {
             mExpandLayout.setVisibility(View.VISIBLE);
+            mBtn.setText("保养完成");
         }
 
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(this, 4);
@@ -288,6 +293,13 @@ public class DeviceInfoActivity extends Activity {
             }
         });
 
+        if (isNeedMod) {
+            ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
+            mImageList.add(bean);
+            mAdapter.setList(mImageList);
+            mAdapter.notifyDataSetChanged();
+        }
+
         if (!isNeedMod && !isFromBill) {
             mBtn.setVisibility(View.GONE);
             mRadioGroup.setFocusable(false);
@@ -306,6 +318,8 @@ public class DeviceInfoActivity extends Activity {
 
 
             mAddImgTv.setText("查看照片");
+
+
 //            for (int i = 0; i < mRadioGroup.getChildCount(); i++) {
 //                mRadioGroup.getChildAt(i).setEnabled(false);
 //            }
@@ -337,6 +351,7 @@ public class DeviceInfoActivity extends Activity {
 
             // mRecordStatusTv.setTextColor(Color.TRANSPARENT);
             mAddImgTv.setText("查看照片");
+
 
 //            for (int i = 0; i < mRadioGroup.getCh
         }
@@ -680,6 +695,53 @@ public class DeviceInfoActivity extends Activity {
                 break;
         }
 
+
+        if (requestCode == ImageSelectUtil.REQUEST_LIST_CODE) {
+            if (resultCode == RESULT_OK && data != null) {
+
+                List<String> pathList = data.getStringArrayListExtra("result");
+                for (String path : pathList) {
+
+                    if (mImageList.size() <= 20) {
+                        insertImg(path, true);
+                    }
+
+                }
+
+            }
+        } else if (requestCode == REQUEST_CODE_CLOCK_TAKE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+
+                try {
+                    String filePath = PATH + "/" + name;
+
+                    insertImg(filePath, true);
+                } catch (Exception e) {
+
+                }
+            }
+        }
+    }
+
+    public void insertImg(final String imagePath,
+                          boolean showDelImg) {
+
+        String targetPath = getCacheDir() + new File(imagePath).getName();
+        final String compressImage = CompressUtil.compressImage(imagePath, targetPath, 30);
+        ImageBean bean = new ImageBean(ImageBean.TYPE_ADD, compressImage);
+        mImageList.add(0, bean);
+        mAdapter.notifyDataSetChanged();
+
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                MaskFile.addMask(compressImage, RecordDetailActivity.address_static, RecordDetailActivity.shop_add_static,
+//                        RecordDetailActivity.enter_static, nameReal);
+//
+//
+//            }
+//        }, 300);
     }
 
     public void startCommit() {
@@ -972,7 +1034,6 @@ public class DeviceInfoActivity extends Activity {
     }
 
 
-
     private class MyAdapter extends RecyclerView.Adapter {
 
         private ArrayList<ImageBean> mList = new ArrayList<>();
@@ -1010,7 +1071,7 @@ public class DeviceInfoActivity extends Activity {
 
                 Glide.with(DeviceInfoActivity.this).load(bean.getUrl()).into(((VH_IMAGE_ITEM) holder).mIv);
 
-                if (isFinished) {
+                if (!isNeedMod) {
                     ((VH_IMAGE_ITEM) holder).mDeleteIv.setVisibility(View.GONE);
                 }
 
@@ -1034,7 +1095,7 @@ public class DeviceInfoActivity extends Activity {
 
             } else if (holder instanceof VH_DELETE_ITEM) {
 
-                if (mList.size() >= 20 || isFinished) {
+                if (mList.size() >= 20 || !isNeedMod) {
                     holder.itemView.setVisibility(View.GONE);
                 } else {
                     holder.itemView.setVisibility(View.VISIBLE);
@@ -1168,7 +1229,7 @@ public class DeviceInfoActivity extends Activity {
                                             } else {
 //                                                Intent intent = new Intent(Intent.ACTION_PICK, imageURI);
 //                                                startActivityForResult(intent, FEEDBACK_LOAD_IMAGES_RESULT);
-                                                ImageSelectUtil.goToImageListActivity(DeviceInfoActivity .this , 0);
+                                                ImageSelectUtil.goToImageListActivity(DeviceInfoActivity.this, 0);
                                             }
                                         } catch (Exception e) {
                                             Log.w("FeedbackPresenter", "loadImages: " + e.getMessage());
@@ -1219,13 +1280,6 @@ public class DeviceInfoActivity extends Activity {
         void goToImageDetail(ImageBean bean);
 
     }
-
-
-
-
-
-
-
 
 
 }

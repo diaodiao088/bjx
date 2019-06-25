@@ -492,7 +492,7 @@
                 android:layout_marginRight="30dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/button_background_green"
-                android:text="提交"
+                android:text="巡检完成"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
 
