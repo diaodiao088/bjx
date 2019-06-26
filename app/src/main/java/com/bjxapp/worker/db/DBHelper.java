@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "bjx.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public DBHelper(Context context) {
         //CursorFactory设置为null,使用默认值
@@ -26,6 +26,17 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS bjx_new" +
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " content VARCHAR, " +
+                "createTime VARCHAR, " +
+                "title VARCHAR , " +
+                "type INTEGER , " +
+                "orderId VARCHAR , " +
+                "noticeId VARCHAR ," +
+                "read INTEGER)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS device_info" +
+                "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " realId VARCHAR, " +
+                " situation VARCHAR," +
                 "createTime VARCHAR, " +
                 "title VARCHAR , " +
                 "type INTEGER , " +
@@ -46,6 +57,17 @@ public class DBHelper extends SQLiteOpenHelper {
                 "orderId VARCHAR , " +
                 "noticeId VARCHAR ," +
                 "read INTEGER)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS bjx_new" +
+                "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " content VARCHAR, " +
+                "createTime VARCHAR, " +
+                "title VARCHAR , " +
+                "type INTEGER , " +
+                "orderId VARCHAR , " +
+                "noticeId VARCHAR ," +
+                "read INTEGER)");
+
     }
 
 
