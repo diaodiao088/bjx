@@ -383,11 +383,11 @@ public class CheckOrderDetailActivity extends Activity {
 
     private void refineData(CheckDetailBean.DeviceBean deviceBean) {
 
-        if (deviceBean.getStatus() == 1){
+        if (deviceBean.getStatus() == 1) {
             return;
         }
 
-        if(dbManager.isComplete(deviceBean.getId())){
+        if (dbManager.isComplete(deviceBean.getId())) {
             deviceBean.setStatus(2);
         }
 
@@ -427,11 +427,17 @@ public class CheckOrderDetailActivity extends Activity {
                 }
 
                 if (checkDetailBean.getProcessState() == 0) {
-                    mConfirmBtn.setText("上门签到");
+                        mConfirmBtn.setText("上门签到");
                 } else if (checkDetailBean.getProcessState() == -3) {
                     mConfirmBtn.setText("确定");
                 } else {
-                    mConfirmBtn.setText("生成报告");
+
+                    if (checkComplete()){
+                        mConfirmBtn.setText("提交已完成项");
+                    }else{
+                        mConfirmBtn.setText("生成报告");
+                    }
+
                 }
 
                 if (checkDetailBean.getStatus() == 1) {
@@ -700,11 +706,7 @@ public class CheckOrderDetailActivity extends Activity {
     }
 
 
-    private void startConfirm() {
-
-        if (checkDetailBean == null) {
-            return;
-        }
+    private boolean checkComplete() {
 
         for (int i = 0; i < checkDetailBean.getCategoryList().size(); i++) {
 
@@ -714,16 +716,38 @@ public class CheckOrderDetailActivity extends Activity {
 
                 CheckDetailBean.DeviceBean deviceBean = categoryBean.getDeviceList().get(j);
 
-                if (deviceBean.getStatus() == 0) {
+                if (deviceBean.getStatus() == 0 || deviceBean.getStatus() == 2) {
 
-                    Toast.makeText(this, "请先提交设备信息.", Toast.LENGTH_SHORT).show();
 
-                    return;
+                    return true;
                 }
 
             }
 
         }
+
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+    private void startConfirm() {
+
+        if (checkDetailBean == null) {
+            return;
+        }
+
+        if (checkComplete()) {
+            Toast.makeText(this, "请先提交设备信息.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         if (mWaitingDialog != null) {
             mWaitingDialog.show("提交成功.", false);
