@@ -28,6 +28,7 @@ import com.bjxapp.worker.apinew.RecordApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.db.DBManager;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.model.ShopInfoBean;
@@ -57,6 +58,8 @@ public class CheckOrderDetailActivity extends Activity {
 
     public static final int REQUEST_CODE_SCAN = 0X01;
 
+    private DBManager dbManager;
+
     @OnClick(R.id.title_image_back)
     void onBack() {
         finish();
@@ -83,7 +86,7 @@ public class CheckOrderDetailActivity extends Activity {
     @OnClick(R.id.fuwu_img_ly)
     void onClickFuwu() {
         if (!TextUtils.isEmpty(imageUrl)) {
-            ImageOrderActivity.goToActivity(this, imageUrl , true);
+            ImageOrderActivity.goToActivity(this, imageUrl, true);
         }
     }
 
@@ -202,6 +205,7 @@ public class CheckOrderDetailActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_order_detail_activity);
+        dbManager = new DBManager(this);
         ButterKnife.bind(this);
         handleIntent();
         initView();
@@ -346,10 +350,10 @@ public class CheckOrderDetailActivity extends Activity {
                 deviceBean.setId(deviceObj.get("id").getAsString());
                 deviceBean.setStatus(deviceObj.get("status").getAsInt());
 
+                refineData(deviceBean);
+
                 categoryBean.getDeviceList().add(deviceBean);
             }
-
-
             checkDetailBean.getCategoryList().add(categoryBean);
         }
 
@@ -376,6 +380,20 @@ public class CheckOrderDetailActivity extends Activity {
         notifyDataChanged();
     }
 
+
+    private void refineData(CheckDetailBean.DeviceBean deviceBean) {
+
+        if (deviceBean.getStatus() == 1){
+            return;
+        }
+
+        if(dbManager.isComplete(deviceBean.getId())){
+            deviceBean.setStatus(2);
+        }
+
+    }
+
+
     String imageUrl = "";
 
     private void notifyDataChanged() {
@@ -384,7 +402,7 @@ public class CheckOrderDetailActivity extends Activity {
             @Override
             public void run() {
 
-                if (TextUtils.isEmpty(imageUrl)){
+                if (TextUtils.isEmpty(imageUrl)) {
                     mFuwuImgLy.setVisibility(View.GONE);
                 }
 
@@ -527,7 +545,7 @@ public class CheckOrderDetailActivity extends Activity {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     DimenUtils.dp2px(45, mRecordItemContainer.getContext()));
 
-            itemLayout.bindData(checkDetailBean.getProcessState(), itemBean, itemBean.getId(), mCurrentType == 0 , CheckOrderDetailActivity.this);
+            itemLayout.bindData(checkDetailBean.getProcessState(), itemBean, itemBean.getId(), mCurrentType == 0, CheckOrderDetailActivity.this);
 
             mRecordItemContainer.addView(itemLayout, layoutParams);
         }
@@ -789,10 +807,10 @@ public class CheckOrderDetailActivity extends Activity {
                     break;
 
                 case REQUEST_CODE:
-                    if (clickBean != null){
+                    if (clickBean != null) {
                         clickBean.setStatus(2);
 
-                        if (clickLayout != null){
+                        if (clickLayout != null) {
                             clickLayout.update();
                         }
 

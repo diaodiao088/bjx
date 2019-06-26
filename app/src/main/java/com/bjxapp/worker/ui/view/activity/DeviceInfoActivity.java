@@ -793,10 +793,10 @@ public class DeviceInfoActivity extends Activity {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < mImageList.size(); i++) {
             if (!TextUtils.isEmpty(mImageList.get(i).getUrl())) {
-                if (i < mImgList.size() - 1) {
-                    builder.append(mImgList.get(i) + ",");
+                if (i < mImageList.size() - 1) {
+                    builder.append(mImageList.get(i) + ",");
                 } else {
-                    builder.append(mImgList.get(i));
+                    builder.append(mImageList.get(i));
                 }
             }
         }

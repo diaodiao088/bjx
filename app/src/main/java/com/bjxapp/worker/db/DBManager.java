@@ -47,7 +47,22 @@ public class DBManager {
         } finally {
             db.endTransaction();    //结束事务
         }
+    }
 
+
+    public boolean isComplete(String realId) {
+
+        Cursor c = db.rawQuery("SELECT * FROM device_info where realId=" + realId, null);
+
+        while(c.moveToNext()){
+
+           // String status = c.getString(c.getColumnIndex("realId"));
+
+            return true;
+
+        }
+
+        return false;
     }
 
 
