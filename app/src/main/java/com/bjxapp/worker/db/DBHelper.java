@@ -37,12 +37,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " realId VARCHAR, " +
                 " situation VARCHAR," +
-                "createTime VARCHAR, " +
-                "title VARCHAR , " +
-                "type INTEGER , " +
-                "orderId VARCHAR , " +
-                "noticeId VARCHAR ," +
-                "read INTEGER)");
+                "needMaintain VARCHAR, " +
+                "remark VARCHAR , " +
+                "imgUrls VARCHAR , " +
+                "scoreId VARCHAR , " +
+                "scroce VARCHAR)");
     }
 
     //如果DATABASE_VERSION值被改为2,系统发现现有数据库版本不同,即会调用onUpgrade
@@ -58,15 +57,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 "noticeId VARCHAR ," +
                 "read INTEGER)");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS bjx_new" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS device_info" +
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " content VARCHAR, " +
-                "createTime VARCHAR, " +
-                "title VARCHAR , " +
-                "type INTEGER , " +
-                "orderId VARCHAR , " +
-                "noticeId VARCHAR ," +
-                "read INTEGER)");
+                " realId VARCHAR, " +
+                " situation VARCHAR," +
+                "needMaintain VARCHAR, " +
+                "remark VARCHAR , " +
+                "imgUrls VARCHAR , " +
+                "scordId VARCHAR ," +
+                "scroce VARCHAR)");
 
     }
 

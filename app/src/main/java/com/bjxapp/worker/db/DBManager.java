@@ -28,6 +28,29 @@ public class DBManager {
         db = helper.getWritableDatabase();
     }
 
+
+    public void addDeviceInfo(String realId, String situation, String needMaintain,
+                              String remark, String imgUrls, String score, String scoreId) {
+
+        db.beginTransaction();
+
+        try {
+            db.execSQL("INSERT INTO device_info ( realId , situation , needMaintain , remark ,imgUrls , scroce ,scoreId) VALUES (? , ? , ? , ? , ? , ? , ?)",
+                    new Object[]{realId, situation,
+                            needMaintain, remark, imgUrls, score, scoreId});
+            db.setTransactionSuccessful();    //设置事务成功完成
+
+            LogUtils.log("add to db success ");
+        } catch (Exception e) {
+
+            LogUtils.log("add to db fail : " + e.getLocalizedMessage());
+        } finally {
+            db.endTransaction();    //结束事务
+        }
+
+    }
+
+
     /**
      * 添加订单消息
      */

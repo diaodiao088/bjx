@@ -91,6 +91,8 @@ public class CheckOrderDetailActivity extends Activity {
     public static String shopAddress_static;
     public static String enterpriseAddress_static;
 
+    public static final int REQUEST_CODE = 0x08;
+
 
     @OnClick(R.id.phone)
     void onClickPhone() {
@@ -525,12 +527,14 @@ public class CheckOrderDetailActivity extends Activity {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     DimenUtils.dp2px(45, mRecordItemContainer.getContext()));
 
-            itemLayout.bindData(checkDetailBean.getProcessState(), itemBean, itemBean.getId(), mCurrentType == 0);
+            itemLayout.bindData(checkDetailBean.getProcessState(), itemBean, itemBean.getId(), mCurrentType == 0 , CheckOrderDetailActivity.this);
 
             mRecordItemContainer.addView(itemLayout, layoutParams);
         }
-
     }
+
+    public CheckDetailBean.DeviceBean clickBean;
+    public CheckOrderItemLayout clickLayout;
 
     public static class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
@@ -777,15 +781,27 @@ public class CheckOrderDetailActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_SCAN:
                     String result = data.getStringExtra(Intents.Scan.RESULT);
                     Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
                     break;
+
+                case REQUEST_CODE:
+                    if (clickBean != null){
+                        clickBean.setStatus(2);
+
+                        if (clickLayout != null){
+                            clickLayout.update();
+                        }
+
+                    }
+                    break;
             }
         }
     }
+
 
     private String currentAddress = "";
 

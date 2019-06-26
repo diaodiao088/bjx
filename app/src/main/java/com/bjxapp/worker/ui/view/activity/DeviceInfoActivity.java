@@ -43,6 +43,7 @@ import com.bjxapp.worker.apinew.RecordApi;
 import com.bjxapp.worker.controls.XButton;
 import com.bjxapp.worker.controls.XTextView;
 import com.bjxapp.worker.controls.XWaitingDialog;
+import com.bjxapp.worker.db.DBManager;
 import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.expandablelayout.ExpandableLayout;
@@ -83,6 +84,8 @@ import retrofit2.Response;
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
 
 public class DeviceInfoActivity extends Activity {
+
+    private DBManager mDbManager;
 
     @OnClick(R.id.title_image_back)
     void onBack() {
@@ -215,6 +218,8 @@ public class DeviceInfoActivity extends Activity {
         isNeedMod = getIntent().getBooleanExtra(IS_NEED_MOD, true);
 
         orderNum = getIntent().getStringExtra(TYPE_NUM);
+
+        mDbManager = new DBManager(this);
 
         initView();
         initData();
@@ -616,8 +621,18 @@ public class DeviceInfoActivity extends Activity {
         context.startActivity(intent);
     }
 
+    public static void goToActivityForResult(Activity context, String deviceId, boolean flag, boolean isCheck) {
+        Intent intent = new Intent();
+        intent.setClass(context, DeviceInfoActivity.class);
+        intent.putExtra(TYPE_ID, deviceId);
+        intent.putExtra(IS_NEED_MOD, flag);
+        intent.putExtra("is_check", isCheck);
+        intent.putExtra("is_from_bill", false);
 
-    public static void goToActivity(Context context, String deviceId, boolean flag, boolean isCheck) {
+        context.startActivityForResult(intent, CheckOrderDetailActivity.REQUEST_CODE);
+    }
+
+    public static void goToActivity(Activity context, String deviceId, boolean flag, boolean isCheck) {
         goToActivity(context, deviceId, flag, isCheck, false);
     }
 
@@ -769,79 +784,97 @@ public class DeviceInfoActivity extends Activity {
             return;
         }
 
-        if (mImgList.size() <= 0) {
+        if (mImageList.size() <= 1) {
             Toast.makeText(this, "请添加照片", Toast.LENGTH_SHORT).show();
             return;
         }
 
 
-        Map<String, String> params = new HashMap<>();
-        params.put("token", ConfigManager.getInstance(this).getUserSession());
-        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
-        params.put("id", realId);
-        params.put("situation", String.valueOf((int) situation));
-        params.put("needMaintain", String.valueOf(needMaintain));
-
-        if (!TextUtils.isEmpty(mReasonTv.getText().toString())) {
-            params.put("remark", mReasonTv.getText().toString());
-        }
-
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < mImgList.size(); i++) {
-            if (i < mImgList.size() - 1) {
-                builder.append(mImgList.get(i) + ",");
-            } else {
-                builder.append(mImgList.get(i));
+        for (int i = 0; i < mImageList.size(); i++) {
+            if (!TextUtils.isEmpty(mImageList.get(i).getUrl())) {
+                if (i < mImgList.size() - 1) {
+                    builder.append(mImgList.get(i) + ",");
+                } else {
+                    builder.append(mImgList.get(i));
+                }
             }
         }
 
-        params.put("imgUrls", builder.toString());
+        //params.put("imgUrls", builder.toString());
 
-        putPartial(params);
+        mDbManager.addDeviceInfo(String.valueOf(realId), String.valueOf(situation), String.valueOf(needMaintain), remark, builder.toString(), getScoreStr(), getIdStr());
 
-        Call<JsonObject> call = recordApi.updateEquip(params);
+        setResult(RESULT_OK);
+        finish();
 
-
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (mWaitingDialog != null) {
-                    mWaitingDialog.dismiss();
-                }
-
-                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
-                    final JsonObject object = response.body();
-
-                    final String msg = object.get("msg").getAsString();
-                    final int code = object.get("code").getAsInt();
-
-                    if (code == 0) {
-                        Utils.showShortToast(DeviceInfoActivity.this, "提交成功");
-                        finish();
-                    } else {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Utils.showShortToast(DeviceInfoActivity.this, msg + ":" + code);
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mWaitingDialog != null) {
-                            mWaitingDialog.dismiss();
-                        }
-                        Toast.makeText(DeviceInfoActivity.this, "提交失败..", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
+//        Map<String, String> params = new HashMap<>();
+//        params.put("token", ConfigManager.getInstance(this).getUserSession());
+//        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+//        params.put("id", realId);
+//        params.put("situation", String.valueOf((int) situation));
+//        params.put("needMaintain", String.valueOf(needMaintain));
+//
+//        if (!TextUtils.isEmpty(mReasonTv.getText().toString())) {
+//            params.put("remark", mReasonTv.getText().toString());
+//        }
+//
+//        StringBuilder builder = new StringBuilder();
+//        for (int i = 0; i < mImgList.size(); i++) {
+//            if (i < mImgList.size() - 1) {
+//                builder.append(mImgList.get(i) + ",");
+//            } else {
+//                builder.append(mImgList.get(i));
+//            }
+//        }
+//
+//        params.put("imgUrls", builder.toString());
+//
+//        putPartial(params);
+//
+//        Call<JsonObject> call = recordApi.updateEquip(params);
+//
+//
+//        call.enqueue(new Callback<JsonObject>() {
+//            @Override
+//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+//                if (mWaitingDialog != null) {
+//                    mWaitingDialog.dismiss();
+//                }
+//
+//                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+//                    final JsonObject object = response.body();
+//
+//                    final String msg = object.get("msg").getAsString();
+//                    final int code = object.get("code").getAsInt();
+//
+//                    if (code == 0) {
+//                        Utils.showShortToast(DeviceInfoActivity.this, "提交成功");
+//                        finish();
+//                    } else {
+//                        mHandler.post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Utils.showShortToast(DeviceInfoActivity.this, msg + ":" + code);
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<JsonObject> call, Throwable t) {
+//                mHandler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (mWaitingDialog != null) {
+//                            mWaitingDialog.dismiss();
+//                        }
+//                        Toast.makeText(DeviceInfoActivity.this, "提交失败..", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//        });
 
     }
 
@@ -852,12 +885,50 @@ public class DeviceInfoActivity extends Activity {
         dividerView.setVisibility(View.GONE);
     }
 
-
     private void showSituation() {
         mDeviceRadioGroup.setVisibility(View.VISIBLE);
         mProcessSitLy.setVisibility(View.VISIBLE);
         dividerView.setVisibility(View.VISIBLE);
     }
+
+    private String getScoreStr() {
+
+        if (mList == null || mList.size() <= 0) {
+            return "";
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < mList.size(); i++) {
+            if (i < mList.size() - 1) {
+                stringBuilder.append(mList.get(i).getActualScore() + ",");
+            } else {
+                stringBuilder.append(mList.get(i).getActualScore());
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
+
+    private String getIdStr() {
+        if (mList == null || mList.size() <= 0) {
+            return "";
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < mList.size(); i++) {
+            if (i < mList.size() - 1) {
+                stringBuilder.append(mList.get(i).getId() + ",");
+            } else {
+                stringBuilder.append(mList.get(i).getId());
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
 
     private void putPartial(Map<String, String> params) {
 
@@ -879,8 +950,6 @@ public class DeviceInfoActivity extends Activity {
             params.put(urlkey, score);
 
         }
-
-
     }
 
     private boolean isAllChecked() {
