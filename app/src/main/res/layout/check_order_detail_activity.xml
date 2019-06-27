@@ -302,35 +302,43 @@
 
     </ScrollView>
 
-
-    <TextView
+    <LinearLayout
         android:id="@+id/tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_above="@+id/add_confirm_btn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:textSize="14sp"
-        android:textColor="@color/main_text_color"
-        android:text="请尽快提交已巡检完成的设备"
-
-        />
-
-
-    <com.bjxapp.worker.controls.XButton
-        android:id="@+id/add_confirm_btn"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/button_background_green"
-        android:text="生成报告"
-        android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tip_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="请尽快提交已巡检完成的设备"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:textSize="14sp"
+            android:textColor="@color/main_text_color"
+            />
+
+
+        <com.bjxapp.worker.controls.XButton
+            android:id="@+id/add_confirm_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/button_background_green"
+            android:text="生成报告"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+
+
 
 </RelativeLayout>

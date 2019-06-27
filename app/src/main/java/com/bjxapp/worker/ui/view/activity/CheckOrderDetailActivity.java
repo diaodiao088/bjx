@@ -35,6 +35,7 @@ import com.bjxapp.worker.model.ShopInfoBean;
 import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 import com.bjxapp.worker.ui.view.activity.map.MapPositioning;
 import com.bjxapp.worker.ui.view.activity.order.ImageOrderActivity;
+import com.bjxapp.worker.ui.view.activity.widget.dialog.CheckConfirmDialog;
 import com.bjxapp.worker.ui.view.activity.widget.dialog.SignConfirmDialog;
 import com.bjxapp.worker.ui.widget.CheckOrderItemLayout;
 import com.bjxapp.worker.ui.widget.DimenUtils;
@@ -140,9 +141,9 @@ public class CheckOrderDetailActivity extends Activity {
         } else if (checkDetailBean != null && checkDetailBean.getProcessState() == -3) {
             startContact();
         } else {
-            if (mConfirmBtn.getText().toString().equals("提交已完成项")){
+            if (mConfirmBtn.getText().toString().equals("提交已完成项")) {
                 startCommitPartial();
-            }else{
+            } else {
                 startConfirm();
             }
         }
@@ -173,13 +174,14 @@ public class CheckOrderDetailActivity extends Activity {
                 startSign();
             }
         });
-
         dialog.show();
     }
 
-
     @BindView(R.id.add_confirm_btn)
     XButton mConfirmBtn;
+
+    @BindView(R.id.tip_tv)
+    TextView mTipTv;
 
     private LinearLayoutManager mLayoutManager;
 
@@ -442,6 +444,7 @@ public class CheckOrderDetailActivity extends Activity {
 
                 if (checkDetailBean.getProcessState() >= 6) {
                     mConfirmBtn.setVisibility(View.GONE);
+                    mTipTv.setVisibility(View.GONE);
                 }
 
                 if (checkDetailBean.getProcessState() == 0) {
@@ -731,14 +734,10 @@ public class CheckOrderDetailActivity extends Activity {
             CheckDetailBean.CategoryBean categoryBean = checkDetailBean.getCategoryList().get(i);
 
             for (int j = 0; j < categoryBean.getDeviceList().size(); j++) {
-
                 CheckDetailBean.DeviceBean deviceBean = categoryBean.getDeviceList().get(j);
-
                 if (deviceBean.getStatus() == 0 || deviceBean.getStatus() == 2) {
-
                     return true;
                 }
-
             }
         }
 
@@ -771,7 +770,7 @@ public class CheckOrderDetailActivity extends Activity {
                 commitImage(item);
             } else {
 
-                if (mWaitingDialog != null){
+                if (mWaitingDialog != null) {
                     mWaitingDialog.dismiss();
                 }
 
@@ -783,7 +782,33 @@ public class CheckOrderDetailActivity extends Activity {
 
 
     private void checkToShowDialog() {
+        if (!checkComplete()) {
 
+            final CheckConfirmDialog dialog = new CheckConfirmDialog(this);
+
+            dialog.setOnNegativeListener(-1, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dialog != null && dialog.isShow()) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+
+            dialog.setOnPositiveListener(-1, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (dialog != null && dialog.isShow()) {
+                        dialog.dismiss();
+                    }
+
+                    startConfirm();
+                }
+            });
+
+            dialog.show();
+        }
     }
 
 
@@ -901,7 +926,7 @@ public class CheckOrderDetailActivity extends Activity {
         params.put("situation", item.getSituation());
         params.put("needMaintain", item.getNeedMaintain());
 
-        if (!TextUtils.isEmpty(item.getRemark())){
+        if (!TextUtils.isEmpty(item.getRemark())) {
             params.put("remark", item.getRemark());
         }
 
@@ -916,7 +941,7 @@ public class CheckOrderDetailActivity extends Activity {
 
         params.put("imgUrls", builder.toString());
 
-        putPartial(params , item);
+        putPartial(params, item);
 
         Call<JsonObject> call = recordApi.updateEquip(params);
 
@@ -965,7 +990,7 @@ public class CheckOrderDetailActivity extends Activity {
     }
 
 
-    private void putPartial(Map<String, String> params , CheckDetailBean.DeviceBean deviceBean) {
+    private void putPartial(Map<String, String> params, CheckDetailBean.DeviceBean deviceBean) {
 
         String scoreId = deviceBean.getScoreId();
         String scoreStr = deviceBean.getScore();
@@ -992,8 +1017,6 @@ public class CheckOrderDetailActivity extends Activity {
 
         }
     }
-
-
 
 
     private void startConfirm() {
