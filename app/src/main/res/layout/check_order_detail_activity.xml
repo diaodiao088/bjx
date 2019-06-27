@@ -11,7 +11,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/add_confirm_btn"
+        android:layout_above="@+id/tips"
         android:layout_below="@+id/title">
 
         <RelativeLayout
@@ -301,6 +301,23 @@
         </RelativeLayout>
 
     </ScrollView>
+
+
+    <TextView
+        android:id="@+id/tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_above="@+id/add_confirm_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:textSize="14sp"
+        android:textColor="@color/main_text_color"
+        android:text="请尽快提交已巡检完成的设备"
+
+        />
+
 
     <com.bjxapp.worker.controls.XButton
         android:id="@+id/add_confirm_btn"

@@ -529,6 +529,27 @@ public class DeviceInfoActivity extends Activity {
 
         model_static = deviceName;
 
+        if (mImgList != null) {
+            // mList.addAll(0 , mlist);
+            ArrayList<ImageBean> temList = new ArrayList<>();
+            for (int i = 0; i < mImgList.size(); i++) {
+                ImageBean item = new ImageBean(ImageBean.TYPE_ADD, mImgList.get(i));
+                temList.add(item);
+            }
+            mImageList.clear();
+            mImageList.addAll(0, temList);
+
+            if (mImageList.size() < 20) {
+                ImageBean bean = new ImageBean(ImageBean.TYPE_IMAGE, "");
+                mImageList.add(bean);
+
+            }
+
+            mAdapter.setList(mImageList);
+            mAdapter.notifyDataSetChanged();
+
+        }
+
         if (!TextUtils.isEmpty(remark)) {
             mReasonTv.setText(remark);
         }
@@ -760,7 +781,6 @@ public class DeviceInfoActivity extends Activity {
     }
 
     public void startCommit() {
-
 
 
         if (situation == null) {
