@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 import com.bjxapp.worker.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -129,21 +130,22 @@ public class DBManager {
         return list;
     }
 
+    public void updateDeviceBean(CheckDetailBean.DeviceBean deviceBean){
+
+        Cursor c = db.rawQuery("SELECT * FROM device_info where realId=" + deviceBean.getId(), null);
+        while(c.moveToNext()){
+
+            deviceBean.setRemark(c.getString(c.getColumnIndex("remark")));
+            deviceBean.setSituation(c.getString(c.getColumnIndex("situation")));
+            deviceBean.setNeedMaintain(c.getString(c.getColumnIndex("needMaintain")));
+            deviceBean.setImgUrls(c.getString(c.getColumnIndex("imgUrls")));
+            deviceBean.setScore(c.getString(c.getColumnIndex("scroce")));
+            deviceBean.setScoreId(c.getString(c.getColumnIndex("scoreId")));
+        }
+    }
+
 
     public void updateAsRead(int id) {
-
-       /* Cursor c = null;
-        try {
-            String updateStr = "UPDATE bjx SET read = 1 where _id > 0";
-            c = db.rawQuery(updateStr, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                c.close();
-            } catch (Exception e) {
-            }
-        }*/
 
         try {
             ContentValues cv = new ContentValues();

@@ -43,16 +43,30 @@ import com.bjxapp.worker.zxing.Intents;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static java.lang.String.valueOf;
 
 public class CheckOrderDetailActivity extends Activity {
 
@@ -126,9 +140,12 @@ public class CheckOrderDetailActivity extends Activity {
         } else if (checkDetailBean != null && checkDetailBean.getProcessState() == -3) {
             startContact();
         } else {
-            startConfirm();
+            if (mConfirmBtn.getText().toString().equals("提交已完成项")){
+                startCommitPartial();
+            }else{
+                startConfirm();
+            }
         }
-
     }
 
 
@@ -389,6 +406,7 @@ public class CheckOrderDetailActivity extends Activity {
 
         if (dbManager.isComplete(deviceBean.getId())) {
             deviceBean.setStatus(2);
+            dbManager.updateDeviceBean(deviceBean);
         }
 
     }
@@ -427,14 +445,14 @@ public class CheckOrderDetailActivity extends Activity {
                 }
 
                 if (checkDetailBean.getProcessState() == 0) {
-                        mConfirmBtn.setText("上门签到");
+                    mConfirmBtn.setText("上门签到");
                 } else if (checkDetailBean.getProcessState() == -3) {
                     mConfirmBtn.setText("确定");
                 } else {
 
-                    if (checkComplete()){
+                    if (checkComplete()) {
                         mConfirmBtn.setText("提交已完成项");
-                    }else{
+                    } else {
                         mConfirmBtn.setText("生成报告");
                     }
 
@@ -718,21 +736,262 @@ public class CheckOrderDetailActivity extends Activity {
 
                 if (deviceBean.getStatus() == 0 || deviceBean.getStatus() == 2) {
 
-
                     return true;
                 }
 
             }
-
         }
 
         return false;
     }
 
 
+    ArrayList<CheckDetailBean.DeviceBean> deviceBeans = new ArrayList<>();
 
 
+    private void updatePartialBeans() {
+        deviceBeans.clear();
+        for (int i = 0; i < checkDetailBean.getCategoryList().size(); i++) {
+            CheckDetailBean.CategoryBean categoryBean = checkDetailBean.getCategoryList().get(i);
+            for (int j = 0; j < categoryBean.getDeviceList().size(); j++) {
+                CheckDetailBean.DeviceBean deviceBean = categoryBean.getDeviceList().get(j);
+                if (deviceBean.getStatus() == 2) {
+                    deviceBeans.add(deviceBean);
+                }
+            }
+        }
+    }
 
+
+    private Runnable commitRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (deviceBeans.size() > 0) {
+                CheckDetailBean.DeviceBean item = deviceBeans.remove(0);
+                commitImage(item);
+            } else {
+
+                if (mWaitingDialog != null){
+                    mWaitingDialog.dismiss();
+                }
+
+                initData();
+                checkToShowDialog();
+            }
+        }
+    };
+
+
+    private void checkToShowDialog() {
+
+    }
+
+
+    /**
+     * 提交部分设备信息
+     */
+    private void startCommitPartial() {
+        updatePartialBeans();
+        if (deviceBeans.size() > 0) {
+            mHandler.post(commitRunnable);
+        }
+    }
+
+
+    private void commitImage(final CheckDetailBean.DeviceBean item) {
+
+        if (mWaitingDialog != null) {
+            mWaitingDialog.show("正在提交...", false);
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        String imgStr = item.getImgUrls();
+        String[] imgUrls = imgStr.split(",");
+
+        for (int i = 0; i < imgUrls.length; i++) {
+
+            File file = new File(imgUrls[i]);
+
+            if (!file.exists()) {
+                break;
+            }
+
+            if (file.exists()) {
+                RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+                requestBody.addFormDataPart("files", file.getName(), body);
+            }
+        }
+
+        for (Map.Entry entry : map.entrySet()) {
+            requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+        }
+
+        Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(CheckOrderDetailActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000 * 100, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, final IOException e) {
+
+                CheckOrderDetailActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(CheckOrderDetailActivity.this, "图片上传失败！:" + e.getLocalizedMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+
+                    final ArrayList<String> list = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(str);
+                        JSONArray accessAddress = object.getJSONArray("list");
+
+                        for (int i = 0; i < accessAddress.length(); i++) {
+                            list.add(accessAddress.get(i).toString());
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            startCommitItem(item, list);
+                        }
+                    });
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(CheckOrderDetailActivity.this, "图片上传失败！");
+                            Utils.finishWithoutAnim(CheckOrderDetailActivity.this);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void startCommitItem(CheckDetailBean.DeviceBean item, ArrayList<String> mImgList) {
+
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("id", item.getId());
+        params.put("situation", item.getSituation());
+        params.put("needMaintain", item.getNeedMaintain());
+
+        if (!TextUtils.isEmpty(item.getRemark())){
+            params.put("remark", item.getRemark());
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < mImgList.size(); i++) {
+            if (i < mImgList.size() - 1) {
+                builder.append(mImgList.get(i) + ",");
+            } else {
+                builder.append(mImgList.get(i));
+            }
+        }
+
+        params.put("imgUrls", builder.toString());
+
+        putPartial(params , item);
+
+        Call<JsonObject> call = recordApi.updateEquip(params);
+
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+
+                        mHandler.post(commitRunnable);
+
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(CheckOrderDetailActivity.this, msg + ":" + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Toast.makeText(CheckOrderDetailActivity.this, "提交失败..", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+
+    private void putPartial(Map<String, String> params , CheckDetailBean.DeviceBean deviceBean) {
+
+        String scoreId = deviceBean.getScoreId();
+        String scoreStr = deviceBean.getScore();
+
+        if (TextUtils.isEmpty(scoreId) || TextUtils.isEmpty(scoreStr)) {
+            return;
+        }
+
+        String[] scoreList = scoreStr.split(",");
+        String[] scoreIdList = scoreId.split(",");
+
+        for (int i = 0; i < scoreIdList.length; i++) {
+
+            String namekey = "serviceProcessList[" + i + "].id";
+            String urlkey = "serviceProcessList[" + i + "].actualScore";
+
+            String nameValue = scoreIdList[i];
+
+            params.put(namekey, nameValue);
+
+            String score = scoreList[i];
+
+            params.put(urlkey, score);
+
+        }
+    }
 
 
 

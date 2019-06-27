@@ -761,7 +761,7 @@ public class DeviceInfoActivity extends Activity {
 
     public void startCommit() {
 
-        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
 
         if (situation == null) {
             Toast.makeText(this, "请先选择设备状态", Toast.LENGTH_SHORT).show();
@@ -794,9 +794,9 @@ public class DeviceInfoActivity extends Activity {
         for (int i = 0; i < mImageList.size(); i++) {
             if (!TextUtils.isEmpty(mImageList.get(i).getUrl())) {
                 if (i < mImageList.size() - 1) {
-                    builder.append(mImageList.get(i) + ",");
+                    builder.append(mImageList.get(i).getUrl() + ",");
                 } else {
-                    builder.append(mImageList.get(i));
+                    builder.append(mImageList.get(i).getUrl());
                 }
             }
         }
@@ -929,28 +929,6 @@ public class DeviceInfoActivity extends Activity {
         return stringBuilder.toString();
     }
 
-
-    private void putPartial(Map<String, String> params) {
-
-        if (mList == null || mList.size() <= 0) {
-            return;
-        }
-
-        for (int i = 0; i < mList.size(); i++) {
-
-            String namekey = "serviceProcessList[" + i + "].id";
-            String urlkey = "serviceProcessList[" + i + "].actualScore";
-
-            String nameValue = mList.get(i).getId();
-
-            params.put(namekey, nameValue);
-
-            String score = mList.get(i).getActualScore();
-
-            params.put(urlkey, score);
-
-        }
-    }
 
     private boolean isAllChecked() {
         for (int i = 0; i < mList.size(); i++) {

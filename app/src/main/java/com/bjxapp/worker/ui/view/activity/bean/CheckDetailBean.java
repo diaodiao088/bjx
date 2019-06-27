@@ -109,6 +109,66 @@ public class CheckDetailBean {
 
         private String equipName;
 
+        private String situation;
+
+        private String needMaintain;
+
+        private String remark;
+
+        private String imgUrls;
+
+        private String score;
+
+        private String scoreId;
+
+        public String getSituation() {
+            return situation;
+        }
+
+        public void setSituation(String situation) {
+            this.situation = situation;
+        }
+
+        public String getNeedMaintain() {
+            return needMaintain;
+        }
+
+        public void setNeedMaintain(String needMaintain) {
+            this.needMaintain = needMaintain;
+        }
+
+        public String getRemark() {
+            return remark;
+        }
+
+        public void setRemark(String remark) {
+            this.remark = remark;
+        }
+
+        public String getImgUrls() {
+            return imgUrls;
+        }
+
+        public void setImgUrls(String imgUrls) {
+            this.imgUrls = imgUrls;
+        }
+
+        public String getScore() {
+            return score;
+        }
+
+        public void setScore(String score) {
+            this.score = score;
+        }
+
+        public String getScoreId() {
+            return scoreId;
+        }
+
+        public void setScoreId(String scoreId) {
+            this.scoreId = scoreId;
+        }
+
         public int getStatus() {
             return status;
         }
