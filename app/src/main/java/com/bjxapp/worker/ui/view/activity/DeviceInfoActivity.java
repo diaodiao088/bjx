@@ -725,7 +725,6 @@ public class DeviceInfoActivity extends Activity {
                         if (mImgList.size() > 0) {
                             String imgCountStr = getResources().getString(R.string.img_count, String.valueOf(mImgList.size()));
                         }
-
                     }
                 }
                 break;
@@ -768,16 +767,9 @@ public class DeviceInfoActivity extends Activity {
         mImageList.add(0, bean);
         mAdapter.notifyDataSetChanged();
 
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                MaskFile.addMask(compressImage, RecordDetailActivity.address_static, RecordDetailActivity.shop_add_static,
-//                        RecordDetailActivity.enter_static, nameReal);
-//
-//
-//            }
-//        }, 300);
+        MaskFile.addMask(compressImage, CheckOrderDetailActivity.currentAddress_static, CheckOrderDetailActivity.shopAddress_static,
+                CheckOrderDetailActivity.enterpriseAddress_static, DeviceInfoActivity.model_static);
+
     }
 
     public void startCommit() {
