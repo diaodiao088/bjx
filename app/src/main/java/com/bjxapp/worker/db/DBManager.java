@@ -69,7 +69,7 @@ public class DBManager {
 
     public CheckDetailBean.DeviceBean getSpecBean(String realId){
 
-        CheckDetailBean.DeviceBean deviceBean = null;
+        CheckDetailBean.DeviceBean deviceBean = new CheckDetailBean.DeviceBean();
 
         Cursor c = db.rawQuery("SELECT * FROM device_info where realId=" + realId, null);
 

@@ -476,25 +476,29 @@ public class DeviceInfoActivity extends Activity {
         if (object.get("needMaintain") != null && !(object.get("needMaintain") instanceof JsonNull)) {
             needMaintain = object.get("needMaintain").getAsInt();
 
-            if (deviceBean != null) {
-                needMaintain = Integer.parseInt(deviceBean.getNeedMaintain());
-            }
 
+
+        }
+
+        if (deviceBean != null) {
+            needMaintain = Integer.parseInt(deviceBean.getNeedMaintain());
         }
 
         if (object.get("remark") != null && !(object.get("remark") instanceof JsonNull)) {
             remark = object.get("remark").getAsString();
+        }
 
-            if (deviceBean != null) {
-                remark = deviceBean.getRemark();
-            }
+        if (deviceBean != null) {
+            remark = deviceBean.getRemark();
         }
 
         if (object.get("situation") != null && !(object.get("situation") instanceof JsonNull)) {
             situation = object.get("situation").getAsInt();
-            if (deviceBean != null) {
-                situation = Integer.parseInt(deviceBean.getSituation());
-            }
+
+        }
+
+        if (deviceBean != null) {
+            situation = Integer.parseInt(deviceBean.getSituation());
         }
 
         JsonArray urlArray = object.get("imgUrls").getAsJsonArray();
@@ -525,7 +529,6 @@ public class DeviceInfoActivity extends Activity {
         if (deviceBean != null) {
             serviceScore = deviceBean.getScore().split(",");
         }
-
 
         JsonArray serviceArray = object.get("serviceProcessList").getAsJsonArray();
 
