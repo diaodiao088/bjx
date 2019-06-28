@@ -260,9 +260,11 @@ public class CheckOrderDetailActivity extends Activity {
         if (mCurrentType == 0) {
             mTitleName.setText("门店巡检");
             mScanTv.setText("点击进行巡检");
+            mTipTv.setText("请尽快提交已巡检完成的设备");
         } else {
             mTitleName.setText("门店保养");
             mScanTv.setText("点击进行保养");
+            mTipTv.setText("请尽快提交已保养完成的设备");
         }
 
     }
@@ -440,6 +442,16 @@ public class CheckOrderDetailActivity extends Activity {
 
                 if (checkDetailBean.getProcessState() >= 3) {
                     mChangeTimeTv.setVisibility(View.GONE);
+                }
+
+                if (checkDetailBean.getProcessState() <3){
+                    mTipTv.setVisibility(View.GONE);
+                }else{
+                    mTipTv.setVisibility(View.VISIBLE);
+                }
+
+                if (checkDetailBean.getProcessState() <= 3){
+                    mTipTv.setVisibility(View.GONE);
                 }
 
                 if (checkDetailBean.getProcessState() >= 6) {

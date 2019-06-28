@@ -48,6 +48,7 @@ import com.bjxapp.worker.global.ConfigManager;
 import com.bjxapp.worker.http.httpcore.KHttpWorker;
 import com.bjxapp.worker.ui.expandablelayout.ExpandableLayout;
 import com.bjxapp.worker.ui.expandablelayout.Section;
+import com.bjxapp.worker.ui.view.activity.bean.CheckDetailBean;
 import com.bjxapp.worker.ui.view.activity.bean.RecordItemBean;
 import com.bjxapp.worker.ui.view.activity.order.AddImageActivity;
 import com.bjxapp.worker.ui.view.activity.order.CompressUtil;
@@ -457,24 +458,44 @@ public class DeviceInfoActivity extends Activity {
 
     private String deviceName = "";
 
+    CheckDetailBean.DeviceBean deviceBean = null;
+
+
     private void parseData(JsonObject object) {
+
+        id = object.get("equipmentId").getAsString();
+        realId = object.get("id").getAsString();
+
+
+        if (isComplete_static) {
+            deviceBean = mDbManager.getSpecBean(realId);
+        }
 
         deviceName = object.get("equipmentName").getAsString();
 
         if (object.get("needMaintain") != null && !(object.get("needMaintain") instanceof JsonNull)) {
             needMaintain = object.get("needMaintain").getAsInt();
+
+            if (deviceBean != null) {
+                needMaintain = Integer.parseInt(deviceBean.getNeedMaintain());
+            }
+
         }
 
         if (object.get("remark") != null && !(object.get("remark") instanceof JsonNull)) {
             remark = object.get("remark").getAsString();
+
+            if (deviceBean != null) {
+                remark = deviceBean.getRemark();
+            }
         }
 
         if (object.get("situation") != null && !(object.get("situation") instanceof JsonNull)) {
             situation = object.get("situation").getAsInt();
+            if (deviceBean != null) {
+                situation = Integer.parseInt(deviceBean.getSituation());
+            }
         }
-
-        id = object.get("equipmentId").getAsString();
-        realId = object.get("id").getAsString();
 
         JsonArray urlArray = object.get("imgUrls").getAsJsonArray();
 
@@ -485,6 +506,27 @@ public class DeviceInfoActivity extends Activity {
             }
         }
 
+        if (deviceBean != null) {
+
+            mImgList.clear();
+
+            String imgUrls = deviceBean.getImgUrls();
+
+            if (TextUtils.isEmpty(imgUrls)) {
+
+                String[] urls = imgUrls.split(",");
+
+                for (int i = 0; i < urls.length; i++) {
+                    mImgList.add(urls[i]);
+                }
+            }
+        }
+        String[] serviceScore = null;
+        if (deviceBean != null) {
+            serviceScore = deviceBean.getScore().split(",");
+        }
+
+
         JsonArray serviceArray = object.get("serviceProcessList").getAsJsonArray();
 
         for (int i = 0; i < serviceArray.size(); i++) {
@@ -493,6 +535,14 @@ public class DeviceInfoActivity extends Activity {
             if (item.get("actualScore") != null && !(item.get("actualScore") instanceof JsonNull)) {
                 serviceItem.setActualScore(item.get("actualScore").getAsString());
             }
+
+            try {
+                if (deviceBean != null && serviceScore != null) {
+                    serviceItem.setActualScore(serviceScore[i]);
+                }
+            } catch (Exception e) {
+            }
+
 
             serviceItem.setId(item.get("id").getAsString());
             serviceItem.setMaxScore(item.get("maxScore").getAsInt());
@@ -642,13 +692,17 @@ public class DeviceInfoActivity extends Activity {
         context.startActivity(intent);
     }
 
-    public static void goToActivityForResult(Activity context, String deviceId, boolean flag, boolean isCheck) {
+    static boolean isComplete_static;
+
+    public static void goToActivityForResult(Activity context, String deviceId, boolean flag, boolean isCheck, boolean isComplete) {
         Intent intent = new Intent();
         intent.setClass(context, DeviceInfoActivity.class);
         intent.putExtra(TYPE_ID, deviceId);
         intent.putExtra(IS_NEED_MOD, flag);
         intent.putExtra("is_check", isCheck);
         intent.putExtra("is_from_bill", false);
+
+        isComplete_static = isComplete;
 
         context.startActivityForResult(intent, CheckOrderDetailActivity.REQUEST_CODE);
     }

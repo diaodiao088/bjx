@@ -67,6 +67,32 @@ public class DBManager {
     }
 
 
+    public CheckDetailBean.DeviceBean getSpecBean(String realId){
+
+        CheckDetailBean.DeviceBean deviceBean = null;
+
+        Cursor c = db.rawQuery("SELECT * FROM device_info where realId=" + realId, null);
+
+        while(c.moveToNext()){
+
+            // String status = c.getString(c.getColumnIndex("realId"));
+
+            deviceBean.setScoreId(c.getString(c.getColumnIndex("scoreId")));
+            deviceBean.setId(realId);
+            deviceBean.setScore(c.getString(c.getColumnIndex("scroce")));
+            deviceBean.setImgUrls(c.getString(c.getColumnIndex("imgUrls")));
+            deviceBean.setNeedMaintain(c.getString(c.getColumnIndex("needMaintain")));
+            deviceBean.setStatus(2);
+            deviceBean.setSituation(c.getString(c.getColumnIndex("situation")));
+
+            return deviceBean;
+
+        }
+
+        return deviceBean;
+    }
+
+
     /**
      * 添加订单消息
      */
