@@ -1070,7 +1070,8 @@ public class CheckOrderDetailActivity extends Activity {
 
                     if (code == 0) {
                         Utils.showShortToast(CheckOrderDetailActivity.this, "提交成功");
-                        finish();
+                       // finish();
+                        initData();
                     } else {
                         mHandler.post(new Runnable() {
                             @Override

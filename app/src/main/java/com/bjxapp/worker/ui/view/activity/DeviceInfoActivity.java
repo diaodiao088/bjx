@@ -67,22 +67,35 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.bjxapp.worker.global.Constant.REQUEST_CODE_CLOCK_TAKE_PHOTO;
+import static java.lang.String.valueOf;
 
 public class DeviceInfoActivity extends Activity {
 
@@ -117,7 +130,12 @@ public class DeviceInfoActivity extends Activity {
 
     @OnClick(R.id.add_confirm_btn)
     void onConfirm() {
-        startCommit();
+
+        if (isComplete_static) {
+            startCommit();
+        } else {
+            commitImage(true);
+        }
     }
 
     public static String model_static = "";
@@ -446,7 +464,7 @@ public class DeviceInfoActivity extends Activity {
                             }
                         });
                     }
-                }else{
+                } else {
                     tryReadLocalData();
                 }
             }
@@ -843,6 +861,20 @@ public class DeviceInfoActivity extends Activity {
         }
     }
 
+    private void updateImageList(ArrayList<String> imageList) {
+
+        if (mImageList.size() <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < mImageList.size(); i++) {
+            String item = mImageList.get(i).getUrl();
+            if (item.startsWith("http")) {
+                imageList.add(item);
+            }
+        }
+    }
+
     public void insertImg(final String imagePath,
                           boolean showDelImg) {
 
@@ -854,6 +886,135 @@ public class DeviceInfoActivity extends Activity {
 
         MaskFile.addMask(compressImage, CheckOrderDetailActivity.currentAddress_static, CheckOrderDetailActivity.shopAddress_static,
                 CheckOrderDetailActivity.enterpriseAddress_static, DeviceInfoActivity.model_static);
+
+    }
+
+
+    private void commitImage(final boolean isUpdate) {
+
+        if (mWaitingDialog != null) {
+            mWaitingDialog.show("正在提交...", false);
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        map.put("token", ConfigManager.getInstance(this).getUserSession());
+
+        boolean isFileValid = false;
+
+        for (int i = 0; i < mImageList.size(); i++) {
+
+            ImageBean item = mImageList.get(i);
+
+            if (item.type == ImageBean.TYPE_ADD) {
+                File file = new File(item.getUrl());
+
+                if (!file.exists()) {
+                    break;
+                }
+
+
+                if (file.exists()) {
+                    isFileValid = true;
+                    RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+                    requestBody.addFormDataPart("files", file.getName(), body);
+                }
+            }
+        }
+
+        if (!isFileValid) {
+            startCommitReal(new ArrayList<String>());
+            return;
+        }
+
+        for (Map.Entry entry : map.entrySet()) {
+            requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+        }
+
+        Request request = new Request.Builder().url(LoginApi.URL + "/image/upload").post(requestBody.build()).tag(DeviceInfoActivity.this).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000 * 100, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, final IOException e) {
+
+                DeviceInfoActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+
+                        Utils.showShortToast(DeviceInfoActivity.this, "图片上传失败！:" + e.getLocalizedMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+
+
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+
+                    final ArrayList<String> list = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(str);
+                        JSONArray accessAddress = object.getJSONArray("list");
+
+                        for (int i = 0; i < accessAddress.length(); i++) {
+                            list.add(accessAddress.get(i).toString());
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            startCommitReal(list);
+                        }
+                    });
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showShortToast(DeviceInfoActivity.this, "图片上传失败！");
+                            Utils.finishWithoutAnim(DeviceInfoActivity.this);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+    private void putPartial(Map<String, String> params) {
+
+        if (mList == null || mList.size() <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < mList.size(); i++) {
+
+            String namekey = "serviceProcessList[" + i + "].id";
+            String urlkey = "serviceProcessList[" + i + "].actualScore";
+
+            String nameValue = mList.get(i).getId();
+
+            params.put(namekey, nameValue);
+
+            String score = mList.get(i).getActualScore();
+
+            params.put(urlkey, score);
+
+        }
+
 
     }
 
@@ -875,6 +1036,121 @@ public class DeviceInfoActivity extends Activity {
             }
         }
         return builder.toString();
+    }
+
+    public void startCommitReal(ArrayList<String> imageList) {
+
+        RecordApi recordApi = KHttpWorker.ins().createHttpService(LoginApi.URL, RecordApi.class);
+
+
+        if (situation == null) {
+            Toast.makeText(this, "请先选择设备状态", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isAllMaxScore() && situation == 0) {
+            Toast.makeText(this, "请先选择设备状态", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        if (!isAllChecked()) {
+            Toast.makeText(this, "请先进行选择评分", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isExpectChecked()) {
+            Toast.makeText(this, "请选择异常原因", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (mImageList.size() <= 1) {
+            Toast.makeText(this, "请添加照片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
+            remark = "";
+        } else {
+            remark = mReasonTv.getText().toString();
+        }
+
+        mDbManager.addDeviceInfo(String.valueOf(realId), String.valueOf(situation), String.valueOf(needMaintain), remark, getImageStr(), getScoreStr(), getIdStr(), 2);
+
+        setResult(RESULT_OK);
+        finish();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", ConfigManager.getInstance(this).getUserSession());
+        params.put("userCode", ConfigManager.getInstance(this).getUserCode());
+        params.put("id", realId);
+        params.put("situation", String.valueOf((int) situation));
+        params.put("needMaintain", String.valueOf(needMaintain));
+
+        if (!TextUtils.isEmpty(mReasonTv.getText().toString())) {
+            params.put("remark", mReasonTv.getText().toString());
+        }
+
+
+        updateImageList(imageList);
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < imageList.size(); i++) {
+            if (i < imageList.size() - 1) {
+                builder.append(imageList.get(i) + ",");
+            } else {
+                builder.append(imageList.get(i));
+            }
+        }
+
+        params.put("imgUrls", builder.toString());
+
+        putPartial(params);
+
+        Call<JsonObject> call = recordApi.updateEquip(params);
+
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (mWaitingDialog != null) {
+                    mWaitingDialog.dismiss();
+                }
+
+                if (response.code() == APIConstants.RESULT_CODE_SUCCESS) {
+                    final JsonObject object = response.body();
+
+                    final String msg = object.get("msg").getAsString();
+                    final int code = object.get("code").getAsInt();
+
+                    if (code == 0) {
+                        Utils.showShortToast(DeviceInfoActivity.this, "提交成功");
+                        finish();
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showShortToast(DeviceInfoActivity.this, msg + ":" + code);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWaitingDialog != null) {
+                            mWaitingDialog.dismiss();
+                        }
+                        Toast.makeText(DeviceInfoActivity.this, "提交失败..", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
     }
 
 
@@ -905,6 +1181,12 @@ public class DeviceInfoActivity extends Activity {
         if (mImageList.size() <= 1) {
             Toast.makeText(this, "请添加照片", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
+            remark = "";
+        } else {
+            remark = mReasonTv.getText().toString();
         }
 
         mDbManager.addDeviceInfo(String.valueOf(realId), String.valueOf(situation), String.valueOf(needMaintain), remark, getImageStr(), getScoreStr(), getIdStr(), 2);

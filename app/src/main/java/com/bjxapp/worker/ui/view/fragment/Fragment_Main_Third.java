@@ -76,13 +76,13 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
                 intent.putExtra(MessageDetailActivity.MSG_CONTENT, message.getContent());
                 intent.putExtra(MessageDetailActivity.MSG_TIME, message.getCreateTime());
                 intent.putExtra(MessageDetailActivity.MSG_TITLE, message.getTitle());
-                intent.putExtra("notice_id",message.getNoticeId());
+                intent.putExtra("notice_id", message.getNoticeId());
 
                 message.setRead(true);
                 mMessageAdapter.notifyDataSetChanged();
                 dbManager.updateAsRead(message.getId());
                 mActivity.updateRedotCount();
-                if (mParentFragment != null){
+                if (mParentFragment != null) {
                     mParentFragment.updateRedot();
                 }
 
@@ -158,13 +158,19 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
             @Override
             protected List<BjxInfo> doInBackground(Void... voids) {
 
-                if (dbManager ==null){
-                    dbManager = new DBManager(getContext());
+                try {
+                    if (dbManager == null) {
+                        dbManager = new DBManager(getContext());
+                    }
+
+                    ArrayList<BjxInfo> list = (ArrayList<BjxInfo>) dbManager.query(BATCH_SIZE, 0 * BATCH_SIZE);
+
+                    return list;
+
+                } catch (Exception e) {
+                    return new ArrayList<>();
                 }
 
-                ArrayList<BjxInfo> list = (ArrayList<BjxInfo>) dbManager.query(BATCH_SIZE, 0 * BATCH_SIZE);
-
-                return list;
             }
 
             @Override
@@ -290,7 +296,7 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
         super.onDestroy();
     }
 
-    public Fragment_Main_Third setParentFragment(Fragment_Main_Third_New fragment){
+    public Fragment_Main_Third setParentFragment(Fragment_Main_Third_New fragment) {
         this.mParentFragment = fragment;
         return this;
     }
