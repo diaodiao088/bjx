@@ -450,10 +450,6 @@ public class CheckOrderDetailActivity extends Activity {
                     mTipTv.setVisibility(View.VISIBLE);
                 }
 
-                if (checkDetailBean.getProcessState() <= 3){
-                    mTipTv.setVisibility(View.GONE);
-                }
-
                 if (checkDetailBean.getProcessState() >= 6) {
                     mConfirmBtn.setVisibility(View.GONE);
                     mTipTv.setVisibility(View.GONE);
@@ -831,6 +827,8 @@ public class CheckOrderDetailActivity extends Activity {
         updatePartialBeans();
         if (deviceBeans.size() > 0) {
             mHandler.post(commitRunnable);
+        }else{
+            Toast.makeText(this, "暂无已完成的设备", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -838,7 +836,7 @@ public class CheckOrderDetailActivity extends Activity {
     private void commitImage(final CheckDetailBean.DeviceBean item) {
 
         if (mWaitingDialog != null) {
-            mWaitingDialog.show("正在提交...", false);
+            mWaitingDialog.show("正在提交，请保持网络通畅，且勿离开此页面...", false);
         }
 
         OkHttpClient client = new OkHttpClient();

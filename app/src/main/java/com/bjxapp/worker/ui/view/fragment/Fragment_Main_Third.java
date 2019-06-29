@@ -158,6 +158,10 @@ public class Fragment_Main_Third extends BaseFragment implements OnClickListener
             @Override
             protected List<BjxInfo> doInBackground(Void... voids) {
 
+                if (dbManager ==null){
+                    dbManager = new DBManager(getContext());
+                }
+
                 ArrayList<BjxInfo> list = (ArrayList<BjxInfo>) dbManager.query(BATCH_SIZE, 0 * BATCH_SIZE);
 
                 return list;

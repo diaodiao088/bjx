@@ -66,7 +66,7 @@ public class CheckOrderItemLayout extends LinearLayout {
             mSubStatusTv.setTextColor(Color.parseColor("#f96057"));
         } else if (itemBean.getStatus() == 2){
             mSubStatusTv.setText("已完成");
-            mSubStatusTv.setTextColor(Color.parseColor("#f2f2f2"));
+            mSubStatusTv.setTextColor(Color.parseColor("#a7a7a7"));
         }
 
         mSubStatusTv.setOnClickListener(new OnClickListener() {
@@ -74,7 +74,7 @@ public class CheckOrderItemLayout extends LinearLayout {
             public void onClick(View v) {
                 //  RecordAddActivity.goToActivity((Activity) getContext(), itemBean, shopId);
                 DeviceInfoActivity.goToActivityForResult((Activity) getContext(), itemBean.getId() , itemBean.getStatus() != 1 , flag,
-                        itemBean.getStatus() != 2);
+                        itemBean.getStatus() != 1 , itemBean.getStatus() == 0);
 
                 parentAct.clickBean = itemBean;
                 parentAct.clickLayout = CheckOrderItemLayout.this;

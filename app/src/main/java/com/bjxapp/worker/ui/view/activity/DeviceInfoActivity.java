@@ -446,11 +446,15 @@ public class DeviceInfoActivity extends Activity {
                             }
                         });
                     }
+                }else{
+                    tryReadLocalData();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                tryReadLocalData();
 
             }
         });
@@ -460,6 +464,31 @@ public class DeviceInfoActivity extends Activity {
 
     CheckDetailBean.DeviceBean deviceBean = null;
 
+
+    private void tryReadLocalData() {
+
+        if (isComplete_static) {
+            deviceBean = mDbManager.getSpecBean(realId);
+        }
+
+        if (deviceBean != null && !TextUtils.isEmpty(deviceBean.getImgUrls())) {
+
+            mImgList.clear();
+
+            String imgUrls = deviceBean.getImgUrls();
+
+            if (!TextUtils.isEmpty(imgUrls)) {
+
+                String[] urls = imgUrls.split(",");
+
+                for (int i = 0; i < urls.length; i++) {
+                    mImgList.add(urls[i]);
+                }
+            }
+        }
+
+        updateUi();
+    }
 
     private void parseData(JsonObject object) {
 
@@ -693,8 +722,9 @@ public class DeviceInfoActivity extends Activity {
     }
 
     static boolean isComplete_static;
+    static boolean isUnComplete_static;
 
-    public static void goToActivityForResult(Activity context, String deviceId, boolean flag, boolean isCheck, boolean isComplete) {
+    public static void goToActivityForResult(Activity context, String deviceId, boolean flag, boolean isCheck, boolean isComplete, boolean isUn) {
         Intent intent = new Intent();
         intent.setClass(context, DeviceInfoActivity.class);
         intent.putExtra(TYPE_ID, deviceId);
@@ -703,6 +733,7 @@ public class DeviceInfoActivity extends Activity {
         intent.putExtra("is_from_bill", false);
 
         isComplete_static = isComplete;
+        isUnComplete_static = isUn;
 
         context.startActivityForResult(intent, CheckOrderDetailActivity.REQUEST_CODE);
     }
@@ -1420,21 +1451,24 @@ public class DeviceInfoActivity extends Activity {
     @Override
     public void onBackPressed() {
 
-        if (TextUtils.isEmpty(realId)) {
-            realId = "";
-        }
+        if (isUnComplete_static) {
+            if (TextUtils.isEmpty(realId)) {
+                realId = "";
+            }
 
-        if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
-            remark = "";
-        } else {
-            remark = mReasonTv.getText().toString();
-        }
+            if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
+                remark = "";
+            } else {
+                remark = mReasonTv.getText().toString();
+            }
 
-        if (needMaintain == null) {
-            needMaintain = 0;
-        }
+            if (needMaintain == null) {
+                needMaintain = 0;
+            }
 
-        mDbManager.updateDeviceInfo(String.valueOf(realId), String.valueOf(situation), String.valueOf(needMaintain), remark, getImageStr(), getScoreStr(), getIdStr(), 1);
+            mDbManager.updateDeviceInfo(String.valueOf(realId), String.valueOf(situation), String.valueOf(needMaintain), remark, getImageStr(), getScoreStr(), getIdStr(), 1);
+
+        }
 
         super.onBackPressed();
     }
