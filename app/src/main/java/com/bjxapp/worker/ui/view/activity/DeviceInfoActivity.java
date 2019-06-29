@@ -90,7 +90,7 @@ public class DeviceInfoActivity extends Activity {
 
     @OnClick(R.id.title_image_back)
     void onBack() {
-        finish();
+        onBackPressed();
     }
 
     @BindView(R.id.title_text_tv)
@@ -475,12 +475,9 @@ public class DeviceInfoActivity extends Activity {
 
         if (object.get("needMaintain") != null && !(object.get("needMaintain") instanceof JsonNull)) {
             needMaintain = object.get("needMaintain").getAsInt();
-
-
-
         }
 
-        if (deviceBean != null) {
+        if (deviceBean != null && !TextUtils.isEmpty(deviceBean.getNeedMaintain())) {
             needMaintain = Integer.parseInt(deviceBean.getNeedMaintain());
         }
 
@@ -497,7 +494,7 @@ public class DeviceInfoActivity extends Activity {
 
         }
 
-        if (deviceBean != null) {
+        if (deviceBean != null && !TextUtils.isEmpty(deviceBean.getSituation())) {
             situation = Integer.parseInt(deviceBean.getSituation());
         }
 
@@ -510,13 +507,13 @@ public class DeviceInfoActivity extends Activity {
             }
         }
 
-        if (deviceBean != null) {
+        if (deviceBean != null && !TextUtils.isEmpty(deviceBean.getImgUrls())) {
 
             mImgList.clear();
 
             String imgUrls = deviceBean.getImgUrls();
 
-            if (TextUtils.isEmpty(imgUrls)) {
+            if (!TextUtils.isEmpty(imgUrls)) {
 
                 String[] urls = imgUrls.split(",");
 
@@ -829,6 +826,27 @@ public class DeviceInfoActivity extends Activity {
 
     }
 
+    private String getImageStr() {
+
+        if (mImageList.size() <= 1) {
+            return "";
+        }
+
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < mImageList.size(); i++) {
+            if (!TextUtils.isEmpty(mImageList.get(i).getUrl())) {
+                if (i < mImageList.size() - 1) {
+                    builder.append(mImageList.get(i).getUrl() + ",");
+                } else {
+                    builder.append(mImageList.get(i).getUrl());
+                }
+            }
+        }
+        return builder.toString();
+    }
+
+
     public void startCommit() {
 
 
@@ -858,21 +876,7 @@ public class DeviceInfoActivity extends Activity {
             return;
         }
 
-
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < mImageList.size(); i++) {
-            if (!TextUtils.isEmpty(mImageList.get(i).getUrl())) {
-                if (i < mImageList.size() - 1) {
-                    builder.append(mImageList.get(i).getUrl() + ",");
-                } else {
-                    builder.append(mImageList.get(i).getUrl());
-                }
-            }
-        }
-
-        //params.put("imgUrls", builder.toString());
-
-        mDbManager.addDeviceInfo(String.valueOf(realId), String.valueOf(situation), String.valueOf(needMaintain), remark, builder.toString(), getScoreStr(), getIdStr());
+        mDbManager.addDeviceInfo(String.valueOf(realId), String.valueOf(situation), String.valueOf(needMaintain), remark, getImageStr(), getScoreStr(), getIdStr(), 2);
 
         setResult(RESULT_OK);
         finish();
@@ -970,9 +974,24 @@ public class DeviceInfoActivity extends Activity {
 
         for (int i = 0; i < mList.size(); i++) {
             if (i < mList.size() - 1) {
-                stringBuilder.append(mList.get(i).getActualScore() + ",");
+
+                String scroce = "";
+                if (TextUtils.isEmpty(mList.get(i).getActualScore())) {
+                    scroce = "";
+                } else {
+                    scroce = mList.get(i).getActualScore();
+                }
+                stringBuilder.append(scroce + ",");
+
             } else {
-                stringBuilder.append(mList.get(i).getActualScore());
+
+                String scroce = "";
+                if (TextUtils.isEmpty(mList.get(i).getActualScore())) {
+                    scroce = "";
+                } else {
+                    scroce = mList.get(i).getActualScore();
+                }
+                stringBuilder.append(scroce);
             }
         }
 
@@ -1398,4 +1417,25 @@ public class DeviceInfoActivity extends Activity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+
+        if (TextUtils.isEmpty(realId)) {
+            realId = "";
+        }
+
+        if (TextUtils.isEmpty(mReasonTv.getText().toString())) {
+            remark = "";
+        } else {
+            remark = mReasonTv.getText().toString();
+        }
+
+        if (needMaintain == null) {
+            needMaintain = 0;
+        }
+
+        mDbManager.updateDeviceInfo(String.valueOf(realId), String.valueOf(situation), String.valueOf(needMaintain), remark, getImageStr(), getScoreStr(), getIdStr(), 1);
+
+        super.onBackPressed();
+    }
 }

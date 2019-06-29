@@ -41,6 +41,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "remark VARCHAR , " +
                 "imgUrls VARCHAR , " +
                 "scoreId VARCHAR , " +
+                "status INTEGER ," +
                 "scroce VARCHAR)");
     }
 
@@ -65,6 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "remark VARCHAR , " +
                 "imgUrls VARCHAR , " +
                 "scordId VARCHAR ," +
+                "status INTEGER ," +
                 "scroce VARCHAR)");
 
     }

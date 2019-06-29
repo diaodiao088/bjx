@@ -31,14 +31,36 @@ public class DBManager {
 
 
     public void addDeviceInfo(String realId, String situation, String needMaintain,
-                              String remark, String imgUrls, String score, String scoreId) {
+                              String remark, String imgUrls, String score, String scoreId , int status) {
 
         db.beginTransaction();
 
         try {
-            db.execSQL("INSERT INTO device_info ( realId , situation , needMaintain , remark ,imgUrls , scroce ,scoreId) VALUES (? , ? , ? , ? , ? , ? , ?)",
+            db.execSQL("delete from device_info where realId = "+realId);
+            db.execSQL("INSERT INTO device_info ( realId , situation , needMaintain , remark ,imgUrls , scroce ,scoreId, status) VALUES (? , ? , ? , ? , ? , ? , ?,?)",
                     new Object[]{realId, situation,
-                            needMaintain, remark, imgUrls, score, scoreId});
+                            needMaintain, remark, imgUrls, score, scoreId , status});
+            db.setTransactionSuccessful();    //设置事务成功完成
+
+            LogUtils.log("add to db success ");
+        } catch (Exception e) {
+
+            LogUtils.log("add to db fail : " + e.getLocalizedMessage());
+        } finally {
+            db.endTransaction();    //结束事务
+        }
+    }
+
+    public void updateDeviceInfo(String realId, String situation, String needMaintain,
+                              String remark, String imgUrls, String score, String scoreId , int status) {
+
+        db.beginTransaction();
+
+        try {
+            db.execSQL("delete from device_info where realId = "+realId);
+            db.execSQL("INSERT INTO device_info ( realId , situation , needMaintain , remark ,imgUrls , scroce ,scoreId, status) VALUES (? , ? , ? , ? , ? , ? , ?,?)",
+                    new Object[]{realId, situation,
+                            needMaintain, remark, imgUrls, score, scoreId , status});
             db.setTransactionSuccessful();    //设置事务成功完成
 
             LogUtils.log("add to db success ");
@@ -51,9 +73,10 @@ public class DBManager {
     }
 
 
+
     public boolean isComplete(String realId) {
 
-        Cursor c = db.rawQuery("SELECT * FROM device_info where realId=" + realId, null);
+        Cursor c = db.rawQuery("SELECT * FROM device_info where realId=" + realId + " and status = 2", null);
 
         while(c.moveToNext()){
 
@@ -73,6 +96,10 @@ public class DBManager {
 
         Cursor c = db.rawQuery("SELECT * FROM device_info where realId=" + realId, null);
 
+        if (c.getCount() <= 0){
+            return null;
+        }
+
         while(c.moveToNext()){
 
             // String status = c.getString(c.getColumnIndex("realId"));
@@ -82,7 +109,7 @@ public class DBManager {
             deviceBean.setScore(c.getString(c.getColumnIndex("scroce")));
             deviceBean.setImgUrls(c.getString(c.getColumnIndex("imgUrls")));
             deviceBean.setNeedMaintain(c.getString(c.getColumnIndex("needMaintain")));
-            deviceBean.setStatus(2);
+            deviceBean.setRemark(c.getString(c.getColumnIndex("remark")));
             deviceBean.setSituation(c.getString(c.getColumnIndex("situation")));
 
             return deviceBean;

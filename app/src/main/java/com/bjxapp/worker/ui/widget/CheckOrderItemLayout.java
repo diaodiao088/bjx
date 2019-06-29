@@ -74,7 +74,7 @@ public class CheckOrderItemLayout extends LinearLayout {
             public void onClick(View v) {
                 //  RecordAddActivity.goToActivity((Activity) getContext(), itemBean, shopId);
                 DeviceInfoActivity.goToActivityForResult((Activity) getContext(), itemBean.getId() , itemBean.getStatus() != 1 , flag,
-                        itemBean.getStatus() == 2);
+                        itemBean.getStatus() != 2);
 
                 parentAct.clickBean = itemBean;
                 parentAct.clickLayout = CheckOrderItemLayout.this;
